@@ -1,5 +1,5 @@
 Title: First Blood
-Modified: 2020-04-04 18:03
+Modified: 2020-04-05 00:12
 Date: 2014-03-17 14:29
 Category: Misc
 Tags: Build Blog
@@ -11,9 +11,11 @@ Summary: 利用 Markdown + Pelican + Github 搭建属于自己的博客
 * * *
 
 换电脑更新整个博客，折腾了一天记录一下：
-1. 之前 github 没有上传 `pelicanconf.py`，所以重新执行 `pelican-quickstart`
-2. 大部分工作都是在设置主题相关的配置
-3. 因为 github 上不仅包含生成的网站，还有原始文件及其他配置文件，所以将 Makefile 中的 `OUTPUT_PATH` 设置为跟目录，且为了防止手误删除整个目录，注释掉 `make clean` 功能
+
+1. 将源文件和 pelican 设置挪到新的 repo: `blog_generator` 下
+2. 将生成的 output 目录复制到 blog repo: `guqian110.github.io` 下
+3. 每次更新，首先在 `blog_generator` 下 `make html`，然后手动 copy 到 `guqian110.github.io`，然后 commit, push
+
 
 ## 为什么要搭建自己的博客
 * * *
