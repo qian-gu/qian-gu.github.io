@@ -27,7 +27,7 @@ LINKS = (('Pelican', 'http://getpelican.com/'),
 
 # Social widget
 SOCIAL = (('Email', 'mailto:guqian110@163.com', 'envelope'),
-          ('github', 'http://github.com/guqian110'))
+          ('Github', 'http://github.com/guqian110'))
 
 DEFAULT_PAGINATION = 5
 
