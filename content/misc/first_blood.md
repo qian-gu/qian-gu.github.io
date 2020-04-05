@@ -13,8 +13,8 @@ Summary: 利用 Markdown + Pelican + Github 搭建属于自己的博客
 换电脑更新整个博客，折腾了一天记录一下：
 
 1. 将源文件和 pelican 设置挪到新的 repo: `blog_generator` 下
-2. 将生成的 output 目录复制到 blog repo: `guqian110.github.io` 下
-3. 每次更新，首先在 `blog_generator` 下 `make html`，然后手动 copy 到 `guqian110.github.io`，然后 commit, push
+2. 制定生成的网页目录为兄弟目录 blog repo: `guqian110.github.io`
+3. 每次更新，首先在 `blog_generator` 下 `make clean`，`make html`，然后 cd 到 `guqian110.github.io`下 commit, push
 
 
 ## 为什么要搭建自己的博客
