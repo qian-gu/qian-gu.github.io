@@ -4,6 +4,7 @@ Category: Python
 Tags: PEP
 Slug: peps_translate_project_pep0 
 Author: Qian Gu
+Series: PEP translate project
 Summary: PEPs 个人翻译系列 PEP0
 
 ## PEP 简介

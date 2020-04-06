@@ -58,6 +58,7 @@ SITELOGO = 'images/logo.png'
 SITELOGO_SIZE = 32
 
 # breadcrumbs
+BOOTSTRAP_NAVBAR_INVERSE = True
 DISPLAY_BREADCRUMBS = True
 DISPLAY_CATEGORY_IN_BREADCRUMBS = True
 DISPLAY_ARCHIVES_IN_BREADCRUMBS = True
@@ -78,6 +79,9 @@ GITHUB_USER = 'guqian110'
 # GITHUB_URL = 'https://github.com/guqian110'
 DISPLAY_TAGS_INLINE = True
 
+# sidebar image
+# SIDEBAR_IMAGES = ['images/logo.png']
+
 # theme bootstrap3 cfg
 THEME = '../pelican-themes/pelican-bootstrap3'
 JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
@@ -85,6 +89,8 @@ JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
 # ############################# plugins ##############################
 PLUGIN_PATHS = ['../pelican-plugins']
 PLUGINS = ['i18n_subsites', 'tag_cloud', 'related_posts', 'series', 'tipue_search', 'liquid_tags', 'sitemap', ]
+# series
+SHOW_SERIES = True
 # tag cloud
 TAG_CLOUD_MAX_ITEMs = 20
 # disqus

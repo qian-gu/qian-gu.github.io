@@ -4,6 +4,7 @@ Category: Linux
 Tags: Vim
 Slug: learning_vim_vimrc_preliminary
 Author: Qian Gu
+Series: Learning Vim
 Summary: 总结初步配置 Vim，让 Vim 更顺手 。
 
 总结初步配置 Vim，让 Vim 更顺手 。
