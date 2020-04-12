@@ -1,113 +1,106 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*- #
-from __future__ import unicode_literals
 
-AUTHOR = u'Qian Gu'
-SITENAME = u"Qian's Blog"
-SITEURL = 'https://guqian110.github.io'
+from datetime import datetime
 
+AUTHOR = 'Qian Gu'
+SITEURL = 'http://guqian110.github.io'
+SITENAME = AUTHOR
+SITETITLE = "Qian's Blog"
+SITESUBTITLE = 'Stay hungry. Stay foolish.'
+SITEDESCRIPTION = "Qian's Thoughts and Writings"
+SITELOGO = 'images/logo.png'
+FAVICON = 'images/favicon.png'
+BROWSER_COLOR = '#333333'
+PYGMENTS_STYLE = 'monokai'
 
-TIMEZONE = 'Asia/Shanghai'
-DATE_FORMATS = {'zh':'%Y-%m-%d %H:%M'}
+ROBOTS = 'index, follow'
 
-DEFAULT_LANG = u'en'
-
-# Feed generation is usually not desired when developing
-FEED_ALL_ATOM = None
-CATEGORY_FEED_ATOM = None
-TRANSLATION_FEED_ATOM = None
-AUTHOR_FEED_ATOM = None
-AUTHOR_FEED_RSS = None
-
-# Blogroll
-LINKS = (('Pelican', 'http://getpelican.com/'),
-         ('Python.org', 'http://python.org/'),
-         ('Jinja2', 'http://jinja.pocoo.org/'))
-         
-
-# Social widget
-SOCIAL = (('Email', 'mailto:guqian110@163.com', 'envelope'),
-          ('Github', 'http://github.com/guqian110'))
-
-DEFAULT_PAGINATION = 10
-
-# Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
-
-# path
 PATH = 'content'
-STATIC_PATHS = ['images', 'files']
+THEME = '../pelican-themes/Flex'
+TIMEZONE = 'Asia/Shanghai'
+
 ARTICLE_URL = 'posts/{category}/{slug}.html'
 ARTICLE_SAVE_AS = 'posts/{category}/{slug}.html'
 PAGE_URL = 'pages/{slug}.html'
 PAGE_SAVE_AS = 'pages/{slug}.html'
-DIRECT_TEMPLATES = {'index', 'categories', 'authors', 'archives', 'search'}
+DIRECT_TEMPLATES = {'index', 'categories', 'authors', 'archives', 'tags'}
 
-# article info
-SHOW_ARTICLE_AUTHOR = True
-SHOW_ARTICLE_CATEORY = True
-SHOW_DATE_MODIFIED = True
-DISPLAY_ARTICLE_INFO_ON_INDEX = True
-DISPLAY_PAGES_ON_MENU = True
+I18N_TEMPLATES_LANG = 'zh'
+DEFAULT_LANG = 'zh'
+OG_LOCALE = 'zh_CN'
+LOCALE = 'zh_CN'
 
-# pygemnts
-PYGEMNTS_STYLE = 'monokai'
+DATE_FORMATS = {'zh': '%Y-%m-%d %H:%M'}
 
-# site brand
-SITELOGO = 'images/logo.png'
-SITELOGO_SIZE = 32
+FEED_ALL_ATOM = 'feeds/all.atom.xml'
+CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
+TRANSLATION_FEED_ATOM = None
+AUTHOR_FEED_ATOM = None
+AUTHOR_FEED_RSS = None
 
-# breadcrumbs
-BOOTSTRAP_NAVBAR_INVERSE = True
-DISPLAY_BREADCRUMBS = True
-DISPLAY_CATEGORY_IN_BREADCRUMBS = True
-DISPLAY_ARCHIVES_IN_BREADCRUMBS = True
-DISPLAY_ABOUTME_IN_BREADCRUMBS = True
+USE_FOLDER_AS_CATEGORY = False
+MAIN_MENU = True
+HOME_HIDE_TAGS = False
 
-# favicon
-FAVICON = 'images/favicon.png'
+SOCIAL = (
+    ('envelope-o', 'mailto:guqian110@163.com'),
+    ('github', 'https://github.com/guqian110'),
+    ('rss', '/feeds/all.atom.xml'),
+)
 
-# about me
-ABOUT_ME = 'Icer + BYR'
-AVATAR = 'images/logo.png'
+MENUITEMS = (('Authors', '/authors.html'),
+             ('Archives', '/archives.html'),
+             ('Categories', '/categories.html'),
+             ('Tags', '/tags.html'),
+             )
 
-# content license
-CC_LICENSE = 'CC-BY-NC'
+CC_LICENSE = {
+    'name': 'Creative Commons Attribution-ShareAlike',
+    'version': '4.0',
+    'slug': 'by-sa'
+}
 
-# github
-GITHUB_USER = 'guqian110'
+COPYRIGHT_YEAR = datetime.now().year
+DEFAULT_PAGINATION = 10
 
-# GITHUB_URL = 'https://github.com/guqian110'
+# DISQUS_SITENAME = "flex-pelican"
+# ADD_THIS_ID = 'ra-55adbb025d4f7e55'
 
-# sidebar image
-# SIDEBAR_IMAGES = ['images/logo.png']
+STATIC_PATHS = ['images', 'files']
 
-# theme bootstrap3 cfg
-THEME = '../pelican-themes/pelican-bootstrap3'
+CUSTOM_CSS = 'static/custom.css'
+
+USE_LESS = True
+
+LINKS_IN_NEW_TAB = 'external'
+
+# GOOGLE_ADSENSE = {
+#     'ca_id': 'ca-pub-6625957038449899',
+#     'page_level_ads': True,
+#     'ads': {
+#         'aside': '8752710348',
+#         'main_menu': '',
+#         'index_top': '',
+#         'index_bottom': '1124188687',
+#         'article_top': '',
+#         'article_bottom': '4843941849',
+#     }
+# }
+
 JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
-
-# ############################# plugins ##############################
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'tag_cloud', 'related_posts', 'series', 'tipue_search', 'liquid_tags', 'sitemap']
-# series
-SHOW_SERIES = True
-# tag cloud
-TAG_CLOUD_MAX_ITEMs = 20
-DISPLAY_TAGS_INLINE = True
-# disqus
-DISQUS_ID_PREFIX_SLUG = True
-DISQUS_SITENAME = 'guqian110'
-# site map
+PLUGINS = ['i18n_subsites', 'neighbors', 'related_posts', 'series', 'sitemap']
+GITHUB_CORNER_URL = 'https://github.com/guqian110/guqian110.github.io'
 SITEMAP = {
-    "format": "xml",
-    "priorities": {
-        "articles": 0.7,
-        "indexes": 0.5,
-        "pages": 0.3,
+    'format': 'xml',
+    'priorities': {
+        'articles': 0.6,
+        'indexes': 0.6,
+        'pages': 0.5,
     },
-    "changefreqs": {
-        "articles": "monthly",
-        "indexes": "daily",
-        "pages": "monthly",
+    'changefreqs': {
+        'articles': 'monthly',
+        'indexes': 'daily',
+        'pages': 'monthly',
     }
 }
