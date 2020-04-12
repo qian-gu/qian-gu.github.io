@@ -17,7 +17,7 @@ Summary: 总结信号处理中的各种角频率
 
 我们应该是在初中的时候第一次接触到三角函数，那时候三角函数的定义是直接给个三角形，然后直接定义 sin(cos) 为哪条边比哪条边的值，然后给出 sin(cos)  的波形如下图所示：
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Sine_cosine_one_period.svg/600px-Sine_cosine_one_period.svg.png)
+![sine & cosine](https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Sine_cosine_one_period.svg/600px-Sine_cosine_one_period.svg.png)
 "Sine cosine one period" by Geek3 - Own work. Licensed under CC BY 3.0 via Commons - https://commons.wikimedia.org/wiki/File:Sine_cosine_one_period.svg#/media/File:Sine_cosine_one_period.svg
 
 当我们将这个三角形和单位圆联系在一起的时候，sin(cos) 的几何意义就很明显了：

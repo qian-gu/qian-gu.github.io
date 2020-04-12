@@ -10,7 +10,7 @@ SITEURL = 'https://guqian110.github.io'
 TIMEZONE = 'Asia/Shanghai'
 DATE_FORMATS = {'zh':'%Y-%m-%d %H:%M'}
 
-DEFAULT_LANG = u'zh'
+DEFAULT_LANG = u'en'
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
@@ -29,7 +29,7 @@ LINKS = (('Pelican', 'http://getpelican.com/'),
 SOCIAL = (('Email', 'mailto:guqian110@163.com', 'envelope'),
           ('Github', 'http://github.com/guqian110'))
 
-DEFAULT_PAGINATION = 5
+DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
@@ -62,6 +62,7 @@ BOOTSTRAP_NAVBAR_INVERSE = True
 DISPLAY_BREADCRUMBS = True
 DISPLAY_CATEGORY_IN_BREADCRUMBS = True
 DISPLAY_ARCHIVES_IN_BREADCRUMBS = True
+DISPLAY_ABOUTME_IN_BREADCRUMBS = True
 
 # favicon
 FAVICON = 'images/favicon.png'
@@ -77,7 +78,6 @@ CC_LICENSE = 'CC-BY-NC'
 GITHUB_USER = 'guqian110'
 
 # GITHUB_URL = 'https://github.com/guqian110'
-DISPLAY_TAGS_INLINE = True
 
 # sidebar image
 # SIDEBAR_IMAGES = ['images/logo.png']
@@ -88,11 +88,12 @@ JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
 
 # ############################# plugins ##############################
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'tag_cloud', 'related_posts', 'series', 'tipue_search', 'liquid_tags', 'sitemap', ]
+PLUGINS = ['i18n_subsites', 'tag_cloud', 'related_posts', 'series', 'tipue_search', 'liquid_tags', 'sitemap']
 # series
 SHOW_SERIES = True
 # tag cloud
 TAG_CLOUD_MAX_ITEMs = 20
+DISPLAY_TAGS_INLINE = True
 # disqus
 DISQUS_ID_PREFIX_SLUG = True
 DISQUS_SITENAME = 'guqian110'

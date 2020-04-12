@@ -1,9 +1,10 @@
 Title: 学习 Arduino #1 Arduino 入门
 Date: 2014-05-27 12:34
-Category: Arduino
-Tags: Open-source Hardware
-Slug: arduino_series_1_getting_started
+Category: Linux
+Tags: Open-source Hardware, Arduino
+Slug: learn_arduino_series_1_getting_started
 Author: Qian Gu
+Series: Learn Arduino
 Summary: 学习 Arduino，#1 Arduino 入门
 
 ## What is Arduino

@@ -1,9 +1,10 @@
 Title: 学习 Arduino #3 Intel Galileo Linux
 Date: 2014-06-13 20:31
-Category: Arduino
+Category: Linux
 Tags: Arduino, Linux
-Slug: arduino_series_3_intel_galileo_linux
+Slug: learn_arduino_series_3_intel_galileo_linux
 Author: Qian Gu
+Series: Learn Arduino
 Summary: 学习 Arduino，#3 通过 Ethernet & Serial Port 登录到 Galileo 上的 Linux 系统
 
 ## Linux on Galileo Board

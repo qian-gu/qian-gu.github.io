@@ -1,11 +1,11 @@
 Title: PEP 翻译计划系列 —— PEP0
 Date: 2020-04-05 23:56
 Category: Python
-Tags: PEP
+Tags: PEP, python
 Slug: peps_translate_project_pep0 
 Author: Qian Gu
 Series: PEP translate project
-Summary: PEPs 个人翻译系列 PEP0
+Summary: PEPs 翻译系列 PEP0
 
 ## PEP 简介
 * * *
@@ -35,13 +35,13 @@ PEP 根据状态可以分为下面几种：
 
 <br>
 
-## 个人翻译计划
+## 翻译计划
 * * *
 
-网上已经有很多人都翻译过了经典 PEP 章节，为了督促自己有计划地完成 PEP，也是为了以后可以温故而知新，在这里又自己重新翻译一遍。从 PEP0 中可以知道，各种各类的 PEP 加起来目前一共有 8101 篇，参考网上其他介绍，翻译计划中暂时选择了下面几篇，以后再持续更新。
+网上已经有很多人都翻译过了经典 PEP 章节，为了督促自己有计划地完成 PEP 的学习，也是为了以后可以温故而知新，在这里又自己重新翻译一遍。从 PEP0 中可以知道，各种各类的 PEP 加起来目前一共有几百篇，参考网上其他介绍，翻译计划中暂时选择了下面几篇，以后再持续更新。
 
-+ PEP 0 -- Index of Python Enhancement Proposals
-+ PEP 8 -- Style Guide for Python Code
++ [PEP 0 -- Index of Python Enhancement Proposals](https://guqian110.github.io/post/peps_translate_project_pep0.html)
++ [PEP 8 -- Style Guide for Python Code](https://guqian110.github.io/post/python/peps_translate_project_pep8.html)
 + PEP 20 -- The Zen of Python
 + PEP 202 -- List Comprehensions
 + PEP 274 -- Dict Comprehensions
