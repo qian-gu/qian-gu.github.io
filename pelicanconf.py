@@ -8,8 +8,8 @@ SITENAME = AUTHOR
 SITETITLE = "Qian's Blog"
 SITESUBTITLE = 'Stay hungry. Stay foolish.'
 SITEDESCRIPTION = "Qian's Thoughts and Writings"
-SITELOGO = 'images/logo.png'
-FAVICON = 'images/favicon.png'
+SITELOGO = SITEURL + '/images/logo.png'
+FAVICON = SITEURL + '/images/favicon.png'
 BROWSER_COLOR = '#333333'
 PYGMENTS_STYLE = 'monokai'
 
