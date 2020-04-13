@@ -4,33 +4,29 @@ from datetime import datetime
 
 AUTHOR = 'Qian Gu'
 SITEURL = 'http://guqian110.github.io'
-SITENAME = AUTHOR
-SITETITLE = "Qian's Blog"
+SITENAME = "Qian's Blog"
+SITETITLE = AUTHOR
 SITESUBTITLE = 'Stay hungry. Stay foolish.'
 SITEDESCRIPTION = "Qian's Thoughts and Writings"
 SITELOGO = SITEURL + '/images/logo.png'
 FAVICON = SITEURL + '/images/favicon.png'
 BROWSER_COLOR = '#333333'
-PYGMENTS_STYLE = 'monokai'
 
 ROBOTS = 'index, follow'
 
-PATH = 'content'
-THEME = '../pelican-themes/Flex'
+JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
 TIMEZONE = 'Asia/Shanghai'
+DEFAULT_LANG = 'zh'
+OG_LOCALE = 'zh_CN'
+LOCALE = 'zh_CN'
+DATE_FORMATS = {'zh': '%Y-%m-%d %H:%M'}
 
+PATH = 'content'
 ARTICLE_URL = 'posts/{category}/{slug}.html'
 ARTICLE_SAVE_AS = 'posts/{category}/{slug}.html'
 PAGE_URL = 'pages/{slug}.html'
 PAGE_SAVE_AS = 'pages/{slug}.html'
 DIRECT_TEMPLATES = {'index', 'categories', 'authors', 'archives', 'tags'}
-
-I18N_TEMPLATES_LANG = 'zh'
-DEFAULT_LANG = 'zh'
-OG_LOCALE = 'zh_CN'
-LOCALE = 'zh_CN'
-
-DATE_FORMATS = {'zh': '%Y-%m-%d %H:%M'}
 
 FEED_ALL_ATOM = 'feeds/all.atom.xml'
 CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
@@ -41,18 +37,21 @@ AUTHOR_FEED_RSS = None
 USE_FOLDER_AS_CATEGORY = False
 MAIN_MENU = True
 HOME_HIDE_TAGS = False
-
-SOCIAL = (
-    ('envelope-o', 'mailto:guqian110@163.com'),
-    ('github', 'https://github.com/guqian110'),
-    ('rss', '/feeds/all.atom.xml'),
-)
+PYGMENTS_STYLE = 'monokai'
+USE_LESS = True
+DEFAULT_PAGINATION = 10
 
 MENUITEMS = (('Authors', '/authors.html'),
              ('Archives', '/archives.html'),
              ('Categories', '/categories.html'),
              ('Tags', '/tags.html'),
              )
+
+SOCIAL = (
+    ('envelope-o', 'mailto:guqian110@163.com'),
+    ('github', 'https://github.com/guqian110'),
+    ('rss', '/feeds/all.atom.xml'),
+)
 
 CC_LICENSE = {
     'name': 'Creative Commons Attribution-ShareAlike',
@@ -61,7 +60,6 @@ CC_LICENSE = {
 }
 
 COPYRIGHT_YEAR = datetime.now().year
-DEFAULT_PAGINATION = 10
 
 # DISQUS_SITENAME = "flex-pelican"
 # ADD_THIS_ID = 'ra-55adbb025d4f7e55'
@@ -70,7 +68,6 @@ STATIC_PATHS = ['images', 'files']
 
 CUSTOM_CSS = 'static/custom.css'
 
-USE_LESS = True
 
 LINKS_IN_NEW_TAB = 'external'
 
@@ -87,10 +84,15 @@ LINKS_IN_NEW_TAB = 'external'
 #     }
 # }
 
-JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
+THEME = '../pelican-themes/Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'neighbors', 'related_posts', 'series', 'sitemap']
+PLUGINS = ['i18n_subsites', 'post_stats', 'section_number', 'neighbors', 'related_posts', 'sitemap']
 GITHUB_CORNER_URL = 'https://github.com/guqian110/guqian110.github.io'
+# i18n_subsites
+I18N_TEMPLATES_LANG = 'zh'
+# setion_number
+SECTION_NUMBER_MAX = 5
+#sitemap
 SITEMAP = {
     'format': 'xml',
     'priorities': {
@@ -104,3 +106,16 @@ SITEMAP = {
         'pages': 'monthly',
     }
 }
+# toc
+TOC = {
+    'TOC_HEADERS'       : '^h[1-6]', # What headers should be included in
+                                     # the generated toc
+                                     # Expected format is a regular expression
+
+    'TOC_RUN'           : 'true',    # Default value for toc generation,
+                                     # if it does not evaluate
+                                     # to 'true' no toc will be generated
+
+    'TOC_INCLUDE_TITLE': 'true',     # If 'true' include title in toc
+}
+

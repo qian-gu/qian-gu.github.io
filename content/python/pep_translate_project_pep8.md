@@ -51,11 +51,14 @@ Guido 的一个重要见解是：代码更多是用来读而不是写。本文�
 
 特别注意：不要为了遵守本文而破坏向后的兼容性！
 
-两种可以忽略本 guideline 的情况：
+一些可以忽略本 guideline 的情况：
 
 1. 遵守本 guideline 会导致代码的可读性下降，即使对于那些习惯于遵守本文来阅读代码的人来说
+
 2. （可能出于历史原因）为了保持和周边代码的一致性可以忽略本 guideline，虽然这是个清理其他人垃圾的好机会（实现真正的极限编程 Extreme Programming）
+
 3. 代码出现在本规范之前，并且没有其他理由去修改它
+
 4. 代码需要和不支持本规范的旧版本 Python 代码保持一致
 
 <br>
@@ -71,25 +74,23 @@ Guido 的一个重要见解是：代码更多是用来读而不是写。本文�
 
 连续行应该按照包围的元素对齐，要么使用 python 圆括号、方括号、花括号的隐式行连接在垂直方向对齐，要么使用 `hanging indent`。使用 hanging indent 的时候应该注意，第一行不应该有任何参数，后续行多一级缩进以便和其他行能清晰地区分开。
 
-```
-#!python
-# Correct:
-
-# Aligned with opening delimiter.
-foo = long_function_name(var_one, var_two,
-                         var_three, var_four)
-
-# Add 4 spaces (an extra level of indentation) to distinguish arguments from the rest.
-def long_function_name(
-        var_one, var_two, var_three,
-        var_four):
-    print(var_one)
-
-# Hanging indents should add a level.
-foo = long_function_name(
-    var_one, var_two,
-    var_three, var_four)
-```
+    #!python
+    # Correct:
+    
+    # Aligned with opening delimiter.
+    foo = long_function_name(var_one, var_two,
+                             var_three, var_four)
+    
+    # Add 4 spaces (an extra level of indentation) to distinguish arguments from the rest.
+    def long_function_name(
+            var_one, var_two, var_three,
+            var_four):
+        print(var_one)
+    
+    # Hanging indents should add a level.
+    foo = long_function_name(
+        var_one, var_two,
+        var_three, var_four)
 
 ```
 #!python
@@ -116,7 +117,7 @@ foo = long_function_name(
   var_three, var_four)
 ```
 
-如果 if 语句的条件部分太长以至于要写成多行的形式，要注意，一个双字符的关键字（比如 if）加上一个空格，再加上右括号，会天然形成一个 4 sapce 的缩进。这会导致条件语句和 if 内部的嵌套语句（本身也是 4 space 缩进）产生视觉冲突。本文没有明确规定如何（是否需要）进一步在视觉上区分条件语句和内嵌语句，可选但是不限于下面几种方式：
+如果 if 语句的条件部分太长以至于要写成多行的形式，要注意，一个双字符的关键字（比如 if）加上一个空格，再加上右括号，会天然形成一个 4 space 的缩进。这会导致条件语句和 if 内部的嵌套语句（本身也是 4 space 缩进）产生视觉冲突。本文没有明确规定如何（是否需要）进一步在视觉上区分条件语句和内嵌语句，可选但是不限于下面几种方式：
 
 ```
 #!python
@@ -173,7 +174,7 @@ result = some_function_that_takes_arguments(
 
 首选空格 space 作为缩进方式。
 
-只有为了和已有代码中的 tab 一致才能继续使用 tab。
+只有为了和已有代码中的 tab 保持一致才能继续使用 tab。
 
 python 3 不允许 tab 和 space 混合使用，python 2 中的 tab 和 space 混合使用时，应该先统一转换成 space。
 
@@ -265,6 +266,7 @@ python 2 中使用 ASCII 的文件和 python 3 中使用 UTF-8 的代码不应�
 对于 python 3.0 和更高版本来说，标准库使用了下面的政策（见 [PEP3131][PEP3131]）：标准库中所有标识符 **必须** 使用 ASCII 标识符，并在尽可能使用英语单词（在很多情况下，缩写和术语是非英语）。除此之外，string literals 和注释必须也使用 ASCII。只有两个例外，
 
 1. 测试非 ASCII 的测试用例
+
 2. 作者的名字
 
 如果作者的名字不是基于拉丁字符，**必须** 提供一个拉丁字母音译。
@@ -294,7 +296,9 @@ python 2 中使用 ASCII 的文件和 python 3 中使用 UTF-8 的代码不应�
     import 应该按照下面的顺序分组：
 
     1. 标准库 import
+
     2. 相关的第三方库 import
+
     3. 本地应用/库的特定 import
     
     在每组之间插入一个空行。
@@ -458,7 +462,9 @@ https://wiki.python.org/moin/DunderAlias
 ### 别的建议
 
 + 避免尾部空格。因为一般它都是不可见的，这可能会导致困惑：比如，反斜线后面跟着一个空格和一个换行符时，并不算做是一个有效的续行标记。一些编辑器不会保留尾部空格，并且很多项目（比如 CPython 自身）在 commit 之前会有相关检查来滤掉它。
+
 + 永远在二元操作符两边加上单个空格，比如赋值 `=`，增量赋值 `+=`，`-=`，比较 `==`，`<`，`>`，`！=`，`<>`，`<=`，`>=`，`in`，`not`，`is`，`not`，布尔运算符 `and`，`or`，`not`。
+
 + 如果使用了具有不同优先级的运算符，考虑在低优先级的运算符周围加上额外的空格。使用自己的判断，但是空格数量不要超过 1 个，并且在二元运算符周围使用相同数量的空格。
 
         #!python
@@ -476,7 +482,7 @@ https://wiki.python.org/moin/DunderAlias
         hypot2 = x * x + y * y
         c = (a + b) * (a - b)
 
-+ function 的注释应该使用正常的冒号规则，如果有 `->`，要在其周围加上空格（参考下文函数注释部分的更多信息）
++ 函数注解应该使用正常的冒号规则，如果有 `->`，要在其周围加上空格（参考下文函数注解部分的更多信息）
 
         #!python
         # Correct:
@@ -641,6 +647,7 @@ x = x + 1                 # Compensate for border
 docstirng 的规则总结在 [PEP257][PEP257] 内，其内容永远都不会改变。
 
 + 为所有的 public `module`, `function`, `class`, `method` 写 docstirng。对非 public method 没有必要写 docstirng，但是你应该写个注释描述该 method 的作用。这个注释应该出现在 `def` 行的下面。
+
 + [PEP257][PEP257] 描述了良好的 docstirng 惯例，要特别注意的是，多行的 docstirng 的结尾 `"""` 应该单独放一行。
 
         #!python
@@ -669,16 +676,23 @@ API 中那些对用户可见的公共接口的名字，应该遵循反映用法�
 下面是一些常见的方式：
 
 + `b`（单个小写字母）
+
 + `B`（单个大写字母）
+
 + `lowercase` 小写
+
 + `lower_case_with_underscores` 小写带下划线
+
 + `UPPERCASE` 大写
+
 + `UPPER_CASE_WITH_UNDERSCORES` 大写带下划线
+
 + `CapitalizedWords`（或者叫 CapWords，CamelCase —— 驼峰命名法），有时也叫做 StudlyCaps
 
     注意：在驼峰中使用首字母缩写时，所有字母都要大写，所以 `HTTPServerError` 比 `HttpServerError` 要好
 
-+ `mixedCase`（和驼峰不同之处在于第一个字母小写
++ `mixedCase`（和驼峰不同之处在于第一个字母小写）
+
 + `capitalized_Words_With_Underscores`（丑陋！）
 
 还有一种使用短缩写前缀来使一组相关的名字形成一个 group，Pyhton 中这种场景并不多见，这里只是为了全面而提一下。比如，`os.stat()` 函数返回了一个 `tuple`，内部的变量是 `st_mode`, `st_size`, `st_mtime` 之类的名字。（这么做的目的是为了强调和 `POSIX` 系统调用的相关性，以帮助程序员熟悉它）
@@ -688,12 +702,14 @@ X11 库里面所有的 public 函数都加了 `X` 前缀，在 python 里，这�
 除此之外，下面的这种带前缀或后缀下划线 `_` 的格式是可以的（通常和一些惯例结合在一起使用）：
 
 + `_single_leading_underscore_`，弱“内部使用”标志。比如，`from M import *` 不会导入类似以 `_` 开头的对象
+
 + `single_trailing_underscore_`，用来避免和 python 内部的关键字相冲突
 
         #!python
         Tkinter.Toplevel(master, class_='ClassName')
 
 + `__double_leading_underscore`，用来给 class 的 attribute 命名，调用它时会被矫正（在 class FooBar 中，`__boo` 会变成 `_FooBar_boo`）
+
 + `__double_leading_and_trailing_underscore__`，“magic” 对象/attribute，存在于用户控制的 `namespcae`，比如，`__init__`，`__import__`，或者 `__file__`。仅仅像文档说明的这样用，永远不要自己发明这种名字。
 
 ### 规范性的：命名惯例
@@ -892,6 +908,7 @@ import 的名字应该永远被认为是实现细节。除非是 module API 的�
     允许使用使用光秃秃的 except 的两种情况：
 
     1. exception 处理代码会打印或者记录 log，这样用户至少知道发生了错误
+
     2. 代码需要做一些清理工作，这种情况下最好使用 `raise.try...finally` 使 exception 可以继续向上传递
 
 + 当把一个 exception 绑定到一个名字时，优先使用 python2.6 中新加的显式名字绑定：
@@ -926,6 +943,7 @@ import 的名字应该永远被认为是实现细节。除非是 module API 的�
             return key_not_found(key)
 
 + 特定代码的局部资源，使用 `with` 语句来确保这个资源使用完成后被清理干净，下次还能继续使用。也可以用 `try`/`finally` 语句。
+
 + 除了获取/释放资源，其他时候都应该通过独立的 function 或 method 来调用上下文管理器
 
         #!python
@@ -1010,6 +1028,7 @@ import 的名字应该永远被认为是实现细节。除非是 module API 的�
         if not len(seq):
 
 + 写 string 时不要依赖结尾的空格，这种空格在视觉上难以区分，而且一些编辑器（比如reindent.py）会删掉他们。
+
 + 不要使用 `==` 来比较 boolean 值和 `True`/`False`：
 
         #!python
@@ -1038,33 +1057,41 @@ import 的名字应该永远被认为是实现细节。除非是 module API 的�
 [PEP207]: https://www.python.org/dev/peps/pep-0207
 [PEP3151]: https://www.python.org/dev/peps/pep-3151
 
-### 函数注释
+### 函数注解
 
-随着 [PEP484][PEP484] 的引入，下面的函数注释规则有些变化：
+随着 [PEP484][PEP484] 的引入，下面的函数注解规则有些变化：
 
-+ 为了前向兼容，python 3 中的函数注释应该优先使用 [PEP484][PEP484] 的语法（在之前的章节中有一些注释的推荐规则）
++ 为了前向兼容，python 3 中的函数注解应该优先使用 [PEP484][PEP484] 的语法（在之前的章节中有一些注解的推荐规则）
+
 + 不再鼓励使用本文以前推荐的实验性注释风格
-+ 但是，除了标准库，鼓励使用 [PEP484][PEP484] 中的实验性规则。比如，使用 [PEP484][PEP484] 中的 style 为一个大型第三方库/应用添加注释，检查添加这些注释的容易程度，观察这些注释的出现是否提高了可读性。
-+ python 的标准库应该保守地使用这些注释，但是新代码和大型的重构可以使用这种注释。
-+ 如果代码想用另外一种方式使用函数注释，推荐在文件顶部添加这样一条注释：
+
++ 但是，除了标准库，鼓励使用 [PEP484][PEP484] 中的实验性规则。比如，使用 [PEP484][PEP484] 中的 style 为一个大型第三方库/应用添加注解，检查添加这些注解的容易程度，观察这些注解的出现是否提高了可读性。
+
++ python 的标准库应该保守地使用这些注解，但是新代码和大型的重构可以使用这种注解。
+
++ 如果代码想用另外一种方式使用函数注解，推荐在文件顶部添加这样一条注释：
 
         #!ptyhon
         # type: ignore
 
-    这会告诉 type checker 忽略所有的注释（在 [PEP484][PEP484] 中可以找到更加详细的关于细颗粒度的关闭 type checker 的报错）
+    这会告诉 type checker 忽略所有的注解（在 [PEP484][PEP484] 中可以找到更加详细的关于细颗粒度的关闭 type checker 的报错）
 
 + 和 linter 类似，type checker 是独立可选的工具，python 解释器默认不会报出任何 type checker 的内容，而且不会基于注释改变它们的行为。
+
 + 用户不想使用 type checker 时可以忽略它们。但是，第三方库的用户可能希望在这些库上运行 type checker，为此，[PEP484][PEP484] 推荐使用 `stub` 文件：相比于 .py 文件，type checker 优先读取 .pyi 文件。stub 文件可以和库一起发布，也可以通过单独的 typeshed repo 发布（通过库的作者许可）
-+ 对于需要向后兼容的代码，可以以注释的方式添加类型注释，相关内容见 [PEP484][PEP484]。
+
++ 对于需要向后兼容的代码，可以以注释的方式添加类型注解，相关内容见 [PEP484][PEP484]。
 
 [PEP484]: https://www.python.org/dev/peps/pep-0484
 
-### 变量注释
+### 变量注解
 
-[PEP526][PEP526] 介绍了变量注释，对于变量的注释风格和前面描述的函数注释类似：
+[PEP526][PEP526] 介绍了变量注解，对于变量的注解风格和前面描述的函数注解类似：
 
 + 对于 module 级别的变量，class 和 instance variables，局部变量，应该在冒号后面加个空格
+
 + 冒号前面不应该有空格
+
 + 如果赋值语句有右侧内容，那么等号两边的空格数应该相等
 
         #!python
@@ -1084,7 +1111,7 @@ import 的名字应该永远被认为是实现细节。除非是 module API 的�
         class Test:
             result: int=0  # No spaces around equality sign
 
-+ 虽然 python 3 可以使用 [PEP526][PEP526]，但是对于所有版本的 python，对于变量注释，stub 文件的方式是首选的。（细节见 [PEP484][PEP484]） 
++ 虽然 python 3 可以使用 [PEP526][PEP526]，但是对于所有版本的 python，首先以 stub 文件的语法优先选择变量注解。（细节见 [PEP484][PEP484]） 
 
 [PEP526]: https://www.python.org/dev/peps/pep-0526/
 

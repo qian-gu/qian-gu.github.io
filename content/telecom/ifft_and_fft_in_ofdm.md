@@ -6,7 +6,9 @@ Slug: ifft_and_fft_in_ofdm
 Author: Qian Gu
 Summary: OFDM 中做 IFFT/FFT 时需要注意的一点细节
 
-在做 OFDM 项目时，发现一个容易犯错的地方：IFFT/FFT。
+## Intro
+
+在做 OFDM 项目时，发现一个容易犯错的地方：`IFFT`/`FFT`。
 
 在很多介绍 OFDM 的书中，给出结论：在发射机，基带信号的复包络采用值正好是待发射序列的 IDFT，所以在 N 是 2 的指数时，可以采用 IFFT 来快速计算；在接收机，将接收的频带信号解调到基带，采样得到基带复包络，然后做 DFT (FFT) 即可得到原始的发射序列。
 
@@ -18,11 +20,11 @@ Summary: OFDM 中做 IFFT/FFT 时需要注意的一点细节
 
 有的书（[宽带无线通信OFDM技术][book2]）则给出了更加详细，严谨的公式推导。
 
-### IFFT / FFT
+## IFFT / FFT
 
 ![fft/ifft](http://guqian110.github.io/images/xilinx_fft_core_notes/theory.png)
 
-### IFFT /FFT in OFDM
+## IFFT /FFT in OFDM
 
 OFDM 中 **功率归一化因子** 为 1/sqr(N)，而标准的 IFFT 中的系数为 1/N，所以在调用标准 IFFT 函数之后，需要额外乘以一个 sqr(N) ：
 
