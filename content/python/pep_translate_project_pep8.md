@@ -1117,9 +1117,20 @@ import 的名字应该永远被认为是实现细节。除非是 module API 的�
 
 <br>
 
-## 参考
+## 翻译参考
 * * *
 
 [PEP8][PEP8]
 
 [Python PEP8 编码规范中文版](https://blog.csdn.net/ratsniper/article/details/78954852)
+
+## 附
+
+Google 推出过开源项目的 coding style 规范，包含了常见编程语言，如 `C++`,  `java`, `Python`, `Shell` 等。因为已经有国内程序员凭热情创建和维护的中文版本，所以就不再翻译了。
+
+[Google Style Guide][google_en]
+
+[Google 开源项目风格指南 (中文版)][google_zh]
+
+[google_en]: https://github.com/google/styleguide
+[google_zh]: https://zh-google-styleguide.readthedocs.io/en/latest/

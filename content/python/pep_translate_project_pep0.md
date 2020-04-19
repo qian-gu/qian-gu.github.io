@@ -40,8 +40,8 @@ PEP 根据状态可以分为下面几种：
 
 网上已经有很多人都翻译过了经典 PEP 章节，为了督促自己有计划地完成 PEP 的学习，也是为了以后可以温故而知新，在这里又自己重新翻译一遍。从 PEP0 中可以知道，各种各类的 PEP 加起来目前一共有几百篇，参考网上其他介绍，翻译计划中暂时选择了下面几篇，以后再持续更新。
 
-+ [PEP 0 -- Index of Python Enhancement Proposals](https://guqian110.github.io/posts/peps_translate_project_pep0.html)
-+ [PEP 8 -- Style Guide for Python Code](https://guqian110.github.io/posts/python/peps_translate_project_pep8.html)
++ [PEP 0 -- Index of Python Enhancement Proposals][PEP0_article]
++ [PEP 8 -- Style Guide for Python Code][PEP8_article]
 + PEP 20 -- The Zen of Python
 + PEP 202 -- List Comprehensions
 + PEP 274 -- Dict Comprehensions
@@ -60,6 +60,9 @@ PEP 根据状态可以分为下面几种：
 + PEP 3120 -- Using UTF-8 as the default source encoding
 
 <br>
+
+[PEP0_article]: http://guqian110.github.io/posts/python/peps_translate_project_pep0.html
+[PEP8_article]: http://guqian110.github.io/posts/python/peps_translate_project_pep8.html
 
 ## 参考
 
