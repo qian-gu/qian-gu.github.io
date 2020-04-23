@@ -16,10 +16,10 @@ ROBOTS = 'index, follow'
 
 JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
 TIMEZONE = 'Asia/Shanghai'
-DEFAULT_LANG = 'zh'
-OG_LOCALE = 'zh_CN'
-LOCALE = 'zh_CN'
-DATE_FORMATS = {'zh': '%Y-%m-%d %H:%M'}
+DEFAULT_LANG = 'en'
+OG_LOCALE = 'en'
+LOCALE = 'en_US.utf-8'
+DATE_FORMATS = {'en': '%Y-%m-%d %H:%M'}
 
 PATH = 'content'
 ARTICLE_URL = 'posts/{category}/{slug}.html'
@@ -48,7 +48,7 @@ MENUITEMS = (('Authors', '/authors.html'),
              )
 
 SOCIAL = (
-    ('envelope-o', 'mailto:guqian110@163.com'),
+    ('envelope', 'mailto:guqian110@163.com'),
     ('github', 'https://github.com/guqian110'),
     ('rss', '/feeds/all.atom.xml'),
 )
@@ -84,9 +84,10 @@ LINKS_IN_NEW_TAB = 'external'
 #     }
 # }
 
-THEME = '../pelican-themes/Flex'
+# THEME = '../pelican-themes/Flex'
+THEME = '../Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'post_stats', 'section_number', 'neighbors', 'related_posts', 'sitemap']
+PLUGINS = ['i18n_subsites', 'post_stats', 'section_number', 'neighbors', 'related_posts', 'sitemap', 'pelican-toc']
 GITHUB_CORNER_URL = 'https://github.com/guqian110/guqian110.github.io'
 # i18n_subsites
 I18N_TEMPLATES_LANG = 'zh'
