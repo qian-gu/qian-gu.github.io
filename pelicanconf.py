@@ -83,6 +83,7 @@ GOOGLE_ADSENSE = {
         'article_bottom': '4843941849',
     }
 }
+GOOGLE_ANALYTICS = "UA-48826831-1"
 
 # THEME = '../pelican-themes/Flex'
 THEME = '../Flex'
