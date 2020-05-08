@@ -121,3 +121,10 @@ TOC = {
     'TOC_INCLUDE_TITLE': 'true',     # If 'true' include title in toc
 }
 
+### dark mode
+THEME_COLOR = 'ligtht'
+THEME_COLOR_AUTO_DETECT_BROWSER_PREFERENCE = True
+THEME_COLOR_ENABLE_USER_OVERRIDE = True
+
+PYGMENTS_STYLE = 'monokai'
+PYGMENTS_STYLE_DARK = 'monokai'
