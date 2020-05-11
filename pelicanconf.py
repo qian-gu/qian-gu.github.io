@@ -3,10 +3,10 @@
 from datetime import datetime
 
 AUTHOR = 'Qian Gu'
-SITEURL = 'http://guqian110.github.io'
+SITEURL = 'https://qiangu.cool'
 SITENAME = "Qian's Blog"
 SITETITLE = AUTHOR
-SITESUBTITLE = 'Stay hungry. Stay foolish.'
+SITESUBTITLE = u'路漫漫其修远兮，吾将上下而求索'
 SITEDESCRIPTION = "Qian's Thoughts and Writings"
 SITELOGO = SITEURL + '/images/logo.png'
 FAVICON = SITEURL + '/images/favicon.png'
@@ -26,7 +26,7 @@ ARTICLE_URL = 'posts/{category}/{slug}.html'
 ARTICLE_SAVE_AS = 'posts/{category}/{slug}.html'
 PAGE_URL = 'pages/{slug}.html'
 PAGE_SAVE_AS = 'pages/{slug}.html'
-DIRECT_TEMPLATES = {'index', 'categories', 'authors', 'archives', 'tags'}
+DIRECT_TEMPLATES = {'index', 'categories', 'authors', 'archives', 'tags', 'search'}
 
 FEED_ALL_ATOM = 'feeds/all.atom.xml'
 CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
@@ -50,6 +50,8 @@ MENUITEMS = (('Authors', '/authors.html'),
 SOCIAL = (
     ('envelope', 'mailto:guqian110@163.com'),
     ('github', 'https://github.com/guqian110'),
+    ('weibo', 'https://weibo.com/guqian110'),
+    ('twitter', 'https://twitter.com/qian_gu'),
     ('rss', '/feeds/all.atom.xml'),
 )
 
@@ -88,10 +90,10 @@ GOOGLE_ANALYTICS = "UA-48826831-1"
 # THEME = '../pelican-themes/Flex'
 THEME = '../Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'post_stats', 'section_number', 'neighbors', 'related_posts', 'sitemap', 'pelican-toc']
+PLUGINS = ['i18n_subsites', 'post_stats', 'neighbors', 'related_posts', 'sitemap', 'pelican-toc', 'representative_image', 'tipue_search']
 GITHUB_CORNER_URL = 'https://github.com/guqian110/guqian110.github.io'
 # i18n_subsites
-I18N_TEMPLATES_LANG = 'zh'
+I18N_TEMPLATES_LANG = 'en'
 # setion_number
 SECTION_NUMBER_MAX = 5
 #sitemap

@@ -1,6 +1,6 @@
 Title: 不想当司机的厨子不是好码农 —— 读《浪潮之巅》
 Date: 2015-03-27 21:45
-Category: Misc
+Category: Book
 Slug: on_top_of_tides_review
 Tags: review, On Top of Tides
 Author: Qian Gu

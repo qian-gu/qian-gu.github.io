@@ -1,5 +1,5 @@
 Title: 活着 有感
-Category: Misc
+Category: Book
 Tags: 活着, 余华
 Slug: to_live_review
 Author: Qian Gu

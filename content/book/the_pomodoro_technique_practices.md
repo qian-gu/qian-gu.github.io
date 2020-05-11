@@ -1,6 +1,6 @@
 Title: 番茄工作法 总结 + 实践
 Date: 2014-11-02 21:46
-Category: Misc
+Category: Book
 Tag: pomodoro technique
 Slug: the_pomodoro_technique_practices
 Author: Qian Gu

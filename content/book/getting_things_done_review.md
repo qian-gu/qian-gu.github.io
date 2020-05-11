@@ -1,6 +1,6 @@
 Title: GTD 书评 + 总结
 Date: 2014-10-30 12:51
-Category: Misc
+Category: Book
 Tags: GTD, review
 Slug: getting_things_done_review
 Author: Qian Gu

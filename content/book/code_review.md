@@ -1,6 +1,6 @@
 Title: Code 书评
 Date: 2014-03-21 16:33
-Category: Misc
+Category: Book
 Tags: Code, review
 Slug: code_review
 Author: Qian Gu

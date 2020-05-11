@@ -1,6 +1,6 @@
 Title: 乔布斯传 书评
 Date: 2014-04-09 17:14
-Category: Misc
+Category: Book
 Tags: Steve Jobs, review
 Slug: steve_jobs_review
 Author: Qian Gu
