@@ -6,6 +6,7 @@ Slug: peps_translate_project_pep274
 Author: Qian Gu
 Series: PEP translate project
 Summary: PEPs 翻译系列 PEP274
+Status: draft
 
 [PEP 274 -- Dict Comprehensions 原文链接][PEP274]。
 

@@ -6,6 +6,7 @@ Slug: peps_translate_project_pep234
 Author: Qian Gu
 Series: PEP translate project
 Summary: PEPs 翻译系列 PEP234
+Status: draft
 
 [PEP 234 -- Iterators 原文链接][PEP234]。
 
