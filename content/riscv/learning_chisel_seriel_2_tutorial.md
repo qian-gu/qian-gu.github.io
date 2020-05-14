@@ -1,25 +1,26 @@
 Title: 学习 chisel 系列之 2： Chisel Tutorial
 Date: 2020-05-10 14:56
-Category: IC
+Category: RISC-V
 Tags: chisel
 Slug: learning_chisel_series_2_chisel_tutorial
 Author: Qian Gu
 Summary: 学习 Chisel 官方教程。
+Status: draft
 
-[chisel 环境安装][instll_chisel]成功之后，就可以正式开始 chisel 的学习之旅了。
+[chisel 环境安装][install_chisel]成功之后，就可以正式开始 chisel 的学习之旅了。
 
-[install chisel]: 
+[install_chisel]: https://qiangu.cool/riscv/learning_chisel_series_1_install.html
 
 ## Chisel Tutorial
 
 [Chisel Tutorial][tutorial] 是官方提供的教程，阅读 wiki，走完整个流程，就能掌握
-chisel 的基本语法。
+chisel 的基本语法了。
 
 [tutorial]: https://github.com/ucb-bar/chisel-tutorial
 
-## doc generattion
+## Doc generattion
 
-Tutorial 目录下面的 `doc` 目录里面包含了一篇 chisel 入门论文，只要按照 Makefile 中的提示
+Tutorial 下面的 `doc` 目录里面包含了一篇 chisel 入门论文，只要按照 Makefile 中的提示
 把所有的依赖包都安装好，就可以生成最终的 pdf 论文了。
 
 <br>
@@ -45,5 +46,3 @@ chisel 可以根据信号的连接，自动分析信号的位宽，所以我们�
 
 
 ## Ref
-
-[sbt换源，解决速度慢的问题](https://segmentfault.com/a/1190000021817234)

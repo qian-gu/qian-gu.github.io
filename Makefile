@@ -50,8 +50,8 @@ html:
 
 clean:
 	# [ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
-	# delete all except for .git
-	cd $(OUTPUTDIR); ls | xargs rm -rf
+	# delete all except for .git, CNAME, README.md
+	cd $(OUTPUTDIR); ls | grep -v CNAME | grep -v README.md | xargs rm -rf
 
 regenerate:
 	$(PELICAN) -r $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)

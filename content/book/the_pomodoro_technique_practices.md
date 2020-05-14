@@ -5,6 +5,7 @@ Tag: pomodoro technique
 Slug: the_pomodoro_technique_practices
 Author: Qian Gu
 Summary: 总结 番茄工作法 的方法和实践。
+Image: /images/the-pomodoro-technique-practices/workflow.png
 
 忙里偷闲，学习一下大名鼎鼎的 **番茄工作法**。
 

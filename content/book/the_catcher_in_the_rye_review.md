@@ -17,7 +17,7 @@ Summary: 每个人心中都有一个霍尔顿·考尔菲德 (Holden Caulfield)
 
 <br>
 
-## 这是一本曾样的书
+## 这是一本怎样的书
 * * *
 
 [麦田里的守望者 on wikipedia][the_catcher_on_the_rye_wiki]

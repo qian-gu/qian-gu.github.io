@@ -11,6 +11,7 @@ SITEDESCRIPTION = "Qian's Thoughts and Writings"
 SITELOGO = SITEURL + '/images/logo.png'
 FAVICON = SITEURL + '/images/favicon.png'
 BROWSER_COLOR = '#333333'
+RELATIVE_URLS = True
 
 ROBOTS = 'index, follow'
 
@@ -90,7 +91,8 @@ GOOGLE_ANALYTICS = "UA-48826831-1"
 # THEME = '../pelican-themes/Flex'
 THEME = '../Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'post_stats', 'neighbors', 'related_posts', 'sitemap', 'pelican-toc', 'representative_image', 'tipue_search']
+PLUGINS = ['i18n_subsites', 'post_stats', 'neighbors', 'related_posts', 'sitemap', 
+           'pelican-toc', 'representative_image', 'tipue_search', 'render_math']
 GITHUB_CORNER_URL = 'https://github.com/guqian110/guqian110.github.io'
 # i18n_subsites
 I18N_TEMPLATES_LANG = 'en'

@@ -42,7 +42,7 @@ PEP 根据状态可以分为下面几种：
 
 + [PEP 0 -- Index of Python Enhancement Proposals][PEP0_article]
 + [PEP 8 -- Style Guide for Python Code][PEP8_article]
-+ PEP 20 -- The Zen of Python
++ [PEP 20 -- The Zen of Python][PEP20_article]
 + PEP 202 -- List Comprehensions
 + PEP 274 -- Dict Comprehensions
 + PEP 234 -- Iterators
@@ -61,8 +61,9 @@ PEP 根据状态可以分为下面几种：
 
 <br>
 
-[PEP0_article]: http://guqian110.github.io/posts/python/peps_translate_project_pep0.html
-[PEP8_article]: http://guqian110.github.io/posts/python/peps_translate_project_pep8.html
+[PEP0_article]: https://qiangu.cool/posts/python/peps_translate_project_pep0.html
+[PEP8_article]: https://qiangu.cool/posts/python/peps_translate_project_pep8.html
+[PEP20_article]: https://qiangu.cool/posts/python/peps_translate_project_pep20.html
 
 ## 参考
 
