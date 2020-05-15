@@ -4,7 +4,7 @@ Category: Python
 Tags: PEP8, python, Sublime Text
 Slug: pep8_in_practice
 Author: Qian Gu
-Summary: 总结实际 coding 中遵循 PEP8 时用到的工具和插件。
+Summary: 总结实际 coding 中遵循 PEP8 时用到的工具和插件
 
 ## PEP8 & PCQA
 
@@ -21,7 +21,7 @@ PCQA 源自于 `Ian Cordasco` 在把 `Flake8` 迁移到 Git 时发出的一封�
 [PCQA]: https://meta.pycqa.org/en/latest/code-of-conduct.html
 [pcqa-github]: https://github.com/PyCQA
 
-<br>
+
 
 ## Linter
 
@@ -153,7 +153,7 @@ yapf 的终极目标是产生的代码和（遵循规范的）程序猿写出的
 
 [black]: https://github.com/psf/black
 
-<br>
+
 
 ## Practice in Sublime
 
@@ -218,7 +218,7 @@ SublimeLinter 官方出品的扩展插件命名为 `SublimeLinter-xxx` 的格式
 
 [PyYapf]: https://packagecontrol.io/packages/PyYapf%20Python%20Formatter
 
-<br>
+
 
 ## Summary
 
