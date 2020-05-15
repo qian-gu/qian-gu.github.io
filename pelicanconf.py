@@ -91,7 +91,7 @@ GOOGLE_ANALYTICS = "UA-48826831-1"
 # THEME = '../pelican-themes/Flex'
 THEME = '../Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'neighbors', 'related_posts', 'sitemap', 
+PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts', 'sitemap', 
            'pelican-toc', 'representative_image', 'tipue_search', 'render_math',
           ]
 GITHUB_CORNER_URL = 'https://github.com/guqian110/guqian110.github.io'
@@ -136,3 +136,5 @@ PYGMENTS_STYLE_DARK = 'monokai'
 
 ## render_math
 MATH_JAX = {'color': 'blue'}
+## cjk-auto-spacing
+CJK_AUTO_SPAING_TITLE = True
