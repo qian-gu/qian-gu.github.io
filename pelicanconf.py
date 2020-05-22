@@ -3,10 +3,10 @@
 from datetime import datetime
 
 AUTHOR = 'Qian Gu'
-SITEURL = 'https://qiangu.cool'
+SITEURL = ''
 SITENAME = "Qian's Blog"
 SITETITLE = AUTHOR
-SITESUBTITLE = u'路漫漫其修远兮，吾将上下而求索'
+SITESUBTITLE = u'Read >> Think >> Write'
 SITEDESCRIPTION = "Qian's Thoughts and Writings"
 SITELOGO = SITEURL + '/images/logo.png'
 FAVICON = SITEURL + '/images/favicon.png'
@@ -51,7 +51,6 @@ MENUITEMS = (('Authors', '/authors.html'),
 SOCIAL = (
     ('envelope', 'mailto:guqian110@163.com'),
     ('github', 'https://github.com/guqian110'),
-    ('weibo', 'https://weibo.com/guqian110'),
     ('twitter', 'https://twitter.com/qian_gu'),
     ('rss', '/feeds/all.atom.xml'),
 )
@@ -69,7 +68,7 @@ DISQUS_SITENAME = "ChienGu"
 
 STATIC_PATHS = ['images', 'files']
 
-CUSTOM_CSS = 'static/custom.css'
+# CUSTOM_CSS = 'static/custom.css'
 
 
 LINKS_IN_NEW_TAB = 'external'
