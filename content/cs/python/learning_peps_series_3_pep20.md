@@ -1,8 +1,8 @@
-Title: PEP 学习系列 #2 —— PEP20
+Title: PEP 学习系列 #3 —— PEP20
 Date: 2020-05-10 14:36
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_2_pep20
+Slug: learning_peps_series_3_pep20
 Author: Qian Gu
 Series: Learning PEPs
 Summary: 学习 Python 之禅

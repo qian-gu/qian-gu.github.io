@@ -17,12 +17,9 @@ Summary: 最近找到一本好书——《编码: 隐匿在计算机软硬件背
 [G]: https://www.google.com.hk/
 [W]: http://en.wikipedia.org/wiki/Main_Page
 
-<br>
+## 基本概念
 
-##基本概念
-* * *
-
-###机器数
+### 机器数
 
 顾名思义，一个数字在机器中的存储方式，“*数* ” 是指 有符号数（`signed number`），即包含了正负号的数，“*机器* ” 当然是指计算机（`Computer`）了。
 
@@ -30,57 +27,59 @@ Summary: 最近找到一本好书——《编码: 隐匿在计算机软硬件背
 
 [big-endian]: http://zh.wikipedia.org/wiki/%E5%AD%97%E8%8A%82%E5%BA%8F#.E5.A4.A7.E7.AB.AF.E5.BA.8F
 
-###真值
+### 真值
 
 因为机器数中有一位表示符号，所以机器数的形式值不等于真正的数值，机器数对应的数值称为机器数的 *真值*。
 
-<br>
 举个栗子：
 
 用 8 bit 表示一个数字，因为有符号位的存在，可以表示的范围为 (-127, -0, +0, +127) 。
 
-	# +5 的 机器数 = 0000_0101 ；真值 = + 000_0101
-	 
-	# -5 的 机器数 = 1000_0101 ；真值 = - 000_0101
+```
+#!text
++5 的 机器数 = 0000_0101 ；真值 = + 000_0101
+
+-5 的 机器数 = 1000_0101 ；真值 = - 000_0101
+```
 
 这种机器数的编码方式称为 [*原码*][sm] (`signed-magnitude`) ，是机器数编码方式中的一种。
 
 [sm]: http://en.wikipedia.org/wiki/Signed_magnitude#Signed_magnitude_representation
 
-<br>
 > *The four best-known methods of extending the binary numeral system to represent signed numbers are: sign-and-magnitude, Ones' complement, two's complement, and excess-K.*
 
 > *There is no definitive criterion by which any of the representations is universally superior. The representation used in most current computing devices is two's complement, although the Unisys ClearPath Dorado series mainframes use Ones' complement.*
 （[Wikipeida][Wiki]）
 
-<br>
-
 下面分别讨论：
 
 [Wiki]: http://en.wikipedia.org/wiki/Signed_number_representations
 
-<br>
+## 机器数表示法
 
-##机器数表示法
-* * *
+### 原码（sign and magnitude）
 
-###原码（sign and magnitude）
+#### 编码规则
 
-####编码规则
+```
+#!text
+正数：  0_xxxxxxx
 
-	# 正数：  0_xxxxxxx
-	
-	# 负数：  1_xxxxxxx
+负数：  1_xxxxxxx
+```
 
 8 bit 的原码可以表示的范围是 [ -127, -0, +0, +127 ]，共 255 个数
     
-####计算法则
+#### 计算法则
 
-	# 两数符号相同：  低位相加，最高位的符号位不变（当低位相加产生进位时，溢出 Overflow）
- 
-	# 两数符号不同：  比较绝对值的大小，差的绝对值 = 大数 - 小数 ，符号位和大数的符号位相同
+```
+#!text
+# 两数符号相同：  低位相加，最高位的符号位不变（当低位相加产生进位时，溢出 Overflow）
 
-####缺点
+# 两数符号不同：  比较绝对值的大小，差的绝对值 = 大数 - 小数 ，符号位和大数的符号位相同
+```
+
+#### 缺点
 
 1. 电路复杂
 
@@ -92,19 +91,15 @@ Summary: 最近找到一本好书——《编码: 隐匿在计算机软硬件背
 
     + 0可以编码为两种方式： `0000_0000` 和 `1000_0000`，进一步增加了逻辑的复杂性
     
-####总结
+#### 总结
 
-This approach is directly comparable to the common way of showing a sign (placing a "+" or "−" next to the number's magnitude). Some early binary computers (e.g., [IBM 7090][7090]) used this representation, perhaps because of its natural relation to common usage. Signed magnitude is the most common way of representing the significand in floating point values.
-（[Wiki][sm]）
+> This approach is directly comparable to the common way of showing a sign (placing a "+" or "−" next to the number's magnitude). Some early binary computers (e.g., [IBM 7090][7090]) used this representation, perhaps because of its natural relation to common usage. Signed magnitude is the most common way of representing the significand in floating point values.（[Wiki][sm]）
 
 [7090]: http://en.wikipedia.org/wiki/IBM_7090
-<br>
 
-> *虽然 `原码` 的编码方式最接近人类的习惯，但是，并不适合在计算机中使用，为了解决原码计算中的一些问题，于是 `反码` 就出现了*
+*虽然 `原码` 的编码方式最接近人类的习惯，但是，并不适合在计算机中使用，为了解决原码计算中的一些问题，于是 `反码` 就出现了*
 
-<br>
-
-###反码（Ones' complement）
+### 反码（Ones' complement）
 
 首先，来看看 [Code][code] 中介绍了基于10进制的补码：
 
@@ -124,19 +119,22 @@ This approach is directly comparable to the common way of showing a sign (placin
 
 从上面的描述就可以很容易写出反码的编码规则
     
-####编码规则
+#### 编码规则
 
-	# 正数    反码 = 原码
-	
-	# 负数    反码 = 符号位不变，其他位取反
+```
+#!text
+正数    反码 = 原码
+
+负数    反码 = 符号位不变，其他位取反
+```
 
 8 bit 的反码可以表示的范围是 [ -127, -0, +0, +127 ]，共 255 个数
     
-####计算法则
+#### 计算法则
 
 反码的计算不用区分符号和绝对值，直接进行计算，计算结果若有溢出，需要将溢出加到最低位，这种操作称为 “循环进位”（end-around carry）
 
-####优缺点
+#### 优缺点
 
 1. 优点，电路简单
 
@@ -148,11 +146,9 @@ This approach is directly comparable to the common way of showing a sign (placin
     + 计算机中仍然需要进行 “循环进位” 的硬件电路，但是这种复杂度的电路是可以接受的
     + 0的表示不唯一，0的编码仍然有两种方式： `0000_0000` 和 `1111_1111`
 
-<br>
+#### 总结
 
-####总结
-
-The [PDP-1][PDP-1], [CDC 160 series][CDC 160 series], [CDC 6000 series][CDC 6000 series], [UNIVAC 1100 series][UNIVAC 1100 series], and the [LINC][LINC] computer used Ones' complement representation.（[Wiki][onecom]）
+> The [PDP-1][PDP-1], [CDC 160 series][CDC 160 series], [CDC 6000 series][CDC 6000 series], [UNIVAC 1100 series][UNIVAC 1100 series], and the [LINC][LINC] computer used Ones' complement representation.（[Wiki][onecom]）
 
 [PDP-1]: http://en.wikipedia.org/wiki/PDP-1
 [CDC 160 series]: http://en.wikipedia.org/wiki/CDC_160_series
@@ -161,13 +157,9 @@ The [PDP-1][PDP-1], [CDC 160 series][CDC 160 series], [CDC 6000 series][CDC 6000
 [LINC]: http://en.wikipedia.org/wiki/LINC
 [onecom]: http://en.wikipedia.org/wiki/Signed_number_representations#Ones.27_complement
 
-<br>
+*`反码` 中仍然没有避免 0 有两种编码方式的问题，虽然对于人来说，+0 和 -0 没有区别，但是对于计算机来说，判断一个数是否为0，要进行两次判断。为了解决 0 的表示问题和硬件上的 “循环进位”，于是人们又发明了 `补码`*
 
-> *`反码` 中仍然没有避免 0 有两种编码方式的问题，虽然对于人来说，+0 和 -0 没有区别，但是对于计算机来说，判断一个数是否为0，要进行两次判断。为了解决 0 的表示问题和硬件上的 “循环进位”，于是人们又发明了 `补码`*
-
-<br>
-
-###补码（Two's complement）
+### 补码（Two's complement）
 
 前面介绍的
 
@@ -191,11 +183,14 @@ The [PDP-1][PDP-1], [CDC 160 series][CDC 160 series], [CDC 6000 series][CDC 6000
 
 从上面的计算过程可以很容易写出补码的编码规则
 
-####编码规则
+#### 编码规则
 
-	# 正数    补码 = 原码
-	
-	# 负数    补码 = 反码 + 1
+```
+#!text
+正数    补码 = 原码
+
+负数    补码 = 反码 + 1
+```
 
 8 bit补码可以表示的范围是 [ -128, -1, +0, +127 ]，共 256 个数 。
 
@@ -203,27 +198,30 @@ The [PDP-1][PDP-1], [CDC 160 series][CDC 160 series], [CDC 6000 series][CDC 6000
 
 P.S. -128 没有对应的 原码 和反码，它的补码为 `1000_0000` 。
 
-####计算法则
+#### 计算法则
 
 采用补码的系统，减法转换成加法（减法等同于加上一个负数，所以不再有减法），忽略计算结果最高位的进位，不必加回到最低位上去。
 
-####优点
+#### 优点
 
 + 电路简单，从计算法则中可以看到，不用考虑 “循环进位” 的问题，所以，补码系统的电路是最简单的，这也是补码系统应用最广泛的原因
 + 0 的表示是唯一的，`0000_0000`，不再有 -0 的困扰
 
-####补码中的数学原理
+#### 补码中的数学原理
 
 补码能将减法转化为加法，其数学原理就是 *模* 。
 
 举个栗子：
 
-	# 如果有个手表的时间为6点，实际时间为4点，那么如何校准呢？
+```
+#!text
+如果有个手表的时间为6点，实际时间为4点，那么如何校准呢？
+
+答案有两种方法：
 	
-	# 答案有两种方法：
-	
-	#	1. 逆时针转动  2，也就是做 减法 6 - 2 = 4
-	#	2. 顺时针转动 10, 也就是做 加法 (6 + 10) mod 12 = 4
+1. 逆时针转动  2，也就是做 减法 6 - 2 = 4
+2. 顺时针转动 10, 也就是做 加法 (6 + 10) mod 12 = 4
+```
 
 从这个例子中就可以很明白的看到 *减法* 是如何转化为 *加法* 的，也就是如何将一个 *负数* 转化为 *正数*的 。
 
@@ -233,9 +231,9 @@ P.S. -128 没有对应的 原码 和反码，它的补码为 `1000_0000` 。
 
 这个式子中的 `-B + M` 即为 `B` 的 *补数* （类似于几何中的*补角*） 。
 
-####溢出问题（摘自 [百度百科][baike]）
+#### 溢出问题（摘自 [百度百科][baike]）
 
-无论采用何种机器数，只要运算的结果大于数值设备所能表示数的范围，就会产生溢出。 溢出现象应当作一种故障来处理，因为它使结果数发生错误。异号两数相加时，实际是两数的绝对值相减，不可能产生溢出，但有可能出现正常进位；同号两数相加时，实际上是两数的绝对值相加，既可能产生溢出，也可能出现正常进位。
+> 无论采用何种机器数，只要运算的结果大于数值设备所能表示数的范围，就会产生溢出。 溢出现象应当作一种故障来处理，因为它使结果数发生错误。异号两数相加时，实际是两数的绝对值相减，不可能产生溢出，但有可能出现正常进位；同号两数相加时，实际上是两数的绝对值相加，既可能产生溢出，也可能出现正常进位。
 
 由于补码运算存在符号位进位自然丢失而运算结果正确的问题，因此，应区分补码的溢出与正常进位。
 
@@ -245,7 +243,8 @@ P.S. -128 没有对应的 原码 和反码，它的补码为 `1000_0000` 。
 
 [baike]: http://baike.baidu.com/view/60437.htm
 
-####总结
+#### 总结
+
 由 *“减去一个数 = 加上一个负数”*，计算机系统内部就不再有减法操作
 
 由 *“负数的表示由取模运算转变为补码表示”*，计算机系统就可以用一个正数来表示负数
@@ -256,22 +255,24 @@ P.S. -128 没有对应的 原码 和反码，它的补码为 `1000_0000` 。
 
 [twocom]: http://en.wikipedia.org/wiki/Signed_number_representations#Two.27s_complement
 
-<br/>
 
-##有符号数和无符号数（摘自 [整数的加减运算][ref1]）
-* * *
+## 有符号数和无符号数（摘自 [整数的加减运算][ref1]）
+
 [ref1]: http://learn.akae.cn/media/ch14s03.html
 
 如果把所有的位数都用来表示数值的大小，那么8 bit 二进制数可以表示的范围是 [0, 255] ，这种称为无符号数 。其实计算机做加法时并不区分操作数是有符号数还是无符号数，计算过程都一样 。
 
 举个栗子：
 
-        #   1000_0010              130                  -126
-        # + 1111_1000     =>   +   256          =>  +   -  8
-        # --------------      ---------------      -----------
-        # 1_0111_1010              122 + 256             122
-        
-        #                        无符号数（ok）        有符号数（error）
+```
+#!text
+  1000_0010              130                  -126
++ 1111_1000     =>   +   256          =>  +   -  8
+--------------      ---------------      -----------
+1_0111_1010              122 + 256             122
+
+                       无符号数（ok）        有符号数（error）
+```
 
 计算机的加法器在做完计算之后，根据最高位产生的进位设置 *进位标志* ，同时根据最高位和次高位产生的进位的异或设置 *溢出标志* 。
 
@@ -281,12 +282,9 @@ P.S. -128 没有对应的 原码 和反码，它的补码为 `1000_0000` 。
 
 通常计算机在做算术运算之后还可能设置另外两个标志，如果计算结果的所有bit都是零则设置零标志，如果计算结果的最高位是1则设置负数标志，如果程序把计算结果理解成有符号数，也可以检查负数标志判断结果是正是负。
 
-<br>
-
 * * *
-从 `原码` 到 `反码`，再到 `补码`，可以清楚看到为了解决问题而改进的技术路线，虽然这些是非常基础知识，可能对我们对写程序没有很大的帮助，但是搞清楚这些不仅让你对计算机底层更加了解，更加关键的是 *这个学习过程* 和 *解决编码问题的思路* 。
 
-<br>
+从 `原码` 到 `反码`，再到 `补码`，可以清楚看到为了解决问题而改进的技术路线，虽然这些是非常基础知识，可能对我们对写程序没有很大的帮助，但是搞清楚这些不仅让你对计算机底层更加了解，更加关键的是 *这个学习过程* 和 *解决编码问题的思路* 。
 
 ## 参考文献
 

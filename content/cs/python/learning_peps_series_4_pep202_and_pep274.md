@@ -1,8 +1,8 @@
-Title: PEP 学习系列 #3 —— PEP202 & PEP274
+Title: PEP 学习系列 #4 —— PEP202 & PEP274
 Date: 2020-05-16 20:58
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_3_pep202_and_pep274
+Slug: learning_peps_series_4_pep202_and_pep274
 Author: Qian Gu
 Series: Learning PEPs
 Summary: List & Dict Comprehensions 学习笔记
@@ -139,6 +139,11 @@ flattend = [
 + 不允许写成 `[x, y for ...]` 形式，但是可以写成一个 tuple 元素的形式 `[(x, y) for ...]`
 + 允许嵌套形式 `[...  for x... for y...]`，就像嵌套循环一样，最后一个 index 是变化最快的
 
+GvR 也说 `map()` / `filter()` 函数用起来实在太繁琐了，我们应该多使用 comprehensions。但是我们应该记住，谨防滥用。
+
+> filter and map should die and be subsumed into list comprehensions, not grow more variants. I'd rather introduce built-ins that do iterator algebra (e.g. the iterzip that I've often used as an example).
+
+*（关于 `iterator`，后面的学习笔记中会有介绍。）*
 
 ## Dict Comprehensions
 

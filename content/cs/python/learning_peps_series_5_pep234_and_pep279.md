@@ -1,17 +1,17 @@
-Title: PEP 学习系列 #4 —— PEP234
-Date: 2020-05-24 11:27
+Title: PEP 学习系列 #5 —— PEP234 & PEP 279
+Date: 2020-05-24 22:47
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_4_pep234
+Slug: learning_peps_series_5_pep234_and_pep279
 Author: Qian Gu
 Series: Learning PEPs
 Summary: Iterator 学习笔记
 
+## What is Iterator
+
 [PEP 234 -- Iterators 原文链接][PEP234]。
 
 [PEP234]: https://www.python.org/dev/peps/pep-0234/
-
-## What is Iterator
 
 Sequence 是 python 中的一种数据结构，它们的成员是有序排列的，可以通过下标来访问特定元素，比如字符串、list、tuple 等都是 sequence。很多时候我们需要对 sequence 进行顺序访问，最简单的方法是写一个 for 循环，通过计数的方式实现迭代。但是计数的方式很原始也不高效，所以 python 提供了 iterator 来迭代 sequence。
 
@@ -297,11 +297,28 @@ for val in my_list:
 
 但是这种写法很丑陋，最优雅的答案是用内建函数 `enumerate()`，它的返回值是一个 `enumerate` 对象，本质上就是个迭代器，返回一个由 index 和 value 组成的 tuple。
 
+[PEP 279][PEP279] 介绍了这个函数的实现原理，如下
+
+```
+#!python
+def enumerate(collection):
+    'Generates an indexed series: (0, coll[0]), (1, coll[1]) ...'
+    i = 0
+    it = iter(collection)
+    while 1:
+        yield (i, it.next())
+        i += 1
+```
+
+使用方法：
+
 ```
 #!python
 for idx, val in enumerate(my_list):
     print idx, val
 ```
+
+[PEP279]: https://www.python.org/dev/peps/pep-0234/
 
 ### `zip()`
 
@@ -321,6 +338,8 @@ for i in zip(a, b)
 ## Ref
 
 [PEP 234 -- Iterator][PEP234]
+
+[PEP 279 -- The enumerate() built-in function][PEP279]
 
 [Python 核心编程](https://book.douban.com/subject/3112503/)
 

@@ -6,10 +6,10 @@ AUTHOR = 'Qian Gu'
 SITEURL = ''
 SITENAME = "Qian's Blog"
 SITETITLE = AUTHOR
-SITESUBTITLE = u'Read >> Think >> Write'
+SITESUBTITLE = u"Read >> Think >> Write"
 SITEDESCRIPTION = "Qian's Thoughts and Writings"
 SITELOGO = SITEURL + '/images/logo.png'
-FAVICON = SITEURL + '/images/favicon.png'
+FAVICON = SITEURL + '/images/favicon_64x64.ico'
 BROWSER_COLOR = '#333333'
 RELATIVE_URLS = True
 
@@ -39,7 +39,7 @@ USE_FOLDER_AS_CATEGORY = False
 MAIN_MENU = True
 HOME_HIDE_TAGS = False
 PYGMENTS_STYLE = 'monokai'
-USE_LESS = True
+# USE_LESS = True
 DEFAULT_PAGINATION = 10
 
 MENUITEMS = (('Authors', '/authors.html'),
@@ -71,7 +71,7 @@ STATIC_PATHS = ['images', 'files']
 # CUSTOM_CSS = 'static/custom.css'
 
 
-LINKS_IN_NEW_TAB = 'external'
+LINKS_IN_NEW_TAB = True
 
 GOOGLE_ADSENSE = {
     'ca_id': 'ca-pub-1821536199377100',
@@ -137,3 +137,13 @@ PYGMENTS_STYLE_DARK = 'monokai'
 MATH_JAX = {'color': 'blue'}
 ## cjk-auto-spacing
 CJK_AUTO_SPAING_TITLE = True
+
+MARKDOWN = {
+    'extension_configs': {
+        'markdown.extensions.codehilite' : {'css_class': 'highlight'},
+        'markdown.extensions.extra': {},
+        'markdown.extensions.meta': {},
+        'markdown.extensions.admonition' :{},
+    },
+    'output_format': 'html5'
+}

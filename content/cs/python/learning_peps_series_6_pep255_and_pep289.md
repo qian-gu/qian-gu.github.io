@@ -1,11 +1,12 @@
-Title: PEP 学习系列 #5 —— PEP255 & PEP289
-Date: 2020-05-24 20:37
+Title: PEP 学习系列 #6 —— PEP255 & PEP289
+Date: 2020-06-01 15:13
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_5_pep255_and_pep289
+Slug: learning_peps_series_6_pep255_and_pep289
 Author: Qian Gu
 Series: Learning PEPs
 Summary: Generator 学习笔记
+Status: draft
 
 ## What is Generator
 
@@ -143,8 +144,6 @@ return max(len(x.strip()) for x in open('/etc/motd'))
 [PEP 289 -- Generator Expressions][PEP289]
 
 [Python 核心编程](https://book.douban.com/subject/3112503/)
-
-[迭代器 - 廖雪峰的官方网站](https://www.liaoxuefeng.com/wiki/1016959663602400/1017323698112640)
 
 [Iterables vs. Iterators vs. Generators][article1]
 

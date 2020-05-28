@@ -1,16 +1,14 @@
 Git Flow 小结
 ###################
 
-:date: 2020-06-02 23:55
+:date: 2020-05-24 12:55
 :category: Tools
 :tags: Git, Workflow
 :slug: git_flow_summary
 :author: Qian Gu
 :summary: 翻译 & 总结 git-flow 原文
-:status: Draft
 
 git-flow 是 Vincent Driessen 在 2010 年写的文章 `A successful Git branching model`_ 中提出的一种管理 git branch 的模型，当时 git 才刚刚被发明出来。经过 10 来年的发展，已经有很多公司都采用这种方式作为标准流程来管理自己的软件开发了。如果像 Web App 这类的持续交付 continuous delivery 的软件，可以采用更简单的 `GitHub Flow`_，但是对于传统的那种版本概念非常清晰的软件，git-flow 还是非常适用的。下面的内容是原文的简单汇总和翻译，完整内容请看原文。
-
 
 .. note::
 
@@ -24,8 +22,6 @@ git-flow 是 Vincent Driessen 在 2010 年写的文章 `A successful Git branchi
 .. _Git 工作流程: http://www.ruanyifeng.com/blog/2015/12/git-workflow.html
 
 ---------
-
-下面正式开始。
 
 .. image:: https://nvie.com/img/git-model@2x.png
     :alt: GitFlow Diagram
@@ -86,7 +82,7 @@ Feature Branches
 
 Feature 分支一般只存在于相关开发者的本地 repo 中，并不会存在 origin 上，除非是多和协作共同完成一个大 feature 的情况。
 
-1. 创建 feature 分支
+1.  创建 feature 分支
 
     .. code-block:: bash
         :linenos: table
@@ -94,7 +90,7 @@ Feature 分支一般只存在于相关开发者的本地 repo 中，并不会存
         // creating a new feature branch
         git checkout -b feature-xxx develop
 
-2. 结束 feature 分支
+2.  结束 feature 分支
 
     .. code-block:: bash
         :linenos: table
@@ -105,7 +101,9 @@ Feature 分支一般只存在于相关开发者的本地 repo 中，并不会存
         git branch -d feature-xxx
         git push origin develop
     
-    注意：用 `--no-ff` 来保留 branch 信息。
+    .. note::
+    
+        用 ``--no-ff`` 来保留 branch 信息。
 
 Release Branch
 ------------------
@@ -136,13 +134,7 @@ Release 分支的作用是为最终产品发布做准备，在这个 branch 上�
 
     创建好的 release 分支可能会存在一段时间，这段时间内如果有 bug 修改，应该在 release 分支上，而不是 develop 上。新 feature 禁止直接加到 release 分支上，而是应该加到 develop 上，等待下一次的 release。
 
-2. 结束 release 分支
-
-    当 release 分支最终达到可以 release 状态的时候，需要做的事情有
-    
-    + 把 release 分支 merge 回 master（前面描述过，master 的每个结点都是一个 release 版本）
-    + 给 master 分支打 tag，方便以后回溯版本
-    + 把 release 分支 merge 回 develop 分支（保存 release 分支上的 bug 修改）
+2.  结束 release 分支
 
     .. code-block:: bash
         :linenos: table
@@ -153,6 +145,12 @@ Release 分支的作用是为最终产品发布做准备，在这个 branch 上�
         git checkout develop
         git merge -no-ff release-1.2
         git branch -d release-1.2
+
+    当 release 分支最终达到可以 release 状态的时候，需要做的事情有
+    
+    + 把 release 分支 merge 回 master（前面描述过，master 的每个结点都是一个 release 版本）
+    + 给 master 分支打 tag，方便以后回溯版本
+    + 把 release 分支 merge 回 develop 分支（保存 release 分支上的 bug 修改）
 
 Hotfix Branches
 -------------------
@@ -169,7 +167,7 @@ hotfix 分支的作用和 release 有点类似，也是为了新产品发布，�
 
 由上面的例子可以看出，hotfix 分支存在的意义是让团队中的一部分人来进行快速的产品 fix，另外一部分人仍然按照计划进行开发，相互不影响。
 
-1. 创建一个 hotfix 分支
+1.  创建一个 hotfix 分支
 
     .. code-block:: bash
         :linenos: table
@@ -185,7 +183,7 @@ hotfix 分支的作用和 release 有点类似，也是为了新产品发布，�
 
         git commit -m "FIxed severe production problem"
 
-2. 结束 hotfix 分支
+2.  结束 hotfix 分支
 
     最后 bugfix 的内容除了要 merge 回 master，还要 merge 回 develop，以保证下一次 release 的时候这个 bug 已经被修复了。这个过程和结束 release  分支很类似。
     
@@ -235,7 +233,7 @@ Setup
 Features
 -----------
 
-1. 创建一个 feature 分支：
+1.  创建一个 feature 分支：
 
     + 基于 develop 创建了一个新 feature 分支，并切换过去
 
@@ -244,7 +242,7 @@ Features
 
         git flow feature start MYFEATURE
 
-2. 结束一个 feature 分支：
+2.  结束一个 feature 分支：
 
     + 把 MYFEATURE 分支 merge 回 develop 分支
     + 删除该 feature 分支
@@ -255,7 +253,7 @@ Features
 
         git flow feature finish MYFEATURE
 
-3. 发布一个 feature
+3.  发布一个 feature
 
     .. code-block:: bash
         :linenos: table
@@ -264,7 +262,7 @@ Features
 
     把 feature 分支发布到 remote 服务器，方便其他人使用
 
-4. 获取一个其他人发布的 feature
+4.  获取一个其他人发布的 feature
 
     .. code-block:: bash
         :linenos: table
@@ -274,7 +272,7 @@ Features
 Release
 ---------
 
-1. 创建一个 release 分支
+1.  创建一个 release 分支
 
     .. code-block:: bash
         :linenos: table
@@ -283,14 +281,14 @@ Release
 
     通过一个可选项 [BASE] 来制定 develop 上的某个特定节点
 
-2. 把 release 分支的结果发布给其他开发者
+2.  把 release 分支的结果发布给其他开发者
 
     .. code-block:: bash
         :linenos: table
 
         git flow release publish RELEASE
 
-3. 结束一个 release 分支
+3.  结束一个 release 分支
 
     + 把 release 分支 merge 回 master 分支
     + 用 release 分支的名字给 master 打 tag
@@ -309,14 +307,14 @@ Release
 Hotfix
 ----------
 
-1. 创建一个 hotfix 分支
+1.  创建一个 hotfix 分支
 
     .. code-block:: bash
         :linenos: table
 
         git flow hotfix start VERSION [BASENAME]
 
-2. 结束一个 hotfix 分支
+2.  结束一个 hotfix 分支
 
     + 把 hotfix 分支 merge 回 develop 和 master 分支
     + 用 hotfix 的 version 给 master 分支打 tag
@@ -325,6 +323,34 @@ Hotfix
         :linenos: table
 
         git flow hotfix finish VERSION
+
+Zsh Extension
+----------------
+
+zsh 里面有两个相关插件，
+
++ ``git flow completion``，自动补全
++ ``git-flow``，提供命令的各种 alias
+
+给 zsh 安装 `git flow completion`_ 插件的步骤，
+
+1.  下载插件 
+    
+    .. code-block:: bash
+        :linenos: table
+
+        git clone https://github.com/bobthecow/git-flow-completion ~/.oh-my-zsh/custom/plugins/git-flow-completion
+
+2.  更新 ``.zshrc`` 文件
+
+    .. code-block:: bash
+        :linenos: table
+
+        plugins=(<some-plugin> <another-plugin> git-flow-completion)
+
+3.  重新 source 之后就可以看到自动补全的效果了
+
+.. _git flow completion: https://github.com/bobthecow/git-flow-completion
 
 Ref
 ========

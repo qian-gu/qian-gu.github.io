@@ -38,30 +38,28 @@ PEP 根据状态可以分为下面几种：
 
 + [PEP 0 -- Index of Python Enhancement Proposals][PEP0_article]
 + [PEP 8 -- Style Guide for Python Code][PEP8_article]
++ [PEP 257 -- Docstring Conventions][PEP257_article]
 + [PEP 20 -- The Zen of Python][PEP20_article]
 + [PEP 202 -- List Comprehensions][PEP202_article]
 + [PEP 274 -- Dict Comprehensions][PEP202_article]
 + [PEP 234 -- Iterators][PEP234_article]
 + [PEP 255 -- Simple Generators][PEP255_article]
 + [PEP 289 -- Generator Expressions][PEP255_article]
-+ PEP 279 -- The enumerate() built-in function
-+ PEP 343 -- The "with" Statement
++ [PEP 279 -- The enumerate() built-in function][PEP234_article]
 + PEP 380 -- Syntax for Delegating to a Subgenerator
-+ PEP 3120 -- Using UTF-8 as the default source encoding
-+ PEP 257 -- Docstring Conventions
-+ PEP 405 -- Python Virtual Environments
 + PEP 282 -- A Logging System
 + PEP 285 -- Adding a bool type
 + PEP 318 -- Decorators for Functions and Methods
 + PEP 484 -- Type Hints
 + PEP 3115 -- Metaclasses in Python 3000
 
-[PEP0_article]: https://qiangu.cool/posts/python/learning_peps_series_0_pep0.html
-[PEP8_article]: https://qiangu.cool/posts/python/learning_peps_series_1_pep8.html
-[PEP20_article]: https://qiangu.cool/posts/python/learning_peps_series_2_pep20.html
-[PEP202_article]: https://qiangu.cool/posts/python/learning_peps_series_3_pep202_and_pep274.html
-[PEP234_article]: https://qiangu.cool/posts/python/learning_peps_series_4_pep234.html
-[PEP255_article]: https://qiangu.cool/posts/python/learning_peps_series_5_pep255_and_pep289.html
+[PEP0_article]: https://qiangu.cool/posts/cs/learning_peps_series_0_pep0.html
+[PEP8_article]: https://qiangu.cool/posts/cs/learning_peps_series_1_pep8.html
+[PEP257_article]: https://qiangu.cool/posts/cs/learning_peps_series_2_pep257.html
+[PEP20_article]: https://qiangu.cool/posts/cs/learning_peps_series_3_pep20.html
+[PEP202_article]: https://qiangu.cool/posts/cs/learning_peps_series_4_pep202_and_pep274.html
+[PEP234_article]: https://qiangu.cool/posts/cs/learning_peps_series_5_pep234_and_pep279.html
+[PEP255_article]: https://qiangu.cool/posts/cs/learning_peps_series_6_pep255_and_pep289.html
 
 ## 参考
 

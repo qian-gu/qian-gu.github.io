@@ -1,6 +1,6 @@
 Title: 学习 Linux 软件包依赖管理 
 Date: 2014-04-21 13:43
-Category: Linux
+Category: CS
 Tags: Package Management
 Slug: learning_linux_package_management
 Author: Qian Gu
