@@ -6,7 +6,6 @@ Slug: learning_peps_series_6_pep255_and_pep289
 Author: Qian Gu
 Series: Learning PEPs
 Summary: Generator 学习笔记
-Status: draft
 
 ## What is Generator
 

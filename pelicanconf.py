@@ -90,8 +90,9 @@ GOOGLE_ANALYTICS = "UA-48826831-1"
 # THEME = '../pelican-themes/Flex'
 THEME = '../Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts', 'sitemap', 
-           'pelican-toc', 'representative_image', 'tipue_search', 'render_math',
+PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts', 
+           'sitemap', 'pelican-toc', 'representative_image', 'tipue_search',
+           'render_math', 'series'
           ]
 GITHUB_CORNER_URL = 'https://github.com/guqian110/guqian110.github.io'
 # i18n_subsites
