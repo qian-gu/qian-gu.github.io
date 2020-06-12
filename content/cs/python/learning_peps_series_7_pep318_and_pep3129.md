@@ -54,7 +54,7 @@ func = dec2(dec1(func))
 1. 可以将这些事务性的代码和原函数代码隔离开
 2. decorator 可以在其他地方复用
 
-使用 decorator **让代码更加优美，也提高代码了的可读性。** ，体现了 python 之禅的理念：
+使用 decorator **让代码更加优美，也提高代码了的可读性。** 体现了 python 之禅的理念：
 
 >  1. **Beautiful is better than ugly.**
 >  2. **Readability counts.**
@@ -254,8 +254,8 @@ sub(7, 2)
 
 ```
 #!text
-[Wed Jun 10 21:57:12 2020] add was called
-[Wed Jun 10 21:57:13 2020] sub was called
+[Fri Jun 12 23:07:12 2020]add was called
+[Fri Jun 12 23:07:13 2020]sub was called
 ```
 
 ### Decorator with Arguments
@@ -312,6 +312,11 @@ def add(a, b):
 @log_to_file('sub.log')
 def sub(a, b):
     return a - b
+
+
+add(1, 2)
+sleep(1)
+sub(7, 2)
 ```
 
 log_to_file 是一个有参 decorator，接收一个名为 log_file 的参数，并返回 log_decorator 函数。运行之后会在显示 log 记录的同时把记录写入到对应的两个文件中。
@@ -330,11 +335,11 @@ log_to_file 是一个有参 decorator，接收一个名为 log_file 的参数，
 
         #!python
         def dec(func):
-            print "executing " + func.__name__
+            print "decorating " + func.__name__
             return func
 
         def dec2(func):
-            print "hello again " + func.__name__
+            print "decorating again " + func.__name__
             return func
 
         @dec2
@@ -346,7 +351,7 @@ log_to_file 是一个有参 decorator，接收一个名为 log_file 的参数，
 
     不过这种 decorator 的限制比较强，自身和目标函数都不能带参数，可能实用性不大，但是可以帮助我们理解 decorator 的概念。因为一般函数都 decorator 都是带参数的，所以就像前面的例子表现的一样 decorator 大部分情况下都是一个返回闭包的高阶函数。
 
-    关于这个约束，实际上接收 callable 对象作为参数是必须的，返回 callable 对象则不一定，如果这个 decorator 设计成不需要后续再串接其他 decorator，那么返回值就不必是 callable 对象，如内建 decorator 所示。
+    关于这个约束，实际上接收 callable 对象作为参数是必须的，返回 callable 对象则不一定，如果这个 decorator 设计成不需要后续再串接其他 decorator，那么返回值就不必是 callable 对象，如内建的 properity 等。
 
 用 class 实现 decorator 的好处是保持用法不变的同时代码更加清晰，而且可以通过继承扩展出新的 decorator。继续以 log 装饰器为例，首先我们把它改造成 class 形式，
 
@@ -483,20 +488,30 @@ Jack.get_name()
 
 ```
 #!text
-[Fri Jun 12 11:41:47 2020] People was called
+[Fri Jun 12 23:16:27 2020] People was called
 My name is Jack
 Change name to Tom
 My name is Tom
-
 ```
 
 运行结果和我们的预期不符，只有例化对象时调用了 log 进行装饰，调用其他方法时却没有调用。原因 balabala。
 
-最无脑的解决方法是给每个方法前面都加上装饰，虽然这样修改之后结果如我们预期，但是这种方法并不可取，问题在于要重复写很多次 @log，而且新增方法也要添加，如果不需要 log 功能又要逐行删掉所有的装饰语句，这很不 pythonic。我们期望的效果是：只在 class 的定义处只做一次装饰声明，实现对内部所有方法的装饰”。
+最无脑的解决方法是给每个方法前面都加上装饰，虽然这样修改之后结果如我们预期，但是这种方法违反了 DRY 原则，每个方法都要手动加上装饰，以后新增方法也要添加，如果不需要 log 功能又要逐行删掉所有的装饰语句，这很不 pythonic。我们期望的效果是：只在 class 的定义处只做一次装饰声明，实现对内部所有方法的装饰”。
 
 修改方法：在前面代码的基础上，新增一个 new_log 函数，并且用 new_log 来装饰目标 class。代码如下，
 
 ```
+#!python
+from time import ctime
+from functools import wraps
+
+def log(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print "[" + ctime() + "] " + func.__name__ + " was called"
+        return func(*args, **kwargs)
+    return wrapper
+
 def new_log(cls):
     class NewCls(object):
         """Decorated new class."""
@@ -516,21 +531,34 @@ def new_log(cls):
     return NewCls
 
 @new_log
-Class People(object):
-    # class-suite
+class People(object):
+    """Class for general people."""
+    def __init__(self, name):
+        self._name = name
+
+    def get_name(self):
+        print "My name is " + self._name
+
+    def change_name(self, new_name):
+        self._name = new_name
+        print "Change name to " + self._name
+
+Jack = People('Jack')
+Jack.get_name()
+Jack.change_name('Tom')
+Jack.get_name()
 ```
 
 运行结果如下，
 
 ```
 #!text
-[Fri Jun 12 11:53:44 2020] get_name was called
+[Fri Jun 12 23:20:51 2020] get_name was called
 My name is Jack
-[Fri Jun 12 11:53:44 2020] change_name was called
+[Fri Jun 12 23:20:51 2020] change_name was called
 Change name to Tom
-[Fri Jun 12 11:53:44 2020] get_name was called
+[Fri Jun 12 23:20:51 2020] get_name was called
 My name is Tom
-
 ```
 
 分析：balabala
