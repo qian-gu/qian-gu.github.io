@@ -4,6 +4,7 @@ Category: IC
 Tags: Patterson and Hennessy
 Slug: learning_patterson_and_hennessy_series_0_preface_and_chapter_1
 Author: Qian Gu
+Series: Learning Patterson & Hennessy
 Summary: Patterson and Hennessy 读书笔记，前言 + 第一章
 Status: draft
 
@@ -45,6 +46,8 @@ Status: draft
 + 目标读者是严肃的，想仔细理解计算机系统的专家
 
 而 Patterson & Hennessy 这本书的读者并不是都想成为计算机体系结构的专家。这本书并不是前者的子集，还包括了一些其他知识，比如编译器、操作系统、数据库等等。
+
+------------
 
 ## Chapter 1 Computer Abstractions and Technology
 
@@ -239,7 +242,9 @@ $$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched
 
 从图中可以看到，随着时间发展，时钟频率提高了近 1000 倍，但是 power 只提高了大概 30 倍，原因就在于电压的不断降低。
 
-从前面 performance 的讨论可以知道，我们不能采用降低时钟频率的方式来降功耗，因为这会伤害到性能。那么我们可以无限降低电压吗？答案是不行，现在业界遇到的问题就是电压不能再低了，否则晶体管就像水龙头一样，无法完全关闭。这就是所谓的功耗墙。虽然动态功耗是 CMOS 功耗中的大头，但是静态功耗也逐渐占据主角，在服务器中静态功耗能达到 40%，所以人们发明了各种技术来降低静态功耗，但是电压很难再进一步降低了。
+从前面 performance 的讨论可以知道，我们不能采用降低时钟频率的方式来降功耗，因为这会伤害到性能。那么我们可以无限降低电压吗？答案是不行，现在业界遇到的问题就是电压不能再低了，否则晶体管就像水龙头一样，无法完全关闭。虽然动态功耗是 CMOS 功耗中的大头，但是静态功耗也逐渐占据主角，在服务器中静态功耗能达到 40%，所以人们发明了各种技术来降低静态功耗，但是电压很难再进一步降低了。
+
+虽然有各种各样的昂贵技术来冷却芯片，但是继续提高功耗对于 PC（甚至是 servers）来说代价太高了，对移动设备就更不用说了，这就是所谓的功耗墙。
 
 ### The Switch from Uniprocessors to Multiprocessors
 
@@ -248,7 +253,7 @@ $$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched
 在过去，码农不需要改任何一行代码，就可以每 18 个月让自己的程序性能翻倍（摩尔定律），但是现在由于摩尔定律的失效，码农必须重新写他们的程序，以充分利用多个核。
 
 !!! note
-     强制要求码农转换到并行编程是一件高风险的事情（Intel 的安腾系列处理器）。但是，随着多核概念的普及，令人吃惊的事实是，整个 IT 界似乎都在打赌码农们最终都会转向显式的并行编程。
+     强制要求码农转换到显式的并行编程是一件高风险的事情（Intel 的安腾系列处理器）。但是，随着多核概念的普及，整个 IT 界已经接受了并行编程，码农们最终会转向显式的并行编程。
 
 为什么并行编程这么难推广呢？
 
@@ -317,3 +322,15 @@ MIPS 描述的是指令执行速度，计算机越快相应的 MIPS 指标就越
     | CPI | 1.0 | 1.1 |
 
     可以算出来 A 比 B 的 MIPS 指标高，但实际上 A 的性能比 B 差，MIPS 指标和真实情况背道而驰。
+
+----------
+
+## Road Map for This Book
+
+计算机可以划分为经典的 5 部分：`datapath`, `control`, `memroy`, `input`, `output`，分别在后续几章介绍：
+
++ `datapath`：Chapter 3, Chapter 4, Chapter 6, Appendix B
++ `Control`：Chapter 4, Chapter 6, Appendix B
++ `Memory`：Chapter 5
++ `Input`：Chapter 5, Chapter 6
++ `Ouptut`：Chapter 5, Chapter 6
