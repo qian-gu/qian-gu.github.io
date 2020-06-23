@@ -1,13 +1,11 @@
-Title: PEP 学习系列 #7 —— PEP318 & PEP3129
+Title: Python 学习笔记 #8 —— Deorator 装饰器
 Date: 2020-06-07 20:36
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_7_pep318_and_pep3129
+Slug: python_notes_8_decorator
 Author: Qian Gu
-Series: Learning PEPs
-Summary: Decorator 学习笔记
-Status:draft
-
+Series: Python Notes
+Summary: Decorator 
 [PEP 318 -- Decorators for Functions and Methods 原文链接][PEP318]。
 
 [PEP 3129 -- Class Decorators 原文链接][PEP3129]
@@ -21,7 +19,7 @@ Status:draft
 
 一句话解释 decorator：
 
-**Decorator 是函数调用上的一种“装饰”，这些装饰本质上是一个（高阶）函数，接受一个 callable 对象作为参数，返回一个 callable 对象，完成对目标的装饰。**
+**Decorator 是函数调用上的一种“装饰”，这些装饰本质上是一个（高阶）函数，接受一个 callable 对象作为参数，（可选）返回一个 callable 对象，完成对目标的装饰。**
 
 一般来说，作为参数的 callable 对象就是等着被装饰的目标函数，而且这些函数自身也都带有参数，此时 decorator 就是一个高阶函数，返回值是一个闭包函数。
 
@@ -68,7 +66,7 @@ def foo(self):
 foo = classmethod(foo)
 ```
 
-这种方法在函数体很长时可读性就很差，而且为了声明一个函数把同一个名字重复写 3 次的做法也很不 Pythonic，所以 Python 为此专门发明了一种新语法：decorator。比如下面这个函数经过了两次变换，
+这种方法在函数体很长时可读性就很差，而且为了声明一个函数把同一个名字重复写 3 次的做法也很不 Pythonic，所以 Python 为此专门发明了一种新语法糖：用 `@` 符号表示的 decorator。比如下面这个函数经过了两次变换，
 
 ```
 #!python
@@ -78,7 +76,7 @@ foo = synchronized(lock)(foo)
 foo = classmethod(foo)
 ```
 
-就可以改写成这样的形式，
+就可以改写成这样的形式，写出来的代码看起来很简洁，也很有高级感。
 
 ```
 #!python
@@ -101,6 +99,10 @@ Decorator 是在 python2.4 中才引入的，实际上在此之前的 python2.2 
 
 !!! tip
     FP 中最基本的概念：函数作为一等公民，和变量有同等地位，下面的概念都源自于这个最基本的原理。
+
+下面的代码例子来自于参考资料 [Intermediate Python][Intermediate Python]。
+
+[Intermediate Python]: https://github.com/yasoob/intermediatePython/blob/master/decorators.rst
 
 ### Everything is a Object
 
@@ -192,7 +194,7 @@ print(a)
 print(a())
 #outputs: now you are in the greet() function
 ```
-### Function as parameter
+### Function as Parameter
 
 因为函数和变量的地位相同，变量可以作为函数的参数，自然函数也可以作为函数的参数。
 
@@ -403,6 +405,7 @@ class FileLog(object):
         self._file_name = file_name
 
     def __call__(self, func):
+        @wraps(func)
         def deco(*args, **kwargs):
             log_string = "[" + ctime() + "] " + func.__name__ + " was called"
             print log_string
@@ -427,8 +430,14 @@ sub(7, 2)
 ## Build-in Decorator
 
 1. @propority
+    
+    可以把 class 的 method 伪装成属性，本来 `Foo.func()` 的调用方法就变成了 `Foo.func` 形式，可以让调用者写出简短的代码，同时又能保证对参数的检查等操作。
+
 2. @staticmethod
 3. @calssmethod
+
+!!!note
+    这三个内置 decorator 的返回结果都不是 callable 对象，所以它们只能放在 decorator 的最外层，后面有个相关例子。
 
 ## Class Decorator
 
@@ -494,23 +503,54 @@ Change name to Tom
 My name is Tom
 ```
 
-运行结果和我们的预期不符，只有例化对象时调用了 log 进行装饰，调用其他方法时却没有调用。原因 balabala。
+运行结果和我们的预期不符，只有例化对象时调用了 log 进行装饰，调用其他方法时却没有调用。
 
-最无脑的解决方法是给每个方法前面都加上装饰，虽然这样修改之后结果如我们预期，但是这种方法违反了 DRY 原则，每个方法都要手动加上装饰，以后新增方法也要添加，如果不需要 log 功能又要逐行删掉所有的装饰语句，这很不 pythonic。我们期望的效果是：只在 class 的定义处只做一次装饰声明，实现对内部所有方法的装饰”。
+最无脑的解决方法是给每个方法前面都加上装饰，虽然这样修改之后结果如我们预期，但是这种方法违反了 DRY 原则，每个方法都要手动加上装饰，以后新增方法也要添加，如果不需要 log 功能又要逐行删掉所有的装饰语句，这很不 pythonic。我们期望的效果是：只在 class 的定义处只做一次装饰声明，实现对内部所有方法的装饰。
 
-修改方法：在前面代码的基础上，新增一个 new_log 函数，并且用 new_log 来装饰目标 class。代码如下，
+修改方法一：根据前面的思路对于 class 的 decorator，显然输入参数是一个 class，最终返回的也是一个 class，只需要在函数内部对输入 class 的 `__getattribute__` 方法进行特殊定义即可。
 
 ```
 #!python
 from time import ctime
 from functools import wraps
 
-def log(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        print "[" + ctime() + "] " + func.__name__ + " was called"
-        return func(*args, **kwargs)
-    return wrapper
+def new_log(cls):
+
+    orig_getattribute = cls.__getattribute__
+
+    def new_getattribute(self, name):
+        print "[" + ctime() + "] " + name + " was called"
+        return orig_getattribute(self, name)
+
+    cls.__getattribute__ = new_getattribute
+
+    return cls
+
+@new_log
+class People(object):
+    """Class for general people."""
+    def __init__(self, name):
+        self._name = name
+
+    def get_name(self):
+        print "My name is " + self._name
+
+    def change_name(self, new_name):
+        self._name = new_name
+        print "Change name to " + self._name
+
+Jack = People('Jack')
+Jack.get_name()
+Jack.change_name('Tom')
+Jack.get_name()
+```
+
+方法二：要修改一个 class 的行为，除了上面的方法之外还有一种就是给原始 class 包一层，只需要修改 wrapper class 的 `__getattr__` 方法即可通过代理和授权实现 decorator 的效果。代码如下，
+
+```
+#!python
+from time import ctime
+from functools import wraps
 
 def new_log(cls):
     class NewCls(object):
@@ -518,17 +558,20 @@ def new_log(cls):
         def __init__(self, *args, **kwargs):
             super(NewCls, self).__init__()
             self.origin_inst = cls(*args, **kwargs)
+    
+        @staticmethod
+        def log(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                print "[" + ctime() + "] " + func.__name__ + " was called"
+                return func(*args, **kwargs)
+            return wrapper
 
-        def __getattribute__(self, s):
-            try:
-                x = super(NewCls, self).__getattribute__(s)
-            except AttributeError:
-                pass
-            else:
-                return x
-            x = self.origin_inst.__getattribute__(s)
-            return log(x)
+        def __getattr__(self, s):
+            return self.log(getattr(self.origin_inst, s))
+
     return NewCls
+   
 
 @new_log
 class People(object):
@@ -561,95 +604,96 @@ Change name to Tom
 My name is Tom
 ```
 
-分析：balabala
-
 ## Caveats
 
-这部分内容来自于参考链接，非常有意思，搬运过来记录一下。
+这部分内容来自于参考链接 [详解Python的装饰器][ref1]，非常有意思，搬运过来记录一下。
+
+[ref1]: https://www.cnblogs.com/cicaday/p/python-decorator.html
 
 第一个例子如下，
 
 ```
 #!python
+def html_tags(tag_name):
+    print 'begin outer function.'
+    def wrapper_(func):
+        print "begin of inner wrapper function."
+        def wrapper(*args, **kwargs):
+            content = func(*args, **kwargs)
+            print "<{tag}>{content}</{tag}>".format(tag=tag_name, content=content)
+        print 'end of inner wrapper function.'
+        return wrapper
+    print 'end of outer function'
+    return wrapper_
+
+@html_tags('b')
+def hello(name='Toby'):
+    return 'Hello {}!'.format(name)
+
+hello()
+hello()
 ```
 
 这段代码的运行结果如下，
 
 ```
 #!text
+begin outer function.
+end of outer function
+begin of inner wrapper function.
+end of inner wrapper function.
+<b>Hello Toby!</b>
+<b>Hello Toby!</b>
 ```
 
 这个结果说明一旦一个函数被装饰过，那么以后就再也无法调用原函数了，原函数名指向的是被装饰过的函数，而且是最里层的那个闭包函数。所以尽量把逻辑都写在最里层的闭包内，以防出现与预期不符的结果。
 
-第二个例子，说明了 `functools.wraps` 并不完美，如果要彻底解决需要借用第三方包 `wrapt`。
-
-第三个例子，
+第二个例子，
 
 ```
 #!python
+class Car(object):
+    def __init__(self, model):
+        self.model = model
+
+    @logging  # 装饰实例方法，OK
+    def run(self):
+        print "{} is running!".format(self.model)
+
+    @logging  # 装饰静态方法，Failed
+    @staticmethod
+    def check_model_for(obj):
+        if isinstance(obj, Car):
+            print "The model of your car is {}".format(obj.model)
+        else:
+            print "{} is not a car!".format(obj)
+
+"""
+Traceback (most recent call last):
+...
+  File "example_4.py", line 10, in logging
+    @wraps(func)
+  File "C:\Python27\lib\functools.py", line 33, in update_wrapper
+    setattr(wrapper, attr, getattr(wrapped, attr))
+AttributeError: 'staticmethod' object has no attribute '__module__'
+"""
 ```
 
 这个例子证明了 `@staticmethod` 返回的 staticmethod 对象不是 callable 的，所以无法再继续传递给其他 decorator。解决方法也很简单，调整一下顺序将 staticmethod 放在最后就好了。
 
-## Optimize
+## Using 3rd Lib
 
-### decorator.py
+[decorator.py][decorator.py] 和 [wrapt][wrapt] 都是帮助我们写 decorator 的第三方包，使用它们的好处是一方面可以减少函数嵌套的层数，像前面带参数的 decorator 要嵌套定义 3 层，看起来有点难懂；另一方面可以帮我们解决函数签名等问题。详细内容直接看官方文档即可。
 
-### wrapt
+[decorator.py]: https://github.com/micheles/decorator
+
+[wrapt]: https://pypi.org/project/wrapt/
 
 ## Example
 
-说了这么多，下面举一些常见例子。从 decorator 的名字和设计初衷就可以知道，decorator 主要用途是给函数做额外的“装饰”，在不影响原函数 coding 的前提下，影响原函数的功能，一般是增加一些附属的新功能。最常见的“装饰”就包括 log，profile 等。
+[PEP318][PEP318] 和 [Python Decorator Library][library] 中列举了很多可以直接使用的 decorator 例子，具体使用方法直接看原文即可。
 
-### Logging
-
-假设我们有个函数，像给这个函数增加一个 log 功能，直接修改原函数是下下策，因为有时候这个函数并不是我们自己设计的，轻易修改原代码很容易出错，而且不利于维护，这个时候用 decorator 就非常合适。
-
-```
-#!python
-from functools import wraps
-
-def logit(func):
-    @wraps(func)
-    def with_logging(*args, **kwargs):
-        print(func.__name__ + " was called")
-        return func(*args, **kwargs)
-    return with_logging
-
-@logit
-def addition_func(x):
-   """Do some math."""
-   return x + x
-
-
-result = addition_func(4)
-# Output: addition_func was called
-```
-
-### Auth
-
-Flask 和 Django 中大量使用了 decorator 检查授权相关的操作，
-
-```
-#!python
-from functools import wraps
-
-def logit(func):
-    @wraps(func)
-    def with_logging(*args, **kwargs):
-        print(func.__name__ + " was called")
-        return func(*args, **kwargs)
-    return with_logging
-
-@logit
-def addition_func(x):
-   """Do some math."""
-   return x + x
-
-
-result = addition_func(4)
-# Output: addition_func was called
-```
+[library]: https://wiki.python.org/moin/PythonDecoratorLibrary
 
 ## Design Decorator
 
@@ -853,22 +897,23 @@ func = decomaker(argA, argB, ...)(func)
 
 ## Summary
 
-Decorator 是一个高阶函数，可以在不影响目标函数的前提下，对其进行装饰，实现一些增强/辅助效果。Decorator 一共有 4 中形式，
-
-+ function 装饰 function
-+ class 装饰 function
-+ function 装饰 class
-+ class 装饰 class
-
-带参数的 decorator 实际上是不带参数的 decorator 多加了一层 wrapper。
+Decorator 是一个高阶函数，可以在不影响目标函数的前提下，对其进行装饰，实现一些增强/辅助效果。Decorator 可以是 function 形式也可以是 class 形式，它修饰的对象可以是 function 也可以是 class。
 
 ## Ref
 
 [Python 核心编程](https://book.douban.com/subject/3112503/)
 
-[Intermediate Python](https://github.com/yasoob/intermediatePython/blob/master/decorators.rst)
+[Intermediate Python][Intermediate Python]
 
-https://www.cnblogs.com/cicaday/p/python-decorator.html
+[Python修饰器的函数式编程](https://coolshell.cn/articles/11265.html)
 
-https://www.zlovezl.cn/articles/tips-on-decorators/
+[详解Python的装饰器][ref1]
+
+[Advanced Uses of Python Decorators](https://www.codementor.io/@sheena/advanced-use-python-decorators-class-function-du107nxsv)
+
+[Python Decorator Library][library]
+
+[Python Cookbook][cookbook]
+
+[cookbook]: https://book.douban.com/subject/26381341/
 

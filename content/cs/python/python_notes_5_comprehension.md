@@ -1,11 +1,11 @@
-Title: PEP 学习系列 #4 —— PEP202 & PEP274
+Title: Python 学习笔记 #5 —— Comprehension 解析式
 Date: 2020-05-16 20:58
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_4_pep202_and_pep274
+Slug: python_notes_5_comprehension
 Author: Qian Gu
-Series: Learning PEPs
-Summary: List & Dict Comprehensions 学习笔记
+Series: Python Notes
+Summary: List & Dict Comprehension 学习笔记
 
 ## What is List Comprehensions
 

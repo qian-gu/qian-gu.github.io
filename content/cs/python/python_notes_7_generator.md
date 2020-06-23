@@ -1,10 +1,10 @@
-Title: PEP 学习系列 #6 —— PEP255 & PEP289
+Title: Python 学习笔记 #7 —— Generator 生成器
 Date: 2020-06-01 15:13
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_6_pep255_and_pep289
+Slug: python_notes_7_generator
 Author: Qian Gu
-Series: Learning PEPs
+Series: Python Notes
 Summary: Generator 学习笔记
 
 ## What is Generator

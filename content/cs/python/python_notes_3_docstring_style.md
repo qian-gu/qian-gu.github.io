@@ -1,11 +1,11 @@
-Title: PEP 学习系列 #2 —— PEP257
+Title: Python 学习笔记 #3 —— Docstring 风格
 Date: 2020-04-26 19:20
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_2_pep257 
+Slug: python_notes_3_docstring_style
 Author: Qian Gu
-Series: Learning PEPs
-Summary: 翻译 PEP257
+Series: Python Notes
+Summary: 翻译 PEP257 -- Docstring Conventions
 
 [PEP 257 -- Docstring Conventions 原文链接][PEP257]
 
@@ -13,7 +13,7 @@ Summary: 翻译 PEP257
 
 | item | detail |
 | ---- | ------ |
-| PEP  |  257     |
+| PEP  |  257   | 
 | Title | Docstring Conventions |
 | Author | David Goodger <goodger at python.org>, Guido van Rossum <guido at python.org> |
 | Status | Active |

@@ -1,10 +1,10 @@
-Title: PEP 学习系列 #3 —— PEP20
+Title: Python 学习笔记 #4 —— Python 之禅
 Date: 2020-05-10 14:36
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_3_pep20
+Slug: python_notes_4_the_zen_of_python
 Author: Qian Gu
-Series: Learning PEPs
+Series: Python Notes
 Summary: 学习 Python 之禅
 
 著名的 python 之禅，[PEP 20 -- The Zen of Python 原文链接][PEP20]。

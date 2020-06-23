@@ -6,7 +6,7 @@ Git Flow 小结
 :tags: Git, Workflow
 :slug: git_flow_summary
 :author: Qian Gu
-:summary: 翻译 & 总结 git-flow 原文
+:summary: git-flow 翻译、总结、实践
 
 git-flow 是 Vincent Driessen 在 2010 年写的文章 `A successful Git branching model`_ 中提出的一种管理 git branch 的模型，当时 git 才刚刚被发明出来。经过 10 来年的发展，已经有很多公司都采用这种方式作为标准流程来管理自己的软件开发了。如果像 Web App 这类的持续交付 continuous delivery 的软件，可以采用更简单的 `GitHub Flow`_，但是对于传统的那种版本概念非常清晰的软件，git-flow 还是非常适用的。下面的内容是原文的简单汇总和翻译，完整内容请看原文。
 

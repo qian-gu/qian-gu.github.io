@@ -1,9 +1,10 @@
-Title: PEP8 实践
+Title: Python 学习笔记 #2 —— PEP8 实践
 Date: 2020-04-19 14:56
 Category: CS
 Tags: PEP8, python, Sublime Text
-Slug: pep8_in_practice
+Slug: python_notes_2_pep8_in_practice
 Author: Qian Gu
+Series: Python Notes
 Summary: 总结实际 coding 中遵循 PEP8 时用到的工具和插件
 
 ## PEP8 & PCQA
@@ -17,7 +18,7 @@ PCQA 源自于 `Ian Cordasco` 在把 `Flake8` 迁移到 Git 时发出的一封�
 在 [PCQA 的 GitHub 主页][pcqa-github] 上可以看到很多工具，很多常见的 linter 和 formatter 工具大部分来自于 PCQA，下文会经常看到 PCQA 的身影。
 
 [PEP8]: https://www.python.org/dev/peps/pep-0008/
-[pep8_zh]: http://guqian110.github.io/posts/python/peps_translate_project_pep8.html
+[pep8_zh]: http://guqian110.github.io/posts/python/python_notes_1_pep8.html
 [PCQA]: https://meta.pycqa.org/en/latest/code-of-conduct.html
 [pcqa-github]: https://github.com/PyCQA
 

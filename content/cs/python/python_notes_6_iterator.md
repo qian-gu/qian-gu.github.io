@@ -1,10 +1,10 @@
-Title: PEP 学习系列 #5 —— PEP234 & PEP 279
+Title: Python 学习笔记 #6 —— Iterator 迭代器
 Date: 2020-05-24 22:47
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_5_pep234_and_pep279
+Slug: python_notes_6_iterator
 Author: Qian Gu
-Series: Learning PEPs
+Series: Python Notes
 Summary: Iterator 学习笔记
 
 ## What is Iterator

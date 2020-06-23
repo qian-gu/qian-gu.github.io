@@ -1,61 +1,46 @@
-Title: Patterson and Hennessy 学习系列 #0 —— Preface & Chapter 1
+Title: Patterson and Hennessy 学习笔记 #1 —— Chapter 1 Computer Abstractions and Technology
 Date: 2020-06-01 12:55
 Category: IC
 Tags: Patterson and Hennessy
-Slug: learning_patterson_and_hennessy_series_0_preface_and_chapter_1
+Slug: learning_patterson_and_hennessy_notes_1_chapter_1
 Author: Qian Gu
-Series: Learning Patterson & Hennessy
+Series: Patterson & Hennessy Notes
 Summary: Patterson and Hennessy 读书笔记，前言 + 第一章
 Status: draft
 
-![Organization](/images/patterson_and_hennessy/computer_organization.png)
+------
+
+写在前面的废话：
 
 + [Computer Organization and Design][ph] 俗称 Patterson and Hennessy
 + [Computer Architecture: A Quantitative Approach][hp] 俗称 Hennessy and Patterson
 
-关于这两位大师和这两本计算机体系结构领域的圣经无需再赘述，这个系列是以前的读书笔记，翻出来重新整理一下算是温故而知新吧。
+关于这两位大师和这两本计算机体系结构领域的圣经无需再赘述，这个系列是整理自以前的读书笔记，更新了一些 RISC-V 的相关内容，温故而知新。
 
 [ph]: https://www.amazon.com/Computer-Organization-Design-RISC-V-Architecture/dp/0128122757
 [hp]: https://www.amazon.com/Computer-Architecture-Quantitative-Approach-Kaufmann/dp/0128119055/
 
-------------
-
-## Preface
-
-> The most beautiful thing we can experience is the mysterious. It is the source of all true art and science.
-> 
-> -- Albert Einstein, What I Believe, 1930
-
-### About This Book
-
-作者的观点：**对于下一个十年内的大部分码农来说，如果想写出可以在并行计算机上高效运行的程序，则必须理解软硬件接口。**
-
-这本书的读者包括，
-
-+ 几乎没有汇编/逻辑设计基础，但是需要理解基本的计算机组成原理
-+ 有汇编/逻辑设计基础，但是想了解如何设计一个计算机，或者想理解一个系统是如何工作以及为何性能如此
-
-
-### About Other Book
-
-前面提到的另外一本书：[Computer Architecture\: A Quantitative Approach][hp]，
+这两本书有共同内容但是因为定位不同，所以内容也相互补充。[Computer Architecture: A Quantitative Approach][hp] 这本书是针对专业人士的，
 
 + 用坚实的工程基础和量化的 cost/performance 折中分析方法来描述计算机体系结构中的主要原则
 + 基于商用的实际系统，结合例子和评测数据，总结出一些实际中的设计经验
 + 证明体系结构可以通过量化而不是描述性的方式学习
 + 目标读者是严肃的，想仔细理解计算机系统的专家
 
-而 Patterson & Hennessy 这本书的读者并不是都想成为计算机体系结构的专家。这本书并不是前者的子集，还包括了一些其他知识，比如编译器、操作系统、数据库等等。
+而 Patterson & Hennessy 这本书的读者并不是都想成为计算机体系结构的专家。这本书并不是前者的子集，还包括了一些其他知识，比如编译器、操作系统、数据库等等。作者的观点是：**对于下一个十年内的大部分码农来说，如果想写出可以在并行计算机上高效运行的程序，则必须理解软硬件接口。**这本书的读者包括，
+
++ 几乎没有汇编/逻辑设计基础，但是需要理解基本的计算机组成原理
++ 有汇编/逻辑设计基础，但是想了解如何设计一个计算机，或者想理解一个系统是如何工作以及为何性能如此
+
+下面是第一章笔记的内容。
 
 ------------
-
-## Chapter 1 Computer Abstractions and Technology
 
 > Civilization advances by extending the number of important operations which we can perform without thinking about them.
 > 
 >   -- Alfred North Whithead, An Introduction to Mathematics, 1911
 
-### Understanding Program Performance
+## Understanding Program Performance
 
 一个程序的性能取决于很多因素的组合，包括，
 
@@ -79,7 +64,7 @@ Status: draft
 + 第 5 章在 `memory hierarchy optimization` 层次，使用 cache blocking 可以使性能提高 2.0 到 2.5 倍
 + 第 6 章在 `thread-level parallelism` 层次，使用 parallel for loops in OpenMP 实现多核计算，可以使性能提高 4 到 14 倍
 
-### 8 Great Ideas in Computer Architecture
+## 8 Great Ideas in Computer Architecture
 
 设计计算机系统中的 8 个最伟大的思想，从第一台计算机到现在，这些思想仍然被广泛采用。
 
@@ -133,9 +118,9 @@ Status: draft
 
     某些对可靠性要求非常高的应用系统都是通过冗余备份来提高可靠性，比如航天，大型服务器。
     
-### Performance
+## Performance
 
-#### Defining Performance
+### Defining Performance
 
 套用知乎名言：“先问是不是，再问为什么”（狗头保命）。性能是一个很宽泛的问题，在仔细展开讨论之前必须先定义清楚一个问题：
 
@@ -170,7 +155,7 @@ $$\frac{Performance_X}{Performance_Y} = n$$
 + improve performance = increase performance
 + improve execution time = decrease execution time
 
-#### Measuring Performance
+### Measuring Performance
 
 根据前面的讨论，我们把 time 作为 performance 的度量标准：完成等量的任务，花费时间最短的计算机的性能最高。但是即使把性能约束在时间这个维度上，依然不够明确，因为“时间”也有很多种。
 
@@ -186,7 +171,7 @@ $$\frac{Performance_X}{Performance_Y} = n$$
 + `system performance` 指的是一个空载系统上的 `elapsed time`
 + `CPU performance` 指的是 `user time`
 
-#### The Classic CPU Performance Equation
+### The Classic CPU Performance Equation
 
 一个程序的执行时间 = 这个程序包含的 cycle 数 × 每个 cycle 的时长，所以有下面的公式，
 
@@ -226,7 +211,7 @@ $$Time = \frac{Seconds}{Program} = \frac{Instructions}{Program} * \frac{Clock\ c
 | 编译器 | Instrcution count, CPI | 编译器是算法和底层指令之间的桥梁，必然会影响到具体的指令翻译 |
 | ISA | Instrcution count, CPI, clock rate | ISA 对 3 个因素都有影响 |
 
-### The Power Wall
+## The Power Wall
 
 功耗分为两部分：动态功耗、静态功耗。
 
@@ -246,7 +231,7 @@ $$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched
 
 虽然有各种各样的昂贵技术来冷却芯片，但是继续提高功耗对于 PC（甚至是 servers）来说代价太高了，对移动设备就更不用说了，这就是所谓的功耗墙。
 
-### The Switch from Uniprocessors to Multiprocessors
+## The Switch from Uniprocessors to Multiprocessors
 
 遇到了功耗墙怎么办？只能舍弃这 30 年来的老路线（提频），选择另外一条路线：多核。
 
@@ -260,7 +245,7 @@ $$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched
 + 编程困难，人的大脑更适合线性思维，很难处理并行的事情，编程也是同理
 + 调度困难，必须要减少核之间的通信和同步开销，防止这些额外的开销抵消并行带来的性能提升
 
-### Fallacies and Pitfalls
+## Fallacies and Pitfalls
 
 + `Fallacies` 谬论：错误概念
 + `Pitfalls` 陷阱：特定条件下成立的规律的错误推广

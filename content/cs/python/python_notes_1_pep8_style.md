@@ -1,11 +1,11 @@
-Title: PEP 学习系列 #1 —— PEP8
+Title: Python 学习笔记 #1 —— PEP8 编程风格
 Date: 2020-04-12 13:55
 Category: CS
 Tags: PEP, python
-Slug: learning_peps_series_1_pep8 
+Slug: python_notes_1_pep8_style
 Author: Qian Gu
-Series: Learning PEPs
-Summary: 翻译 PEP8
+Series: Python Notes
+Summary: 翻译 PEP8 -- Style Guide for Python Code
 
 [PEP 8 -- Style Guide for Python Code 原文链接][PEP8]
 
