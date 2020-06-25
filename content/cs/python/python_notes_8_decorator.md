@@ -1,11 +1,13 @@
 Title: Python 学习笔记 #8 —— Deorator 装饰器
-Date: 2020-06-07 20:36
+Date: 2020-06-07 22:39
 Category: CS
 Tags: PEP, python
 Slug: python_notes_8_decorator
 Author: Qian Gu
 Series: Python Notes
-Summary: Decorator 
+Summary: Decorator 学习笔记
+
+
 [PEP 318 -- Decorators for Functions and Methods 原文链接][PEP318]。
 
 [PEP 3129 -- Class Decorators 原文链接][PEP3129]
