@@ -18,25 +18,30 @@ List Comprehensions 是一种 python 语法扩展，它可以实现用 for 和 i
 ###  Examples
 
 ```
-#!bash
+#!text
 >>> print [i for i in range(10)]
 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
 
 >>> print [i for i in range(20) if i%2 == 0]
 [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
 
+
 >>> nums = [1, 2, 3, 4]
 >>> fruit = ["Apples", "Peaches", "Pears", "Bananas"]
+
 >>> print [(i, f) for i in nums for f in fruit]
 [(1, 'Apples'), (1, 'Peaches'), (1, 'Pears'), (1, 'Bananas'),
  (2, 'Apples'), (2, 'Peaches'), (2, 'Pears'), (2, 'Bananas'),
  (3, 'Apples'), (3, 'Peaches'), (3, 'Pears'), (3, 'Bananas'),
  (4, 'Apples'), (4, 'Peaches'), (4, 'Pears'), (4, 'Bananas')]
+
 >>>> print [(i, f) for i in nums for f in fruit if f[0] == "P"]
 [(1, 'Peaches'), (1, 'Pears'),
  (2, 'Peaches'), (2, 'Pears'),
  (3, 'Peaches'), (3, 'Pears'),
  (4, 'Peaches'), (4, 'Pears')]
+
 >>> print [(i, f) for i in nums for f in fruit if f[0] == "P" if i%2 == 1]
 [(1, 'Peaches'), (1, 'Pears'), (3, 'Peaches'), (3, 'Pears')]
 >>> print [i for i in zip(nums, fruit) if i[0]%2==0]
@@ -78,7 +83,7 @@ new_list = [x for x in N if x > 0 and x < 10]
 因为 list comprehensions 本质是 for 和 if 的简洁写法，所以我们可以总结出一个模板，只要满足这个模板的 for 循环就可以改成写 list comprehensions.
 
 ```
-#!pyton
+#!python
 for item in old_list:
     if condition(item):
         new_list.append(func(item))
@@ -111,7 +116,7 @@ flattend = [n for row in matrix for n in row]
 
 ### 提高 list comprehensions 的可读性
 
-因为 python 支持在括号之间断行，所以前面的例子，可以该写成下面的形式以提高可读性：
+因为 python 支持在括号之间断行，所以前面的例子，可以改写成下面的形式以提高可读性：
 
 ```
 #!python
@@ -120,10 +125,8 @@ new_list = [
     for item in old_list
     if condition(itme)
 ]
-```
 
-```
-#!python
+
 flattend = [
     n
     for row in matrix
@@ -151,46 +154,48 @@ GvR 也说 `map()` / `filter()` 函数用起来实在太繁琐了，我们应该
 
 [PEP274]: https://www.python.org/dev/peps/pep-0274/
 
-dict comprehensions 和 list comprehensions 非常相似，不同之处是用 `{}` 而不是 `[]`。同时，关键字 `for` 前面的部分表达式改成了用冒号隔开的 key-value 对。
-
-###  Examples
+dict comprehensions 和 list comprehensions 非常相似，不同之处就是采用 `dict` 的相关语法：用 `{}` 而不是 `[]`，同时关键字 `for` 前面的部分表达式改成了用冒号隔开的 key-value 对。
 
 ```
-#!python
+#!text
 >>> print {i : chr(65+i) for i in range(4)}
 {0 : 'A', 1 : 'B', 2 : 'C', 3 : 'D'}
-```
 
-```
-#!python
+
 >>> print {k : v for k, v in someDict.iteritems()} == someDict.copy()
 1
-```
 
-```
-#!python
+
 >>> print {x.lower() : 1 for x in list_of_email_addrs}
 {'barry@zope.com'   : 1, 'barry@python.org' : 1, 'guido@python.org' : 1}
-```
 
-```
-#!python
+
 >>> def invert(d):
 ...     return {v : k for k, v in d.iteritems()}
 ...
 >>> d = {0 : 'A', 1 : 'B', 2 : 'C', 3 : 'D'}
 >>> print invert(d)
 {'A' : 0, 'B' : 1, 'C' : 2, 'D' : 3}
-```
 
-```
-#!python
+
 >>> {(k, v): k+v for k in range(4) for v in range(4)}
 ... {(3, 3): 6, (3, 2): 5, (3, 1): 4, (0, 1): 1, (2, 1): 3,
    (0, 2): 2, (3, 0): 3, (0, 3): 3, (1, 1): 2, (1, 0): 1,
    (0, 0): 0, (1, 2): 3, (2, 0): 2, (1, 3): 4, (2, 2): 4, (
    2, 3): 5}
 ```
+
+## Set Comprehensions
+
+set comprehensions 和 list comprehensions 非常相似，唯一的区别就是用 `{}` 而不是 `[]`。
+
+```
+#!python
+squared = {x**2 for x in [1, 1, 2]}
+print(squared)
+```
+
+显然因为最终生成的是集合，所以重复元素只会保存一个。
 
 ## Ref
 

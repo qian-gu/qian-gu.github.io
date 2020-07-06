@@ -13,13 +13,11 @@ Summary: Iterator 学习笔记
 
 [PEP234]: https://www.python.org/dev/peps/pep-0234/
 
-Sequence 是 python 中的一种数据结构，它们的成员是有序排列的，可以通过下标来访问特定元素，比如字符串、list、tuple 等都是 sequence。很多时候我们需要对 sequence 进行顺序访问，最简单的方法是写一个 for 循环，通过计数的方式实现迭代。但是计数的方式很原始也不高效，所以 python 提供了 iterator 来迭代 sequence。
+Sequence 是 python 中的一种数据结构，它们的成员是有序排列的，可以通过下标来访问特定元素，比如字符串、list、tuple 等都是 sequence。很多时候我们需要对 sequence 进行顺序访问，最简单的方法是写一个 for 循环，通过计数的方式实现迭代。但是计数的方式很原始也不高效，所以 python 提供了 iterator 来迭代 sequence。Iterator 在 Python 中使用非常广泛，它不仅对 sequence 的支持是无缝的，它还能迭代那些具有 sequence 的行为但实际上并不是 sequence 的对象，比如 dict 的 keys 以及 file。
 
 Iterator 实际上是一个实现了工厂模式的对象，它通过 `next()` 方法来获取元素，而不是通过 index 计数来实现。for 循环只要调用 iterator 的 next 方法，就能获得 sequence 中的下一项，当迭代完所有的 item 后，再次调用会返回一个 `StopIteration` 的异常，这个异常并不代表发生了错误，而是告诉调用者，迭代已经完成了。
 
-Iterator 对 sequence 的支持是无缝的，除此之外它还能迭代那些具有 sequence 的行为但实际上并不是 sequence 的对象，比如 dict 的 keys 以及 file。
-
-### Iteratable vs Iterator
+## Iteratable vs Iterator
 
 **含有 `__iter__()` 或 `__getitem__()` 方法的对象称为“可迭代对象”：`Iteratable`**
 
@@ -91,9 +89,9 @@ while True:
 
 如何得到一个迭代器呢？
 
-### Using `iter`
+### BIT
 
-只需要调用内建函数 `iter()` 即可，有两种调用方式：
+对于 Python 内建数据类型，比如容器，只需要用内建函数 `iter()` 就可以得到对应的迭代器，具体有两种调用方式：
 
 ```
 #!python
@@ -101,34 +99,27 @@ iter(obj)
 iter(func, sentinel)
 ```
 
-+ `iter(obj)`，iter 会检查 obj 是否为 sequence，如果是，则返回一个迭代器
-+ `iter(func, sentinel)`，iter 会重复调用 func，直到迭代的值为 sentinel
++ `iter(obj)`，返回一个迭代器
++ `iter(func, sentinel)`，iter 会重复调用 func，直到迭代返回值为 sentinel 时停止迭代
 
-### Using `itertools`
+### Delegate
 
-Python 内建的工具包，可以产生一系列各种各样的 iterator，比如无穷迭代器 `count()`, `cycle()`, `repeat()`，有限长度的 `accumulate()`, `compress()`, `chain()` 等。
+如果是一个自定义容器，内部包含一个 list、tuple、dict 等可迭代对象，那么可以直接在自定义容器中定义一个 `__iter()__` 方法，将迭代请求委托到容器内容对象上。
 
 ```
 #!python
-from itertools import count
+class Node(object):
+    def __init__(self, value):
+        self._value = value
+        self._children = []
 
-counter = count(10)
-next(counter)  # 10
-next(counter)  # 11
+    def __iter__(self):
+        return iter(self._children)
 ```
 
-`itertools` 常见的 iterator 有：
+### Implement Iterator Protocal
 
-+ 生成切片： `itertools.islice()`
-+ 丢弃部分数据： `itertools.dropwhile()`
-+ 产生所有排列组合： `itertools.permutations()`
-+ 一次性迭代不同容器内的元素： `itertools.chain()`
-
-**总结：遇到看似复杂的迭代任务，不要着急自己写复杂的 for index 循环，也不要自己尝试写一个 iterator，而是应该首先看看 `itertools` 里面是否提供了相关功能，往往有惊喜。**
-
-### User Define Class
-
-只要一个 class 实现了下面两个方法，就可以当作迭代器来使用，
+有时候内建类型的迭代协议无法满足我们的需求，这个时候可以自行实现迭代协议。只要一个 class 实现了下面两个方法，就可以当作迭代器来使用，
 
 + 一个 `__iter()__` 方法，返回值是 `self`
 + 一个 `next()` 方法，返回一个 item 或者是 StopIteration 异常
@@ -138,11 +129,11 @@ next(counter)  # 11
 + 任意一个实现了 `__iter()__` 或 `__getitme__()` 的对象，都可以用 for 循环来迭代 —— **Iterable 对象**
 + 任意一个实现了 `next()` 的对象都可以当作是 iterator —— **Iterator 协议**
 
-迭代的概念本身只涉及第二种协议，容器类的对象一般都支持第一种协议。目前 iterator 要求这两种协议都支持，支持第一种协议的目的是为了让 iterator 同时也是一个 Iterable，这样它的行为和 sequence 类似，特别是在用 for 循环中使用 iterator 的场景。
+迭代的概念本身只涉及第二种协议，容器类的对象一般都支持第一种协议。目前 iterator 要求这两种协议都支持，支持第一种协议的目的是为了让 iterator 同时也是 Iterable，这样它的行为和 sequence 类似，特别是在用 for 循环中使用 iterator 的场景。
 
 **example：**
 
-定义一个产生随机 sequence 的 class（存储在 randSeq.py），
+定义一个产生随机 sequence 的 class，然后使用 for 循环迭代该对象，
 
 ```
 #!python
@@ -159,13 +150,6 @@ class RandSeq(object):
 
     def next(self):
         return choice(self.data)
-```
-
-使用 for 循环调用该 class 对象，
-
-```
-#!python
-from ranSeq import RandSeq
 
 seq = RandSeq(('rock', 'paper', 'scissors'))
 
@@ -180,6 +164,24 @@ for item in seq:
 isinstance(seq, Iterable)  # True
 isinstance(seq, Iterator)  # True
 ```
+
+### Generator
+
+Generator 是一种特殊的 iterator，最典型的例子就是 Fibonacci 数列。可以直接根据需要写一个 generator 直接调用，
+
+```
+#!python
+def frange(start, stop, increment):
+    x = start
+    while x < stop:
+        yiled x
+        x += increment
+
+for n in frange(0, 4, 0.5)
+    print(n)
+```
+
+如果 generator 涉及到比较复杂的控制（比如暴露属性等），可以把 generator 函数扩展成 class 形式。比如前面的 RandSeq 例子可以扩展出更加复杂的功能，然后将 `__iter__` 内部的 return 改为 yield 即可。
 
 ## Using Iterator
 
@@ -256,10 +258,10 @@ while 1:
         break
     print line
 ```
-
 ### Restrictions
 
-**在用 iterator 时，sequence/dict 的内容是不能被修改的。**
+!!! note
+    在用 iterator 时，sequence/dict 的内容是不能被修改的。
 
 sequence 中除了 list，其它（tuple 和 string）都是不可变的，所以只需要注意 list 的情况即可。对于 dict，只允许对一个已经存在的 key 设置它的值，其他操作（增加/删除/`update()`）都是不允许的。原因就是 iterator 和实际对象是绑定在一起的，一旦修改了原对象，效果会马上体现出来。
 
@@ -278,6 +280,39 @@ for key in myDict:
 实际上，在 python 的迭代器出现之前，这个限制就已经存在了，比如 C++ 也有类似的约束。
 
 ## Special Iterator
+
+### Reversed Iterator
+
+获得一个反向迭代器的方式：
+
++ 调用 BIF `reversed()`
++ 实现 `__reversed__()` 方法
++ 将对象转化为 list 对象
++ 使用 generator
+
+直接使用 `reversed()` 的问题在于待处理的对象必须是大小确定的，如果一个对象大小不固定而且又没有实现 `__reversed__()` 方法，那么直接将其转化为 list 对象可能会占用大量内存，更优的做法是在 `__reversed__()` 中定义一个 generator。
+
+### Using `itertools`
+
+Python 内建的工具包，可以产生一系列各种各样的 iterator，比如无穷迭代器 `count()`, `cycle()`, `repeat()`，有限长度的 `accumulate()`, `compress()`, `chain()` 等。
+
+```
+#!python
+from itertools import count
+
+counter = count(10)
+next(counter)  # 10
+next(counter)  # 11
+```
+
+`itertools` 常见的 iterator 有：
+
++ 生成切片： `itertools.islice()`
++ 丢弃部分数据： `itertools.dropwhile()`
++ 产生所有排列组合： `itertools.permutations()`
++ 一次性迭代不同容器内的元素： `itertools.chain()`
+
+**总结：遇到看似复杂的迭代任务，不要着急自己写复杂的 for index 循环或者是 iterator，而是应该首先看看 `itertools` 里面是否提供了相关功能，往往有惊喜。**
 
 ### `enumerate()`
 
@@ -342,6 +377,8 @@ for i in zip(a, b)
 [PEP 279 -- The enumerate() built-in function][PEP279]
 
 [Python 核心编程](https://book.douban.com/subject/3112503/)
+
+[Python Cookbook](https://book.douban.com/subject/26381341/)
 
 [迭代器 - 廖雪峰的官方网站](https://www.liaoxuefeng.com/wiki/1016959663602400/1017323698112640)
 

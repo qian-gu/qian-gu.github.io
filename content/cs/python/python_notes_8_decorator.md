@@ -1,4 +1,4 @@
-Title: Python 学习笔记 #8 —— Deorator 装饰器
+Title: Python 学习笔记 #8 —— Decorator 装饰器
 Date: 2020-06-07 22:39
 Category: CS
 Tags: PEP, python
