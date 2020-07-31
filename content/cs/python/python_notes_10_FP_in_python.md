@@ -5,7 +5,7 @@ Tags: PEP, python
 Slug: python_notes_10_fp_in_python
 Author: Qian Gu
 Series: Python Notes
-Summary: 函数参数小结
+Summary: 学习 Python 中的函数式编程
 
 ## Functional Programming
 
