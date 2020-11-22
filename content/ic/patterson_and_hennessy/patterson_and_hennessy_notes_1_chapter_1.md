@@ -1,16 +1,15 @@
 Title: Patterson and Hennessy 学习笔记 #1 —— Chapter 1 Computer Abstractions and Technology
-Date: 2020-06-01 12:55
+Date: 2020-11-22 14:51
 Category: IC
 Tags: Patterson and Hennessy
 Slug: learning_patterson_and_hennessy_notes_1_chapter_1
 Author: Qian Gu
 Series: Patterson & Hennessy Notes
 Summary: Patterson and Hennessy 读书笔记，前言 + 第一章
-Status: draft
 
 ------
 
-写在前面的废话：
+写在前面的话：
 
 + [Computer Organization and Design][ph] 俗称 Patterson and Hennessy
 + [Computer Architecture: A Quantitative Approach][hp] 俗称 Hennessy and Patterson
