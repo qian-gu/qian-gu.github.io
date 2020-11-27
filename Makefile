@@ -5,8 +5,10 @@ PELICANOPTS=
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
 OUTPUTDIR=$(BASEDIR)/../guqian110.github.io
+OUTPUTDIR_GITEE=$(BASEDIR)/../guqian110
 CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
+PUBLISHCONF_GITEE=$(BASEDIR)/publishconf_gitee.py
 
 SSH_HOST=localhost
 SSH_PORT=22
@@ -46,12 +48,20 @@ help:
 	@echo '                                                                          '
 
 html:
+ifdef gitee
+	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR_GITEE) -s $(CONFFILE) $(PELICANOPTS)
+else
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
+endif
 
 clean:
 	# [ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
-	# delete all except for .git, CNAME, README.md
+	# delete all except for .git folder, CNAME, README.md, LICENSE file
+ifdef gitee
+	cd $(OUTPUTDIR_GITEE); ls | grep -v CNAME | grep -v README.md | grep -v LICENSE | xargs rm -rf
+else
 	cd $(OUTPUTDIR); ls | grep -v CNAME | grep -v README.md | grep -v LICENSE | xargs rm -rf
+endif
 
 regenerate:
 	$(PELICAN) -r $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
@@ -79,7 +89,11 @@ else
 endif
 
 publish:
+ifdef gitee
+	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR_GITEE) -s $(PUBLISHCONF_GITEE) $(PELICANOPTS)
+else
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
+endif
 
 ssh_upload: publish
 	scp -P $(SSH_PORT) -r $(OUTPUTDIR)/* $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET_DIR)

@@ -220,11 +220,7 @@ $$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched
 
 其中 `Frequency switched` 是时钟频率的函数，`Capacitive load` 是晶体管的 fanout 和工艺的函数。
 
-下图是 Intel X86 架构芯片 30 年间 8 代 CPU 的时钟频率和 power 关系图，
-
-![power](/imges/patterson_and_hennessy/power.png)
-
-从图中可以看到，随着时间发展，时钟频率提高了近 1000 倍，但是 power 只提高了大概 30 倍，原因就在于电压的不断降低。
+从 Intel X86 架构芯片 30 年间 8 代 CPU 的时钟频率和 power 关系图中可以看到，随着时间发展，时钟频率提高了近 1000 倍，但是 power 只提高了大概 30 倍，原因就在于电压的不断降低。
 
 从前面 performance 的讨论可以知道，我们不能采用降低时钟频率的方式来降功耗，因为这会伤害到性能。那么我们可以无限降低电压吗？答案是不行，现在业界遇到的问题就是电压不能再低了，否则晶体管就像水龙头一样，无法完全关闭。虽然动态功耗是 CMOS 功耗中的大头，但是静态功耗也逐渐占据主角，在服务器中静态功耗能达到 40%，所以人们发明了各种技术来降低静态功耗，但是电压很难再进一步降低了。
 
