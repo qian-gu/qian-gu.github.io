@@ -30,7 +30,7 @@ Python 中的 generator 有两类，generator function 和 generator expressions
 使用关键字 `yield` 可以把一个普通函数转换成 generator。下面是一个产生 Fibonacci 数列的典型例子，
 
 ```
-#!pythn
+#!python
 def fib():
     prev, curr = 0, 1
     while True:
