@@ -1,5 +1,5 @@
 Title: 《SystemVerilog for Design》笔记
-Date: 2021-01-13 19:21
+Date: 2021-01-22 19:21
 Category: IC
 Tags: SystemVerilog
 Slug: systemverilog_for_design_notes
@@ -161,15 +161,13 @@ SV 中对一个信号的定义包含两部分：
 
 ### signed and unsigned
 
-SV 中的 `byte`, `shortint`, `int`, `longint` 默认是 signed 类型，可以通过显式的方式声明为 unsigned 类型，
+SV 中的 `byte`, `shortint`, `int`, `longint` 默认是 signed 类型，可以通过显式的方式声明为 unsigned 类型，需要注意的是声明时 singed/unsigned 关键字只能放在 type 关键字的后面。
 
 ```
 #!verilog
 int s_int;  // signed 32-bit varibale
 int unsigned u_int;  // unsigned 32-bit variable
 ```
-
-需要注意的是：声明的时候 singed/unsigned 关键字只能放在 type 关键字的后面。
 
 ### static and automatic variable
 
@@ -335,7 +333,7 @@ struct {
 
 instruction_word.address = 24'hF000001E;
 ```
-strcut 可以是一组 var 也可以是一组 net，前面可以加上可选的 `var` 或 `wire`, `bit` 等，声明 net 集合时内部的所有成员都必须是 4-state 的类型。虽然 struct 作为整体是可以声明为 net，但是 net 类型本身并不能作为 struct 内部的成员。可以用 `interface` 来实现同样的效果。
+strcut 可以是一组 var 也可以是一组 net，前面可以加上可选的 `var` 或 `wire`, `bit` 等，因为 net 本身要求是 4-state 类型，所以声明 net struct 时内部的所有成员也都必须是 4-state 的类型。虽然 struct 作为整体是可以声明为 net，但是 net 类型本身并不能作为 struct 内部的成员。可以用 `interface` 来实现同样的效果。
 
     #!systemverilog
     var struct {
@@ -350,7 +348,7 @@ strcut 可以是一组 var 也可以是一组 net，前面可以加上可选的 
         logic [23:0]  address;
     }  instruction_word_net;
 
-struct 可以和 typedef 配合使用，没有 typedef 的 struct 叫做匿名 struct。
+struct 可以和 typedef 配合使用，没有 typedef 的 struct 叫做匿名 struct。struct 可以声明在 module 或 interface 内部使用，也可以定义在 package 中或 $unit 中供多个 module 使用。一般来说 struct 都是和 typedef 一起定义在 package 中，因为大多数情况下我们定一个 struct 的目的是为了在多个地方复用，比如在模块端口之间传递等。
 
     #!systemverilog
     typedef struct {            // structure definition
@@ -361,9 +359,7 @@ struct 可以和 typedef 配合使用，没有 typedef 的 struct 叫做匿名 s
 
     instruction_word_t IW;  // structure allocation
 
-struct 可以声明在 module 或 interface 内部使用，也可以定义在 package 中或 $unit 中供多个 module 使用。
-
-struct 和 array 的不同之处：
+struct 和 array 很类似，它们的不同之处和 C 语言中的类似：
 
 + array 是一组同类型、同宽度的信号，strcut 内的信号可以是不同类型、不同宽度
 + array 中的信号通过下标来引用，strcut 中的信号通过名字来引用
@@ -473,7 +469,7 @@ union {
 data.i = -5;
 data.u = -5;
 ```
-union 也可以和 struct 一样用 typedef 声明成用户自定义类型，如果没有 typedef 则是匿名 union
+union 也可以和 struct 一样用 typedef 声明成用户自定义类型，如果没有 typedef 则是匿名 union。
 
 + **unpacked union 是不可综合的**
 
@@ -597,7 +593,7 @@ reg [63:0] data;        // 64-bit packed array
 logic [3:0][7:0] data;  // 2-D packed array: 4 8-bit sub-arrays
 ```
 
-SV 定义了 packed array 的存储方式：像 vector 一样整个 array 必须连续存储，packed array 内部的每个维度都是 vector 的一个字段。上面例子中二维数组存储方式如下所示，这是协议固定的，和仿真器、编译器、操作系统、平台无关。
+SV 定义了 packed array 的存储方式：像 vector 一样整个 array 必须连续存储，packed array 内部的每个维度都是 vector 的一个字段。上面例子中二维数组存储方式如下所示，这是协议规定的，和仿真器、编译器、操作系统、平台无关。
 
 ```
 #!text
@@ -755,7 +751,7 @@ struct {                     // unpacked structure
 
 ### foreach
 
-有时候需要迭代处理 array 中的每个元素，一般都是通过 for 循环来处理，但是如果有很多个 for 循环或者是 array 的维度较多，则需要声明很多个 index，为了避免这一繁琐的声明，SV 新增了一种语法 `foreach` 来自动迭代，设计者不需要在手动声明每个 index 变量了。
+有时候需要迭代处理 array 中的每个元素，一般都是通过 for 循环来处理，但是如果有很多个 for 循环或者是 array 的维度较多，则需要声明很多个 index，为了避免这一繁琐的声明，SV 新增了一种语法 `foreach` 来自动迭代，设计者不需要再手动声明每个 index 变量了。
 
 ```
 #!systemverilog
@@ -788,7 +784,7 @@ endfunction
 | $low(array_name, dimension) | 返回 array 特定维度的最低位索引 |
 | $high(array_name, dimension) | 返回 array 特定维度的最高位索引 |
 | $size(array_name, dimension) | 返回 array 特定维度元素总数 $high - $low + 1 |
-| increasement(array_name, dimension) | 如果 $left >= $right 返回 1，否则返回 0 |
+| $increasement(array_name, dimension) | 如果 $left >= $right 返回 1，否则返回 0 |
 | $bits(expression) | 返回 expression 的总 bit 数（expression 的位宽是静态不变的，所以可综合）|
 
 ### dynamic arrays, associative arrays, sparse arrays, strings
@@ -887,7 +883,7 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
                 LOAD:  if (done)  NextState = STORE;
                 STORE:            NextState = WAITE;
             endcase
-        endfuntion
+        endfunction
 
 + Verilog 中的 function 名字本身就是一个变量，返回值就是对同名变量赋值，最后一次给函数名所赋的值就是返回值。SV 新增了 return 语句，而且 return 语句的优先级高于同名变量，即如果有 return 语句，可以把同名变量当成一个临时变量来用
 
@@ -920,7 +916,7 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
             data_out.valid = 1;
         endfunction
 
-+ Verilog 只运行按位置传参，错误的传参顺序可能导致错误；SV 新增了按名传参，可以降低犯错的机会
++ Verilog 只运行按位置传参，错误的传参顺序可能导致错误；SV 新增了按名传参，可以减少犯错的机会
 
         #!systemverilog
         always @(posedge clk)
@@ -961,17 +957,576 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
 
 ## Chapter 7 Systemverilog Procedural Statements
 
+SV 新增了一些新语法和新的操作符，可以让设计者写出更加精简的可综合 RTL 代码。
 
+### new operators
+
+**自增/自减操作符： `++`, `--`**
+
+类似 C 语言，赋值和自增/自减有先后之分。因为 SV 中有阻塞/非阻塞两种赋值方式，`++` 和 `--` 的行为和阻塞赋值是一样的。
+
+!!! warning
+    不要在非阻塞赋值中使用自增/自减操作符。也就是说它们只能用来对组合逻辑进行建模，不能用在时序逻辑中。（例外情况：类似 for 循环下标这种用法，不是真正的信号）
+
+```
+#!systemverilog
+for(i=0; i<=32; i++) begin
+    ...
+end
+
+// post-increment
+while (i++ < LIMIT) begin: loop1
+    ...     // last value of i will be LIMIT
+end
+
+// pre-increment
+while (++j < LIMIT) begin: loop2
+    ...     // last value of j will be LIMIT-1
+end
+
+// act as blocking assignment, following two statements are equivalent
+i++;
+i = i + 1;
+```
+
+**赋值操作符**
+
+以 `+=` 为例，
+
+```
+#!systemverilog
+out += in;       // is equalitent to
+out = out + in;
+```
+
+除了加法，`=` 还可以和其他操作符结合，所有新增赋值操作汇总如下。
+
+`+=`, `-=`, `*=`, `/=`, `%=`, `&=`, `|=`, `^=`, `<<=`, `>>=`, `<<<=`, `>>>=`。
+
+所有的赋值操作符的行为也和阻塞赋值一样，所以和自增/自减一样，只能用在组合逻辑建模中。
+
+**带 don't care 的等价操作符**
+
+Verilog 中有两种等价操作符 `==` 和 `===`，SV 新增的操作符 `==?` ，它们的区别在于对 x/z 的判断。
+
++ `==`：只要任何一个操作数带 x/z，返回结果是 1'bx
++ `===`：bit-wise 比较，要求 1, 0, x, z 精确匹配，完全一样才返回 1‘b1，否则返回 1'b0 |
++ `==?`：右操作数中的 x/z 当成是通配符，和左操作数对应 bit 的任何值都匹配
++ `!=?`：对 `==?` 取反
+
+!!! note
+    1. 如果左右位宽不匹配，会在比较前做位宽扩展，扩展规则和逻辑比较 `==` 的规则相同
+    2. `==?` 和 `!=?` 可综合的前提是右操作数是常数，即不能是可变化的信号值。
+
+**判断是否存在 inside**
+
+类似于 Python 中的 `in` 效果。`inside` 是可综合的，但是很多综合工具可能并不支持。
+
+```
+#!systemverilog
+logic [2:0] a;
+if (a inside {3'b001, 3'b010, 3'b100})
+
+// equalitent
+if ( (a == 3'b001) || (a == 3'b010) || (3 == 3'b100))
+
+// the set of values can be an array
+int d_array [0:1023];
+if (13 inside {d_array})    // test if value 13 occurs anywhere in array d_array
+```
+
+### for loops
+
+Verilog 中 for 循环的 index 变量必须声明在循环外部，如果一个模块中有多个 for 循环，而且要保证名字相互之间不同，或者把声明放到 always 块中，这时候可以重名。
+
+SV 做了一下增强：
+
++ 可以在 for 循环中定义局部变量，不同 for 循环的局部变量可以重名
+
+        #!systemverilog
+        always_ff @(posedge clk)
+            for (bit [4:0] i = 0; i <= 15; i++)
+
+        always_ff @(posedge clk)
+            for (int i = 0; i <= 1024; i++)
+
+    需要注意的是，这种变量是 automatic 类型，而 automatic 类型的变量有以下限制：
+
+    + automatic 变量不能在外部访问
+    + automatic 变量无法 dump 到 VCD 文件中
+
+    所以 for 循环外部是无法访问这写变量的，如果一定要访问，那么就要挪到 for 外部定义。
+
++ 一次可以声明多个变量，和 C 语言类似
+
+        #!systemverilog
+        for (int i=1, j=0; i*j < 128; i++, j+=3)
+
+        for (int i=1, byte j=0; i*j < 128; i++, j+=3)
+
+### do...while loop
+
+`do...while` 和 `while` 一样，在某些限制条件（这些条件是要能让综合器可以静态地判断循环次数，和 for 类似）下是可综合的，一般来说 RTL 中机会不会使用这两种语法，略。
+
+### foreach
+
+见 Chapter 5 中关于 array 部分。
+
+### jump statements
+
+SV 新增的 `break`, `continue`, `return` 都是可综合的，规则和 `disable` 一样。（一般很少用）
+
+```
+#!systemverilog
+// continue example
+logic [15:0] array [0:255];
+always_comb begin
+    for (int i = 0; i <= 255; i++) begin: loop
+        if (array[i] == 0)
+            continue;   // skip empty elements
+        transform_function(array[i]);
+    end
+end
+
+// break example
+always_comb begin
+    first_bit = 0;
+    for (int i=0; i<=63; i=i+1) begin
+        if (i < start_range) continue;
+        if (i > end_range)   break;
+        if (data[i]) begin
+            first_bit = i;
+            break;
+        end
+    end
+end
+
+// return example
+task add_up_to_max (input  [ 5:0] max,
+                    output [63:0] result);
+    result = 1;
+    if (max == 0) return;
+    for (int i=1; i<=63; i=i+1) begin
+        result = result + result;
+        if (i == max) return;
+    end
+endtask
+```
+
+### block names
+
+当有多层 begin...end 嵌套时，即使有缩进，有时候也很那找到 end 对应的 begin，SV 支持给 end 后面也加上 name，这个特性对综合没有任何影响，只是为了提高代码可读性。
+
+!!! warning
+    end 后面的名字必须和匹配的 begin 名字相同，否则会报错。
+
+```
+#!systemverilog
+begin: <block name>
+    ...
+end
+```
+
+### statement label
+
+SV 还支持给单个语句加上 label，就和 begin...end 块一样，不过语法是类似 C 语言的风格。给语句加上 label 的好处很多，
+
++ 提高代码可读性
++ 方便文档/其他地方引用具体语句
++ 帮助 debug 工具和 coverage 工具分析
+
+begin...end 块也是一个 statement，所以也可以给它加上 label。
+
+!!! warning
+    begin...end 块不能同时使用 label 和 block name。
+
+```
+#!systemverilog
+// <label> : <statement>
+
+always_comb begin
+    decoder: case (opcode)
+        ...
+    endcase
+end
+
+// named block
+begin: block1
+    ...
+end: block1
+
+// labeled block
+block2: begin
+            ...
+        end
+```
+
+### case statement
+
+Verilog 标准特意规定了 case 语句的选择必须是按照顺序来评估，所以暗含着优先级。会得到类似 if-else-if 的效果。如果设计本身没有优先级时，综合工具要做特别的处理，把优先级逻辑优化掉。
+
+SV 为此特意定义了两个描述符来限定 case 语句：
+
++ `unique case` 表示无优先级的 case，它要求表达式和 case item 之间必须是一一映射的关系，表达式必须能且只能匹配一个 item，否则会报错。unique case 和 always_comb 配合使用，这两个特性带来的额外检查可以提高 RTL 的综合结果符合设计意图。
+
+        #!systemverilog
+        unique case (<case_expression>)
+            ... // case items
+        endcase
+
++ `priority case` 表示有优先级的 case，它要求表达式至少要匹配一项 item，如果有多项匹配时，选择对一个匹配项。使用这个限定符表示设计者是有意这么做的，有多个匹配项也符合设计意图。有时候即使使用了 priority，如果 case item 本身是不可能同时匹配，那么综合工具也会自动把优先逻辑优化掉。
+
+        #!systemverilog
+        priority case (<case_expression>)
+            ... // case items
+        endcase
+
+Verilog 中定义了两个 program 来帮助综合工具，
+
++ `parallel_case`：告诉综合工具去掉优先级逻辑，所有分支是并行同级关系
++ `full_case`：未使用到的 expression value 是无关紧要的，可优化掉这部分逻辑
+
+所以 unique case 实际上就相当于同时使能了 full_case 和 parallel_case，而 priority case 相当于只使能了 full_case。但是使用这两个新语法比 program 更健壮，可以减少风险。
+
+### if...else
+
+unique 和 priority 也可以用来限定 if-else 语句。仿真工具会按照我们书写顺序来评估每个条件，综合工具也会产生优先级逻辑来保持和仿真的一致性，但是通常，我们书写顺序并不是真正想要的效果。
+
++ `unique if...else` 表明设计者并不关心优先级，综合工具可以把优先级逻辑优化掉。
+
+        #!systemverilog
+        logic [2:0]  sel;
+        always_comb begin
+            unique if (sel == 3'b001) mux_out = a;
+              else if (sel == 3'b010) mux_out = b;
+              else if (sel == 3'b100) mux_out = c;
+        end
+
++ `priority if...else` 表明设计者关心优先级，所以工具要保留优先级逻辑。
+
+### summary
+
+!!! summary
+    + `++` 和 `--` 都是可综合的，但是工具支持并不好，为了健壮性，避免使用这两个操作符
+    + 新增的赋值操作符是可综合的，有些综合工具对部分操作符有限制，为了健壮性，避免使用这些赋值操作符
+    + `==?` 和 `!=?` 可综合的前提是右操作数是常数
+    + 增强性 for 循环也是可综合的，和 Verilog 中的 for 规则相同
+    + `do...while` 在某些条件下是可综合的，避免使用
+    + `break`, `continue`, `return` 都是可综合的，避免使用
+    + `unique`  和 `priority` 都是可综合的，可以提高设计的健壮性
 
 ## Chapter 8 Modeling Finite State Machine with Systemverilog
 
+使用前面 7 章介绍的新特性，使用 FSM 对一个交通灯控制系统建模的例子。和传统 Verilog 相比，有以下特点：
+
++ 统一使用 `logic` 代替 `reg`/`wire`
++ 使用 `always_comb` 和 `always_ff` 代替通用 `always`
++ begin...end 加了 name
++ 使用 enum 类型描述所有状态
+    + 明确类型为 `logic`（默认是 `int`，32-bit 2-state）
+    + 明确给出 label 的取值（方便控制编码类型，比如 one-hot, one-cold, binary 等）
+    + enum 变量只能用 label 赋值，不要用数字给 enum 变量赋值，也不要给部分 bit 赋值
++ 使用 `unique case` 代替普通 case
+    + 如果是 one-hot 编码，可以调换 case expression 和 case selection items 的位置，某些综合工具下面积更优
+
+```
+#!systemverilog
+module traffic_light (output logic green_light,
+                                   yellow_light,
+                                   red_light,
+                      input        sensor,
+                      input [15:0] green_downcnt,
+                                   yellow_downcnt,
+                      input        clock, resetN);
+
+    enum {R_BIT = 0,
+          G_BIT = 1,
+          Y_BIT = 2} state_bit;
+
+    enum logic [2:0] {RED    = 3'b001 << R_BIT,   // explicit enum definition
+                      GREEN  = 3'b001 << G_BIT,
+                      YELLOW = 3'b001 << Y_BIT} State, Next;
+
+    always_ff @(posedge clk, negedge resetN)
+        if (!resetN) State <= RED;
+        else         State <= Next;
+
+    always_comb begin: set_next_state
+        Next = State;   // the default for each branch below
+        unique case (1'b1)  // reversed case statement
+            State[R_BIT]: if (sensor)              Next = GREEN;
+            State[G_BIT]: if (green_downcnt  == 0) Next = YELLOW;
+            State[Y_BIT]: if (yellow_downcnt == 0) Next = RED;
+        endcase
+    end: set_next_state
+
+    always_comb begin: set_outputs
+        {red_light, green_light, yellow_light} = 3'b000;
+        unique case (1'b1)  // reversed case statement
+            State[R_BIT]: red_light    = 1'b1;
+            State[G_BIT]: green_light  = 1'b1;
+            Staet[Y_BIT]: yellow_light = 1'b1;
+        endcase
+    end: set_outputs
+
+endmodule
+```
+
 ## Chapter 9 Systemverilog Design Hierarchy
+
+### module prototypes
+
+大型设计可能会分散定义在几十个文件中，在模块中例化另外一个文件中的模块时，综合工具要做大量工作，包括检查这个文件的模块的定义，包括端口数量、端口位宽、甚至是端口顺序。SV 提供了 `external module` 语法在例化该模块的文件中声明模块原型，可以简化综合步骤。
+
+声明方式有两种：
+
+```
+#!systemverilog
+// Verilog-1995 style
+extern module counter (cnt, d, clock, resetN);
+
+// Verilog-2001 style
+extern module counter #(parameter N = 15)
+                       (output logic [N:0] cnt,
+                        input  wire  [N:0] d,
+                        input  wire        clock,
+                                           load,
+                                           resetN);
+```
+
+声明模块原型可以写在任何地方：在 module/interface 之外的声明实际上定义在 $unit 中，这时模块原型声明对于和这个文件一起综合的其他文件来说都是可见的。
+
+原型和模块的实际定义必须严格一致：包括端口顺序、端口位宽都必须相同，如果不同会报错。
+
+如果模块参数、端口非常多，重复写两遍非常麻烦，SV 提供了新语法 `.*` 解决这个问题。
+
+```
+#!systemverilog
+// prototype
+extern module counter #(parameter N = 15)
+                       (output logic [N:0] cnt,
+                        input  wire  [N:0] d,
+                        input  wire        clock,
+                                           load,
+                                           resetN);
+
+// difinition
+module counter ( .* );
+    always_ff @(posedge clk, negedge resetN)
+        if (!resetN)   cnt <= 0;
+        else if (load) cnt <= d;
+        else           cnt <= cnt + 1;
+endmodule
+```
+
+### named ending statements
+
+前面介绍了 SV 允许给 begin...end 后面加上名字，以提高代码可读性，实际上很多代码块都可以加上名字：
+
++ begin...end
++ package...endpackage
++ interface...endinterface
++ task...endtask
++ function...endfunction
++ module...endmodule
+
+### nested module declarations
+
+Verilog 中的模块默认是全局的可见的，所以在设计中的任何地方都可以访问这些模块的定义。这个机制简单强大，但是有两个问题：
+
++ 模块访问是无限制的，但是有时候我们希望隐藏某些模块，防止外部访问
++ 大型设计中可能产生命名冲突
+
+Verilog 虽然可以通过配置文件的方式解决问题，但是不够优雅。SV 为解决这个问题提供了一种方法：嵌套的模块定义。和 C 语言类似，嵌套的模块定义只能被父模块或者是同一层级结构的模块访问。
+
+为了可维护性一般都是一个文件放一个模块，且文件名和模块名相同，嵌套模块的方式显然违背了这个原则，所以嵌套模块应该和 \`include 配合使用。
+
+```
+#!systemverilog
+module ip_core (input logic clock);
+    `include sub1.v;    // sub1 is a nested module
+    `include sub2.v;    // sub2 is a nested module
+endmodule
+
+// stored in file sub1.v
+module sub1(...)
+    ...
+endmoudle
+
+// stored in file sub2.v
+module sub2(...)
+    ...
+endmoudle
+```
+### simplified netlists of module instances
+
+Verilog 提供了两种端口连接方式：
+
++ 按端口顺序连接：缺点太多，大部分情况都被禁止使用
++ 按端口名连接：优点是不容易出错，缺点是模块和端口数量较多时非常繁琐
+
+SV 提供了三种新的连接方式：
+
++  `.name` 方式：在许多端口连接上，信号名和端口名是一致的，这个时候就可以用这种方式，结合了端口顺序和端口名两种方式的优点。
+    
+
+        #!systemverilog
+        prom prom (
+            .dout (program_data),
+            .clk,
+            .address (program_address)
+            );
+
+    !!! note
+        1. 必须声明和端口同名的，用于连接的 var / net 信号
+        2. 连线的位宽必须和模块端口保持一致
+        3. 两个端口的也必须兼容
+        4. 无法使用 .name 方式连接的端口必须用端口名连接
+
++ `.*` 方式：比 .name 更进一步，例化模块时连信号名都不需要写，直接用通配符来匹配（条件同 .name）
+
+        #!systemverilog
+        prom prom (
+            .*,
+            .dout (program_data),
+            .address (program_address)
+            );
+
++ interface 方式：见下一章
+
+### net aliasing
+
+SV 新增了信号别名的语法，给信号起别名的 assign 语句有点像，但是并不完全相同。因为 assign 是单方向的，等号右边的信号的值可以传递给左边，但是左边的值无法传递给右边，而 `alias` 是双向的，因为本质上多个名字指向的是同一个资源。
+
+```
+#!systemverilog
+wire reset, rst, resetN, rstN;
+
+alias rst = reset;
+alias reset = resetN;
+alias resetN = rstN;
+
+alias rst = reset = resetN = rstN;
+```
+
+使用别名有几个约束：
+
++ 只能给 net 类型起别名
++ 只能在相同类型的 net 直接使用别名
++ 别名必须位宽相同
+
+别名也不需要预先显式地声明好才能用，它遵守 Verilg 中模块端口的隐式推断规则可以由工具自动推断出来：
+
++ alias 两端任何一个未声明的名字都会自动推断出一个 net 类型信号
++ 默认是 wire 类型
++ 如果 net 是模块端口信号，则其位宽和端口一致
++ 如果 net 不是端口信号，则默认是 1-bit
+
+虽然 `.*` 可以减少工作量，但是有个前提条件是：模块端口名必须一样，否则还是得用传统的端口连接方式。而这个问题可以通过 alias 解决：**只需要先用 alias 把不同端口名设置为别名即可，这些模块例化时端口列表只写 `.*` 即可**。
+
+### pass values through module ports
+
+Verilog 对什么信号可以做作为模块端口有严格的约束，而 SV 基本上把这些限制都去掉了，基本上任何类型都可以作为模块端口，包括任何类型的 packed/unpacked 数组、structure、union、用户自定义类型等。
+
+但是 SV 还是有两个约束，这两个约束都非常直白，都是为了建模的准确性而设立的：
+
++ 第一条是：var 类型只能有一个源驱动。因为 SV 中的 var 只是简单地保存赋值，所以有多个赋值时会保存最后一个赋值，而硬件在多驱动时的硬件行为并不是这样。所以 SV 要求只有 net 类型信号可以有多驱动。
++ 所有 unpacked 类型的信号（struct、union、array）作为端口连接时，必须一模一样，包括维度的数量、每个维度的大小、每个元素的位宽都必须一样。（隐含条件，struct、union 必须用 typedef 才能作为端口连接）。这个条件对 packed 类型并不其作用，因为 packed 类型是按照 vector 来处理的，SV/Verilog 有相应的规则处理位宽不匹配的情况
+
+### reference ports
+
+不可综合，略。
+
+### enhanced port declarations
+
+Verilog-1995 风格的端口声明已经没有人用了，但是 Verilog-2001 还是有点繁琐，
+
++ 所有端口都必须显式声明方向
++ 多个端口一起声明时，如果要改数据类型则必须连带方向一起声明（下例中的 a, b 和 ci）
++ 多个端口一起声明时，如果要改变端口位宽必须连带方向一起声明（下例中的 result 和 co）
+
+```
+#!systemverilog
+// verilog-2001
+module accum (inout  wire [31:0]  data,
+              output reg  [31:0]  result,
+              output reg          co,
+              input       [31:0]  a, b,
+              input  tril         ci     );
+    ...
+endmodule
+
+// SV
+module accm (wire  [31:0]  data,
+             output reg [31:0] result, reg co,
+             input [31:0] a, b, tril ci);
+    ...
+endmodule
+```
+
+!!! note
+    一般为了代码健壮性、减少错误，大部分 coding style 都规定还要一行一个端口地声明，不会用到这个特性。
+
+### parameterized types
+
+Verilog 中的 parameter 只能参数化端口位宽，SV 新增了一个可综合的新语法 `parameter type`，可以对端口类型进行参数化，进一步提高了模块的多态性。实际上 Verilog 模块端口类型一般只有 wire/reg，而且是固定的，所以也不需要对类型参数化，而 SV 中有很多类型，甚至用户可以自定义类型，所以类型参数化就有必要了。
+
+```
+#!systemverilog
+module adder #(parameter type ADDERTYPE = shortint)
+              (input  ADDERTYPE  a, b,  // redefinable type
+               output ADDERTYPE  sum,   // redefinable type
+               output logic      carry);
+    ADDERTYPE tmp;
+    ...
+endmodule
+
+module big_chip (...);
+    shortint        a, b, r1;
+    int             c, d, r2;
+    int unsigned    e, f, r3;
+    wire            carry1, carry2, carry3;
+
+    // 16-bit unsigned adder
+    adder  i1 (a, b, r1, carry1);
+
+    // 32-bit signed adder
+    adder  #(.ADDERTYPE(int))  i2 (c, d, r2, carry2);
+
+    // 32-bit unsigned adder
+    adder  #(.ADDERTYPE(int unsigned))  i3 (e, f, r3, carry3);
+endmoudle
+```
+
+### summary
+
+!!! 本章小结
+    + 必要时给 begin...end 后面加上 name，增强可读性
+    + nested module 和 \`include 配合使用
+    + 顶层集成用 `.*` 配合 alias 减少工作量
+    + 为了减少错误，避免使用增强型的端口声明语法
 
 ## Chapter 10 Systemverilog Interfacees
 
-## Coding Style Guide
+### concepts
 
-参考 lowRISC 的 [coding style guide][guide]。
+### interface declration
 
-[guide]:https://github.com/lowRISC/style-guides
+### using interface
 
+### instantiating and connecting interface
+
+### referencing signals within an interface
+
+### interface modports
+
+### using task/function in interface
+
+### using procedural blocks in interface
+
+### reconfigurable interface
+
+### summary
+
+!!! 本章小结
+    + 
