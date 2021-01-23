@@ -1550,11 +1550,82 @@ endmodule
 
 ### interface declration
 
-### using interface
+从语法上来说，interface 的定义和 module 非常像，interface 也可以有端口，这样外部信号就可以被引入 interface  成为信号的一部分。Interface 内部还可以定义任何数据类型，包括 var、net、用户自定义类型等。
+
+Interface 可以定义在全局，就和普通 module 一样，其他 module 可以直接使用 interface，编译顺序对工具没有影响，所以 interface 可以先使用后编译。Interface 也可以定义在一个 module 内部，仅限内部使用。
+
+```
+#!systemverilog
+// 上例的 main_bus 可以把 clock 和 reset 也引入到 interface 中
+interface main_bus (input logic clock, resetN, test_mode);
+    // signal definition
+endinterface
+
+module top (input logic clock, resetN, test_mode);
+
+    main_bus bus (.*);  // using .* connections
+
+    // method 1
+    processor proc1 (
+        .bus (bus),
+        .jump_address (jump_address),
+        .instruction (instruction)
+        );
+    // method 2
+    processor proc1 (.*);
+```
+
+### using interface as module ports
+
+Interface 可以作为 module 端口的一部分，而且不需要声明 input/output 等方向。一共有两种方式声明 interface 端口。
+
++ 使用 interface 的名字来声明 module 端口，这种端口只能连接到同名的 interface 端口上，目的是避免端口不匹配
++ 直接用 `interface` 这个关键字来声明端口，这种是通用的 interface 端口，其他任何类型的 interface 端口都可以连接到这个端口上
+
+这两种写法都是可综合的。
+
+```
+#!systemverilog
+// method 1
+// module <module_name> (<interface_name> <port_name>);
+
+interface chip_bus;
+    ...
+endinterface
+
+module CACHE (chip_bus pins,
+              input    clcok);
+    ...
+endmodule
+
+// method 2
+// module <module_name> (interface <port_name>);
+module RAM (interface pins,
+            input     clock);
+    ...
+endmodule
+```
 
 ### instantiating and connecting interface
 
+interface 和 module 一样都可以例化，然后连接起来，连接的语法也和 module 一样，可以用 .name，.* 等方式（前面 main_bus 的例子）。interface 还可以嵌套，比如 sub_bus 和 main_bus 都可以定义成 interface，且 sub_bus 是 main_bus 的组成部分。
+
+!!! note
+    一个 module 的 interface 端口必须连接到其他 interface instance 或者是另外一个 module 的 interface 端口上，不能悬空。
+
 ### referencing signals within an interface
+
+使用 interface 中的信号必须通过下面的方式：
+
+```
+#!systemverilog
+// <port_name>.<internal_interface_signal_name>
+
+always @(posedge bus.clock, negedge bus.resetN)
+    ...
+```
+
+因为这种方式必须把端口名前缀加上，所以为了减少工作量、提高可读性，建议给 port 起个简短的名字。
 
 ### interface modports
 
@@ -1562,9 +1633,18 @@ endmodule
 
 ### using procedural blocks in interface
 
+interface 内部还可以定义 `always`, `always_comb`, `always_ff`, `always_latch`, `initial`, `final`, `assign` 等语句块，在 Interface 中定义这些语句块的一种应用场景是做验证：在 interface 中定义相关协议的 checker，这样每次通过 interface 传递数据时，内置的 checker 会自动检查是否满足相关约束。
+
 ### reconfigurable interface
+
+interface 可以像 module 一样使用 parameter，也可以使用 generate 语句，所以可以定义参数化的 interface，方便复用。
+
+```
+#!systemverilog
+// example 10-12
+```
 
 ### summary
 
 !!! 本章小结
-    + 
+    + named interface port 和 generic interface ports 都是可综合的
