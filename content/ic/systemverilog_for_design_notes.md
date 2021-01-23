@@ -1510,6 +1510,44 @@ endmoudle
 
 ### concepts
 
+Verilog 中是通过模块端口进行连接，这种方式在端口数量非常多的时候很繁琐，比如说多个模块连接到总线上时，
+
++ 每个模块定义处都要声明总线的所有信号
++ 顶层集成时也要把每个模块的所有端口都写出来
++ 信号很多时连线可能出错
++ 如果总线变了，多个地方都要同步修改
+
+SV 新增了一个叫 `interface` 的语法，可以把一组端口定义成一个端口，这样使用/修改起来就非常方便了。interface 并不是简单的把信号组合打包在一起，它里面还可以定义其他功能代码，比如其他离散的信号、接口的协议、检查协议的验证代码等：
+
++ type declration
++ task/function
++ procedural block
++ program block
++ assertion
+
+```
+#!systemverilog
+interface main_bus;
+    wire    [15:0] data;
+    wire    [15:0] address;
+    logic   [ 7:0] slave_instruction;
+    logic          slave_request;
+    logic          bus_grant;
+    logic          bus_request;
+    logic          slave_ready;
+    logic          data_ready;
+    logic          mem_read;
+    logic          mem_write;
+endinterface
+
+module processor (
+    main_bus    bus,
+    output logic [15:0] jump_address
+    //...);
+
+endmodule
+```
+
 ### interface declration
 
 ### using interface
