@@ -1,12 +1,11 @@
 Title: Patterson and Hennessy 学习笔记 #2 —— Chapter 2 Instructions: Language of the Computer 
-Date: 2020-06-13 12:55
+Date: 2020-11-29 21:49
 Category: IC
 Tags: Patterson and Hennessy
 Slug: learning_patterson_and_hennessy_notes_2_chapter_2
 Author: Qian Gu
 Series: Patterson & Hennessy Notes
 Summary: Patterson and Hennessy 读书笔记，第二章
-Status: draft
 
 > I speak Spanish to God, Italian to women, French to men, and German to my horse.
 > 
@@ -87,23 +86,14 @@ RISC 采用的是 little-endian 类型。
 
 ## Addressing Modes
 
-RISC-V 一共有 4 种寻找模式，
+RISC-V 一共有 4 种寻址模式，
 
-1. **Immediate addressing，立即数寻址**
-
-    操作数是常数，保存在指令当中。
-
-2. **Register addressing，寄存器寻址**
-
-    操作数保存在寄存器中。
-
-3. **Base/displacement addressing，基址寻址**
-
-    操作数保存在 memory 中，其地址为寄存器和指令中常数相加的结果。
-
-4. **PC-relative addressing，PC 相对寻址**
-
-    分支指令中，跳转地址为 PC 和指令中的常数相加的结果。
+| 寻址类型 | 含义 |
+| ------ | ---- |
+| **Immediate addressing，立即数寻址** | 操作数是常数，保存在指令当中 |
+| **Register addressing，寄存器寻址** | 操作数保存在寄存器中 |
+| **Base/displacement addressing，基址寻址** | 操作数保存在 memory 中，其地址为寄存器和指令中常数相加的结果 |
+| **PC-relative addressing，PC 相对寻址** | 分支指令中，跳转地址为 PC 和指令中的常数相加的结果 |
 
 ## Fallacies and Pitfalls
 
@@ -124,7 +114,7 @@ RISC 和 CISC 之争，现在的趋势是大部分都转向 RISC，连 x86 指�
 2. 可移植性差
 3. 难以维护
 
-**陷阱：商用计算机二进制向后兼容的重要性意味着成功的指令及不需要改变**
+**陷阱：商用计算机二进制向后兼容的重要性意味着成功的指令集不需要改变**
 
 x86 指令的演变用事实说明，在保持向后兼容神圣不可侵犯的同时，也要不断地添加新指令。
 
@@ -149,7 +139,7 @@ stored-program 计算机的两大准则，
 
 基于这两个概念，一台计算机上就可以运行不同的程序，应用在各个领域。
 
-为机器选择指令集需要在指令数量、单条指令的运行 cycle 数、时钟频率等因素之间做精妙的平衡。本章提供了 3 条准则来指导指令集的作者如何做一些 tricky 的折中，
+为机器选择指令集需要在指令数量、单条指令的运行 cycle 数、时钟频率等因素之间做精妙的平衡。本章提供了 3 条准则来指导指令集的设计者如何做一些 tricky 的折中，
 
 1. Simplicity favors regularity.
 2. Smaller is faster.

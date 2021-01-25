@@ -1,10 +1,11 @@
 Title: 《SystemVerilog for Design》笔记
-Date: 2021-01-22 19:21
+Date: 2021-01-27 21:01
 Category: IC
 Tags: SystemVerilog
 Slug: systemverilog_for_design_notes
 Author: Qian Gu
-Summary: 读书笔记
+Summary: 读书笔记，总结 SV 新语法
+Status: draft
 
 !!! note
     1. 本书假定读者已经掌握了 Verilog，主要内容是从对比角度介绍 SV 如何让设计者在更高层次对硬件进行建模，如何更高效地进行开发
@@ -26,11 +27,11 @@ SV 的标准：
 
 ## Chapter 2 SystemVerilog Declration Spaces
 
-Verilog 中的 `wire`, `reg`, `task`, `function` 只能声明在 `module` 内部，这样做的缺点就是：同一个 taks、function 要在多个 module 中进行重复声明，不仅增加工作量，还可能导致多个相同功能的副本不对齐的错误。
+Verilog 中的 `wire`, `reg`, `task`, `function` 只能声明在 `module` 内部，这样做的缺点就是：同一个 taks、function 要在多个 module 中进行重复声明，不仅增加工作量，还可能出现多个相同功能的副本不对齐的错误。
 
-### Package
+### package
 
-`package` 可以解决上述问题，在其内部可以声明的有，
+SV 新增的 `package` 可以解决上述问题，在其内部可以声明的有，
 
 + `parameter`, `localparam`
 + `const`
@@ -97,7 +98,7 @@ endmoule
 
 ## Chapter 3 SystemVerilog Literal Values and Built-in Data Types
 
-### Literal assigments
+### literal assigments
 
 Verilog 中赋值全 1 的方法是不可扩展的（line 8），只能通过一些小技巧来实现（line 9～10）：
 
@@ -171,7 +172,7 @@ int unsigned u_int;  // unsigned 32-bit variable
 
 ### static and automatic variable
 
-Verilog-1995 中所有的 varibale 都是 static 类型的，因为它们都是用来对硬件建模的，所以天然就是 static 类型。到了 Verilog-2001，task 和 function 中的 variable 可以声明成 automatic 类型，意味着这个 variable 的存储空间是由工具自动动态分配的，不再使用时会自动释放空间。automatic 类型主要是用来做验证或者是总线的功能模型。它有个作用是在多次调用的 task 中，以使得在前一个 task 没有结束时可以进行下一次调用。
+Verilog-1995 中所有的 varibale 都是 static 类型的，因为它们都是用来对硬件建模的，所以天然就是 static 类型。到了 Verilog-2001，task 和 function 中的 variable 可以声明成 automatic 类型，意味着这个 variable 的存储空间是由工具自动动态分配的，不再使用时会自动释放空间。automatic 类型主要是用来做验证或者是总线的功能模型。它有个作用是在多次调用的 task 中，使得在前一个 task 没有结束时可以进行下一次调用。
 
 ### type casting
 
@@ -243,16 +244,18 @@ enum {WAIT, LOAD, STORE} State, NextState;
     module FSM (...);
         enum {GO, STOP} fsm1_state;
         enum {WAIT, GO, DONE} fsm2_state;
+    endmodule
 
     // Ok
     module FSM (...);
         always @(posedge clk) begin: fsm1
             enum {STOP, Go} fsm1_state;
-            end
+        end
 
-    always @(posedge clk) begin: fsm2
-        enum {WAIT, GO, DONE} fsm2_state;
-    end
+        always @(posedge clk) begin: fsm2
+            enum {WAIT, GO, DONE} fsm2_state;
+        end
+    endmodule
 
 enumerate 数据类型默认是 int 类型（32-bit 的 2-state 类型），list 中的第一个 label 的值为 0, 第二个为 1, 依次类推，每个 label 会根据前面的取值自动 +1，所以没必要把每个 label 的取值都显式地写出来。但是不同 label 的取值必须不同。
 
@@ -398,7 +401,7 @@ struct 默认是 unpacked 模式，即内部的成员是相互独立的，标准
 +--------------+--------------+
 | valid | tag  | data         |
 +--------------+--------------+
-   40    39  32 31           0
+ 40      39  32 31           0
 ```
 
 packed struct 存储时是按照 vector 处理的，所以对它的操作也和 vector 相同，可以对其进行数学运算、逻辑操作等。
@@ -481,8 +484,8 @@ union 也可以和 struct 一样用 typedef 声明成用户自定义类型，如
         typedef struct packed {
             logic [15:0] source_addr;
             logic [15:0] dst_addr;
-            logic [31:0] data;
-            logic [7:0] opcode;
+            logic [23:0] data;
+            logic [ 7:0] opcode;
         } data_packet_t;
 
         union packed {
@@ -758,7 +761,7 @@ struct {                     // unpacked structure
 int sum [1:8][1:3];
 
 foreach (sum[i, j])
-    sum[i][j] = i +j;
+    sum[i][j] = i + j;
 
 function [15:0] gen_crc (logic [15:0][7:0] d);
     foreach (gen_crc[i]) gen_crc[i] = ^d[i];
@@ -853,7 +856,7 @@ endfunction
 ```
 #!systemverilog
 always_latch
-    if (en) q <= d;
+    if (en) q = d;
 ```
 
 ### always_ff
@@ -1037,7 +1040,7 @@ if (13 inside {d_array})    // test if value 13 occurs anywhere in array d_array
 
 ### for loops
 
-Verilog 中 for 循环的 index 变量必须声明在循环外部，如果一个模块中有多个 for 循环，而且要保证名字相互之间不同，或者把声明放到 always 块中，这时候可以重名。
+Verilog 中 for 循环的 index 变量必须声明在循环外部，如果一个模块中有多个 for 循环，而且要保证名字相互之间不同，或者把声明放到 always 块中，这时候才可以重名。
 
 SV 做了一下增强：
 
@@ -1055,7 +1058,7 @@ SV 做了一下增强：
     + automatic 变量不能在外部访问
     + automatic 变量无法 dump 到 VCD 文件中
 
-    所以 for 循环外部是无法访问这写变量的，如果一定要访问，那么就要挪到 for 外部定义。
+    所以 for 循环外部是无法访问这个变量的，如果一定要访问，那么就要挪到 for 外部定义。
 
 + 一次可以声明多个变量，和 C 语言类似
 
@@ -1066,7 +1069,7 @@ SV 做了一下增强：
 
 ### do...while loop
 
-`do...while` 和 `while` 一样，在某些限制条件（这些条件是要能让综合器可以静态地判断循环次数，和 for 类似）下是可综合的，一般来说 RTL 中机会不会使用这两种语法，略。
+`do...while` 和 `while` 一样，在某些限制条件（这些条件是要能让综合器可以静态地判断循环次数，和 for 类似）下是可综合的，一般来说 RTL 中不会使用这两种语法，略。
 
 ### foreach
 
@@ -1122,9 +1125,9 @@ endtask
 
 ```
 #!systemverilog
-begin: <block name>
+begin: <block_name>
     ...
-end
+end: <block_name>
 ```
 
 ### statement label
@@ -1577,7 +1580,7 @@ module top (input logic clock, resetN, test_mode);
 
 ### using interface as module ports
 
-Interface 可以作为 module 端口的一部分，而且不需要声明 input/output 等方向。一共有两种方式声明 interface 端口。
+Interface 可以作为 module 端口的一部分，而且不需要声明 input/output 等方向。一共有两种方式声明 interface 端口：
 
 + 使用 interface 的名字来声明 module 端口，这种端口只能连接到同名的 interface 端口上，目的是避免端口不匹配
 + 直接用 `interface` 这个关键字来声明端口，这种是通用的 interface 端口，其他任何类型的 interface 端口都可以连接到这个端口上
@@ -1610,7 +1613,7 @@ endmodule
 
 interface 和 module 一样都可以例化，然后连接起来，连接的语法也和 module 一样，可以用 .name，.* 等方式（前面 main_bus 的例子）。interface 还可以嵌套，比如 sub_bus 和 main_bus 都可以定义成 interface，且 sub_bus 是 main_bus 的组成部分。
 
-!!! note
+!!! warning
     一个 module 的 interface 端口必须连接到其他 interface instance 或者是另外一个 module 的 interface 端口上，不能悬空。
 
 ### referencing signals within an interface
@@ -1629,7 +1632,165 @@ always @(posedge bus.clock, negedge bus.resetN)
 
 ### interface modports
 
+interface 为模块端口连接提供了一种新方式，但是从不同模块的角度看，端口是不一样的。比如一组总线，从 slave 模块看，interrupt_request 很可能是输出端口，而从 master 模块看，它是一个输入端口。SV 提供了一种新语法来解决这个问题：用 module port 的缩写 `modport` 关键字来定义端口。一个 interface 可以有任意多个 modport，每个 modport 描述了每个相关模块角度看到的 interface 端口的方向。
+
+```
+#!systemverilog
+interface chip_bus (input logic clock, resetN);
+    logic interrupt_request, grant, ready;
+    logic [31:0] address;
+    logic [63:0] data;
+
+    modport master (input  interrupt_request,
+                    input  address,
+                    output grant, ready,
+                    inout  data,
+                    input  clock, resetN);
+
+    modport slave  (output interrupt_request,
+                    output address,
+                    input  grant, ready,
+                    inout  data,
+                    input  clock, resetN);
+
+endinterface
+```
+
+如上所示，modport 的定义不需要包含 vector 的位宽及数据类型（这些信息在 interface 中已定义好），只需要定义方向即可。
+
+定义好之后，具体使用时要声明是从哪个角度看待 interface，即要选择具体是哪个 modport。SV 提供了两种方式：
+
++ modport 作为 interface 的一部分在模块**例化时**确定
+
+    同时例化一个 module 和 interface，然后在连接它们时确定 modport。
+
+        #!systemverilog
+        // <interface_instance_name>.<modport_name>
+
+        interface chip_bus (input logic clock, resetN);
+            modport master (...);
+            modport slave  (...);
+        endinterface
+
+        module primary  (interface pins);   // generic interface port
+            ...
+        endmodule
+
+        module secondary (chip_bus pins);   // specific interface port
+            ...
+        endmodule
+
+        module chip (input logic clock, resetN);
+
+            chip_bus    bus (clock, resetN);
+
+            primary     i1  (bus.master);
+
+            secondary   i2  (bus.slave);
+
+        endmodule
+
++ modport 作为模块端口的一部分在模块**定义时**确定
+
+        #!systemverilog
+        // <interface_name>.<modport_name>
+
+        interface chip_bus (input logic clock, resetN);
+            modport master (...);
+            modport slave  (...);
+        endinterface
+
+        module primary  (chip_bus.master pins);
+            ...
+        endmodule
+
+        module secondary (chip_bus.slave pins);
+            ...
+        endmodule
+
+        module chip (input logic clock, resetN);
+
+            chip_bus    bus (clock, resetN);
+
+            primary     i1  (bus);
+
+            secondary   i2  (bus);
+
+        endmodule
+
+这两种风格都是可综合的，但是只能选择其中一种，不能同时混用：在定义和例化时都使用 modport 会报错。
+
+即使 interface 中定义了 modport，但是实际中没有使用时，信号会有默认的方向：
+
++ 所有的 net 都是双向端口 `inout`
++ 所有的 var 都是 `ref` 类型端口
+
+在实际使用过程中，很有可能出现这种情况：interface 定义了一大组信号，但是不同 module 分别只需要看到其中的部分信号。显然把 interface 的所有信号都连到每个 module 上很浪费；而为每个 module 定义各自的 interface 又失去了 interface 的意义。
+
+使用 modport 可以为每个 module 定义一种不同的 interface view，从而解决这个问题。因为每个 module 只能访问 modport 内的信号，所以可以利用这个特性对某些 module 隐藏 interface 中的特定信号。如果一个 module 没有用 modport 连接 interface，那么 interface 中定义的信号这个 module 都可以访问。
+
 ### using task/function in interface
+
+假设有个 master 和 slave 通过总线交互的场景，在传统的 Verilog 代码中，master 和 slave 必须各自包含一些监控端口和处理握手的逻辑。这些逻辑分散在 master 和 slave 模块的定义中，会导致功能重叠的代码，而且不易维护，一旦总线有任何修改，相应的所有模块都需要修改。
+
+SV 的 interface 内部可以定义 function/task，从而可以把总线相关的逻辑功能代码都放在 interface 中集中管理，这样相关逻辑代码只需要写一次。这些 function/task 叫做 interface method，它们可以像在 module 中一样，访问 interface 内的任何信号。具体使用时，module 首先连接到 interface，然后通过端口名前缀的方式就可以使用某个 method 了。
+
+如果 interface 是通过 modport 使用，那么 method 必须通过 `import` 导入在 modport 内，有两种方式可用：
+
++ 通过 method 名导入
+
+        #!systemverilog
+        // modport (import <task_function_name>);
+
+        modport in (import Read,
+                    import parity_en,
+                    input  clock, resetN);
+
++ 通过 method 原型导入
+
+    这种方式要求 import 后面加上 task/function 关键字，method 名字后面还要有包含参数的圆括号。如果 interface 定义在另外一个 package 文件中时，这种方式可以提高代码可读性。
+
+        #!systemverilog
+        // modport (import task <task_name>(<task_formal_arguments));
+        // modport (import function <function_name>(<formal_args));
+
+        modport in (import task Read(input  [63:0] data,
+                                     output [31:0] address),
+                    import function parity_gen(input [63:0] data),
+                    input  clock, resetN);
+
+通过 modport 把 function/task 导入之后，module 就可以使用这些逻辑了，使用方式和使用 interface 内的信号一样，加上 interface 端口名前缀即可。
+
+!!! warning
+    为了保证可综合，导入的 task/function 必须是 automatic 类型，而且内部不能包含 static 声明。
+
+```
+#!systemverilog
+interface math_bus (input logic clock, resetN);
+    int a_int, b_int, result_int;
+    
+    task IntegerRead (output int a_int, b_int);
+        ... // do handshaking to fetch a and b values
+    endtask
+
+    modport int_io (import IntegerRead,
+                    input  clock, resetN,
+                    output result_int);
+endinterface
+
+module top (input logic clock, resetN);
+    math_bus bus (clock, resetN);   // instance of interface
+
+    integer_math_unit i1 (bus.int_io);  // connect to interface
+endmodule
+
+module integer_math_unit (interface io);
+    int a_reg, b_reg;
+
+    always @(posedge io.clock)
+        io.IntegerRead(a_reg, b_reg);   // call method in interface
+endmodule
+```
 
 ### using procedural blocks in interface
 
@@ -1638,13 +1799,32 @@ interface 内部还可以定义 `always`, `always_comb`, `always_ff`, `always_la
 ### reconfigurable interface
 
 interface 可以像 module 一样使用 parameter，也可以使用 generate 语句，所以可以定义参数化的 interface，方便复用。
-
-```
-#!systemverilog
-// example 10-12
-```
+（example 10-12）
 
 ### summary
 
 !!! 本章小结
     + named interface port 和 generic interface ports 都是可综合的
+    + modport 的两种使用方式都是可综合的
+    + module 导入 interface 中的 function/task 是可综合的，综合时会自动在模块中产生一份本地电路，综合后的模块内已经包含了这些逻辑，不再需要去 interface 中查询
+
+## Chapter 11 A Complete Design Modeled with SystemVerilog
+
+一个用 SV 设计的通信领域的异步传输机制 ATM (Asynchronous Transfer Mode) 原型，用到了以下特性：
+
+| 问题 | 解决方法 |
+| ----- | ----- |
+| 动态表示相同长度的两种数据包 | 用 packed struct + packed union 封装不同数据类型 |
+| 定义总线 | 用 interface(modport + method) 封装总线接口和协议、简化代码 |
+| 定义多种实现方式 | 带 parameter 的可重定义 interface |
+| 全局定义 | 类似 C 语言的 include 头保护 `ifndef`...`define`...`endif` |
+| 定义状态机的状态 | enum 类型 |
+| 定义状态机跳转 | 使用 unique case |
+| generate 语句 | index 自增减少代码量 |
+| 多层 begin...end 嵌套 | 加上 label 增强可读性 |
+| 封装功能代码 | module 内定义 function |
+| 
+
+## Chapter 12 Behavioral and Transaction Level Modeling
+
+虽然有些特定的综合工具可以处理特定的 TLM，大部分情况下 Transaction Level Modeling(TLM) 大部分情况下都是不可综合的，略。

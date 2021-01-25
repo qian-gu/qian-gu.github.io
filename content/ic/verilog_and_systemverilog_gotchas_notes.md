@@ -4,6 +4,7 @@ Category: IC
 Tags: Verilog, SystemVerilog
 Slug: verilog_and_systemverilog_gotchas_notes
 Author: Qian Gu
+Status: draft
 Summary: 读书笔记
 
 !!! note
@@ -14,11 +15,11 @@ Summary: 读书笔记
 
 Stuart Sutherland 是 Verilog 和 SV 标准的起草者，也是业界培训大佬，写了很多著名的书和培训教程。
 
-Q：什么是陷阱？
+Q：什么是陷阱 `Gotcha`？
 
 A：符合语法规则，但是结果并不符合预期，比如常见的 C 语言中 `if(a=b)` 把比较写成了赋值。
 
-产生陷阱的原因：
+Verilog/SV 产生陷阱的原因：
 
 + 继承自 C/C++ 的陷阱
 + 松散的类型操作，即操作符可以执行任意类型的数据
@@ -42,7 +43,7 @@ SV 的标准：
 | ------- | ----- |
 | VHDL 大小写不敏感，而 V/SV 大小写敏感 | 良好的 coding style |
 | 笔误和忘记声明会导致工具自动推断出未声明的隐式 wire，可能导致功能错误 | 高级编辑器 or 使用 `.name` 或 `.*` 方式连接端口 |
-| 自动推断的内部隐式 wire 只有 1bit，可能导致位宽不匹配 | 工具会报端口位宽不匹配 |
+| 自动推断出的内部隐式 wire 只有 1bit，可能导致位宽不匹配 | 工具会报端口位宽不匹配 |
 | 多个文件使用 $unit 可能会导致命名冲突 | 使用 package 代替 $unit |
 | 枚举类型 import 并不能导入其定义的标签 | 明确 import 标签 or 使用 `*` 通配符 |
 | 使用 `*` import 多个 package 可能导致命名冲突 | 对于重复的标识符使用明确的 import 声明 |
@@ -62,3 +63,6 @@ SV 的标准：
 
 ## 工具兼容性陷阱
 
+## Ref
+
+[Verilog and SystemVerilog gotchas](https://book.douban.com/subject/2859647/)
