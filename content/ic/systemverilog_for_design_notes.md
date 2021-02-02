@@ -91,7 +91,7 @@ endmoule
 
 ### summary
 
-!!! 本章小结
+!!! important
     + 不要在 $unit 中做任何声明，所有的声明都应该放在有名字的 package 中
     + 在必要时可以把 package 导入到 $unit 中（比如某些 module/interface 中包含了定义在 package 中的自定义类型）
     + **不推荐使用 $unit，应该用 package 来规避相应风险。**
@@ -195,7 +195,7 @@ Verilog 只能在 assign 时进行类型转化，或者是调用系统函数 sig
 
 + dynamic(run time) cast 动态转化（系统函数 $cast），是不可综合的
 
-!!! 本章小结
+!!! important
     + 声明只包含 data type（`logic`, `bit`），没有 type 时，默认推断出 varibale
     + 关键字 `var` 是可选的，并不会影响综合和仿真行为，只是增加代码可读性
     + 只有 `var` 没有 data type 时，默认是 logic 类型
@@ -315,7 +315,7 @@ enum 和 typedef 配合使用时，叫做 typed enumerated type，用 import 时
 
 ### summary
 
-!!! 本章小结
+!!! important
     + typedef 可以提高代码可读性，命名使用 `_t` 结尾
     + enum 是 semi-strong type，可以提高设计的安全，import 时注意 label 的导入
 
@@ -796,7 +796,7 @@ endfunction
 
 ### summary
 
-!!! 本章小结
+!!! important
     + unpacked/packed struct 都是可综合的
     + struct 可以作为端口在 module、interface、task/function 之间连接
     + 只有 packed union 是可综合的，unpacked union 是不可综合的
@@ -856,7 +856,7 @@ endfunction
 ```
 #!systemverilog
 always_latch
-    if (en) q = d;
+    if (en) q <= d;
 ```
 
 ### always_ff
@@ -954,7 +954,7 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
 
 ### summary
 
-!!! 本章小结
+!!! important
     + `always_comb`, `always_latch`, `always_ff` 都是可综合的，用它们取代 `always` 增强设计
     + 用 void function 代替 tasks，提高设计的安全性
 
@@ -1503,7 +1503,7 @@ endmoudle
 
 ### summary
 
-!!! 本章小结
+!!! important
     + 必要时给 begin...end 后面加上 name，增强可读性
     + nested module 和 \`include 配合使用
     + 顶层集成用 `.*` 配合 alias 减少工作量
@@ -1582,8 +1582,8 @@ module top (input logic clock, resetN, test_mode);
 
 Interface 可以作为 module 端口的一部分，而且不需要声明 input/output 等方向。一共有两种方式声明 interface 端口：
 
-+ 使用 interface 的名字来声明 module 端口，这种端口只能连接到同名的 interface 端口上，目的是避免端口不匹配
-+ 直接用 `interface` 这个关键字来声明端口，这种是通用的 interface 端口，其他任何类型的 interface 端口都可以连接到这个端口上
++ 使用 interface 的名字来声明 module 端口，这种端口只能连接到同名的 interface 端口上，目的是避免端口不匹配（推荐使用）
++ 直接用 `interface` 这个关键字来声明端口，这种是通用的 interface 端口，其他任何类型的 interface 端口都可以连接到这个端口上（避免使用）
 
 这两种写法都是可综合的。
 
@@ -1660,7 +1660,7 @@ endinterface
 
 定义好之后，具体使用时要声明是从哪个角度看待 interface，即要选择具体是哪个 modport。SV 提供了两种方式：
 
-+ modport 作为 interface 的一部分在模块**例化时**确定
++ modport 作为 interface 的一部分在模块**例化时**确定（避免使用）
 
     同时例化一个 module 和 interface，然后在连接它们时确定 modport。
 
@@ -1690,7 +1690,7 @@ endinterface
 
         endmodule
 
-+ modport 作为模块端口的一部分在模块**定义时**确定
++ modport 作为模块端口的一部分在模块**定义时**确定（推荐使用）
 
         #!systemverilog
         // <interface_name>.<modport_name>
@@ -1803,10 +1803,11 @@ interface 可以像 module 一样使用 parameter，也可以使用 generate 语
 
 ### summary
 
-!!! 本章小结
+!!! important
     + named interface port 和 generic interface ports 都是可综合的
     + modport 的两种使用方式都是可综合的
     + module 导入 interface 中的 function/task 是可综合的，综合时会自动在模块中产生一份本地电路，综合后的模块内已经包含了这些逻辑，不再需要去 interface 中查询
+    + 永远不要使用 task，用 void function 代替 task
 
 ## Chapter 11 A Complete Design Modeled with SystemVerilog
 
