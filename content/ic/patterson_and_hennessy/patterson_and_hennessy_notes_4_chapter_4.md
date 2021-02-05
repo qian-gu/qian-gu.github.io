@@ -72,8 +72,8 @@ $$T_{pipe} = T_0$$
 | 类型 | 含义 | 解决方法 |
 | ----- | ---- | ----- |
 | 结构冒险 `structural hazard` | 硬件 busy 无法计算下一条指令 | 硬件资源复制 |
-| 数据冒险 `data hazard` | 数据依赖 RAW 等 | `forwarding` 可以解决部分流水线停顿 |
-| 控制冒险 `contrl hazard`/ 分支冒险 `branch hazard` | 取指不正确导致指令不能在预定时钟周期内执行 | `prediction` 下一条指令，`BTB`/ `BTH` |
+| 数据冒险 `data hazard` | 数据依赖 RAW 等 | `forward` / `rename` |
+| 控制冒险 `contrl hazard`/ 分支冒险 `branch hazard` | 取指不正确导致指令不能在预定时钟周期内执行 | `prediction`(`BTB`/`BTH`) / delay slot |
 
 基本上每个 stage 都有对应的核心问题需要解决，各种各样的解决方案实现复杂度、消耗的资源和达到的性能都不相同，这些解决方案按照不同的方式组合在一起，就形成了高中低等不同系列的 CPU。关于每个 stage 的问题及解决方案可以扩展出很多内容，更详细的内容略。
 
