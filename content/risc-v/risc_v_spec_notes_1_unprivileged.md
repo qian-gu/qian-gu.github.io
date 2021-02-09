@@ -19,7 +19,7 @@ RISC-V 的目标可以说非常宏大、也非常务实，可以用这几个关�
 + Volume I: Unpriviledge ISA
 + Volume II: Priviledge ISA
 
-在设计这些 ISA 时都遵循了尽量移除对特定微架构的依赖，这样在简化 ISA 同时也保证了实现时最大程度的灵活性。
+在设计这些 ISA 时都遵循了“尽量移除对特定微架构依赖”的原则，这样可以在简化 ISA 同时保证实现最大程度的灵活性。
 
 !!! tip
     ISA 作为软件和硬件之间的接口，其地位非常重要。曾经有很多各种各样的 ISA，其中大部分都随着历史消亡了，只剩下个别占领了市场主流，并不断演进。但是目前大部分 ISA 被商业产权保护，普通人无法使用，而且因为要向后兼容而有历史包袱，在这样的背景下，RISC-V 最早起源于 UC Berkeley 的教学需求，逐渐发展壮大，如今在业界如火如荼。
@@ -133,7 +133,7 @@ Memory 系统既可以是大端模式，也可以是小端模式，但是指令�
 I 子集只涉及通用寄存器，CSR 寄存器在后面的 `Zicsr` 部分介绍。
 
 !!! tip
-    在一个 ISA 中寄存器的个数对代码体积、性能、功耗有巨大的影响。到底应该设计多少个 register 也是有讲究的，有种意见是对于 I 子集只用 16bit 的指令编码 16 个 register 就已经足够了，但是如果指令中包含 3 个寄存器地址，则光地址就需要 12bit，只剩了 4bit 来编码 opcode，这基本上是不可能的。而如果指令只包含 2 个地址，那么实现相同功能就需要更多的指令，降低效率。为了简化硬件设计也应该避免 24bit 这种中间长度的指令格式，所以最终选择了 32bit 的指令来编码 32 个寄存器。寄存器数量多一些对性能提升也有帮助，比如 loop unrolling, software pipelining, cache tiling。
+    一个 ISA 中寄存器的个数对代码体积、性能、功耗有巨大的影响。到底应该设计多少个 register 也是有讲究的，有种意见是对于 I 子集只用 16bit 的指令编码 16 个 register 就已经足够了，但是如果指令中包含 3 个寄存器地址，则光地址就需要 12bit，只剩了 4bit 来编码 opcode，这基本上是不可能的。而如果指令只包含 2 个地址，那么实现相同功能就需要更多的指令，降低效率。为了简化硬件设计也应该避免 24bit 这种中间长度的指令格式，所以最终选择了 32bit 的指令来编码 32 个寄存器。寄存器数量多一些对性能提升也有帮助，比如 loop unrolling, software pipelining, cache tiling 这些技术都对寄存器数量有很大的需求。
 
 ### Format
 
@@ -168,9 +168,9 @@ I 子集只涉及通用寄存器，CSR 寄存器在后面的 `Zicsr` 部分介�
 
     立即数的符号位扩展是其关键路径之一，RISC-V 把所有立即数的符号位都放在第 31bit，好处是让符号位扩展和译码并行。
 
-    虽然有些复杂的实现会给 branch 和 jump 指令计算分配专有加法器，所以并不会收益于不同指令中的立即数位置固定的设计，但是我们想降低最简实现的硬件成本。通过变换立即数的 bit 位置，而不是使用动态的硬件 mux，指令信号的 fanout 和 mux 数量大概减少为原来的一半。而这种混乱的立即数编码带来的开销可以忽略不计。
+    虽然有些复杂的实现会给 branch 和 jump 指令计算分配专有加法器，所以并不会受益于不同指令中的立即数位置固定的设计，但是我们想降低最简实现的硬件成本。通过变换立即数的 bit 位置，而不是使用动态的硬件 mux，指令信号的 fanout 和 mux 数量大概减少为原来的一半。而这种混乱的立即数编码带来的开销可以忽略不计。
 
-I 子集一共有 40 条指令，大概可以分成 4 类：
+下面分类描述 I 子集的 40 条指令，大概可以分成 4 类：
 
 |   类型   |  数量  |
 | ------- | ----- |
@@ -243,14 +243,14 @@ I 子集一共有 40 条指令，大概可以分成 4 类：
 因为 `JAL` 指令属于 J-type，所以它包含的立即数的 [20:1] bit，所以可以跳转的范围是 [-1MB, +1MB] 内。JAL 会把 (pc+4) 这值存到 rd 中，一般标准的软件调用惯例是 rd = x1 作为返回地址，x5 作为 alternate link register。
 
 !!! tip
-    这个 alternate link register 可以在保留常规的返回地址寄存器 rd 的同时，可以支持调用一些代码量非常小的例程，之所以选择 x5 是因为在标准调用中它是一个临时寄存器，而且和 x1 的编码只有 1bit 不同。
+    这个 alternate link register 可以在保留常规的返回地址寄存器 rd 的同时支持调用一些代码量非常小的例程，之所以选择 x5 是因为在标准调用中它是一个临时寄存器，而且和 x1 的编码只有 1bit 不同。
 
 !!! tip
     无条件 jump 指令都是使用 PC 的相对地址，以支持和地址不相关的代码。JALR 和 LUI 组合在一起可以访问 32bit 地址空间中的任一位置，首先 LUI 把目标地址的高 20bit 搬运到寄存器中，然后 JALR 把低 12bit 加上去就可以算出完整的 32bit 目标地址。同理，AUIPC 和 JALR 也可以跳转到相对于 PC 的任意 32bit 地址。
 
     需要注意的是，JALR 不会像 branch 指令一样，从 imm[1] 开始编码（2 的倍数），这样做的好处是可以避免硬件中立即数格式太多的问题。
 
-    JALR 执行的时候，会把计算结果的的最低位清零，这样做的好处是可以稍微简化硬件设计，同时还可以空余出 1bit 空间来存储更多信息。虽然这么做就需要对地址进行错误检查，所以有些轻微的性能损失，但是错误的指令地址可以很快触发异常。
+    JALR 执行的时候，会把计算结果的的最低位清零，这样做的好处是可以稍微简化硬件设计，同时还可以空余出 1bit 空间来存储更多信息。虽然这么做就需要对地址进行错误检查，所以有些轻微的性能损失，如果哦发生了指令地址错误应该很快就触发异常，所以问题不大。
 
     当 rs1=x0 时，JALR 可以用来实现单指令子程序，在 [-2KB, 2KB] 范围内跳转，可以实现 runtime lib 的快速调用。
 
@@ -298,14 +298,14 @@ RISC-V 是一个 load-store 体系结构，即只有 load/store 才可以访问 
 RV32I 的地址空间是 32bit，按照 byte 地址访问，由 EEI 规定合法的地址段。无论端序如何，如果访问地址是天然对齐的，那么就不会产生任何异常，如果访问地址不是天然对齐的，那么具体行为取决于 EEI。EEI 可以允许非对齐访问，由硬件或者软件处理，也可以不允许非对齐访问，直接抛出异常。
 
 !!! tip
-    非对齐访问对于移植旧代码、使用 packed-SIMD 扩展的应用程序、处理外部打包的数据结构时很有用。之所以通过 load/store 来允许 EEI 自主选择非对其访问的处理方式，原因就是想简化硬件设计。
+    非对齐访问在移植旧代码、使用 packed-SIMD 扩展的应用程序、处理外部打包的数据结构时很有用。之所以通过 load/store 来允许 EEI 自主选择非对其访问的处理方式，目的就是想简化硬件设计。
 
     有一种备选方案：在 base ISA 中不允许非对齐访问，额外再设计一个 ISA 来支持非对齐访问，比如某些特殊指令或者是硬件特殊的寻址模式。这个方案的问题在于：
 
     + 特殊指令使用难度大，导致 ISA 复杂化
     + 要么处理器添加了额外状态（CSR），要么导致现有 CSR 的访问复杂化
     + 基于 for 循环的 packd-SIMD 程序可能要根据数据对齐模式修改多个版本的代码，使得代码生成复杂化，产生额外开销
-    + 新的硬件寻址模式必然要消耗大量的指令编码空间，而且也要消耗一下硬件资源来实现
+    + 新的硬件寻址模式必然要消耗大量的指令编码空间，而且也要消耗一些硬件资源来实现
 
 即使实现了非对齐访问，在某些实现中可能性能很差；而且硬件处理非对齐访问时可能会将其拆分成多个子指令来处理，此时需要额外的同步机制来保证访问的原子性。
 
@@ -314,7 +314,7 @@ RV32I 的地址空间是 32bit，按照 byte 地址访问，由 EEI 规定合法
 
 ### Memory Ordering Instructions
 
-RISC-V 支持在一个单一的用户地址空间内运行多个 hart，每个 hart 都有自己的 pc 和 register，执行自己的指令流。而由 EEI 来完成 hart 的创建和管理。不同 hart 之间可以通过共享存储器来实现通信和同步，又因为 RISC-V 使用存储器松散一致性模型 `RVWMO`，所以需要 FENCE 指令来定义不同 hart 之间的指令执行顺序。从原则上讲，FENCI 之后的指令观测不到 FENCE 之前的指令行为，即 FENCI 像一道屏障一样，隔断了前后的指令流。
+RISC-V 支持在一个单一的用户地址空间内运行多个 hart，每个 hart 都有自己的 pc 和 register，执行自己的指令流。而由 EEI 来完成 hart 的创建和管理。不同 hart 之间可以通过共享存储器来实现通信和同步，又因为 RISC-V 使用存储器松散一致性模型 `RVWMO`，所以需要 FENCE 指令来定义不同 hart 之间的指令执行顺序。从原则上讲，FENCE 之后的指令观测不到 FENCE 之前的指令行为，即 FENCE 像一道屏障一样，隔断了前后的指令流。
 
 RISC-V 把数据存储器访问分为了 4 类：
 
@@ -323,7 +323,7 @@ RISC-V 把数据存储器访问分为了 4 类：
 + R：存储器读 device-read
 + W：存储器写 device-write
 
-配合前后的概念，所以可以实现很多中组合，达到非常精细的控制。FENCI 中没有定义的字段是为了以后更细精度的扩展而设置的保留位。为了保持前向兼容，硬件应该忽略这些 bit 位，同时软件应该将这些 bit 位设置为全 0。
+配合前后的概念，所以可以实现很多种组合，达到非常精细的控制。FENCE 中没有定义的字段是为了以后更细精度的扩展而设置的保留位。为了保持前向兼容，硬件应该忽略这些 bit 位，同时软件应该将这些 bit 位设置为全 0。
 
 !!! tip
 
@@ -346,32 +346,41 @@ RISC-V 把数据存储器访问分为了 4 类：
 
 ### HINT Instructions
 
-HINT 指令一般用来给微架构传达性能提示。RV32I 给 HINT 预留了大量的编码空间，且全部用 rd = x0 的计算指令来表示。所以 HINT 和 NOP 类似，只会导致 pc 向前移动以及改变性能计数器，除此之外不会改变硬件架构中任何可见的状态。实现中直接把 HINT 忽略都是符合标准的。
+HINT 指令一般用来给微架构传达性能提示。RV32I 给 HINT 预留了大量的编码空间，且全部用 rd = x0 的计算指令来表示。所以 HINT 和 NOP 类似，只会导致 pc 向前移动以及改变性能计数器，除此之外不会改变硬件架构中任何可见的状态。实现中直接把 HINT 忽略也是符合标准的。
 
 !!! tip
-    HINT 这所以设计成这样，是方便硬件实现。简单实现中既可以把 HINT 当成一条恰好并不会产生任何影响的指令来走完所有 pipeline stage，也可以直接把它丢弃。
+    HINT 设计成这样的目的是方便硬件实现。简单实现中既可以把 HINT 当成一条恰好并不会产生任何影响的指令来走完所有 pipeline stage，也可以直接把它丢弃。
 
     虽然 HINT 编码空间很大，而且划分了 standard 空间和 custom 空间，但是目前还没有定义好 standard HINT。
 
 ## Zifencei
 
-这个子集只包含一条指令 `FENCE.I`，它可以实现对同一个 hart 的 instruction memory 的写指令和取指之间的显式的同步控制，目前这是唯一一个保证 hart 的 store 和 fetch 之间可见性的标准机制。
+!!! tip
+    先讨论一个问题：假设一个指令流，前面的有条指令向 memory 某个地址 store 了一个新值，后面需要从该地址取指，那么后面的指令一定可以读取到前面的新值吗？
 
-这条指令是用来同步一个 hart 的 data 和 instruction 之间的关系，如果没有这条指令，RISC-V 就无法保证后续的取值操作能观测到前序的 store 结果。因为 FENCE.I 只用来处理单个 hart 内部的关系，所以如果有多个 hart，为了保证某个 hart 的 store 结果可以被其他 hart 观测到，应该在 FENCE.I 之前先调用一条 FENCE 指令。
+    答案是：不一定。因为 pipeline 是有深度的，假设前面的这两条指令是背靠背的，那么前序指令结果还没写入的时候后续指令已经完成了取指、译码，开始执行了，所以后续取指的是旧值。
+
+    为了解决这个问题，引入了 FENCE.I 指令，用来约束 store 和取值之间的顺序关系。
+
+这个子集只包含一条指令 `FENCE.I`，它可以实现对同一个 hart 的 instruction memory 的写指令和取指之间的显式的同步控制，目前这是唯一一个可以保证 hart 内部 store 和 fetch 之间可见性的标准机制。
+
+这条指令用来同步一个 hart 的 data 和 instruction 之间的关系，如果没有这条指令，RISC-V 就无法保证后续的取值操作能观测到前序的 store 结果。因为 FENCE.I 只用来处理单个 hart 内部的关系，所以如果有多个 hart，为了保证某个 hart 的 store 结果可以被其他 hart 观测到，应该在 FENCE.I 之前先调用一条 FENCE 指令：
+
++ step1：本 hart 完成 store 指令
++ step2：本 hart 执行 fence 指令
++ step3：本 hart 请求所有 hart 执行 fence.i 指令
 
 !!! tip
     为了支持各种不同的实现，FENCE.I 指令做过精心的设计。简单实现可以直接 flush 流水线，清空 I-cache 即可。复杂一些的实现可能会有更高级的操作。
 
     FENCI.I 之前是 I 子集的一部分，但是因为下面两个原因，从 I 子集中挪了出来，不再是必须实现的指令了。
 
-    + 在某些系统中，实现 FENCE.I 的代价很大。比如有些设计中 I-cache 和 D-cache 都是 incoherent 形式时，一旦遇到 FENCE.I 指令，就必须清空两个 cache。如果在共享 cache / memory 之前有多级独立的 I/D cache，这个问题会更加严重。
-    + 在类 Unix 系统中，这条指令并没有强大到足以在 user level 使用。因为 FENCE.I 只能处理 hart 内部的同步，但是 OS 可能会在遇到 FENCE.I 时重新调度 user hart，所以现在 Linux ABI 都是要求产生一个系统调用来保证取指的 coherent。
+    + 在某些系统中，实现 FENCE.I 的代价很大。比如有些设计中 I-cache 和 D-cache 都是 incoherent 形式，一旦遇到 FENCE.I 指令，就必须清空两个 cache。如果在共享 cache / memory 之前有多级独立的 I/D cache，这个问题会更加严重
+    + 在类 Unix 系统中，这条指令并没有强大到足以在 user level 使用。因为 FENCE.I 只能处理 hart 内部的同步，但是 OS 可能会在遇到 FENCE.I 时重新调度 user hart，所以现在 Linux ABI 都是要求产生一个系统调用来保证取指的 coherent
 
 ## RV32E
 
-TODO
-
-RV32E 是专门为嵌入式 Emmbedded 设计的 ISA，目前还是 draft 状态，它和 RV32I 的唯一区别就是把 register 的数量减少到了 16 个。
+RV32E 是专门为嵌入式 Emmbedded 设计的 ISA，目前还是 draft 1.9 状态，它和 RV32I 的唯一区别就是把 register 的数量减少到了 16 个。
 
 !!! tip
 
@@ -381,27 +390,28 @@ RV32E 是专门为嵌入式 Emmbedded 设计的 ISA，目前还是 draft 状态�
 
     这个改变也对软件的调用惯例和 ABI 提出了要求。
 
+    RV32E 可以和任何标准 extension 组合使用。曾经考虑过和 RV32E 配合时，定义一个新版的只有 16-entry 的 FP register file，但是最终放弃了，改用 `zfinx` 扩展 ，它直接使用 integer register file，所以省去了很多指令。
+
 RV32E 的 ISA 和 RV32I 完全一样，但是因为 register 只有 16 个，所有指令中 index 的字段可以释放出几 bit，未来的标准指令扩展都不会用到这些字段，所以可以给自定义扩展指令来使用。
 
 ## RV64I
 
-RV64I 是 RV32I 的扩展。
+RV64I 是 RV32I 的扩展。和 RV32I 的区别如下：
 
-`XLEN` 变成了 64，即 register 的宽带是 64bit。
-
-RV64I 的大部分指令的操作数位宽都是 XLEN bit，有一些附加的指令来操作 32bit 的数，这些指令都在 opcode 后面加了 `W` 后缀来区分。这些 `*W` 指令会忽略掉高 32bit 数据，产生的结果也只保留 32bit。即 [63: XLEN-1] bit 的数据是一样的，结果扩展到 64bit 后保存在 register 中。
++ `XLEN` 变成了 64，即 register 的宽带是 64bit。
++ RV64I 的大部分指令的操作数位宽都是 XLEN bit，但是也有一些附加的指令来操作 32bit 的数，这些指令都在 opcode 后面加了 `W` 后缀来区分（W = word）。这些 `*W` 指令会忽略掉高 32bit 数据，产生的结果也只保留 32bit 结果，然后把它符号位扩展到 64bit 后保存在 register 中。
 
 ## RV128I
 
-目前还是 draft 状态，定义这个子 ISA 的目的就是为了支持更大的地址空间。
+目前还是 draft 1.7 状态，定义这个子 ISA 的目的就是为了支持更大的地址空间。
 
 !!! tip
 
     目前暂时还不是很清楚我们什么时候需要比 64bit 更大的地址空间，世界上 Top500 的超级计算机拥有超过 1PB 的 DRAM，这需要超过 50bit 的地址线。一些仓储级的计算机已经包含了更大的 DRAM，而且固态硬盘和 interconnect 技术的发展可以能会产生更大地址空间的需求。万亿级别的系统研究需要 100PB 的空间，大概占用 57 根地址线。根据历史增长速度看，大概在 2030 年前就有可能超过 64bit 的范围。
 
-    历史证明，无论何时只要出现地址不够用的情况，architect 们就会重复以前的争论，使用各种技术来扩充寻址范围，但是最终，128bit 的寻址方案将作为最简单、最佳解决方案而被采用。
+    历史证明，无论何时只要出现地址不够用的情况，architect 设计者们就会重复以前的争论，使用各种技术来扩充寻址范围，但是最终，128bit 的寻址方案将作为最简单、最佳解决方案而被采用。
 
-RV128I 在 RV64I 的基础上定义，就如同 RV64I 在 RV32I 上定义一样。
+RV128I 在 RV64I 的基础上定义，就如同 RV64I 在 RV32I 上定义一样，保留了 `*W` 指令不变，只不过新增了如何在 128bit 寄存器中操作 64bit 的指令，用 `*W` 来表示。
 
 ## Zicsr
 
@@ -409,12 +419,137 @@ RISC-V 专门定义了一组 (control and status register, CSR) 寄存器来记�
 
 !!! tip
 
-    CSR 主要是在 Priviledge 架构中使用，但是一些 Unpriviledge 架构中也会用到一些，比如计数器和计时器，浮点状态等。
+    CSR 主要是在 Priviledge 架构中使用，但是 Unpriviledge 架构中也会用到一些，比如计数器和计时器，浮点状态等。
 
-    因为计数器和计时器等不再被认为是 base ISA 中的必要成分，所以访问这些资源的指令 CSR 指令就独立出来自成一章。
+    因为计数器和计时器等不再是 base ISA 中的必须强制性实现的了，所以访问这些资源的指令 CSR 指令就独立出来自成一章。
 
-只要程序中有指令会修改或者是受 CSR 影响，那么就会发生影式或者是显式的 CSR 访问。比如说，在某些修改或受 CSR 影响的指令执行完之后，后续修改 CSR 或受 CSR 影响的指令之前，会产生 CSR 访问。在具体指令执行之前，会有一个 CSR 读指令先读取 CSR 的状态，在指令执行完之后，会有一个 CSR 写指令更新相关的 CSR。
+只要程序中有指令会修改或者是行为受 CSR 影响，那么就会发生隐式或是显式的 CSR 访问。比如说，在某些修改或受 CSR 影响的指令执行完之后，后续修改 CSR 或受 CSR 影响的指令执行之前，会产生 CSR 访问。
+
++ 对于一条带有 CSR 读的指令，在指令执行之前会先读回 CSR 的状态
++ 对于一条带有 CSR 写的指令，在指令执行之后会更新 CSR 的状态
+
+CSR 的访问是 weakly ordered，所以其他 hart 观测 CSR 的顺序可能和程序中的顺序不一样，特别是，CSR 和 memory 的访问没有顺序关系，除非 CSR 会修改访问 memory 指令的执行，或者是使用特权指令集中定义的 Memory-Ordering PMAs 做了明确的顺序要求。对于 FENCE 指令来说，CSR 读被当作设备输入(I)，CSR 写被当作设备输出(O)。
 
 !!! tip
 
-    CSR 空间的模型和第二卷中定义的 Memory-Ordering PMAs 章节中定义的 weakly ordered memory-mapped I/O region 类似。
+    CSR 按照第二卷中 Memory-Ordering PMAs 章节定义的 weakly ordered memory-mapped I/O region 模型操作，所以 CSR 的访问顺序和 memory-mapped I/O 访问的约束一致。
+
+    对 CSR 的顺序设置约束的原因是为了支持对主存及 memory-mapped I/O 访问和 time CSR 的排序。除了 `time`, `cycle`, `mycle` 这三类 CSR，两卷标准中定义的其他 CSR 都对其他 hart 不可见，所以这些 CSR 的访问顺序和 FENCE 的顺序可以是任意顺序，都是符合标准的。
+
+## Counter
+
+RISC-V 定义了 32 个 64bit 的 Unpriviledge 只读性能计数器和计时器，可以通过非特权指令访问 0xC00-0xC1F 地址访问（高 32bit 可以用 0xC80-0xC9F 访问），其中前 3 个有特定的含义：
+
+| CSR 名字 | 指令 |
+| -------- | ----- |
+| **cycle** | 保存了 hart 执行到当前的周期数，使用 RDCYCLE[H] 来读取低/高 32bit |
+| **time** | 保存了 hart 的 wall-clock 周期数，使用 RDTIME[H] 来读取低/高 32bit |
+| **instret** | 保存了 hart 退休的总指令数量，使用 RDINSTRET[H] 来读取低/高 32bit |
+
+!!! tip
+    这个子集之前是在 RV32I 中，后来分离出来单独作为一个子集，目前是 draft 2.0 版本，目测以后也不会大改。
+
+    在 V2.2 版本中这 3 个 CSR 指令作为 RV32I 的一部分是强制实现的，但是现在独立后就不是强制性的了，但是还是推荐实现这 3 个 CSR，因为它们对于基本的性能分析、自适应、动态优化来说是必不可少的。而且也应该以较小的代价实现其他计数器，来辅助诊断性能问题。
+
+    这些计数器必须是 64bit，即使是 RV32I 也是如此，否则位宽太少软件很难判断是否发生了 overflow。（简单算一下就知道 64bit 的表示范围非常大，可以覆盖任何性能计数的需求）
+
+剩余的 29 个 CSR 名称为 `hpmcounter3`-`hpmcounter31`（hardware performance counter），它们作为可编程的计数器能针对某些事件进行计数，这些计数器可以通过特权指令来配置。
+
+!!! tip
+    特权架构中定义了访问和配置这些 hpm 的 privileged CSR，这些 hpm 可以用来对一些硬件指标做统计，比如执行的 F 指令条数，L1 I$ 的 miss 次数等等。
+
+## M Extension
+
+把乘除法指令从 I 子集中分离出来，可以简化低端 core 的实现，或者对于那些乘除法不常出现的应用，用另外一个加速器来实现。
+
+如果同时需要乘法结果的高低两部分，推荐使用下面的顺序，同时保证 rs1 和 rs2 的值和顺序不变，且 rdh != rs1 or rs2：
+
+```
+#!text
+MULH[[S]U]  rdh,  rs1,  rs2
+MUL         rdl,  rs1,  rs2
+```
+
+这样硬件实现时会把它们融合成一条指令来执行，只进行一次乘法。
+
+同理，除法也可以按照类似的方法实现，硬件实现时只会进行一次除法：
+
+```
+#!text
+DIV[U]  rdq,  rs1,  rs2
+REM[U]  rdr,  rs1,  rs2
+```
+
+!!! tip
+    + MUL 不需要（没必要）区分 signed/unsigned，MULH 则需要区分 singed/unsigned
+    + 大多数 ISA 中除以 0 都会触发异常，跳转到 trap，但是 RISC-V 做了简化，不会产生异常，可以简化硬件实现
+    + RISC-V 的所有的计算指令都不会产生 exception
+    + RISC-V 虽然不会产生 exception，但是对除 0 的结果做了特殊规定：商的所有 bit 设置为全 1
+    + 设置为全 1 是精心设计过的：对于无符号除法来说，全 1 就是最大值，而且也天然符合硬件除法器的输出，无需任何修改；对于有符号除法来说，一般都是先转成无符号来算，所以也没有问题。这样设计可以最大程度地简化硬件设计。
+
+## A Extension
+
+A 子集包含了对 memory 进行原子性的 read-modify-write 操作的指令，目的是同步多个共享同一个 memory 空间的不同 hart。
+A 指令支持 unordered, acquire, release, sequentially 等各种内存一致性模型，这些指令可以让 RISC-V 支持 RCsc 存储器一致性模型。
+
+!!! tip
+    经过大量辩论后，编程语言社区和体系结构社区最后达成一致：用 release consistency 作为存储器一致性模型，所以围绕着这个模型建立了 A 子集。
+
+    背景知识：3 种最有代表性的内存一致性模型
+
+    | 模型                                      | 含义 | 访问 memory |
+    | ---------------------------------------- | ---- | -----------|
+    | 按序一致性模型 Sequential Consistency Model | 每个 hart 看到的都是 program-order | 原子性、串行化 |
+    | 松散一致性模型 Relaxed Consistency Model | 每个 hart 可以改变自己的存储器访问顺序 | 性能、功能 balance |
+    | 释放一致性模型 Release Consistency Model | 支持 acquire-release 机制 | 更加松散 |
+
+已知 base 子集使用的是 relaxed 模型，配合 FENCE 指令可以实现额外的顺序控制。但是为了更加高效地支持 release 模型，每个 A 指令都新增了两 bit：
+
++ `ac` 字段：表明本指令是 acquire 访问（上锁），屏障了它之后的 memory 操作，即在它之后的 memory 访问必须要等到这条 A 指令结束后才能开始
++ `rl` 字段：表明本指令是 release 访问（释放锁），屏蔽了它之前的 memory 操作，即它必须等前面的 memory 访问都结束了才能开始
+
+如果两个字段都是 0,则这条 A 指令没有任何附加的约束；如果两个字段都是 1，则这条 A 指令是 sequential 模型，只能在前序指令结束、后序指令开始前执行。
+
+A 子集主要包含两大类指令：
+
++ Atomic Memory Operations, `AMO`
+
+    这些指令都是原子性的，也就是说读回数据和写回结果这段时间内这个地址不允许其他任何指令访问，也就是对这个地址“上锁”。AMO 指令要求必须是对齐访问（32-bit 数据按照 4-byte 对齐；64-bit 数据要求按照 8-byte 对齐），否则会产生异常。
+
+    !!! tip
+        设计 AMO 指令的原因是在高度并行系统中它比 LR/SC 指令的伸缩性更好。对于简单实现，可以直接用 LR/SC 来等价实现 AMO；而对于一个复杂实现，可以在 memory 控制器中实现 AMO 指令，而且如果 rd = x0 时可以优化掉读 memory 的操作。
+
+    AMO 可以用来实现 memory 中的 parallel reductions，还可以用来更新 I/O 设备映射出的寄存器（比如 setting, clearing, toggle 比他位）。
+
+    通过设置 ac/rl 字段，AMO 可以用来高效地实现 C11/C++ 11 中的 atmic memory operations。虽然 `FENCE R, RW` 可以实现 acquire 效果，`FENCE RW, W` 可以实现 release 效果，但是和 AMO 比起来引入了不必要的额外约束，所以 AMO 实现更加高效。
+
+    下面是一个自旋锁的例子，整个流程就是 test-and-test-and-set，先测试锁是否可获取，如果可以就尝试获取，尝试完了测试是否获取成功，获取成功了就开始执行核心代码，核心代码执行完后再释放锁。
+
+        #!text
+            li          t0, 1   # initialize swap value
+        again:
+            lw            t1, (a0)      # load lock, lock is stored in a0 address
+            bnez          t1, again     # check if lock is held
+            amoswap.w.aq  t1, t0, (a0)  # attempt to acquire lock
+            bnez          t1, again     # check agian
+            # ...
+            # critical section.
+            # ...
+            amoswap.w.r1  x0, x0, (a0)  # release lock
+
++ Load-Reserved/Store-Conditional, `LR`/`SC`
+
+    和 ARM 中的 Load-Exclusive/Store-Exclusive 类似。
+
+
+## RVWMO Model
+
+## F Extension
+
+TODO
+
+## D Extension
+
+TODO
+
+## 

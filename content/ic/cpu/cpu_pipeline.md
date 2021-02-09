@@ -4,6 +4,7 @@ Category: IC
 Tags: CPU, Tomasolu
 Slug: cpu_pipeline
 Author: Qian Gu
+Series: CPU 关键技术
 Status: draft
 Summary: 总结 Tomasolu 细节
 
