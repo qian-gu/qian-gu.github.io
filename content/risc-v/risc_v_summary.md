@@ -5,6 +5,7 @@ Tags: RISC-V
 Slug: risc_v_summary
 Author: Qian Gu
 Summary: RISC-V 阅读资料汇总
+Status: draft
 
 
 + [Design of the RISC-V Instruction Set Architecture][why]

@@ -1,12 +1,11 @@
 Title: Patterson and Hennessy 学习笔记 #3 —— Chapter 3 Arithmetic For Computers
-Date: 2020-06-13 12:55
+Date: 2020-12-13 12:55
 Category: IC
 Tags: Patterson and Hennessy
 Slug: learning_patterson_and_hennessy_notes_3_chapter_3
 Author: Qian Gu
 Series: Patterson & Hennessy Notes
 Summary: Patterson and Hennessy 读书笔记，第三章
-Status: draft
 
 > Numerical precision is the very soul of science.
 > 

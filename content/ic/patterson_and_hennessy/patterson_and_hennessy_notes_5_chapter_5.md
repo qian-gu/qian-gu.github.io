@@ -185,6 +185,12 @@ $AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty$
 
 这几种失效相互之间是关联的，改变设计中的某一方面会直接影响到其中某几种失效。
 
+|      设计修改    | 对 miss rate 的影响 |           可能对性能产生的负面影响                    |
+| --------------- | -----------------| ------------------------------------------------- |
+| block size ↑    | capacity miss ↓  | access latency ↑                                  |
+| associativity ↑ | conflict miss ↓  | access latency ↑                                  |
+| cache size ↑    | miss rate ↓      | miss penalty ↑, miss rate ↑ when very large block |
+
 ### Controller
 
 + 阻塞式 Cache：基于 FSM 的控制器，必须要等到 Cache 处理完前一个请求后处理器才能继续执行
@@ -192,27 +198,149 @@ $AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty$
 
 ### Coherence
 
-### RAID
++ `coherence`：定义了 read 操作返回什么数据
++ `consistency`：定义了 write 值什么时候才能被 read 操作返回
+
+**问题产生的原因：**
+
+共享数据在多个 cache 都有备份，多个备份之间会出现一致性问题。
+
+**解决方法：**
+
+多核系统一般通过一种硬件协议来维护 cache 之间的一致性，这个协议叫做 `cache coherence protocals` Cache 一致性协议。显然问题由共享数据引起，所以一致性协议的关键就在于追踪所有共享 block 的状态。
+
+最流行的一致性协议叫做 `snooping` 窥探协议：每个 cache 不仅从 memory 中复制了 block 数据，同时还复制了 block 的状态，按照分布式的方式管理这些状态。每个 cache 都可以通过广播媒介（总线/网络）访问，而且每个 cache 控制器都会监听媒介，判断自己是否包含了当前总线上访问的数据。snooping 的实现比较简单，但是它的可扩展性比较低（因为不同所有 core 之间都要交互，复杂度和通信量成指数增长）。
+
+有种保证一致性的方法：确保每个 core 在写数据时是互斥访问，因为这种协议在写一个数据时会设置其他 cache 中的备份无效，所以叫做 `write invalidate protocal`。
+
+!!! tip
+    一般来说 cache 之间是以 block 为单位进行数据交换和更新，所以 block 大小对一致性的影响很大，增加 block 会导致 cache 之间的带宽需求上升。
+
+    较大的 block 还会导致 `false sharing` 的问题：2 个不相关的数据落到了同一个 block 中时，尽管两个 core 访问的是不同的数据，但是还是会发生数据交换。所以程序员和编译器要谨慎放置数据以避免发生假共享。
+
+如果一个存储系统满足了下面 3 个条件，就可以认为该存储系统是一致的：
+
+1. 处理器 P 对位置 X 的 write 后面紧跟着 P 对 X 的 read 操作，并且 write 和 read 之间没有其他处理器对 X 进行操作，那么 read 返回的一定是 write 的值
+2. 在其他处理器对 X 完成 write 之后，P 对 X 进行 read 操作，这两个操作之间要有足够的时间间隔，并且没有其他处理器对 X 进行写操作，这是 P 的 read 返回的一定是 write 的数据
+3. 对同一个地址的操作是串行执行的，即任何两个处理器对同一个地址的操作在所有处理器看来都是相同的顺序
+
+!!! tip
+    虽然上面的 3 个条件可以保证一致性，但是一个写数据什么时候对其他 core 可见也是一个重要问题。假设 core1 刚写了一个数据，core2 马上读相同地址，那么 core2 就不一定能读回最新值，因为可能写数据都还没离开 core1。这个写数据什么时候被其他 core 可以看到的问题叫做 `memory consistency model` 内存一致性模型。
+
+    我们做了两个假设：1. 一个 write 操作只有等所有 core 都可以看到写效果才能算是完成；2. 处理器不能修改访问 memory 的顺序。这两个限制可以允许 core 对 read 操作进行重拍序，但是强制要求 write 操作必须是程序顺序。
+
+!!! tip
+    因为系统的 input 可能会绕过 cache 直接改变 memory 的内容；output 可能也会用到 write-back cache 中的最新数据，所以单核系统中，就像多核之间的 cache 一样，I/O 和 cache 之间也有一致性问题。虽然这两种一致性问题的原因很相似，但是它们的特点不一样，所以解决方法也不一样。具体来说，I/O 包含多个数据备份的情况很少出现，而且要尽可能地避免这种情况；而多核系统中不同 cache 备份同一个数据则很常见。
+
+!!! tip
+    除了 snooping 这种分布式的监听协议外，基于目录的 cache 一致性协议（`directory-based cache coherence protocal`）将物理存储器的共享块的状态集中存储在一个地点，叫做目录。虽然基于目录的协议要比监听方式的实现代价要高一些，但是这种方法可以减少 cache 之间的通信，所以可以扩展更多的处理器。
+
+## Dependable Memory Hierarchy
+
+如果 memory hierarchy 只是单纯的追求速度，无法保证可靠性，那么它将毫无吸引力。如第一章介绍，dependability 的重要方法就是冗余。所以我们首先讨论如何定义和测量可靠性，然后再看看如何通过冗余设计出可靠的存储器。
+
+### Defining Failure
+
+|                概念                 |                       含义                                 |
+| ---------------------------------- | --------------------------------------------------------- |
+| service accomplishment             | 交付的服务与预期相符                                          |
+| service interruption               | 交付服务与预期不符                                             |
+| failure                            | 从 accomplishment 到 interruption 的跳变                     |
+| restoration                        | 从 interruption 到 accomplishment 的跳变                     |
+| reliability                        | 持续提供 accomplishment 能力的度量，从开始到 failure 的时间间隔    |
+| `MTTF`, mean time to failure       | reliability 的度量方法                                        |
+| `AFR`, annual failure rate         | 给定 MTTF 时，设备在一年中出现 fail 的比例                        |
+| `MTTR`, mean time to repair        | service interruption 的度量                                  |
+| `MTBF`, mean time between failures | = MTTF + MTTR                                               |
+| availability                       | 连续两次 interruption 之间 accomplishment 能力的度量，计算公式如下 |
+
+$Availability = \frac{MTTF}{MTTF + MTTR}$
+
+我们希望系统有很高的可用性 availability，一种简单表示方法是“可用性 9 的数量”，类似于黄金纯度一样，9 的数量越多表示可用性越好。增加 MTTF 或者是减少 MTTR 都可以提高可用性。
+
+为了提高 MTTF，可以提高元件的质量或者是设计一个不受元件故障的系统。因为元件故障不一定和导致系统 failure，所以专门定义一个词 fault 来表示元件的故障。有 3 种方法提高 MTTF：
+
++ `fault avoidance`：合理构建系统避免发生 fault
++ `fault tolerance`：采用冗余措施，发生 fault 时系统仍然正常工作
++ `fault forecasting`：预测故障，在发生之前替换失效元件
+
+为了减小 MTTR，可以采用检测、诊断、修复工具来处理 failure。
+
+### Hamming SEC/DED
+
+Richard Hamming 因为发明这个编码于 1968 年获得图灵奖。如果一种编码可以检测出是否发生 1 bit 错误，我们将其称为 1 bit 错误检测编码 error detection code。
+
+Hamming 编码采用“奇偶校验”码来检测是否发生错误：统计码字中 1 的数量，然后根据统计结果设置校验位（奇数为 1, 偶数为 0）。所以 N+1 的总 bit 中 1 的个数永远是偶数个，如果从 memory 中读出的数据包含奇数个 1,那么就说明发生了错误。
+
+显然，这个方案只能检测到奇数个错误的情况，而且同时发生 3 个错误的概率非常小，所以一般用来检查 1 bit 错误。
+
+Hamming 为了实现纠正错误的目的，设计一种将数据映射到距离为 3 的码字的方式，为了表达敬意，我们称为 Hamming Error Correction Code, `ECC`。因为这种编码可以纠正 1bit 错误，检测 2bit 的错误，所以叫做 Single Error Correcting/Double Error Detecting (SEC/DED)，它广泛地应用于服务器的内存中。一般 8 byte 的数据正好需要 1byte 的额外开销，所以许多双列直插式存储模块 DIMM 的宽度是 72 bit。
+
+!!! tip
+    一般 SEC/DED 一般在存储器中属于典型情况，而在网络传输中，发生突然错误情况比较典型，这个时候采用的是循环冗余校验 Cyclic Redundancy Check, `CRC`。
+
+## Virtual Memory
+
+DDR 也可以充当 disk 的 “cache”，这种技术叫做虚拟存储器 `virtual memory`，就像 cache 一样，局部性原理也适用于 VM。两者的概念相同，但是因为历史原因，术语并不一样：
+
++ block <--> page
++ miss <--> page fault
+
+因为每个程序都有自己的地址空间，所以 VM 要实现从程序地址空间到物理地址之间的转换，这个转换操作加强了一个程序的地址空间和其他 VM 之间的保护。
+
+基于 page 的管理方式，`virtual address` 被分成了 `virtual page number` 和 `page offset` 两部分，其中 virtual page number 被转换成 `physical page number`，而 page offset 则保持不变，这个过程就是一次地址转换。virutal page 数量比 physical page 数量多得多是描述一个无限容量的虚拟存储器假象的基础。
+
+page fault 的代价非常高，每次都要花费几百万个 cycle 才能完成处理（DDR 的速度大概是 disk 的 100,000 倍）。所以 VM 系统的很多设计决策都受 page fault 的影响：
+
++ page 必须要足够大，以缓解很长的访问时间。典型 page 的大小为 4～16 KB
++ 采用全相联的结构来降低 page fault
++ 通过软件处理，软件相比于 disk 的开销非常小，而且可以采用聪明的替换算法，至少能稍微降低一点 miss rate，算法的开销就值了
++ 不可能使用 write through，只能用 write-back
+
+
+
+
 
 ## Fallacies and Pitfalls
 
 + `Fallacies` 谬论：错误概念
 + `Pitfalls` 陷阱：特定条件下成立的规律的错误推广
 
-**谬论：pipeline 非常简单**
+**陷阱：写代码或通过 compiler 生成代码时忽略 memory 系统的行为**
 
-呵呵。
+另外一个描述是：在写代码时，程序员可以忽略存储器存储结构。显然，这个结论是错误的。
 
-**谬论：pipeline 的概念和实现工艺无关**
+**陷阱：模拟一个 cache 时，忘记说明 byte 地址和 block 大小**
 
-显然，工艺的实现难度和代价会反过来影响设计的取舍。
+要区分清楚 byte 地址、block 地址，word 地址。举例说明，假设有个容量为 36 Byte 的 cache，block 大小为 4 Byte，那么内存地址 36 的 block 地址是 9，所以映射到 block1 中（$9\ modulo\ 8 = 1$）；如果 36 是 word 地址，那么它会映射到 block4 中（$36\ modulo\ 8 = 4$）。
 
-**陷阱：没有考虑到 ISA 的设计会反过来影响到 pipeline 的设计**
+**陷阱：对于共享 cache，组相联度 < 核的数量/共享该 cache 的线程数**
 
-很多复杂的 ISA 会导致实现的困难，这也是 RISC-V 的设计目标之一：用简单的 ISA 简化硬件设计，以达到更高的主频和性能。
+如果 way 数比 core/线程数量少时，可能会有严重的性能缺陷。比如，32 个 core 竞争同一个 set 内的 16 个 way，性能很差。
+
+**陷阱：用平均的 memory 访问时间来评估 out-of-order 处理器的存储器层次**
+
+如果发生 miss 时处理器阻塞，那么就可以用平均时间来评估；如果是乱序执行的处理器，可能在 miss 时会继续执行其他指令，此时要准确评估存储器层次的唯一办法就是模拟乱序执行处理器和存储器层次。
+
+**谬误：disk 实际的故障率和规格书中的一致**
+
+实际评估的结果表明并不相同。
+
+**谬误：操作系统是调度 disk 访问的最佳地方**
+
+磁盘自己知道逻辑地址和映射的物理地址，所以磁盘比操作系统好。
+
+**陷阱：为一个不支持虚拟化的 ISA 实现虚拟机监视器**
+
+某些 ISA 要支持 VMM 必须新增一些其他指令。
 
 ## Summary
 
 !!! important
-    + pipeline 可以提高 throughput 但是不能减少 latency
+    + 局部性原理让我们可以在保持 memory 低成本的同时获取高性能
+    + cache 的基本设计包含了组织方式、更新算法、写回策略等
+    + 3C 模型可以用来对 cache 性能的建模
     + 
+    + 多级 cache 的优化更加方便，优化方式也更多
+    + 借助软件，重新组织代码也可以提高局部性
+    + 硬件预取也可以提高性能
