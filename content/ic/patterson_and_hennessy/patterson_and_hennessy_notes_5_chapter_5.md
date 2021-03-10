@@ -130,7 +130,7 @@ write back 的优点：
 
 一般 write through 和 write non-allocate 搭配，write back 和 write allocate 搭配。如果 write back 中某个被修改过的 block 发生了 miss，那么就必须先把该 block 写回到 DDR 然后再把新数据写入该 block。简单地直接用新数据覆盖该 block 会丢失之前的修改数据，因为这些数据没有在低层中进行备份。所以要完成这个过程要么花费两个 cycle（第一个 cycle 检查是否 hit，第二个周期执行写操作），要么使用 write buffer（只花费一个 cycle，先把修改的数据写入 DDR，在下一个周期把新数据从 buffer 写入 cache）。
 
-### Replace
+### Replacing
 
 常见的替换策略有 3 种：
 
@@ -281,14 +281,40 @@ Hamming 为了实现纠正错误的目的，设计一种将数据映射到距离
 
 ## Virtual Memory
 
-DDR 也可以充当 disk 的 “cache”，这种技术叫做虚拟存储器 `virtual memory`，就像 cache 一样，局部性原理也适用于 VM。两者的概念相同，但是因为历史原因，术语并不一样：
+DDR 也可以充当 disk 的 “cache”，这种技术叫做虚拟存储器 `virtual memory`，就像 cache 一样，局部性原理也适用于 VM。
 
-+ block <--> page
-+ miss <--> page fault
+相似点：
 
-因为每个程序都有自己的地址空间，所以 VM 要实现从程序地址空间到物理地址之间的转换，这个转换操作加强了一个程序的地址空间和其他 VM 之间的保护。
+| cache        | virtual memory        |
+| ------------ | --------------------- |
+| `block`      | `page`                |
+| `cache miss` | `page fault`          |
+| `index`      | `virutal page number` |
+| `offset`     | `page offset`         |
+|
 
-基于 page 的管理方式，`virtual address` 被分成了 `virtual page number` 和 `page offset` 两部分，其中 virtual page number 被转换成 `physical page number`，而 page offset 则保持不变，这个过程就是一次地址转换。virutal page 数量比 physical page 数量多得多是描述一个无限容量的虚拟存储器假象的基础。
+不同点：
+
+| cache                   | page table                                                  |
+| ----------------------- | ------------------------------------------------------------|
+| 存储在 SRAM 中            | 存储在 DDR 中，需要 TLB                                       |
+| penalty 小（几百个 cycle） | penalty 巨大（几百万个 cycle）                                |
+| 无地址转换                 | 有地址转换，`virtual page number` --> `physical page number` |
+| 多种组织方式               | 全相联 only                                                 |
+| 硬件替换算法               | 软件替换算法                                                 |
+| 多种 write 策略           | 只能是 write-back                                           |
+| 可能需要 tag 位域          | 全相联不需要 tag 位域                                         |
+| 需要 data 位域            | 地址映射表，不需要 data 位域                                    |
+| `block` 容量小，32/64B    | `page` 容量大，4KiB                                          |
+
+
+因为每个程序都有自己的地址空间，所以 VM 要实现从程序地址空间到物理地址之间的转换，这个转换操作加强了一个程序的地址空间和其他 VM 之间的保护。virutal page number 比 physical page number 多得多是描述一个无限容量的虚拟存储器假象的基础。
+
+`virtual address` = {`virtual page number`, `page offset`}
+
+==>
+
+`pyhsical address` = {`physical page number`, `page offset`}
 
 page fault 的代价非常高，每次都要花费几百万个 cycle 才能完成处理（DDR 的速度大概是 disk 的 100,000 倍）。所以 VM 系统的很多设计决策都受 page fault 的影响：
 
@@ -297,9 +323,49 @@ page fault 的代价非常高，每次都要花费几百万个 cycle 才能完�
 + 通过软件处理，软件相比于 disk 的开销非常小，而且可以采用聪明的替换算法，至少能稍微降低一点 miss rate，算法的开销就值了
 + 不可能使用 write through，只能用 write-back
 
+### Mapping & Replacing
 
+如上所述，因为 page faut 的代价太高了，所以为了尽可能地降低发生概率，VM 采用全相联的组织方式，允许 virtual page 可以映射到任何一个 physical page 上，这样操作系统就可以在发生 page fault 时用复杂的算法和数据结构跟踪 page 的使用过程，然后选择某个在长时间不会用到的 page 进行替换。
 
+但是全相联的查询复杂度非常高，基本上不可实现，所以 VM 通过一个存储在 DDR 中的特殊的结构 `page table` 来查询：用 virtual page number 查询 physical page number。因为每个程序都有自己的地址空间，所以有自己的 page table，为了找到自己的 page table，会有一个寄存器 `page table register` 指向它。
 
+!!! tip
+    page table + PC + 其他寄存器，三者就确定了一个 virtual machine 的状态，这个状态就叫做进程 `process`。切换进程时，操作系统只是简单地加载 page table register 即可。由操作系统负责分配物理地址空间以及 page table 的更新。
+
+### Page Fault
+
+因为 virtual page 可能会映射到 DDR 中，也有可能会映射到 disk 中，所以操作系统一般会在创建每个 process 时开辟一段空间来存储所有的 page，这个空间就叫做 `swap space`。所以相应地就需要一个数据结构来记录 virtual page 到底是在 DDR 中还是 disk 中，只需要 1bit 的 valid 即可，从逻辑上讲，virtual page 到 DDR 和 disk 的映射是同一张表，但是一般是按照两张独立的表来实现的。
+
+发生 page falut 时，操作系统通过软件算法（LRU）选定要被替换的 page，把它存储到 swap 区域。
+
+### Wrting & TLB
+
+因为写回的代价太高了，所以只能用 write-back 的方式把一整块 page 都写回。
+
+程序的每次 memory 访问都需要完成两个步骤：首先查询 page table 得到 physical address，然后根据查询到的地址获取数据。提高访问性能的关键就在于 page table 的访问也有局部性：如果查询了某个 page number，那么很可能会再次查询它，因为它指向的数据具有局部性。
+
+所以处理器会包含一个特殊的叫作 `TLB`(Translation-Lookaside Buffer) 的 cache 用来追踪最近使用过的地址变换。所以 TLB 的读写操作也遵守前面 cache 的讨论，简单的一次读操作的流程如下。
+
+```
+#!text
+                 lookup TLB
+read reference ---------------> hit -------------------------------------> translate
+                     |                                                          ^
+                     |                 lookup page table                        |
+                     |--------> miss ---------------------> hit ---------> loading into TLB
+                                             |
+                                             |------------> miss --------> OS.exception handle
+```
+
+因为 TLB 是一个小 cache，所以它的设计考虑因素和规格都符合前面 cache 部分的讨论。下面是一个典型配置：
+
+| 属性          | 规格                                   |
+| ------------ | ------------------------------------- |
+| TLB size     | 16 - 512 entries                      |
+| block size   | 1-2 page entries (typically 4-8 Byte) |
+| hit time     | 0.5 - 1 cycle                         |
+| miss penalty | 10 - 100 cycle                        |
+| miss rate    | 0.01% - 1%                            |
 
 ## Fallacies and Pitfalls
 
@@ -340,7 +406,15 @@ page fault 的代价非常高，每次都要花费几百万个 cycle 才能完�
     + 局部性原理让我们可以在保持 memory 低成本的同时获取高性能
     + cache 的基本设计包含了组织方式、更新算法、写回策略等
     + 3C 模型可以用来对 cache 性能的建模
-    + 
+    + virtual memory 是 DDR 对 disk 的特殊 `cache`
     + 多级 cache 的优化更加方便，优化方式也更多
     + 借助软件，重新组织代码也可以提高局部性
     + 硬件预取也可以提高性能
+
+
+| 图书馆问题 | 图书馆解决方法 | 对应的 memory 问题 | cache 解决方法 | virtual meory 解决方法 |
+| -------- | ----------- | ---------------- | --------------|---------------------- |
+| 每次只拿一本，往返换书太慢 | 使用书桌一次性放好几本书 | 按照 Byte 访问 DDR 太慢 | 使用 cache 保存多个数据 | N/A |
+|                       |                 | 访问 disk 太慢 | N/A | 使用 page table 作为 disk 的 "cache" |
+| 
+| 每次都查询目录太慢 | 用小纸条抄写一小段目录 | 从 DDR 查询 page table 速度太慢 | N/A  | TLB 存储部分 page table |
