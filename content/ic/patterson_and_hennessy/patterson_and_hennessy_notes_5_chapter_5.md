@@ -1,5 +1,5 @@
 Title: Patterson and Hennessy 学习笔记 #5 —— Chapter 5 Large and Fast:Exploiting Memory Hierarchy
-Date: 2020-12-20 22:28
+Date: 2021-02-21 22:28
 Category: IC
 Tags: Patterson and Hennessy
 Slug: learning_patterson_and_hennessy_notes_5_chapter_5
@@ -84,11 +84,11 @@ Cache 的形式就是一张 table，大概可以分成 3 个字段：
 
 Cache 的组织方式可以分为 3 类：
 
-|               类型              |          优点        |        缺点      |
-| ------------------------------ | ------------------- | ---------------- |
-| 直接相联 `directly associative` | 硬件简单              | 冲突概率高，利用率低 |
-| 全相联 `fully associative`      | 冲突概率低、利用率高    | 硬件实现复杂        |
-| 组相联 `set associative`        | 折中                 | 折中              |
+|               类型              | 类比     |          优点        |        缺点      |
+| ------------------------------ | -------- |------------------- | ---------------- |
+| 直接相联 `directly associative` | 固定车位   | 硬件简单             | 冲突概率高，利用率低 |
+| 全相联 `fully associative`      | 随机车位   | 冲突概率低、利用率高   | 硬件实现复杂        |
+| 组相联 `set associative`        | 区域内随机 |  折中               | 折中              |
 
 直接相联和全相联可以看成是组相联的特例：
 
@@ -310,11 +310,7 @@ DDR 也可以充当 disk 的 “cache”，这种技术叫做虚拟存储器 `vi
 
 因为每个程序都有自己的地址空间，所以 VM 要实现从程序地址空间到物理地址之间的转换，这个转换操作加强了一个程序的地址空间和其他 VM 之间的保护。virutal page number 比 physical page number 多得多是描述一个无限容量的虚拟存储器假象的基础。
 
-`virtual address` = {`virtual page number`, `page offset`}
-
-==>
-
-`pyhsical address` = {`physical page number`, `page offset`}
+`virtual address` = {`virtual page number`, `page offset`} ==> `pyhsical address` = {`physical page number`, `page offset`}
 
 page fault 的代价非常高，每次都要花费几百万个 cycle 才能完成处理（DDR 的速度大概是 disk 的 100,000 倍）。所以 VM 系统的很多设计决策都受 page fault 的影响：
 
@@ -411,10 +407,23 @@ read reference ---------------> hit -------------------------------------> trans
     + 借助软件，重新组织代码也可以提高局部性
     + 硬件预取也可以提高性能
 
+图书馆系统和 memory hierarchy 很相似：
 
-| 图书馆问题 | 图书馆解决方法 | 对应的 memory 问题 | cache 解决方法 | virtual meory 解决方法 |
-| -------- | ----------- | ---------------- | --------------|---------------------- |
-| 每次只拿一本，往返换书太慢 | 使用书桌一次性放好几本书 | 按照 Byte 访问 DDR 太慢 | 使用 cache 保存多个数据 | N/A |
-|                       |                 | 访问 disk 太慢 | N/A | 使用 page table 作为 disk 的 "cache" |
-| 
-| 每次都查询目录太慢 | 用小纸条抄写一小段目录 | 从 DDR 查询 page table 速度太慢 | N/A  | TLB 存储部分 page table |
+| 图书馆                        | cache / virtual memory       |
+| -----------------------------| ---------------------------- |
+| 书                           | cache block / page          |
+| 查询书桌的时间                 | hit time                    |
+| 从书架拿书到书桌的时间           | miss penalty               |
+| 书桌放满了书，必须放回才能拿回新书 | cache replace               |
+| 书桌太大，查询变慢              | cache 容量变大，latency 也变大 |
+| 书名                         | virtual address             |
+| 书的索书号                    | physical address            |
+| 书名 <-> 索书号查询系统         | page table                  |
+| 记录索书号的小纸片              | TLB                         |
+
+所以问题也可以类比：
+
+| 图书馆问题              | 图书馆解决方法         | 对应的 memory 问题              | memory hierarchy 解决方法 |
+| --------------------- | ------------------- | ----------------------------- | ------------------------ |
+| 每次只拿一本，往返换书太慢 | 使用书桌一次性放好几本书 | 访问 DDR 太慢                  | 使用 cache               |
+| 每次都查询目录太慢        | 用小纸条抄写一小段目录  | 从 DDR 查询 page table 速度太慢 | TLB 存储部分 page table   |
