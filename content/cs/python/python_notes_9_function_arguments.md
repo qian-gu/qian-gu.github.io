@@ -12,15 +12,13 @@ Summary: 函数参数小结
 
 最普通常见的参数，函数调用时必须按照定义顺序准确传递，而且数量也必须一样，不能多也不能少。位置参数还有一种传参方式：通过关键字。如果在函数调用时给出参数名，这样就不必按照定义顺序传参了，因为解释器可以自己根据参数名进行传递。
 
-```
-#!python
-def add(a, b):
-    return a+b
-
-add(1, 2)
-add(a=1, b=2)
-add(b=2, a=1)
-```
+    #!python
+    def add(a, b):
+        return a+b
+    
+    add(1, 2)
+    add(a=1, b=2)
+    add(b=2, a=1)
 
 ## Default Argument
 
@@ -239,7 +237,8 @@ def func(positional, default, *args, keyword_only, **kw_args)
 ```
 #!python
 def show_param(a, b, c=3, *args, d, **kw_args):
-    print("a = ", a, '\nb = ', b, '\nc = ', c, '\n*args = ', args, '\nd = ', d, '\n**kw_args', kw_args)
+    print("a = ", a, '\nb = ', b, '\nc = ', c, '\n*args = ', args, '\nd = ', d,
+         '\n**kw_args', kw_args)
 
 args = (4, 5)
 kw_args = {"param1": 6, "param2": 7}
