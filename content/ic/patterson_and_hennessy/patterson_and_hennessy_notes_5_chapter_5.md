@@ -169,9 +169,27 @@ $Memory\ stall\ clock\ cycles = \frac{Memory\ access}{Program} * Miss\ rate * Mi
 
 $Memory\ stall\ clock\ cycles = \frac{Instrcutions}{Program} * \frac{Misses}{Instrcution} * Miss\ penalty$
 
-有时候设计人员还会用另外一种方式来评估 cache 的设计：`AMAT`(Average memory aceess time)
+!!! note
+    上面最后计算 memory stall clock cycles 的两个公式中，`miss rate` 和 `miss/instruction` 的含义并不一样：
+
+    + `miss rate` 是标准定义
+    + `miss/instrcution` 是把 miss 次数平摊到了包括计算指令的每一条指令中
+
+也可以采用另外一种测量方式对 Cache 性能进行建模：每次访存的平均时间 `AMAT`(Average memory aceess time)。显然，Cache 系统设计越合理，对 Core 表现出来的性能越好，AMAT 就越小。根据定义可以知道 AMAT 的计算公式如下：
 
 $AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty$
+
+对于多级 Cache 系统，AMAT 公式如下（以两级 Cache 为例）：
+
+$T_{avg}=H_1*C_1 + (1-H_1)*(H_2*C_2 + (1-H_2)*M)$
+
+每个符号的含义：
+
++ $H_1$ 表示 L1 cache 的命中率
++ $H_2$ 表示 L2 cache 的命中率
++ $C_1$ 表示 L1 cache 命中访问时间
++ $C_2$ 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）
++ $M$ 表示 DDR 的访问时间（即 L2 miss 的 penalty）
 
 ### The Three Cs
 

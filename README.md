@@ -2,17 +2,15 @@
 
 Personal blog generator powered by pelican.
 
-## Dependencies
+## Dependency
 
-1. [guqian110/Flex theme](https://github.com/guqian110/Flex)
-2. [pelican-plugins](https://github.com/getpelican/pelican-plugins)
++ [pelican-plugins](https://github.com/getpelican/pelican-plugins)
 
 ## Installation
 
 ```bash
-git clone https://github.com/getpelican/pelican-themes
-git clone https://github.com/getpelican/pelican-plugins
-git clone https://github.com/guqian110/blog_generator
+git clone https://github.com/getpelican/pelican-plugins --recursive
+git clone https://github.com/guqian110/blog_generator  --recursive
 cd blog_generator
 # custom your pelicanconfig.py and Makefile
 ```
@@ -33,3 +31,5 @@ Open the generated html pages with a browse for debug.
 make clean
 make publish
 ```
+
+Push your new post to Github.
