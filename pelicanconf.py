@@ -50,7 +50,7 @@ MENUITEMS = (('Authors', '/authors.html'),
 
 SOCIAL = (
     ('envelope', 'mailto:guqian110@163.com'),
-    ('github', 'https://github.com/guqian110'),
+    ('github', 'https://github.com/qian-gu'),
     ('twitter', 'https://twitter.com/qian_gu'),
     ('rss', '/feeds/all.atom.xml'),
 )
@@ -93,7 +93,7 @@ PLUGIN_PATHS = ['../pelican-plugins']
 PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts', 
            'sitemap', 'representative_image', 'tipue_search', 'render_math', 'series'
           ]
-GITHUB_CORNER_URL = 'https://github.com/guqian110/guqian110.github.io'
+GITHUB_CORNER_URL = 'https://github.com/qian-gu/qian-gu.github.io'
 # i18n_subsites
 I18N_TEMPLATES_LANG = 'en'
 # setion_number

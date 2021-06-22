@@ -55,7 +55,7 @@ cache 的设计可以总结为下面几个问题。
 
 L1 离 core 最近，其目标是跟上 core 的速度，所以会选择小容量、低相联度牺牲一些 hit rate，尽量减小 latency，提高 throughput。除了性能考虑，另外一个原因是 L1 的成本最高，所以容量也无法做得很大。
 
-L2 离 core 远一些，其目标则是低 miss rate，所以会选择大容量、高相联度。
+L2 离 core 远一些，其目标则是低 miss rate，所以会选择大容量、高相联度，付出的代价则是频率、throughput 和 latency 稍微差一些。
 
 ### Block 大小选择
 
@@ -63,7 +63,7 @@ L2 离 core 远一些，其目标则是低 miss rate，所以会选择大容量�
 
 答案：应该根据 `cache size` 做出选择。
 
-较大的 block 的可以更好地利用空间局部性，所以可以降低 miss rate，但是当 block 和 cache 容量的比例大到一定程度时，因为 block 的数量变得很少，此时会有大量的冲突，数据在被再次访问前就已经被替换出去了，而且太大的 block 内部数据的空间局部性也会降低，所以会导致 miss rate 反而上升。
+较大的 block 的可以更好地利用空间局部性，所以可以降低 miss rate，但是当 block 占 cache 容量的比例大到一定程度时，因为 block 的数量变得很少，此时会有大量的冲突，数据在被再次访问前就已经被替换出去了，而且太大的 block 内部数据的空间局部性也会降低，所以会导致 miss rate 反而上升。
 
 随着 block 的增大，miss rate 的改善逐渐降低，但是在不改变 memory 系统的前提下，miss penalty 会随着 block 的增大而增大，所以当 miss penalty 超过了 miss rate 的收益，cache 的性能就会变低。
 

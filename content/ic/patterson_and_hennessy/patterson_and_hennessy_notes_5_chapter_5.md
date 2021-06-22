@@ -181,7 +181,7 @@ $AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty$
 
 对于多级 Cache 系统，AMAT 公式如下（以两级 Cache 为例）：
 
-$T_{avg}=H_1*C_1 + (1-H_1)*(H_2*C_2 + (1-H_2)*M)$
+$T_{avg}=H_1*C_1 + (1-H_1)*(H_2*(C_1 + C_2) + (1-H_2)*(C_1 + C_2 + M)$
 
 每个符号的含义：
 
@@ -190,6 +190,12 @@ $T_{avg}=H_1*C_1 + (1-H_1)*(H_2*C_2 + (1-H_2)*M)$
 + $C_1$ 表示 L1 cache 命中访问时间
 + $C_2$ 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）
 + $M$ 表示 DDR 的访问时间（即 L2 miss 的 penalty）
+
+也可以换一种算法：
+
+$T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M$
+
+可以证明两种方式是等价的。
 
 ### The Three Cs
 

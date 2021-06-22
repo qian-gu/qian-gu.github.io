@@ -1,4 +1,4 @@
-Title: CPU 关键技术 —— Tomasulo
+Title: CPU 关键技术 —— Pipeline
 Date: 2021-01-13 19:21
 Category: IC
 Tags: CPU, Tomasolu
