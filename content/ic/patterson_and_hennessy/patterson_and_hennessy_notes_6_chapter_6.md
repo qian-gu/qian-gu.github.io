@@ -6,7 +6,6 @@ Slug: learning_patterson_and_hennessy_notes_6_chapter_6
 Author: Qian Gu
 Series: Patterson & Hennessy Notes
 Summary: Patterson and Hennessy 读书笔记，第六章
-Status: draft
 
 > I swing big, with everything I've got. I hit big r I miss big. I like to live as big as I can.
 > 

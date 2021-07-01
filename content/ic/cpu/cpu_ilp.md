@@ -2,7 +2,7 @@ Title: CPU 关键技术 —— ILP
 Date: 2021-01-13 19:21
 Category: IC
 Tags: CPU, Tomasolu
-Slug: cpu_pipeline
+Slug: cpu_ilp
 Author: Qian Gu
 Series: CPU 关键技术
 Status: draft
@@ -20,7 +20,11 @@ Summary: 总结 Tomasolu 细节
 ## What is ILP
 
 ILP = pipeline + superscalar
+         时间        空间
 
+superscalar == multi-issue
+
+计算机体系结构基础 P22
 ## How to ILP
 
 | 概念 | 含义 | 类比 |

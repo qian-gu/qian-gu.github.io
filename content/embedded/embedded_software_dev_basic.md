@@ -5,6 +5,7 @@ Tags: Baremetal
 Slug: embedded_software_dev_basic
 Author: Qian Gu
 Summary: 嵌入式软件开发流程笔记
+Status: draft
 
 !!! note
     主要以 GCC 为例，LLVM 的内容以后再补充。
@@ -87,9 +88,11 @@ glibc 除了实现 C 标准之外，还封装了操作系统提供的系统服�
 + 添加行号和文件标识
 + 保留所有 `#pragma`
 
-    #!shell
-    gcc -E hello.c -o hello.i
-    cpp hello.c -o hello.i
+```
+#!shell
+gcc -E hello.c -o hello.i
+cpp hello.c -o hello.i
+```
 
 可以用 vim 打开看看 hello.i 的内容。
 
@@ -97,8 +100,10 @@ glibc 除了实现 C 标准之外，还封装了操作系统提供的系统服�
 
 完成的工作：对预处理的结果进行词法分析、语法分析、语义分析和优化，产生对应的汇编代码。
 
-    #!shell
-    gcc -S hello.i -o hello.s
+```
+#!shell
+gcc -S hello.i -o hello.s
+```
 
 可以用 vim 打开看看 hello.s 的内容。
 
@@ -106,9 +111,11 @@ glibc 除了实现 C 标准之外，还封装了操作系统提供的系统服�
 
 对照汇编指令表，将编译结果一一翻译成汇编指令。
 
-    #!shell
-    gcc -c hello.s -o hello.o
-    as hello.s -o hello.o
+```
+#!shell
+gcc -c hello.s -o hello.o
+as hello.s -o hello.o
+```
 
 汇编的结果是 ELF 格式的可重定向目标文件，没法直接用 vim 打开查看，可以用 `readelf` 来查看相关信息。
 
@@ -116,25 +123,27 @@ glibc 除了实现 C 标准之外，还封装了操作系统提供的系统服�
 
 一般程序都会分成多个源文件，每个源文件都可以编译出对应的目标文件，这些目标文件再经过链接才形成最终的可执行文件。即使程序只有一个源文件，一般都会调用标准库，所以也需要链接器把系统提供的 CRT 代码链接到一起。
 
-    #!shell
-    gcc hello.c -o hello
-    # 直接使用 ld hello.o -o hello 会报错，因为没有明确指出其需要的依赖库，引导程序和链接脚本
+```
+#!shell
+gcc hello.c -o hello
+# 直接使用 ld hello.o -o hello 会报错，因为没有明确指出其需要的依赖库，引导程序和链接脚本
+```
 
 链接分为两类：
 
 + 静态链接，在编译阶段把依赖库代码复制到可执行程序中，最终的体积比较大
 
-    #!shell
-    gcc -static hello.c -o hello
-    size hello
-    ldd hello
+        #!shell
+        gcc -static hello.c -o hello
+        size hello
+        ldd hello
 
 + 动态链接：在链接阶段只加入一些描述信息，在程序执行的时候，再从系统中把对应代码加载到内存中
 
-    #!shell
-    gcc hello.c -o hello.o
-    size hello
-    ldd hello
+        #!shell
+        gcc hello.c -o hello.o
+        size hello
+        ldd hello
 
 ### ELF
 

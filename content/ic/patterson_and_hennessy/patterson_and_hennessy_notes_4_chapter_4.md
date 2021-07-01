@@ -6,7 +6,6 @@ Slug: learning_patterson_and_hennessy_notes_4_chapter_4
 Author: Qian Gu
 Series: Patterson & Hennessy Notes
 Summary: Patterson and Hennessy 读书笔记，第四章
-Status: draft
 
 > In a major matter, no details are small.
 > 
@@ -41,9 +40,7 @@ Status: draft
 
 上面几个问题可以分成 `control path` 和 `data path` 两大类，各个击破。
 
-![nopipe](/images/learning_patterson_and_hennessy_notes_4_chapter_4/nopipe.png)
-
-这个实现方案中一条指令的所有处理都在一个 cycle 内完成，所有组合逻辑都在一起，显然这个方案的主频非常低。虽然 CPI 是 1, 但是时钟周期实在是太长了，所以性能非常差。历史上早期 CPU 的 ISA 非常简单，所以确实曾经用过这种实现方案，但是现在基本是不可接受的。
+架构具体框图略（Figure 4.17）。这个实现方案中一条指令的所有处理都在一个 cycle 内完成，所有组合逻辑都在一起，显然这个方案的主频非常低。虽然 CPI 是 1, 但是时钟周期实在是太长了，所以性能非常差。历史上早期 CPU 的 ISA 非常简单，所以确实曾经用过这种实现方案，但是现在基本是不可接受的。
 
 因为时钟周期要覆盖最恶劣的组合逻辑路径，所以即使我们尝试使用实现技巧优化大部分常见情况，单周期版本的实现方案的性能不会有任何提升，这和 **common case fast** 这一伟大思想相违背。
 
@@ -76,7 +73,7 @@ $$T_{pipe} = T_0$$
 | 控制冒险 `contrl hazard`/ 分支冒险 `branch hazard` | 取指不正确导致指令不能在预定时钟周期内执行 | `prediction`(`BTB`/`BTH`) / delay slot |
 
 基本上每个 stage 都有对应的核心问题需要解决，各种各样的解决方案实现复杂度、消耗的资源和达到的性能都不相同，这些解决方案按照不同的方式组合在一起，就形成了高中低等不同系列的 CPU。关于每个 stage 的问题及解决方案可以扩展出很多内容，更详细的内容略。
-
+    
 !!! note
     除了存储系统外，pipeline 的有效运作是决定一个处理器 CPI 的最重要因素。不管实现方案是否简单、性能高低，结构冒险、数据冒险、控制冒险这三种冒险是 pipeline 中非常重要的问题。一般来说，
 
@@ -103,7 +100,7 @@ $$T_{pipe} = T_0$$
 + 第一条是 WR 阶段，执行执行结果写回到 regfile 中 ==> 数据冒险
 + 第二条是 IF 阶段，选择下一条 PC 的取值 ==> 控制冒险
 
-![pipe](/images/learning_patterson_and_hennessy_notes_4_chapter_4/pipe.png)
+具体框图略（Figure 4.49）
 
 ## Exceptions
 

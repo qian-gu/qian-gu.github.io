@@ -6,7 +6,6 @@ Slug: learning_patterson_and_hennessy_notes_5_chapter_5
 Author: Qian Gu
 Series: Patterson & Hennessy Notes
 Summary: Patterson and Hennessy 读书笔记，第五章
-Status: draft
 
 > Ideally one would desire an indefinitely large memory capacity such that any particular ... word would be immediately available. ... We are ... forced to recognize the possibility of constructing a hierarchy of memories, each of which has greater capacity than the preceding but which is less quickly accessible.
 > 
@@ -368,13 +367,13 @@ page fault 的代价非常高，每次都要花费几百万个 cycle 才能完�
 
 ```
 #!text
-                 lookup TLB
-read reference ---------------> hit -------------------------------------> translate
-                     |                                                          ^
-                     |                 lookup page table                        |
-                     |--------> miss ---------------------> hit ---------> loading into TLB
+                lookup TLB
+read reference -----------> hit ---------------------------> translate
+                    |                                            ^
+                    |            lookup page table               |
+                    |-----> miss -----------------> hit ---> loading into TLB
                                              |
-                                             |------------> miss --------> OS.exception handle
+                                             |----> miss --> OS.exception handle
 ```
 
 因为 TLB 是一个小 cache，所以它的设计考虑因素和规格都符合前面 cache 部分的讨论。下面是一个典型配置：
