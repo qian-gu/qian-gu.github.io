@@ -5,12 +5,13 @@ Personal blog generator powered by pelican.
 ## Dependency
 
 + [pelican-plugins](https://github.com/getpelican/pelican-plugins)
++ [Flex Theme](https://github.com/alexandrevicenzi/Flex)
 
 ## Installation
 
 ```bash
 git clone https://github.com/getpelican/pelican-plugins --recursive
-git clone https://github.com/guqian110/blog_generator  --recursive
+git clone https://github.com/qian-gu/blog_generator  --recursive
 cd blog_generator
 # custom your pelicanconfig.py and Makefile
 ```

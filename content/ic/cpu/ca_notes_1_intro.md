@@ -10,6 +10,7 @@ Summary: 引言
 
 !!! note
    这个系列是 Computer Architecture 的主题阅读笔记，主要参考资料为：
+
    1. H&P
    2. P&H
    3. ICS 胡 （简化版的 CSAPP + P&H）
