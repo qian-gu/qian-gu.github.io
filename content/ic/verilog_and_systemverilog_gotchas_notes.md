@@ -1,11 +1,10 @@
 Title: 《Verilog and SystemVerilog gotchas》笔记
-Date: 2021-01-30 22:13
+Date: 2021-04-25 22:13
 Category: IC
 Tags: Verilog, SystemVerilog
 Slug: verilog_and_systemverilog_gotchas_notes
 Author: Qian Gu
 Summary: 读书笔记，总结常见“语法坑”
-Status: draft
 
 !!! note
     1. 这本书[《Verilog and SystemVerilog gotchas》][book]非常老，第一作者 Sutherland 已经去世了。虽然有对应的中文翻译版本，但是翻译和校对的质量很差，语句不同顺，笔误满天飞，可能看英文版理解起来更通顺一些

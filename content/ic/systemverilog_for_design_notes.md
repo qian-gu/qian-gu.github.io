@@ -1,11 +1,10 @@
 Title: 《SystemVerilog for Design》笔记
-Date: 2021-01-27 21:01
+Date: 2021-04-04 21:01
 Category: IC
 Tags: SystemVerilog
 Slug: systemverilog_for_design_notes
 Author: Qian Gu
 Summary: 读书笔记，总结 SV 新语法
-Status: draft
 
 !!! note
     1. 本书假定读者已经掌握了 Verilog，主要内容是从对比角度介绍 SV 如何让设计者在更高层次对硬件进行建模，如何更高效地进行开发
@@ -1834,3 +1833,17 @@ interface 可以像 module 一样使用 parameter，也可以使用 generate 语
 ## Chapter 12 Behavioral and Transaction Level Modeling
 
 虽然有些特定的综合工具可以处理特定的 TLM，大部分情况下 Transaction Level Modeling(TLM) 大部分情况下都是不可综合的，略。
+
+## 附录
+
+一些 SV 的参考资源：
+
+| 类型 | 资源 |
+| ---- | ---- |
+| Syntax | <ul><li>[SystemVerilog for Design][book1]</li><li>[RTL Modeling with SystemVerilog For Simulation and Synthesis][book2]</li><li>[Verilog and SystemVerilog gotchas][book3]</li></ul> |
+| Coding Style | <ul><li>[lowRISC coding style guide][guide]</li></ul> |
+
+[book1]: https://book.douban.com/subject/1764888/
+[book2]: https://www.sutherland-hdl.com/books_and_guides.html#RTL%20Book
+[book3]: https://book.douban.com/subject/2859647/
+[guide]: https://github.com/lowRISC/style-guides/blob/master/VerilogCodingStyle.md

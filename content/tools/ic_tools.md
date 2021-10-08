@@ -4,6 +4,7 @@ Category: Tools
 Tags: IC_tools
 Slug: tools_for_ic_design
 Author: Qian Gu
+Status: draft
 Summary: 汇总 IC 设计中常用的开源小工具
 
 Wavedrom 全家桶，有很多有用的小工具。
