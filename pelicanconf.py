@@ -91,7 +91,8 @@ GOOGLE_ANALYTICS = "UA-48826831-1"
 THEME = 'Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
 PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts', 
-           'sitemap', 'representative_image', 'tipue_search', 'render_math', 'series'
+           'sitemap', 'representative_image', 'tipue_search', 'render_math', 'series',
+           'pelican_comment_system',
           ]
 GITHUB_CORNER_URL = 'https://github.com/qian-gu/qian-gu.github.io'
 # i18n_subsites
@@ -136,3 +137,6 @@ MARKDOWN = {
     },
     'output_format': 'html5'
 }
+# pelican comment system
+PELICAN_COMMENT_SYSTEM = True
+PELICAN_COMMENT_SYSTEM_IDENTICON_DATA = ('author',)
