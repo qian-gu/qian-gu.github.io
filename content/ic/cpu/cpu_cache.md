@@ -1,10 +1,10 @@
-Title: CPU 关键技术 —— Cache
+Title: CPU 笔记 —— Cache
 Date: 2021-01-13 19:21
 Category: IC
 Tags: CPU, Cache
 Slug: cpu_cache
 Author: Qian Gu
-Series: CPU 关键技术
+Series: CPU 笔记
 Status: draft
 Summary: 总结 Cache 的设计细节
 
@@ -41,15 +41,15 @@ cache 能缓解问题的原因在于程序具有**局部性原理**：
 
 Cache 的出现可以说是一种无奈的妥协。如果 DRAM 的速度足够快，或者 SRAM 的容量可以做到足够大，我们的烦恼不复存在了，cache 也没有存在的必要了。但是在未来一段时间内，当今硅工艺不发生革命性变化的前提下，这是很难实现的一件事情，所以 cache 是有必要的。
 
-## 如何设计 Cache？
+## 如何确定 Cache 规格？
 
-cache 的设计可以总结为下面几个问题。
+cache 的规格可以总结为下面几个问题。
 
 ### 容量选择
 
 `Q：Cache 的总容量应该设置为多少合适？`
 
-答案：没有标准答案，应该根据 `应用需求` 和 `微架构` 设计特点做出选择。
+A：没有标准答案，应该根据 `应用需求` 和 `微架构` 设计特点做出选择。
 
 一般 cache 占用处理器 60% ~ 80% 的晶体管和 30% 以上的总面积，在某些处理器中甚至达到了 80% 的面积。显然增加容量可以降低 miss rate，但是增加容量是一把双刃剑，它会导致时序变差，增加 latency。目前的主流方案是多级 cache，不同级别的 cache 设计目标不同，所以容量规格也不同。
 
@@ -61,7 +61,7 @@ L2 离 core 远一些，其目标则是低 miss rate，所以会选择大容量�
 
 `Q：每个 block 的大小应该设置为多少？`
 
-答案：应该根据 `cache size` 做出选择。
+A：应该根据 `cache size` 做出选择。
 
 较大的 block 的可以更好地利用空间局部性，所以可以降低 miss rate，但是当 block 占 cache 容量的比例大到一定程度时，因为 block 的数量变得很少，此时会有大量的冲突，数据在被再次访问前就已经被替换出去了，而且太大的 block 内部数据的空间局部性也会降低，所以会导致 miss rate 反而上升。
 
@@ -73,6 +73,10 @@ L2 离 core 远一些，其目标则是低 miss rate，所以会选择大容量�
     还有一种更加复杂的机制叫做 `requested word first` 或者是 `critical word first`，这种方案会重新组织 memory 的结构，使得被请求的 word 优先返回，然后按照顺序返回后续数据，最后反卷到 block 的开头部分。这种方法比 early restart 稍微快一点，但是会受到相同的限制。
 
 ### 映射方式
+
+`Q：应该如何组织 cache 的存储结构？`
+
+A：根据 `cache size` 三选一
 
 cache 的工作方式和停车场非常类似，如果停车场（cache）中有可用的空车位（cache line），那么汽车（data）就可以停在该车位中；如果停车场已经没有空车位，那么就要先把某个车开出来（数据替换出去），然后才能把新来的车停进去。而在停车场找车时，如果停车场很大，而且所有的车都随机停，那么找车（查找数据）的速度就会很慢。
 
@@ -88,7 +92,7 @@ cache 的工作方式和停车场非常类似，如果停车场（cache）中有
 
 `Q：如果一个 set 中没有可用的 way 时，应该把哪个 way 替换出去？`
 
-答案：一般有 3 种策略：
+A：根据 `associative` 和实现复杂度三选一
 
 + `LRU` (Least Recently Used)
 + `random`
@@ -98,7 +102,69 @@ cache 的工作方式和停车场非常类似，如果停车场（cache）中有
 
 ### 写回策略
 
+`Q：cache 应该如何处理写回数据？`
+
+A： 根据写回代价二选一
+
+|       | hit           |  miss              |
+| ----- | ------------- | ------------------ |
+| 方式一 | write back    | write allocate     |
+| 方式二 | write through | write non-allocate |
+
+hit 下两种不同处理方式的对比：
+
+| 策略             | 优点                  | 缺点                    | 应用    |
+| --------------- | --------------------- | ---------------------- | ------ |
+| `write through` | flush 时直接丢弃，代价小 | 硬件复杂、性能不高        | L1     |
+| `write back`    | 写 cache 省事          | flush 时写回 DDR，代价高 | L2 之后 |
+
+### 实例：Arm M 系列 cache 规格
+
+[ARM M 系列配置](https://en.wikipedia.org/wiki/ARM_Cortex-M)
+
+总结可以得到下面规律：
+
++ Cortex-M 系列定位为 MCU，主要应用于嵌入式领域
++ 中低端 core 内部没有集成任何类型的 cache（M0, M0+, M3, M4）
+  + 在系统层次，可以为 core 配置系统级别的 cache/TCM
++ 高端 core 内部可能同时集成了 cache 和 TCM（M7）
+  + STM32F7 中集成的 M7 是一款双发射、6-stage 的超标量嵌入式处理器，core 内部同时配置了 cache 和 TCM
+  + I-cache 容量为 0~64KB，cache block 大小为 32B，2-way
+  + D-cache 容量为 0~64KB，cache block 大小为 32B，4-way
+  
+### 实例：Arm A 系列 cache 规格
+
+[ARM A 系列配置](https://en.wikipedia.org/wiki/List_of_ARM_microarchitectures#Designed_by_ARM)
+
+总结可以得到下面规律：
+
++ Cortex-A 系列定位移动端和用户级应用
++ A 系列要支持 OS，所以全系配置了不同大小的 cache，舍弃了 TCM
++ 低性能 core 只集成了 L1 cache，高性能 core 还集成了 L2 cache，甚至是 L3
+
 ## Cache 的性能模型
+
+性能用 `AMAT`(Average memory aceess time) 指标来分析（具体分析过程略），显然 Cache 系统设计越合理，对 core 表现出来的性能越好，AMAT 就越小。根据定义可以知道 AMAT 的计算公式如下：
+
+$AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty$
+
+对于多级 Cache 系统，AMAT 公式如下（以两级 Cache 为例）：
+
+$T_{avg}=H_1*C_1 + (1-H_1)*(H_2*(C_1 + C_2) + (1-H_2)*(C_1 + C_2 + M)$
+
+每个符号的含义：
+
++ $H_1$ 表示 L1 cache 的命中率
++ $H_2$ 表示 L2 cache 的命中率
++ $C_1$ 表示 L1 cache 命中访问时间
++ $C_2$ 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）
++ $M$ 表示 DDR 的访问时间（即 L2 miss 的 penalty）
+
+也可以换一种算法：
+
+$T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M$
+
+可以证明两种方式是等价的。
 
 ## Cache 性能优化
 
@@ -119,7 +185,7 @@ cache 的工作方式和停车场非常类似，如果停车场（cache）中有
 | ---------------------------- | --------------------------------------------------------- |
 | `OBL` (one block look-ahead) | 每次多预取一个 cache block                                  |
 | `stream buffer`              | 多预取的数据存储在 stream buffer 中，miss 时再写入 cache line  |
-| `SPT` (stride predict table) | 硬件检测 load 是否存在 stride 模式，取回数据直接写入 cache line | 
+| `SPT` (stride predict table) | 硬件检测 load 是否存在 stride 模式，取回数据直接写入 cache line |
 | `stream cache`               | 结合 steam buffer 和 SPT，把预取回来的数据放在一个小 cache 中   |
 
 预取数据不直接存到 cache 中的原因是避免“cache 污染”，但是 stream buffer 不灵活，所以改进方案是把预取数据放到一个 stream cache 中。
