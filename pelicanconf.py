@@ -66,9 +66,13 @@ COPYRIGHT_YEAR = datetime.now().year
 DISQUS_SITENAME = "ChienGu"
 # ADD_THIS_ID = 'ra-55adbb025d4f7e55'
 
-STATIC_PATHS = ['images', 'files']
+STATIC_PATHS = ['images', 'files', 'extra/custom.css']
 
-# CUSTOM_CSS = 'static/custom.css'
+EXTRA_PATH_METADATA = {
+    'extra/custom.css': {'path': 'static/custom.css'},
+}
+
+CUSTOM_CSS = 'static/custom.css'
 
 
 LINKS_IN_NEW_TAB = True

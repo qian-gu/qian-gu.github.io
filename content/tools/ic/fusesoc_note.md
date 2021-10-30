@@ -10,7 +10,7 @@ Summary: 记录 fusesoc 用法
 
 # What is Fusesoc
 
-[Fusesoc][fusesoc] 是一个用 python 写的 HDL 工程管理工具，可以简单理解为 HDL 版的 pip，主要是为了解决 IP core 重用时复杂繁琐的常规性工作，主要目标是更轻松地实现下面目标：
+[Fusesoc][fusesoc] 是一个用 python 写的 HDL 管理工具，用一句话解释就是：**HDL 版的 pip**，它主要解决 IP core 重用时复杂繁琐的常规性工作，更轻松地实现下面目标：
 
 - 重用已有的 IP core
 - 为 compile-time 和 run-time 生成配置文件
@@ -19,14 +19,15 @@ Summary: 记录 fusesoc 用法
 - 让别人复用你的设计
 - 配置 CI
 
-一个设计可能会有不同的 target，比如仿真、lint、综合等，而且每个 target 也会有多种工具可用，fusesoc 的目标就是把这些通过一个配置文件管理起来，使得使用 fusesoc 的 IP 相互之间可以轻松地复用。因为 fusesoc 本身是一个 python package，所以我们可以直接用 pip 来安装：
+一个设计中包含多个 core，而且可能会有不同的 target，比如仿真、lint、综合等，而且每个 target 也会有多种工具可用，fusesoc 的目标就是把这些设置通过一个配置文件管理起来，使得支持 fusesoc 的 IP 相互之间可以轻松地复用。
+
+因为 fusesoc 本身是一个 python package，所以我们可以直接用 pip 来安装：
 
 ```
 #!bash
 pip3 install fusesoc
 fusesoc --version
 ```
-
 
 [fusesoc]: https://github.com/olofk/fusesoc
 
@@ -73,7 +74,7 @@ Build 过程就是 fusesoc 调用 tool flow 产生一些输出，然后执行这
 
 下面记录两个实验。
 
-# example 1
+# Example 1
 
 参考官方的 `tests/userguide/blinky`，写了一个 counter 的实验例子。
 
@@ -238,7 +239,7 @@ fusesoc 执行完成后会产生一个 build 目录，在 `build/qian_examples_c
     + fusesoc 读取 core 文件后，解析生成 build 下的 makefile， 使用它来调用 EDA 工具
     + 因为 iverilog 对 sv 的支持不完整，所以如果设计使用的 sv，先确认 iverilog 的版本及对 sv 的支持程度（使用源码本地编译可以得到最新的 iverilog）
 
-# example 2
+# Example 2
 
 一种更常见的场景是我们想复用别人的设计，比如说我们想设计一个 counter_blinky 的 core，它依赖于我们刚才写 counter 和 fusesoc 官方 library 中的 blinky 模块。
 
@@ -459,3 +460,7 @@ fusesoc library list
 ```
 
 可以看到已经成功添加了本地目录 `~/workspace/cores` 为本地 provider，打开 `fusesoc.conf` 可以看到相关的记录。以后使用这个目录下的 core 就不再需要在命令行手动指定路径了。
+
+## More
+
+Fusesoc 的这个想法显然是从 `pip`， `npm` 借鉴过来的，现在硬件开源领域越来越多地借鉴软件领域的成功经验，比如 RISC-V、 fusesoc、硬件敏捷开发、chisel/spanil HDL、chipalliance 等等，如果将来硬件开发能像软件一样蓬勃发展，想想都是一件激动人心的事情。

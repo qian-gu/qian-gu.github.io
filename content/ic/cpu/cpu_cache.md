@@ -63,7 +63,7 @@ L2 离 core 远一些，其目标则是低 miss rate，所以会选择大容量�
 
 A：应该根据 `cache size` 做出选择。
 
-较大的 block 的可以更好地利用空间局部性，所以可以降低 miss rate，但是当 block 占 cache 容量的比例大到一定程度时，因为 block 的数量变得很少，此时会有大量的冲突，数据在被再次访问前就已经被替换出去了，而且太大的 block 内部数据的空间局部性也会降低，所以会导致 miss rate 反而上升。
+较大的 block 可以更好地利用空间局部性，所以可以降低 miss rate，但是当 block 占 cache 容量的比例大到一定程度时，因为 block 的数量变得很少，此时会有大量的冲突，数据在被再次访问前就已经被替换出去了，而且太大的 block 内部数据的空间局部性也会降低，所以会导致 miss rate 反而上升。
 
 随着 block 的增大，miss rate 的改善逐渐降低，但是在不改变 memory 系统的前提下，miss penalty 会随着 block 的增大而增大，所以当 miss penalty 超过了 miss rate 的收益，cache 的性能就会变低。
 
@@ -144,7 +144,7 @@ hit 下两种不同处理方式的对比：
 
 ## Cache 的性能模型
 
-性能用 `AMAT`(Average memory aceess time) 指标来分析（具体分析过程略），显然 Cache 系统设计越合理，对 core 表现出来的性能越好，AMAT 就越小。根据定义可以知道 AMAT 的计算公式如下：
+Cache 的性能用 `AMAT`(Average memory aceess time) 指标来衡量（具体分析过程略），显然 Cache 系统设计越合理，对 core 表现出来的性能越好，AMAT 就越小。根据定义可以知道 AMAT 的计算公式如下：
 
 $AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty$
 

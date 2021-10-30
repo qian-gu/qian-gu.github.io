@@ -1,0 +1,13 @@
+body {
+    color: rgb(50, 50, 50);
+    line-height: 1.5em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #d9411e;
+    font-weight: normal;
+}
+
+aside nav ul li {
+    text-transform: none;
+}
