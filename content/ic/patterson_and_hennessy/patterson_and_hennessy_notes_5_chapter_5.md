@@ -200,19 +200,19 @@ $T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M$
 
 所有的 miss 可以被分为 3 类（`3C` 模型）：
 
-|                     类型                           |                 含义                   |
-| ------------------------------------------------- | ------------------------------------- |
-| `Compulsory Miss` 强制失效 / `Cold Miss` 冷启动失效  | 对 Cache 中没有出现的数据第一次访问引起的失效 |
-| `Capacity Miss` 容量失效                           | 因为容量有限，block 被替换后再次访问导致的失效 |
-| `Conflict Miss` 冲突失效 / `Collision Miss` 碰撞失效 | 多个 block 竞争同一个 set 时导致的冲突      |
+|                     类型                           |                 含义                            |
+| ------------------------------------------------- | ----------------------------------------------- |
+| `Compulsory Miss` 强制失效 / `Cold Miss` 冷启动失效  | 对 Cache 中没有出现的数据第一次访问引起的失效         |
+| `Capacity Miss` 容量失效                           | 即使是全相联，因为容量有限，block 被替换后再次访问的失效 |
+| `Conflict Miss` 冲突失效 / `Collision Miss` 碰撞失效 | 多个 block 竞争同一个 set 时导致的冲突              |
 
 这几种失效相互之间是关联的，改变设计中的某一方面会直接影响到其中某几种失效。
 
 |      设计修改    | 对 miss rate 的影响 |           可能对性能产生的负面影响                    |
-| --------------- | -----------------| ------------------------------------------------- |
-| block size ↑    | capacity miss ↓  | access latency ↑                                  |
-| associativity ↑ | conflict miss ↓  | access latency ↑                                  |
-| cache size ↑    | miss rate ↓      | miss penalty ↑, miss rate ↑ when very large block |
+| --------------- | ----------------- | ------------------------------------------------- |
+| cache size ↑    | capacity miss ↓   | access latency ↑, hit time ↑, miss penality ↑     |
+| associativity ↑ | conflict miss ↓   | access latency ↑, hit time ↑, miss penality ↑     |
+| block size ↑    | compulsory rate ↓ | miss penalty ↑, miss rate ↑ when very large block |
 
 ### Controller
 

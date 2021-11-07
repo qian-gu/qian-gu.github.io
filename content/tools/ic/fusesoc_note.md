@@ -232,7 +232,7 @@ fusesoc --cores-root=cores run --target=sim --setup --build --run qian:examples:
 
 我们用 `--cores-root` 指定 core 的搜索目录，用 `--target=sim` 指定执行 sim flow，`--setup --build --run` 指定执行完整的 build 3 个步骤，最后的 `qian:examples:counter` 是我们在 .core 文件中为 counter 起的名字。
 
-fusesoc 执行完成后会产生一个 build 目录，在 `build/qian_examples_counter_1.0.0sim-icarus` 下就可以看到结果了，用 `gtkwave sim.vcd` 可以看波形。
+fusesoc 执行完成后会产生一个 build 目录，在 `build/qian_examples_counter_1.0.0/sim-icarus` 下就可以看到结果了，用 `gtkwave sim.vcd` 可以看波形。
 
 !!! note
 

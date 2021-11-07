@@ -51,11 +51,20 @@ cache 的规格可以总结为下面几个问题。
 
 A：没有标准答案，应该根据 `应用需求` 和 `微架构` 设计特点做出选择。
 
-一般 cache 占用处理器 60% ~ 80% 的晶体管和 30% 以上的总面积，在某些处理器中甚至达到了 80% 的面积。显然增加容量可以降低 miss rate，但是增加容量是一把双刃剑，它会导致时序变差，增加 latency。目前的主流方案是多级 cache，不同级别的 cache 设计目标不同，所以容量规格也不同。
+首先，cache 容量对 area 有最直接的影响，一般 cache 占用处理器 60% ~ 80% 的晶体管和 30% 以上的总面积，在某些处理器中甚至达到了 80% 的面积。所以确定 cache 容量时，首先要考虑的就是面积约束（即 area 和 money）。
 
-L1 离 core 最近，其目标是跟上 core 的速度，所以会选择小容量、低相联度牺牲一些 hit rate，尽量减小 latency，提高 throughput。除了性能考虑，另外一个原因是 L1 的成本最高，所以容量也无法做得很大。
+其次，在满足面积约束的前提下，显然希望 cache 性能越高越好。根据 3C 模型，可以知道
 
-L2 离 core 远一些，其目标则是低 miss rate，所以会选择大容量、高相联度，付出的代价则是频率、throughput 和 latency 稍微差一些。
++ 增加容量的优点：可以降低 capacity miss，从而降低整体的 miss rate
++ 增加容量的缺点：导致时序变差，导致 hit time 和 miss penality 变大
+
+所以 cache 容量是一把双刃剑，并不是越大性能就越高。
+
+目前的主流方案是多级 cache，不同级别的 cache 设计目标不同，所以容量规格也不同。因为其他级 cache 的出现，每一级 cache 的最佳规格、设计思路与单级 cache 方案完全不同：
+
++ L1 离 core 最近，其目标是跟上 core 的速度，所以会选择小容量、低相联度的结构，牺牲一些 hit rate，尽量减小 latency，换取高 throughput 和低 hit time。它的容量和 block size 相比于单级 cache 来说都要小很多，以减小 miss penality
+
++ L2 离 core 远一些，其目标则是低 miss rate，所以会选择大容量、高相联度的结构，牺牲一些频率、throughput 和 latency，换取更低的 miss rate。它的容量和 block size 都要比单级 cache 要大很多
 
 ### Block 大小选择
 
@@ -113,10 +122,10 @@ A： 根据写回代价二选一
 
 hit 下两种不同处理方式的对比：
 
-| 策略             | 优点                  | 缺点                    | 应用    |
-| --------------- | --------------------- | ---------------------- | ------ |
-| `write through` | flush 时直接丢弃，代价小 | 硬件复杂、性能不高        | L1     |
-| `write back`    | 写 cache 省事          | flush 时写回 DDR，代价高 | L2 之后 |
+| 策略             | 优点                  | 缺点                  | 应用    |
+| --------------- | --------------------- | -------------------- | ------ |
+| `write through` | 硬件简单、flush 代价小   | 性能差                | L1     |
+| `write back`    | hit 效率高、带宽利用率高  | 硬件复杂、flush 代价高  | L2 之后 |
 
 ### 实例：Arm M 系列 cache 规格
 
@@ -166,20 +175,73 @@ $T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M$
 
 可以证明两种方式是等价的。
 
-## Cache 性能优化
+### 3C 模型
 
-有了 cache 模型，就可以根据模型来优化性能，由性能模型可以看到，优化思路主要有两条路：
+**3C 模型**，也就是分析清楚 cache 的 miss 可以分为几类，每一类的产生原因是什么：
 
++ `compulsory miss`
++ `capacity miss`
++ `conflict miss`
+
+一旦知道了 miss 产生的原因，也就可以针对性地采用各种方法来降低。虽然按照 3C 模型来分析时，优化某个因素的行为可能会导致另外一个因素的恶化，但是总体上它仍然是个很有用的工具，可以帮助我们在做设计时对 cache 性能进行建模（而且目前我们也没有更好的模型）。
+
+## Cache 性能优化方法
+
+有了 cache 模型，就可以根据模型来优化性能，由性能模型可以看到，优化思路主要有两种：
+
++ 降低 hit time，响应更快，提高 throughput
 + 降低 miss rate，减少 miss 出现的概率
-+ 如果 miss 无法避免，减小 miss 时的 penalty
++ 如果 miss 无法避免，减小 miss penalty
 
-《量化分析》中总结了 10 种优化方法，简单记录一下具体优化方法。
+除了前面总结的 cache 基础规格中的 5 项（容量、block size、相联度、替换策略、写策略），还有一些其他的性能优化方法。
+
+### Pipeline
+
+面临的问题：写 D-cache 时，首先要读出 tag 作比较，判断为 hit，然后才能写入新数据。整个过程串行操作效率低，throughput 为 0.5 instr/cycle。
+
+解决思路：属于思路1（提高 throughput），将 store 指令的过程 pipeline 化，达到 1 instr/cycle 的 throughput。
+
+付出的代价：硬件复杂度增加。后续指令要额外检查 pipeline 上的数据，增加 forward 通路。
+
+### Write Buffer
+
+面临的问题：如果发生 miss 时被替换的 block 为 dirty，则必须先将其写回下级 memory 后才能把目标 block 读进来，整个过程是串行的。当写下级的代价很高时，会导致 miss penality 很大。
+
+解决思路：属于思路3（减小 miss penality），先将 dirty block 写入一本本地的 write buffer，为目标 block 尽早腾出空间。等下级 memory 空闲时，再将dirty block 写入其中。
+
++ 对于 write-back 的 cache，就是把 dirty cache line 整条都写入 write buffer
++ 对于 write-through 的 cahe，就是把 dirty data 写入 write buffer
+
+L1 D-cache 通常采用 write-through 方案，配合 write buffer 提高性能。
+
+付出的代价：硬件复杂度增加。cache 发生 miss 时首先要查询 write buffer（需要 CAM）
+
+### Vicitm Cache
+
+面临的问题：conflict miss 导致频繁的读写下一级 memory，导致整体性能降低。增加相联度代价太大，其他 set 没有这个需求。
+
+解决思路：属于思路2（降低 miss rate），另外增加一个小容量（通常 4~16 个数据）、全相联的 cache，缓存被替换出来的数据。一般和 main cache 为 exclusive 关系。
+
+和 Victim Cache 相对应的还有一种 Filter Cache，即在数据进入 main cache 前，先写入 Filter cache，等数据再次被使用时才写入 main cache，用来过滤偶然数据，提高整体利用率。
+
+付出的代价：硬件复杂度增加。维护 victim cache 和 main cache 之间的一致性。
+
+### Multiple Port
+
+面临的问题：
+
+解决思路：
+
+付出的代价：
 
 ### Prefetch
 
-如果每次发生 miss 时只取回当前 cache line，那么 cache 向 DDR 发送的 burst len 和 outstanding 都很小，效率很低。所以预取的思路是：在取回当前 cache line 的同时以大 burst len 和 outstanding 高效地多取一些相邻数据，这样访问这些预取数据时就不会发生 miss。
+面临的问题：如果每次发生 miss 时只取回当前 cache line，那么 cache 向 DDR 发送的 burst len 和 outstanding 都很小，效率很低。频繁发生 compulsory miss。
 
-预取可以通过软件也可以通过硬件实现，有些 ISA 定义了预取指令，程序员可以通过软件进行预取。硬件预取则是 cache 自主检测和预取。常见的硬件预取方式一共有 4 种：
+解决思路：属于思路2（降低 miss rate）。在取回当前 cache line 的同时以大 burst len 和 outstanding 高效地多取一些相邻数据，这样访问这些预取数据时就不会发生 miss。
+
++ 软件预取：有些 ISA 定义了预取指令，程序员可以通过软件进行预取
++ 硬件预取：cache 自主可以观测 unit-stride 和 stride 的规律，自动预取数据
 
 | 方案                          | 含义                                                      |
 | ---------------------------- | --------------------------------------------------------- |
@@ -190,9 +252,13 @@ $T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M$
 
 预取数据不直接存到 cache 中的原因是避免“cache 污染”，但是 stream buffer 不灵活，所以改进方案是把预取数据放到一个 stream cache 中。
 
+付出的代价：硬件复杂度增加，消耗更多资源。
+
 ### Multiport
 
-如果不是出于性能需求，一种低成本方法是多个访问端口先进行仲裁，然后再顺序访问 cache，这种多端口实际上是“虚假的多端口”。另外一种情况则是超标量或者是多核系统可能会有多个 load/store 指令同时执行，所以对 cache 的接口带宽提出了需求：高性能的场景要能支持同时读写多个数据。
+面临的问题：单端口的最高 throughput = 1 instr/cycle，无法满足超标量处理器的需求
+
+解决思路：属于思路1（降低 hit time）。多端口有几种常见方案：
 
 一般多端口的实现方案有以下几张：
 
@@ -203,13 +269,24 @@ $T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M$
 | `copy multiple port`    | memory 仍然是单端口，但是复制多份，保持 copy 之间的同步 | 浪费资源，同步控制复杂   |
 | `multiple bank`         | memory 仍然是单端口，按照地址分 bank 交织             | 折中方案，普遍应用      |
 
-分 bank 按照地址交织，也有一些缺点，比如要依靠编译器降低冲突概率；发生冲突时性能变差；内部 crossbar 对 PR 不友好，但是相比于其他几个方案，是代价自小的，也是应用最广泛的。
+分 bank 按照地址交织，也有一些缺点，比如要依靠编译器降低冲突概率；发生冲突时性能变差；内部 crossbar 对 PR 不友好，但是相比于其他几个方案，代价最小，应用最广泛。
+
+付出的代价：增加硬件复杂度，消耗更多资源。
 
 ### Non-blocking
 
-### Way-predict
+### Multiple Level
 
-### Write Buffer
+面临的问题：单级 cache 无法同时满足速度和容量的需求。
+
+解决思路：存储器层次结构，L1 + L2 + L3。一般 L1/L2 为每个 core 私有，L2/L3 共享。
+
++ L1： 小容量、低关联度、write-through
++ L2/L3: 大容量、高关联度、write-back
+
+付出的代价：面积变大、解决一致性问题、硬件复杂度增加
+
+### Way Prediction
 
 ## 参考资料
 
