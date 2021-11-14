@@ -9,6 +9,7 @@ Status: draft
 Summary: 总结 Cache 的设计细节
 
 !!! note
+
     Cache 是一个非常广泛、有深度的话题，无数的大牛在此道沉浸数十载，创造出了各种各样的优化技巧和实现技术，一篇短短的博文显然无法做到面面俱到，作为学习笔记，只争取说明白最基础的 Cache 知识。
 
 ## 为什么需要 Cache？
@@ -40,6 +41,15 @@ cache 能缓解问题的原因在于程序具有**局部性原理**：
 + `空间局部性`：一个数据被访问之后，短期内很大概率会访问相邻数据
 
 Cache 的出现可以说是一种无奈的妥协。如果 DRAM 的速度足够快，或者 SRAM 的容量可以做到足够大，我们的烦恼不复存在了，cache 也没有存在的必要了。但是在未来一段时间内，当今硅工艺不发生革命性变化的前提下，这是很难实现的一件事情，所以 cache 是有必要的。
+
+!!! note
+
+    冯诺依曼结构中有个永恒的主题：如何喂饱饥饿的 CPU，即如何提供稳定的指令流和数据流：
+
+      + 指令流：分支预测
+      + 数据流：cache
+
+    经过多年发展，大概能达到半饱的程度：4 发射的结构，IPC = 2 就已经很不错了。
 
 ## 如何确定 Cache 规格？
 
@@ -185,60 +195,99 @@ $T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M$
 
 一旦知道了 miss 产生的原因，也就可以针对性地采用各种方法来降低。虽然按照 3C 模型来分析时，优化某个因素的行为可能会导致另外一个因素的恶化，但是总体上它仍然是个很有用的工具，可以帮助我们在做设计时对 cache 性能进行建模（而且目前我们也没有更好的模型）。
 
+!!! note
+
+    当系统中有多个 cache 时，会额外再增加一个 C `coherency miss`，即为了保持一致性导致 cache 进行 flush，产生 miss。此时就是 4C 模型。
+
 ## Cache 性能优化方法
 
-有了 cache 模型，就可以根据模型来优化性能，由性能模型可以看到，优化思路主要有两种：
+有了 cache 模型，就可以根据模型来优化性能，针对性能公式中的每个因子，优化思路可以分为下面几类：
 
-+ 降低 hit time，响应更快，提高 throughput
-+ 降低 miss rate，减少 miss 出现的概率
-+ 如果 miss 无法避免，减小 miss penalty
+| 优化思路                           | 优化方法                                                |
+| --------------------------------- | ------------------------------------------------------ |
+| 减小 hit time                      | 小而简单的 cache、cache 和 TLB 并行、增加 pipeline 深度    |
+| 减小 miss rate，减少 miss 出现的概率  | 增大 block size、增加容量、增加关联度、路预测、软件优化      |
+| 如果 miss 无法避免，减小 miss penalty | 多级 cache、关键字优先、读 miss 优先、写合并、victim cache |
+| 提高 cache 访问效率                  | 非阻塞、硬件预取、软件预取                                |
 
-除了前面总结的 cache 基础规格中的 5 项（容量、block size、相联度、替换策略、写策略），还有一些其他的性能优化方法。
+!!! note
+
+      miss penality 本质是就是一块数据的搬运耗时，可以借用“火车过山洞”模型：
+
+      假设火车长度为 l，火车的时速为 v，火车头进入山洞的时刻为 t1，火车头出山洞的时间为 t2，火车尾出山洞的时刻为 t3，那么可以将火车过山洞的过程和数据搬运过程对应起来
+
+      | 火车过山洞    | 搬运数据                                |
+      | ----------- | -------------------------------------- |
+      | t2-t1       | latency                                |
+      | v           | throughput                             |
+      | l           | data_amount                            |
+      | t3-t2 = l/v | transfer_time = data_amount/throughput |
+
+      火车过山洞的总时间 = t3 - t1 = (t3-t2) + (t2-t1)
+
+      数据传输的总时间 = transfer_time + latency
+
+      所以优化 miss penality 的方法主要就是下面这 3 种：
+
+      + 减小 latency，这个取决于 hierarchy 中的下一级， cache 很难改变
+      + 减小 data_amout，每次 miss 时少取一些数据
+      + 增加 throughput，提高 cache 和 hierarchy 下一级之间的传输带宽
 
 ### Pipeline
 
 面临的问题：写 D-cache 时，首先要读出 tag 作比较，判断为 hit，然后才能写入新数据。整个过程串行操作效率低，throughput 为 0.5 instr/cycle。
 
-解决思路：属于思路1（提高 throughput），将 store 指令的过程 pipeline 化，达到 1 instr/cycle 的 throughput。
+解决思路：思路1（减小 hit time），将 store 指令的过程 pipeline 化，达到 1 instr/cycle 的 throughput。
 
 付出的代价：硬件复杂度增加。后续指令要额外检查 pipeline 上的数据，增加 forward 通路。
 
-### Write Buffer
+### Vitural Index/Physical Tag
 
-面临的问题：如果发生 miss 时被替换的 block 为 dirty，则必须先将其写回下级 memory 后才能把目标 block 读进来，整个过程是串行的。当写下级的代价很高时，会导致 miss penality 很大。
+面临的问题：全部使用虚拟地址时，必须经过一道查询 TLB 的过程，增加了整体的访问 latency。
 
-解决思路：属于思路3（减小 miss penality），先将 dirty block 写入一本本地的 write buffer，为目标 block 尽早腾出空间。等下级 memory 空闲时，再将dirty block 写入其中。
+解决思路：思路1（减小 hit time），采用 page offset 作为 cache tag，省去查询 TLB 的过程。
 
-+ 对于 write-back 的 cache，就是把 dirty cache line 整条都写入 write buffer
-+ 对于 write-through 的 cahe，就是把 dirty data 写入 write buffer
+付出的代价：实现复杂度增加，功耗增加。
 
-L1 D-cache 通常采用 write-through 方案，配合 write buffer 提高性能。
+### Cache Size
 
-付出的代价：硬件复杂度增加。cache 发生 miss 时首先要查询 write buffer（需要 CAM）
+面临的问题：cache 容量不够，数据频繁被替换。
+
+解决思路：思路2（降低 miss rate），降低 capacity miss
+
+付出的代价：导致 hit time 变大，同时成本和功耗也会变高。
+
+### Block Size
+
+面临的问题：block 太小，对空间局部性的利用不充分。
+
+解决思路：思路2（降低 miss rate），可以充分利用空间局部性，降低 compulsory miss。而且扩大 block size 会导致 tag 位宽变小，相应地可以减小一点功耗。
+
+付出的代价：导致 miss penality 变大；而且过大的 blocksize 会适得其反。
+
+### Set Associativity
+
+面临的问题：关联度太小，一个 set 内频繁竞争。
+
+解决思路：思路2（降低 miss rate），降低 conflict miss。
+
+付出的代价：导致 hit time 变大，同时成本的功耗也会变高。
 
 ### Vicitm Cache
 
 面临的问题：conflict miss 导致频繁的读写下一级 memory，导致整体性能降低。增加相联度代价太大，其他 set 没有这个需求。
 
-解决思路：属于思路2（降低 miss rate），另外增加一个小容量（通常 4~16 个数据）、全相联的 cache，缓存被替换出来的数据。一般和 main cache 为 exclusive 关系。
+解决思路：思路2（降低 miss rate），另外增加一个小容量（通常 4~16 个数据）、全相联的 cache，缓存被替换出来的数据。一般和 main cache 为 exclusive 关系。
 
 和 Victim Cache 相对应的还有一种 Filter Cache，即在数据进入 main cache 前，先写入 Filter cache，等数据再次被使用时才写入 main cache，用来过滤偶然数据，提高整体利用率。
 
 付出的代价：硬件复杂度增加。维护 victim cache 和 main cache 之间的一致性。
 
-### Multiple Port
-
-面临的问题：
-
-解决思路：
-
-付出的代价：
-
 ### Prefetch
 
 面临的问题：如果每次发生 miss 时只取回当前 cache line，那么 cache 向 DDR 发送的 burst len 和 outstanding 都很小，效率很低。频繁发生 compulsory miss。
 
-解决思路：属于思路2（降低 miss rate）。在取回当前 cache line 的同时以大 burst len 和 outstanding 高效地多取一些相邻数据，这样访问这些预取数据时就不会发生 miss。
+解决思路：思路2（降低 miss rate）。在取回当前 cache line 的同时以大 burst len 和 outstanding 高效地多取一些相邻数据，这样访问这些预取数据时就不会发生 miss。
 
 + 软件预取：有些 ISA 定义了预取指令，程序员可以通过软件进行预取
 + 硬件预取：cache 自主可以观测 unit-stride 和 stride 的规律，自动预取数据
@@ -254,11 +303,24 @@ L1 D-cache 通常采用 write-through 方案，配合 write buffer 提高性能�
 
 付出的代价：硬件复杂度增加，消耗更多资源。
 
+### Write Buffer
+
+面临的问题：如果发生 miss 时被替换的 block 为 dirty，则必须先将其写回下级 memory 后才能把目标 block 读进来，整个过程是串行的。当写下级的代价很高时，会导致 miss penality 很大。
+
+解决思路：思路3（减小 miss penality），先将 dirty block 写入一本本地的 write buffer，为目标 block 尽早腾出空间。等下级 memory 空闲时，再将dirty block 写入其中。
+
++ 对于 write-back 的 cache，就是把 dirty cache line 整条都写入 write buffer
++ 对于 write-through 的 cahe，就是把 dirty data 写入 write buffer
+
+L1 D-cache 通常采用 write-through 方案，配合 write buffer 提高性能。
+
+付出的代价：硬件复杂度增加。cache 发生 miss 时首先要查询 write buffer（需要 CAM）
+
 ### Multiport
 
 面临的问题：单端口的最高 throughput = 1 instr/cycle，无法满足超标量处理器的需求
 
-解决思路：属于思路1（降低 hit time）。多端口有几种常见方案：
+解决思路：思路1（降低 hit time）。多端口有几种常见方案：
 
 一般多端口的实现方案有以下几张：
 
@@ -279,12 +341,12 @@ L1 D-cache 通常采用 write-through 方案，配合 write buffer 提高性能�
 
 面临的问题：单级 cache 无法同时满足速度和容量的需求。
 
-解决思路：存储器层次结构，L1 + L2 + L3。一般 L1/L2 为每个 core 私有，L2/L3 共享。
+解决思路：思路3（减小 miss penality），存储器层次结构 L1 + L2 + L3。一般 L1/L2 为每个 core 私有，L2/L3 共享。
 
 + L1： 小容量、低关联度、write-through
 + L2/L3: 大容量、高关联度、write-back
 
-付出的代价：面积变大、解决一致性问题、硬件复杂度增加
+付出的代价：面积变大、解决一致性问题、硬件复杂度增加。
 
 ### Way Prediction
 

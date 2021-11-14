@@ -10,7 +10,7 @@ Status: draft
 
 !!! note
 
-    Privileged ISA 文档的版本号:20190608-1
+    Privileged ISA 文档的版本号:20190608-Priv-MSU-Ratified
 
 ## Introduction
 
@@ -62,18 +62,26 @@ RISC-V 的硬件不仅要实现 Privileged ISA，还要包含一些其他功能�
 
 每个 level 都会有一组核心 Privileged ISA，再附加一些可选的扩展指令和变种指令。任何一个实现可以根据资源和目标折中选择支持 3 种 level 的组合。这些 level 是通过 CSR 来定义的，任何一个 hart 任何时候必然处于 3 种 level 中的某一种。
 
+允许的组合：
+
+| 级别数量 | 支持的模式 | 用途                    |
+| ------- | -------- | ----------------------- |
+| 1       | M        | 简单嵌入式系统            |
+| 2       | M, U     | 带安全功能的嵌入式系统     |
+| 3       | M, S, U  | 运行 Unix-like 的操作系统 |
+
 ### Debug Mode
 
 Debug 可以看做是一个比 M 模式级别更高的特权模式，可能会有一些专用的 CSR 和地址空间。RISC-V 的 debug 模式定义在另外一个标准文档中。
 
 ## Control and Status Registers (CSRs)
 
-RISC-V 所有 Privileged 指令的 opcode 都是 `SYSTEM`，这些指令可以分为两类：
+RISC-V 中的 opcode = `SYSTEM` 的字段用来编码特权指令，这些指令可以分为两类：
 
-+ 原子性 read-modify-write CSR 的指令
-+ 其他指令
++ `zicsr` 子集中定义的 atomically read-modify-write CSR 的指令
++ privileged 中定义的其他指令
 
-除了 Unprivileged ISA 中描述的 CSR 之外，一个实现还可以包含一些其他 CSR，这些 CSR 在某个特权级别下通过 Zicsr 中的指令进行访问。因为特权分了等级，而 CSR 一般和特权等级是一一对应的，所以 CSR 也可以划分等级，可以被同级或更高级别的特权指令访问。
+除了 Unprivileged ISA 中描述的 CSR 之外，一个实现还可以包含一些其他 CSR，这些 CSR 在某些特权级别下可以通过 Zicsr 中的指令进行访问。因为特权分了等级，而 CSR 一般和特权等级是一一对应的，所以 CSR 也可以划分等级，可以被同级或更高级别的特权指令访问。
 
 ### Address Mapping Conventions
 
@@ -101,15 +109,19 @@ CSR 的编址使用独立的 12bit 空间，所以理论上最多可以编码 40
 
 ### Field Specifications
 
-| 类型     |      含义                                                                                    |
-| --------| ---------------------------------------------------------------------------------------------|
-|  `WPRI` | Write Preserve, Read Ignore，某些保留的 R/W 字段，为了保证前向兼容，写入时要保留原始值，读出时忽略掉返回值 |
-|  `WLRL` | Write Legal, Read Legel，某些 R/W 字段只允许保持特定值                                            |
-|  `WARL` | Write Any Value, Read Legel Value， 某些字段可以写入任何值，但是只能读出特定值                       |
+| 类型     |      含义    |
+| --------| ------------ |
+| `WPRI` Reserved Write Preserve, Read Ignore | 某些保留的 RW 字段，写入其他字段时保留本字段的原值，读出时软件应该忽略返回值 |
+| `WLRL` Write/Read only Legal | 某些 RW 字段只有部分取值合法，软件不能写非法值，只有写入合法值后才能假设读回值合法 |
+| `WARL` Write Any, Read Legel | 某些 RW 字段只有部分取值合法，但是允许写入任何值，读出时返回合法值     |
+
++ 为了保持前向兼容，不提供 WPRI 字段的实现时应该把这些字段 tie 0
++ 给 WLRL 字段写入非法值，实现可以自行决定是否抛出非法指令异常，当写入非法值后，读出值可以是任意值，但是必须保持确定性
++ 给 WARL 字段写入非法值，实现不应该抛出异常，但是写入非法值后，必须保持读出值的确定性
 
 ## Machine-Level ISA
 
-M-mode 的特权等级最高，而且是唯一强制要求实现模式，它用于访问底层硬件，是上电复位后进入的第一个模式。M-mode 包含一个可扩展的 core，根据支持的特权等级和硬件实现的不同来扩展这个 core。
+M-mode 的特权等级最高，而且是唯一强制要求实现模式，它用于访问底层硬件，是上电复位后进入的第一个模式。M-mode 包含一个可扩展的核心 ISA，具体实现可以根据支持的特权等级和自身的硬件特性来扩展它。
 
 ### Machine-Level CSRs
 
