@@ -211,8 +211,8 @@ $T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M$
 |      设计修改    | 对 miss rate 的影响 |           可能对性能产生的负面影响                    |
 | --------------- | ----------------- | ------------------------------------------------- |
 | cache size ↑    | capacity miss ↓   | access latency ↑, hit time ↑, miss penality ↑     |
-| associativity ↑ | conflict miss ↓   | access latency ↑, hit time ↑, miss penality ↑     |
 | block size ↑    | compulsory rate ↓ | miss penalty ↑, miss rate ↑ when very large block |
+| associativity ↑ | conflict miss ↓   | access latency ↑, hit time ↑, miss penality ↑     |
 
 ### Controller
 
