@@ -8,6 +8,10 @@ Summary: 记录 fusesoc 用法
 
 最近看到很多开源项目都在用 fusesoc 来管理，花了半天时间学习了一下，简单记录一下笔记。
 
+!!! note
+
+    下面的内容作为学习笔记，主要节选翻译自 Fusesoc 的官方文档，最新的完整内容见官网。
+
 # What is Fusesoc
 
 [Fusesoc][fusesoc] 是一个用 python 写的 HDL 管理工具，用一句话解释就是：**HDL 版的 pip**，它主要解决 IP core 重用时复杂繁琐的常规性工作，更轻松地实现下面目标：
@@ -20,6 +24,16 @@ Summary: 记录 fusesoc 用法
 - 配置 CI
 
 一个设计中包含多个 core，而且可能会有不同的 target，比如仿真、lint、综合等，而且每个 target 也会有多种工具可用，fusesoc 的目标就是把这些设置通过一个配置文件管理起来，使得支持 fusesoc 的 IP 相互之间可以轻松地复用。
+
+Fusesoc 还有以下特点：
+
+- 非入侵：因为 fusesoc 本质上是用特定的描述文件来描述 IP core，这个描述文件不会影响到 IP 本身
+- 模块化：可以为你的工程创建一个 end-to-end 的 flow
+- 可扩展：想支持任何一种新的 EDA 工具时，只需要增加 100 行内容来描述如何它的用法即可（命令 + 参数）
+- 兼容标准：兼容其他工具的标准格式
+- 资源丰富：标准库目前包含 100 多个 IP（包括 CPU，peripheral, interconnect, SoC 和 util），还可以添加自定义库
+- 开源免费：既可以管理开源项目，也可以用到公司内部项目
+- 实战验证：许多开源项目实际使用验证过
 
 因为 fusesoc 本身是一个 python package，所以我们可以直接用 pip 来安装：
 
@@ -39,15 +53,58 @@ fusesoc --version
 
 ### `core`
 
-即 IP core 设计本身，比如一个 FIFO，它的代码可以保存在本地，也可以保存在远程。每个 core 都有一个 `.core` 文件来描述它，fusesoc 就是通过这个文件来查找、确定某个 core。
+工程管理的第一个问题就是解决依赖。
 
-一个 core 可以依赖于另外一个 core，比如一个 FIFO core 依赖于一个 SRAM core。
+就像 pip 管理 package 一样，fusesoc 以 `core` 作为基本单元。core 指的就是 IP core 设计本身，比如一个 FIFO。每个 core 都有一个 `.core` 文件来描述它，fusesoc 就是通过这个文件来查找、确定某个 core。
 
-SoC 中有很多 IP core，我们只需要指定 top level 的 core 即可，剩下的依赖分析和解决都交给 fusesoc 来完成即可，当 fusesoc 整理出完整的 filelist 后，就会将后续工作交给真正的 EDA 工具来完成。毕竟，fusesoc 只是一个工程管理工具。
+一个 core 可以依赖于另外一个 core，比如一个 FIFO core 依赖于一个 SRAM core。SoC 中有很多 IP core，我们只需要指定 top level 的 core 即可，剩下的依赖分析和解决都交给 fusesoc 来完成即可。一般 core 有两种组织方式：每个 core 本身的代码和 .core 文件保存在一个 repo 下，或者 core 代码和 .core 文件分两个 repo。core 代码或者是 .core 文件既可以保存在本地，也可以保存在远程服务器上。fusesoc standard library 就是按照第二种方式管理的，标准库只是 .core 文件的集合，每个 .core 文件内描述了 core 代码在服务器上的路径。
+
+### `core library`
+
+当我们指定顶层 core 后，它依赖的底层 core 代码甚至是底层 .core 文件都不在本地，fusesoc 是如何解决依赖的呢？答案就是 `core library`。fusesoc 运行时会检查配置文件 `fusesoc.conf` 中的 core library 信息，core library 既可以指向本地目录，也可以指向远程服务器上的 repo 地址。以标准库为例，如果想使用标准库中的 IP，则首先要“安装”标准库，即通过命令行将标准库的地址添加到 core library 中，这个动作会自动把标准库 clone 到当前目录。
+
+```
+#!shell
+fusesoc library add fusesoc-cores https://github.com/fusesoc/fusesoc-cores
+# show all libraries
+fusesoc library list
+# show all cores
+fusesoc core list
+```
+
+这个步骤只是添加了 lib，clone 了 .core 文件，但是对应的 core 设计文件并没有下载下来，显示的 core 状态是 empty。在 build 过程中 fusesoc 会根据 .core 文件中 `provider` 字段提供的地址将 core 设计文件 clone 到 `~/.cache/` 目录下面。
+
+### `fusesoc.conf`
+
+fusesoc 查找 fusesoc.conf 文件的顺序：
+
+1. 首先在当前目录找
+2. 然后在 `$XDG_CONFIG_HOME/fusesoc` 下找
+3. 最后在 `/etc/fusesoc` 下找
+
+也可以直接通过命令行选项 `--config` 指定使用某个 fusesoc.conf 文件。
+
+fusesoc 查找 core 的顺序：
+
+当 fusesoc 查找到 fusesoc.conf 后，根据文件中 `[main]` 的 `cores_root` 字段来搜索所有的合法 core 文件，并将其加入内存数据库中。`cores_root` 字段可以添加多个目录，用空格隔开。也可以通过命令行参数 `--cores-root` 指定搜索目录。fusesoc 查找 core 时按照目录列表顺序搜索，且命令行指定目录位于目录列表的最后。当遇到同名（相同 VLNV，Vender-Library-Name-Version） core 时，后解析到的会覆盖之前的。可以利用这个机制来实现 core 的重载：
+
+- 在 `cores_root` 字段内容顺序来指定某个 lib 重载另外一个 lib 的同名 core
+- 加命令行参数 `--cores-root` 来指定 lib 路径
+
+### `build system`
+
+解决依赖后，工程管理的第二个问题就是调用 EDA 工具。
+
+fusesoc 内部的 `build system` 从顶层 core 文件开始分析，解决所有依赖后整理出完整的 filelist，然后将后续工作交给真正的 EDA 工具来完成。毕竟，fusesoc 只是一个工程管理工具。显然不同的 EDA 工具用法是不一样的，如何将整理好的 filelist 根据目标调用不同的 EDA 工具，传递该工具的特定参数，这个过程是和 EDA 工具强绑定的。比如：
+
+- 如果想调用 verilator 跑仿真：build system 会创建一个 makefile，然后调用 verilator
+- 如果想为 Xilinx 生成 bit：build system 会创建一个 vivado 工程文件，然后调用 vivado 完成综合-布局布线-生成 bit
+
+这些 dirty job 都由 fusesoc 帮我们做了，而且 fusesoc 本身是可扩展的，可以轻松支持新的 EDA 工具。`build system` 包含 3 个概念：`tool flow`， `target`，`build stage`。
 
 ### `tool flow`
 
-显然不同的工具需要不同的命令来调用，fusesoc 的目标就是对用户隐藏这些工具之间的差异，尽量简化调用过程。
+`tool flow` 就是某个特定的 EDA 工具分析运行的过程。verilator 和 vcs，vivado 都是一种 tool。显然不同 tool 需要不同的命令来调用，fusesoc 的目标就是对用户隐藏这些工具之间的差异，尽量简化调用过程。
 
 !!! note
 
@@ -55,13 +112,17 @@ SoC 中有很多 IP core，我们只需要指定 top level 的 core 即可，剩
 
 ### `target`
 
-对于同一个 IP，我们可以做不同的任务，比如仿真、综合、lint等，这些任务对应的 filelist 和参数传递等也不相同，fusesoc 把这些相关配置叫做 target，一般来说常规的任务有 `sim`， `synth`，`lint` 等。
+对于同一个 IP，我们可以做不同的任务，比如仿真、综合、lint等，这些任务对应的 filelist 和参数传递等也不相同，fusesoc 把这些相关配置叫做 `target`，一般来说常规的任务有 `sim`， `synth`，`lint` 等。
 
 ### `build stage`
 
 fusesco 把 build 过程分为 3 个 stage:
 
-- `setup`：把所有 IP 攒到一起，解决依赖问题后把结果交给 tool flow 进行处理
+- `setup`：把所有 IP 攒到一起，解决所有依赖问题
+    - 从顶层 core 开始生成一棵依赖树
+    - 把调用 `generator` 生成的 core 添加到依赖树中
+    - 解析依赖树，生成一个 flattened 描述，将其写入一个 EDAM 文件
+    - 调用某个特定的 tool flow
 - `bulid`：运行 tool flow 直到输出期望的文件
 - `run`：执行 build 阶段的输出，对于 sim 来说就是运行仿真，对于 lint 来说就是调用 lint 工具，对于 FPGA flow 来说就是用生成 bitstream 对 FPGA 进行编程
 
@@ -172,9 +233,10 @@ module tb_counter;
 endmodule
 ```
 
+counter.core 文件：
+
 ```
 #!yaml
-# counter.core
 CAPI=2:
 
 name: qian:examples:counter:1.0.0
@@ -221,7 +283,7 @@ parameters:
 !!! note
 
     + core 文件的语法是 YAML，fuesesoc 的 user guide 里面提供了一个快速入门的教程：[Learn X in Y minutes](https://learnxinyminutes.com/docs/yaml/)
-    + core 文件内容需要遵守 user guide 中的 `CAPI2` 部分的语法规则
+    + core 文件内容需要遵守 user guide 中的 `CAPI2` 的语法规则
 
 使用下面的命令就可以完成 build
 
@@ -368,9 +430,10 @@ module tb_counter_blinky;
 endmodule
 ```
 
+counter_blinky.core 文件：
+
 ```
 #!yaml
-# counter_blinky.core
 CAPI=2:
 
 name: qian:examples:counter_blinky:1.0.0
@@ -433,7 +496,7 @@ fusesoc --cores-root=cores run --target=sim --setup --build --run qian:examples:
 
 ## Custom
 
-前面这个实验过程中自动生成了一个 `fusesoc.conf` 文件，所以可以做一个合理的猜测：fusesoc 的行为取决于 conf 文件，所以我们可以通过对 conf 文件的修改，实现自定义配置。
+我们可以通过对 conf 文件的修改，实现自定义配置。
 
 ```
 [main]
