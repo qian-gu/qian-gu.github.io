@@ -8,8 +8,7 @@ Summary: 总结可配置设计
 
 [Verilog 编程艺术][book1] 的可配置设计一章 学习笔记。
 
-[book1]: http://www.amazon.cn/EDA%E7%B2%BE%E5%93%81%E6%99%BA%E6%B1%87%E9%A6%86-Verilog%E7%BC%96%E7%A8%8B%E8%89%BA%E6%9C%AF-%E9%AD%8F%E5%AE%B6%E6%98%8E/dp/B00HNVY3SY/ref=sr_1_1?ie=UTF8&qid=1429188978&sr=8-1&keywords=verilog%E7%BC%96%E7%A8%8B%E8%89%BA%E6%9C%AF
-
+[book1]: https://book.douban.com/subject/26612391/
 ## Configurable design
 * * *
 
@@ -25,216 +24,154 @@ Summary: 总结可配置设计
 > 
 > 5. 通过工具或脚本直接生成 Verilog 代码
 
-书里面总结了上面的这些方法，以前总结过另外一篇博客：[Verilog 中的参数化建模][blog1]，里面总结了 条件编译、`define、parameter、localparam 的用法和区别。
+书里面总结了上面的这些方法，以前总结过另外一篇博客：Verilog 中的参数化建模，里面总结了 条件编译、`define、parameter、localparam 的用法和区别。
 
 [Reuse Methodology Manual for System-on-a-Chip Designs][book2] 是一本很经典的书，里面有全面详细的可重用设计的方法，有时间了看了再补上。
 
-[blog1]: http://guqian110.github.io/pages/2014/07/09/parameterization_modeling_in_veriog.html
-[book2]: http://www.amazon.com/Reuse-Methodology-Manual-System-Designs/dp/0387740988
+[book2]: https://book.douban.com/subject/2125482/
 
-下面是一些实际例子，展示如何设计可配置模块。
+## Paramter
 
-<br>
+可配置设计最基本的方法，将配置选项放到端口参数上。
 
-## Gray-2-Binary
-* * *
+**优点：** user 直接在例化时传递参数，无需修改 submodule 的源代码
 
-Binary 编码是最自然的、最符合平常的思维的，但是这种编码方式有时候存在一些问题：比如在 DAC 中，数字 3(011) 变为 数字 4(100) 时，每 1 bit 都发生了变化，电路中会产生很大的尖峰电流脉冲。
+**约束：** 必须从 top 一级一级传递下去，每次修改 submodule 内的所有模块都需要同步修改
 
-而 Gray 编码就没有这样的问题，Gray 码有很多优点，应用很广泛，就不再重复了。（比如在 FIFO 设计中，内部就有 Gray 和 Binary 的相互转换）
+**缺点：** 参数数量多时 parameter list 冗长，修改不灵活
 
-下面的例子，通过**将端口位宽参数化**，实现了可配置的转换模块：
+## define
 
-**example1:**
+主要用于条件编译，比如条件定义是否包含某组端口或者例化某个 submodule。
 
-    #verilog
-    module gray2bin #(parameter SIZE = 8)
-        (input  [SIZE-1 : 0]    gray,
-         output [SIZE-1 : 0]    bin);
+**优点：** 一处定义，处处使用
 
-        generate
-            genvar i;
-            for (i = 0; i < SIZE; i = i + 1)
-            begin:bit
-                assign bin[i] = ^gray[SIZE-1 : i];
-            end
-        endgenerate
+**缺点：** define 作用域问题
 
-    endmodule
+## Generate if/for
 
-    #verilog
-    module bin2gray #(parameter SIZE = 8)
-        (input  [SIZE-1 : 0]    bin,
-         output [SIZE-1 : 0]    gray);
+generate if 在 module 内部可以代替 define，但是无法在端口定义上无法代替 define。
 
-        assign gray = bin ^ {1'b0, bin[SIZE-1 : 1] };
+generate for 或者是 for loop 在 module 内部可以实现参数化设计，典型例子是实现参数化的 N-1 mux。同理，当 case 分支的数量为参数化且每个分支内都可以写成统一的参数化形式时，就可以可以用 for 来代替 case。
 
-    endmodule
+```
+#!systemverilog
+// N-1 mux
+always_comb begin
+    dout = '0;
+    for (int i = 0; i < N; i++) begin
+        if (sel[i]) dout = din[i];
+    end
+end
+```
 
-<br>
+## Package
 
-## CRC
-* * *
+SV 引入的新方法，将公有定义放到 package 中，供 module 内部使用。
 
-Cyclic Redundancy Check，循环冗余检测。不同的协议使用的 CRC 多项式不相同，在硬件上体现在 LSR 的宽度和抽头位置不同，我们可以写一个通用的 CRC 模块。
+**优点：** 公共定义几种在一个文件中，方便管理
 
-下面的例子，通过**将端口位宽参数化**，实现了可配置的 CRC 模块。
+**缺点：** 修改可配置参数，要修改 submodule 的源代码
 
-**example2**
+## Package + Port Parameter
 
-    #!verilog
-    module general_crc
-        #(parameter  WIDTH = 16,
-                     [WIDTH-1 : 0]  INIT_VALUE = 0,
-                     [WIDTH-1 : 0]  CRC_EQUATION = 0)
+综合 Package 和 Port Paramter 的优点，具体方式：
 
-        (input                          clk,
-         input                          rst,
-         input                          init,       // if init = 1, initialize crc_value 
-                                                    // with INIT_VALUE
-         input                          enable,     // if enbale = 1, calculate crc_value
-                                                    // from din
-         input                          drain,      // if drain = 1, crc_value is  shifted
-                                                    // out from dout
-         input                          din,
-         output                         dout,
-         output  reg    [WIDTH-1 : 0]   crc_value   // parallel out crc_value
-         );
+- 在 package 中将 meta 和 generated 参数各自定义成一个 struct
+- 在 package 中给出 default meta 和 default generated
+- 每个 module 端口使用 struct 参数（解决 parameter list 冗长问题）
+- 在 top 中计算重载过的 generated 参数
 
-        // implementation code
+**优点：** 避免了冗长的 parameter list，且 parameter 定义集中在一起，方便管理；无作用域问题
 
-    endmodule
+**缺点：** parameter 仍然要层层传递，但 parameter list 仅包含 meta 和 generated，相对较少
 
-在调用时，通过传递合适的参数即可实现不同的 CRC 模块。
+```
+#!systemverilog
+// foo_pkg.sv
+package foo_pkg;
 
-<br>
+    // meta paramter
+    typedef struct packed {
+        int     Length;
+        int     Width;
+    } cfg_t;
 
-## FIFO controller
-* * *
+    // generated paramter
+    typedef struct packed {
+        int     Area;
+        int     Perimeter;
+    } gen_cfg_t;
 
-略...
+    localparam cfg_t DefaultCfg = '{
+        Length: 16,
+        Width:  8 
+    };
 
-<br>
+    localparam gen_cfg_t GenCfg = '{
+        Area: DefaultCfg.Length * DefaultCfg.Width,
+        Perimeter: (DefaultCfg.Length + DefaultCfg.Width)*2
+    };
 
-## RAM wrapper
-* * *
+endpackage
+```
 
-### problem
+```
+#!systemverilog
+// for_top.sv
+module foo_top
+    import foo_pkg::*;
+#(
+    parameter cfg_t Cfg = DefaultCfg
+) (
+    // port list
+);
 
-FPGA 中的 RAM/ROM 是用厂家的工具生成的，而 ASIC 中的 RAM/ROM 是用 ARM 公司的 Memory Compiler 生成的，两者的端口名不一样，有些控制信号的极性也不相同。
+    localparam gen_cfg_t GenCfg = '{
+        Area: Cfg.Length*Cfg.Width
+        Perimeter: (Cfg.Length + Cfg.Width)*2
+    }; 
 
-通常的做法是**使用条件编译**，写如下的代码
+    bar #(
+        .Cfg(Cfg),
+        .GenCfg(GenCfg)
+    ) BAR (
+        // port list
+    );
 
-    #!verilog
-    `ifdef  FPGA
-        // instantiate module for FPGA
-    `else
-        // instantiate module for ASIC
-    `endif
+endmodule
+```
 
-这种方法的缺点主要有：
+!!! note
 
-1. 但内部有几十个到上百个 RAM/ROM 时，手动连接的工作量很大
+     写了个小实验 module 测试了一下这种用法，verilator 编译是没有问题的，但是 iverilog 对 sv 的支持实在是太差了，编译会报错。
 
-2. 做 ATPG 时，手工写代码很容易出错
+## Scripts
 
-3. 做 BIST 测试时，需要添加额外的逻辑
+有些复杂且规律的模块，如 meory wrapper 等可以用脚本自动化生成。包括某些顶层的配置，也可以用 make 等工具自动化生成相关配置文件和代码。
 
-另外一种更好的方法是 **写 wrapper**
+### Adnes
 
-### wrapper
+Andes 的配置工具提供一个友好清晰的图形界面，点击相关配置后就会生成 config.inc 文件，其中包含了根据配置生成的 define 和 parameter，然后被每个 sv 文件所包含。
 
-#### name
+### Sifive
 
-命名规范：按照 ARM 公司的规范，
+Sifive 提供一个基于网页的图形化配置界面，同样可以生成相关配置文件和代码。
 
-RAM/ROM type:
+### WestDegitial
 
-|Type||little/large||Ports||Comments|
-|------||------------||--------||--------------------------------|
-| RF1  ||   little   || single ||                                |
-| RA1  ||   large    || single ||                                |
-| RF2  ||   little   || dual   || one read port & one write port |
-| RA2  ||   large    || dual   || two read port & two write port |
-| ROM  ||            || single ||                                |
+WestDegital 的开源 risc-v core 使用 config/Make 的方式，首先运行 config 文件，通过命令行参数的方式进行自定义配置，会自动生成相关配置文件，包括：
 
-RAM/ROM write enable (WEN) type:
-
-|Type||Description|
-|------||--------------------|
-|  IW  ||  bit-write-enable  |
-|  BW  ||  byte-write-enable |
-|  WW  ||  word-write-enable |
-
-命名时按照 `<ram_type>_<wen_type>_<depth>x<width>` 的规则，在 FPGA 上则加上前缀 `F_`，即：
-
-`F_<ram_type>_<wen_type>_<depth>x<width>`
-
-举例：
-
-+ F_RA1_BW_2kx32：RA1 类型，支持 byte 写，4 个 WEN，深度为 2k，宽度为 32-bit
-
-+ F_RF1_IW_128x8：RF1 类型，支持 bit 写，8 个 WEN，深度为 129，宽度为 8-bit
-
-#### generate wrapper
-
-0. 提前写好的 Perl 脚本 和 参数化模块
-
-1. 根据实际需求，写配置文件
-
-2. 运行 Perl 脚本，读取配置文件，生成 wrapper
-
-3. 将生成的 wrapper 加入到 project 中
-
-
-每个步骤的具体实现方法以后再补...
-
-<br>
-
-## GPIO
-* * *
-
-运用模块化的设计思想，提取公共代码，设计子模块，通过子模块实现大模块的设计，虽然参数化以后 GPIO 看起来比较复杂，但是这个模块是很通用的，设计好之后只需要修改参数就可以重复使用了。这在设计期间，修改起来非常方便。
-
-整个 GPIO 由 5  个模块组成：
-
-    gpio.v (module gpio)
-     |___gpio_params.v (parameters define)
-     |___gpio_reg.v    (module gpio_reg)
-     |___gpio_check.v  (module gpio_check)
-     |___gpio_sync.v   (module gpio_sync2_reg/gpio_sync3_reg/gpio_sync_pulse)
-
-具体代码略，直接看书
-
-<br>
-
-## BusMatrix
-* * *
-
-...
-
-<br>
-
-## Andes Core N801
-* * *
-
-...
-
-<br>
-
-## ARM926EJS
-* * *
-
-...
-
-<br>
-
-## coreConsultant
-* * *
-
-...
-
-<br>
+```
+#!text
+snapshots/default
+├── common_defines.vh                       # `defines for testbench or design
+├── defines.h                               # #defines for C/assembly headers
+├── pd_defines.vh                           # `defines for physical design
+├── perl_configs.pl                         # Perl %configs hash for scripting
+├── pic_map_auto.h                          # PIC memory map based on configure size
+└── whisper.json                            # JSON file for swerv-iss
+```
 
 ## Ref
 

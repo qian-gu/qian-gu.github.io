@@ -4,6 +4,7 @@ Category: Tools
 Tags: IC_tools, fusesoc
 Slug: fusesoc_summary
 Author: Qian Gu
+Series: Open IC Tools & Library
 Summary: 记录 fusesoc 用法
 
 最近看到很多开源项目都在用 fusesoc 来管理，花了半天时间学习了一下，简单记录一下笔记。
@@ -14,7 +15,7 @@ Summary: 记录 fusesoc 用法
 
 # What is Fusesoc
 
-[Fusesoc][fusesoc] 是一个用 python 写的 HDL 管理工具，用一句话解释就是：**HDL 版的 pip**，它主要解决 IP core 重用时复杂繁琐的常规性工作，更轻松地实现下面目标：
+[Fusesoc][fusesoc] 是一个用 python 写的 HDL 管理工具，用一句话解释就是：**HDL 版的 pip + make**，它主要解决 IP core 重用时复杂繁琐的常规性工作，更轻松地实现下面目标：
 
 - 重用已有的 IP core
 - 为 compile-time 和 run-time 生成配置文件
@@ -23,17 +24,17 @@ Summary: 记录 fusesoc 用法
 - 让别人复用你的设计
 - 配置 CI
 
-一个设计中包含多个 core，而且可能会有不同的 target，比如仿真、lint、综合等，而且每个 target 也会有多种工具可用，fusesoc 的目标就是把这些设置通过一个配置文件管理起来，使得支持 fusesoc 的 IP 相互之间可以轻松地复用。
+一个设计中包含多个 core，而且可能会有不同的 target，比如仿真、lint、综合等，而且每个 target 也会有多种工具可用，fusesoc 的目标就是把这些 dirty job 管理起来，使得支持 fusesoc 的 IP 相互之间可以轻松地复用。
 
 Fusesoc 还有以下特点：
 
-- 非入侵：因为 fusesoc 本质上是用特定的描述文件来描述 IP core，这个描述文件不会影响到 IP 本身
-- 模块化：可以为你的工程创建一个 end-to-end 的 flow
-- 可扩展：想支持任何一种新的 EDA 工具时，只需要增加 100 行内容来描述如何它的用法即可（命令 + 参数）
-- 兼容标准：兼容其他工具的标准格式
-- 资源丰富：标准库目前包含 100 多个 IP（包括 CPU，peripheral, interconnect, SoC 和 util），还可以添加自定义库
-- 开源免费：既可以管理开源项目，也可以用到公司内部项目
-- 实战验证：许多开源项目实际使用验证过
+- **非入侵**：因为 fusesoc 本质上是用特定的描述文件来描述 IP core，这个描述文件不会影响到 IP 本身
+- **模块化**：可以为你的工程创建一个 end-to-end 的 flow
+- **可扩展**：想支持任何一种新的 EDA 工具时，只需要增加 100 行左右的内容来描述它的用法即可（命令 + 参数）
+- **兼容标准**：兼容其他工具的标准格式
+- **资源丰富**：标准库目前包含 100 多个 IP（包括 CPU，peripheral, interconnect, SoC 和 util），还可以添加自定义库
+- **开源免费**：既可以管理开源项目，也可以用到公司内部项目
+- **实战验证**：许多开源项目实际使用验证过
 
 因为 fusesoc 本身是一个 python package，所以我们可以直接用 pip 来安装：
 
@@ -57,11 +58,16 @@ fusesoc --version
 
 就像 pip 管理 package 一样，fusesoc 以 `core` 作为基本单元。core 指的就是 IP core 设计本身，比如一个 FIFO。每个 core 都有一个 `.core` 文件来描述它，fusesoc 就是通过这个文件来查找、确定某个 core。
 
-一个 core 可以依赖于另外一个 core，比如一个 FIFO core 依赖于一个 SRAM core。SoC 中有很多 IP core，我们只需要指定 top level 的 core 即可，剩下的依赖分析和解决都交给 fusesoc 来完成即可。一般 core 有两种组织方式：每个 core 本身的代码和 .core 文件保存在一个 repo 下，或者 core 代码和 .core 文件分两个 repo。core 代码或者是 .core 文件既可以保存在本地，也可以保存在远程服务器上。fusesoc standard library 就是按照第二种方式管理的，标准库只是 .core 文件的集合，每个 .core 文件内描述了 core 代码在服务器上的路径。
+一个 core 可以依赖于另外一个 core，比如一个 FIFO core 依赖于一个 SRAM core。SoC 中有很多 IP core，我们只需要指定顶层 core 即可，剩下的依赖分析都交给 fusesoc 来完成即可。一般 core 有两种组织方式：
+
+- core 代码和 .core 文件保存在一个 repo 下
+- core 代码和 .core 文件分两个 repo
+
+fusesoc standard library 就是按照第二种方式管理的，标准库只是 .core 文件的集合，每个 .core 文件内描述了 core 代码在服务器上的路径。
 
 ### `core library`
 
-当我们指定顶层 core 后，它依赖的底层 core 代码甚至是底层 .core 文件都不在本地，fusesoc 是如何解决依赖的呢？答案就是 `core library`。fusesoc 运行时会检查配置文件 `fusesoc.conf` 中的 core library 信息，core library 既可以指向本地目录，也可以指向远程服务器上的 repo 地址。以标准库为例，如果想使用标准库中的 IP，则首先要“安装”标准库，即通过命令行将标准库的地址添加到 core library 中，这个动作会自动把标准库 clone 到当前目录。
+当我们指定顶层 core 后，它依赖的底层 core 代码甚至是底层 .core 文件都不在本地，fusesoc 是如何解决依赖的呢？答案就是 `core library`。与软件类似，fusesoc 根据配置文件 `fusesoc.conf` 中的 core library 信息来查找所有的 core，所以我们使用某个 core 的第一步就是“安装”包含这个 core 的 library。以 fusesoc 标准库为例：
 
 ```
 #!shell
@@ -72,7 +78,13 @@ fusesoc library list
 fusesoc core list
 ```
 
-这个步骤只是添加了 lib，clone 了 .core 文件，但是对应的 core 设计文件并没有下载下来，显示的 core 状态是 empty。在 build 过程中 fusesoc 会根据 .core 文件中 `provider` 字段提供的地址将 core 设计文件 clone 到 `~/.cache/` 目录下面。
+如果这个 library 是远程库（如标准库），这个命令会将其 clone 到当前目录下；如果这个 library 是本地库，则会将其路径添加到配置文件中。
+
+如前面所述，有些 library 可能采用和标准库类似的组织方式，library repo 并不包含 core 代码，而仅仅是 .core 文件集合。所以 `fusesoc library add` 命令只是 clone 了 .core 文件，对应的 core 代码并没有下载下来，我们可以看到 `fusesoc core list` 显示 core 状态是 empty。在 build 过程中 fusesoc 会根据 .core 文件中 `provider` 字段的地址将 core 代码 clone 到 `~/.cache/` 目录下面。
+
+!!! note
+
+    如后面 custom 部分所述，我们可以修改配置文件，指定 clone 和 build 的路径。
 
 ### `fusesoc.conf`
 
@@ -86,10 +98,10 @@ fusesoc 查找 fusesoc.conf 文件的顺序：
 
 fusesoc 查找 core 的顺序：
 
-当 fusesoc 查找到 fusesoc.conf 后，根据文件中 `[main]` 的 `cores_root` 字段来搜索所有的合法 core 文件，并将其加入内存数据库中。`cores_root` 字段可以添加多个目录，用空格隔开。也可以通过命令行参数 `--cores-root` 指定搜索目录。fusesoc 查找 core 时按照目录列表顺序搜索，且命令行指定目录位于目录列表的最后。当遇到同名（相同 VLNV，Vender-Library-Name-Version） core 时，后解析到的会覆盖之前的。可以利用这个机制来实现 core 的重载：
+当 fusesoc 查找到 fusesoc.conf 后，根据文件中 `[main]` 的 `cores_root` 字段来搜索所有的合法 core 文件，并将其加入内存数据库中。`cores_root` 字段可以添加多个目录，用空格隔开。也可以通过命令行参数 `--cores-root` 指定搜索目录。fusesoc 查找 core 时按照目录列表顺序搜索，且命令行指定目录位于目录列表的最后。当遇到同名（相同 VLNV，Vender-Library-Name-Version） core 时，后解析到的会覆盖之前的。可以利用这个机制来实现同名 core 的重载：
 
-- 在 `cores_root` 字段内容顺序来指定某个 lib 重载另外一个 lib 的同名 core
-- 加命令行参数 `--cores-root` 来指定 lib 路径
+- 用 `cores_root` 字段内容顺序来指定某个 lib 重载另外一个 lib 的同名 core
+- 用命令行参数 `--cores-root` 来指定 lib 路径
 
 ### `build system`
 
@@ -139,11 +151,11 @@ Build 过程就是 fusesoc 调用 tool flow 产生一些输出，然后执行这
 
 参考官方的 `tests/userguide/blinky`，写了一个 counter 的实验例子。
 
-首先新建一个目录 `cores/counter`，在下面完成 counter 的 rtl 和 tb，以及 `.core` 文件，目录结构如下
+首先新建一个目录 `~/workspace/mycores/counter`，在下面完成 counter 的 rtl 和 tb，以及 `.core` 文件，目录结构如下
 
 ```
 #!text
-cores/counter
+~/workspace/mycores/counter
 ├── counter.core
 ├── rtl
 │   └── counter.sv
@@ -285,11 +297,11 @@ parameters:
     + core 文件的语法是 YAML，fuesesoc 的 user guide 里面提供了一个快速入门的教程：[Learn X in Y minutes](https://learnxinyminutes.com/docs/yaml/)
     + core 文件内容需要遵守 user guide 中的 `CAPI2` 的语法规则
 
-使用下面的命令就可以完成 build
+在 `~/workspace` 目录下面使用执行：
 
 ```
 #!bash
-fusesoc --cores-root=cores run --target=sim --setup --build --run qian:examples:counter
+fusesoc --cores-root=mycores run --target=sim --setup --build --run qian:examples:counter
 ```
 
 我们用 `--cores-root` 指定 core 的搜索目录，用 `--target=sim` 指定执行 sim flow，`--setup --build --run` 指定执行完整的 build 3 个步骤，最后的 `qian:examples:counter` 是我们在 .core 文件中为 counter 起的名字。
@@ -305,18 +317,14 @@ fusesoc 执行完成后会产生一个 build 目录，在 `build/qian_examples_c
 
 一种更常见的场景是我们想复用别人的设计，比如说我们想设计一个 counter_blinky 的 core，它依赖于我们刚才写 counter 和 fusesoc 官方 library 中的 blinky 模块。
 
-因为要使用 fusesoc 的官方 library，所以第一步就是添加这个 library，下面这个命令会 clone 对应的 repo，并产生一个 `fusesoc.conf` 文件，这个文件里面保存了描述 `fusesoc-cores` 这个 library 的配置信息。
+要使用 fusesoc 的官方 library，所以第一步就是添加这个 library：
 
 ```
 #!shell
 fusesoc library add fusesoc-cores https://github.com/fusesoc/fusesoc-cores
 ```
 
-!!! note
-
-    这个 repo 仅仅是 core 文件，并不包含相应的设计文件，设计文件的路径在 core 文件内的 `provider` 部分描述。在 build 时 fusesoc 会自动从相应的地址下载设计文件，并且保存在 `~/.cache` 目录下。
-
-完成下载后，使用 `fusesoc core list` 就可以查看该 library 中包含了哪些 core，并且可以看到对应 core 的状态为 empty 还是 downloaded，empty 表示还没下载该 core 的设计文件。如果设计需要用到某个 core，则 fusesoc 在 build 过程中会自动下载，我们也可以手动下载：
+这个命令会 clone 指定的 library 到当前目录下，并产生一个 `fusesoc.conf` 文件，里面保存了这个 library 的配置信息。完成下载后，使用 `fusesoc core list` 就可以查看该 library 中包含了哪些 core，并且可以看到对应 core 的状态为 empty 还是 downloaded，empty 表示还没下载该 core 的设计文件。如果设计需要用到某个 core，则 fusesoc 在 build 过程中会自动下载，我们也可以手动下载：
 
 ```
 #!bash
@@ -327,7 +335,7 @@ fusesoc fetch fusesoc:utils:blinky:0
 
 ```
 #!text
-cores/counter_blinky
+~/workspace/mycores/counter_blinky
 ├── counter_blinky.core
 ├── rtl
 │   └── counter_blinky.sv
@@ -485,45 +493,45 @@ parameters:
     paramtype   : vlogparam
 ```
 
-同理，用下面的命令进行 build：
+用下面的命令进行 build：
 
 ```
 #!bash
-fusesoc --cores-root=cores run --target=sim --setup --build --run qian:examples:counter_blinky
+fusesoc --cores-root=mycores run --target=sim --setup --build --run qian:examples:counter_blinky
 ```
 
 然后就可以到 build 下查看波形，进行 debug 了。
 
-## Custom
+# Custom
 
-我们可以通过对 conf 文件的修改，实现自定义配置。
+我们可以通过对 fusesoc.conf 文件的修改，实现自定义配置。
 
 ```
 [main]
-cores_root = ~/workspace/cores
+cores_root = ~/workspace/mycores
 build_root = ~/workspace/build
 cache_root = ~/workspace/remote
 ```
 
-因为我们已经在 conf 文件里面指定的 cores_root 路径包含了本地设计文件，所以我们下面的命令中就不需要手动指定了
+conf 文件里面加入这些配置后，因为 `cores_root` 已经包含了本地目录，所以我们下面的命令中就不需要手动指定了：
 
 ```
 #!bash
 fusesoc --config fusesoc.conf run --target=sim --setup --build --run qian:examples:counter_blinky
 ```
 
-同时，build 完成后可以看到自动下载的 blinky 保存到了我们指定的 `remote` 目录下面。
+同时，build 完成后可以看到自动下载的 blinky 保存到了我们指定的 `cache_root` 目录下面。
 
 运行时提示 cores_root 这个选项已经被弃用了，应该使用添加 library 的方式，查看 `fusesoc library add -h` 后再实验一下：
 
 ```
 #!bash
-fusesoc library add mycores ~/workspace/cores
+fusesoc library add mycores ~/workspace/mycores
 fusesoc library list
 ```
 
-可以看到已经成功添加了本地目录 `~/workspace/cores` 为本地 provider，打开 `fusesoc.conf` 可以看到相关的记录。以后使用这个目录下的 core 就不再需要在命令行手动指定路径了。
+可以看到已经成功添加了本地目录 `~/workspace/mycores` 为本地 library，打开 `fusesoc.conf` 可以看到相关的记录。以后使用这个目录下的 core 就不再需要在命令行手动指定路径了。
 
-## More
+# More
 
 Fusesoc 的这个想法显然是从 `pip`， `npm` 借鉴过来的，现在硬件开源领域越来越多地借鉴软件领域的成功经验，比如 RISC-V、 fusesoc、硬件敏捷开发、chisel/spanil HDL、chipalliance 等等，如果将来硬件开发能像软件一样蓬勃发展，想想都是一件激动人心的事情。
