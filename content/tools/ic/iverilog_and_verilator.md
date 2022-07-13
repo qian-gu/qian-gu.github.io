@@ -4,11 +4,12 @@ Category: Tools
 Tags: iverilog, verilator, gtkwave
 Slug: iverilog_verilator_and_gtkwave
 Author: Qian Gu
-Status: draft
 Series: Open IC Tools & Library
 Summary: 总结 iverilog、verilator 和 gtkwave 的常用使用方法
 
-## iverilog
+[TOC]
+
+## Iverilog
 
 [iverilog][iverilog] 是 vcs 的平替，可以做一些基本的仿真，优点：
 
@@ -22,7 +23,7 @@ Summary: 总结 iverilog、verilator 和 gtkwave 的常用使用方法
 [iverilog]: http://iverilog.icarus.com/
 [iverilog user guide]: https://iverilog.fandom.com/wiki/User_Guide
 
-### install
+### Installation
 
 方式一：直接用 apt 安装，好处是省心，但是可能获取的不是最新稳定版本。
 
@@ -40,7 +41,7 @@ make
 sudo make install
 ```
 
-### use
+### Usage
 
 iverilog 主要包含两个工具：
 
@@ -67,13 +68,13 @@ iverilog 的常用参数：
 !!! warning
      iverilog 对 sv 语法的支持比较弱，很多 sv 的新语法都不支持。相比之下 verilator 的支持力度更好。
 
-## verilator
+## Verilator
  
 [verilator][verilator] 号称是 the fastest verilog/systemverilog simulator。
 
 [verilator]: https://www.veripool.org/verilator/
 
-### install
+### Installation
 
 方式一：直接用 apt 安装，好处是省心，但是缺点是可能获取的不是最新稳定版本。
 
@@ -82,7 +83,7 @@ iverilog 的常用参数：
 sudo apt-get install verilator
 ```
 
-方式二：从源码编译，好处是可以获得最新的稳定版本，缺点就是稍微麻烦一点。首先下载源码，安装编译所依赖的工具，然后
+方式二：从源码编译，好处是可以获得最新的稳定版本，缺点就是稍微麻烦一点。
 
 ```
 #!bash
@@ -92,14 +93,9 @@ make
 sudo make install
 ```
 
-### use
+一般用 apt 或者默认的编译安装，则不需要再手动设置任何环境变量，如果安装时选择了自定义目录，那么就要设置相应的环境变量了。
 
-verilator 的特殊之处：
-
-- 把 dut 编译成 c++ 模型（即 `verilating` 过程，输出的模型叫做 `verilated module`）
-- testbench 用 c++ 写，而不是 sv（即一个 c++ 的 wrapper，包含了 `main` 函数，其中例化了 `verilated dut`）
-- 使用 C++ 编译器把 testbench 和 verilator 的库函数编译成可执行文件
-- 运行可执行文件，完成仿真
+### Usage
 
 一个简单的 dut 例子：
 
@@ -150,25 +146,43 @@ int main(int argc, char **argv, char **env)
 说明：
 
 - `xxx` 模块会被编译成 `Vxxx`，所以要 `include "Vxxx.h"`，使用时也是通过 `new Vxxx` 来动态申请一个对象
-- testbench 必须调用 `eval()`，每次 eval 被调用一次，就会执行一次 `always @(posedge clk)`，计算相应的组合逻辑，更新寄存器的值
+- wrapper 必须调用 `eval()`，每次 eval 被调用一次，就会执行一次 `always @(posedge clk)`，计算相应的组合逻辑，更新寄存器的值
 
 然后使用下面的命令编译：
 
 ```
 #!bash
-verilator main.cpp counter.sv -Wall -top-module counter --cc --trace --exe
+verilator main.cpp counter.sv -Wall -top-module counter --cc --trace --exe --build
 ```
 
+一些常见的参数：
+
 - `-Wall` 打开所有 warning
-- `-Wno-fatal` 忽略非 fatal 的 warning
+- `-Wno-fatal` 关闭 warning 导致 fatal 退出仿真
 - `--top-module` 指定 top module
-- `--cc` 表明是 c++
+- `--cc` 生成 c++ 模型
 - `--trace` 生成 trace 波形
 - `--exe` 生成可执行文件
 
 运行 `obj_dir` 下面的可执行文件，可以进行仿真，生成波形。
 
-## gtkwave
+[完整的 example][dic_template]
+
+[dic_template]: https://github.com/qian-gu/dic_template
+
+### Dive into Verilator
+
+1. verilator 本质上是一个 compiler，把 tb/dut（.v 和 .sv 文件）编译成 .h 和 .cpp，并提供一些基础库，这些库默认安装在 `/usr/local/share/verilator/include` 下面。编译过程叫做 `verilating`，输出的模型叫做 `verilated module`
+2. 需要一个额外的 C++ wrapper 提供 `main` 函数来例化 verilated model
+3. 经过 verilation 后调用 C++ 编译器将 verilated model 编译为可执行文件，运行可执行文件，完成仿真
+4. verilating 时会生成两个 makefile，分别是 `V{top}.mk` 和 `V{top}_classes.mk`。其中 `V{top}_classes.mk` 会根据命令行参数给一些 verilator 预定义的变量赋值。`V{top}.mk` 作为顶层的 makefile 会自动 include 生成的 `V{top}_classes.mk` 和 `$VERILATOR_ROOT/verilated.mk` 文件。举个例子，如果命令行加了 `--trace` 选项，那么 `V{top}_classes.mk` 中会包含一行 `VM_TRACE = 1`，然后通过 `verilated.mk` 和 `V{top}.mk` 最终传递给 g++ 参数 `-DVM_TRACE=1`，所以我们就可以直接在 wrapper 中使用 `#if VM_TRACE` 来开启 trace 功能了
+5. 如果在调用 verilator 的时候加上 `--exe`，那么 verilator 会在 `V{top}.mk` 中加入 link target，方便用户后续手动 build。否则 `V{top}.mk` 中不包含 link target
+6. 如果在调用 verilator 的时加上 `--exe` 和 `--build`，那么 verilator 会自动 build，无需用户再手动调用
+
+!!! warning
+    即使只想在 testbench 中用 sv 内置语法 `$dumpfile` 和 `$dumpvars`，也必须加上 `--trace` 选项。
+
+## Gtkwave
 
 [gtkwave][gtkwave] 是 verdi 的平替，安装和使用都非常简单：
 
@@ -177,5 +191,5 @@ verilator main.cpp counter.sv -Wall -top-module counter --cc --trace --exe
 ```
 #!bash
 sudo apt-get install gtkwave
-gtkwave wave.vcd
+gtkwave wave.vcd &
 ```

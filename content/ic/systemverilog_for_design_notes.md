@@ -6,6 +6,8 @@ Slug: systemverilog_for_design_notes
 Author: Qian Gu
 Summary: 读书笔记，总结 SV 新语法
 
+[TOC]
+
 !!! note
     1. 本书假定读者已经掌握了 Verilog，主要内容是从对比角度介绍 SV 如何让设计者在更高层次对硬件进行建模，如何更高效地进行开发
     2. 笔记只记录了可综合的语法特性，略去了不可综合的部分

@@ -137,7 +137,7 @@ MARKDOWN = {
         'markdown.extensions.extra': {},
         'markdown.extensions.meta': {},
         'markdown.extensions.admonition' :{},
-        'markdown.extensions.toc': {},
+        'markdown.extensions.toc': {"title": "Table of Contents"},
     },
     'output_format': 'html5'
 }

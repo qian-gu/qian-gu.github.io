@@ -7,6 +7,8 @@ Author: Qian Gu
 Series: Computer Architecture 笔记
 Summary: 总结 Cache 的设计细节
 
+[TOC]
+
 !!! note
 
     Cache 是一个非常广泛、有深度的话题，无数的大牛在此道沉浸数十载，创造出了各种各样的优化技巧和实现技术，一篇短短的博文显然无法做到面面俱到，作为学习笔记，只争取说明白最基础的 Cache 知识。

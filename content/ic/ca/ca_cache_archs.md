@@ -4,6 +4,7 @@ Category: IC
 Tags: Computer Architecture, Cache, Microarch
 Slug: ca_cache_archs
 Author: Qian Gu
+Status: draft
 Series: Computer Architecture 笔记
 Summary: 总结 Cache 微架构设计的一些细节
 
