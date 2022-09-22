@@ -7,8 +7,6 @@ Author: Qian Gu
 Series: Open IC Tools & Library
 Summary: 总结 iverilog、verilator 和 gtkwave 的常用使用方法
 
-[TOC]
-
 ## Iverilog
 
 [iverilog][iverilog] 是 vcs 的平替，可以做一些基本的仿真，优点：
@@ -174,9 +172,9 @@ verilator main.cpp counter.sv -Wall -top-module counter --cc --trace --exe --bui
 
 运行 `obj-dir` 下面的可执行文件，可以进行仿真，生成波形。
 
-[完整的 example][dic-template]
+[完整的 example][dic_template]
 
-[dic-template]: https://github.com/qian-gu/dic-template
+[dic_template]: https://github.com/qian-gu/dic_template
 
 ### Dive into Verilator
 

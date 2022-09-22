@@ -6,6 +6,13 @@ Slug: verilog-hdl-coding-style-guide
 Author: Qian Gu
 Summary: 参考网上的资料和书籍，总结一份自己的 Coding Style Guide
 
+**Update (2022/09/22):**
+
+补充一些资料：
+
+- [lowRISC/style-guides](https://github.com/lowRISC/style-guides)
+- [编写可读代码的艺术]（https://book.douban.com/subject/10797189/）
+
 **Update (2015/04/21):**
 
 参考了网上流传的 华为 coding style guide 和 其他的一些资料，还有 [Verilog 编程艺术][book1] 的内容，重新整理一下自己的 Coding Style Guide，以便做项目的时候参考对比。
@@ -19,8 +26,6 @@ Summary: 参考网上的资料和书籍，总结一份自己的 Coding Style Gui
 **Date** : 2015-04-21
 
 **Author** : Qian Gu (guqian110@gmail.com)
-    
-**Summary** : This is a personal Verilog HDL coding style guide for designs on FPGA.
 
 <br>
 

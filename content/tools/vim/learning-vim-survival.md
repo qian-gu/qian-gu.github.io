@@ -5,21 +5,14 @@ Tags: Linux,Vim
 Slug: learning-vim-survival
 Author: Qian Gu
 Series: Learning Vim
-Summary: 这个系列的博客是我学习 Vim 过程中的记录和总结，希望可以帮助到和我一样的菜鸟～ 第一篇：入门/存活 Survival
+Summary: 这个系列的博客是我学习 Vim 过程中的记录和总结，希望可以帮助到和我一样的菜鸟
 
-这个系列的博客是我学习 Vim 过程中的记录和总结，内容基本上来自网络上前辈们的博客，还有部分内容是我自己学习的心得。真心感谢前辈们的分享，我会尽量在后面的文章中标明内容出处，比如我学习 Vim 的路线就是按照这个博客
+!!! note
+    这个系列的博客是我学习 Vim 过程中的记录和总结，内容基本上来自网络上前辈们的博客，还有部分内容是我自己学习的心得。真心感谢前辈们的分享，我会尽量在后面的文章中标明内容出处，比如我学习 Vim 的路线就是按照[这个博客][easwy]来学习的。希望我的学习历程可以帮助到和我一样的菜鸟，能更好地使用这款神器～
 
-[vi/vim使用进阶: 目录](http://easwy.com/blog/archives/advanced-vim-skills-catalog/)
+[easwy]: http://easwy.com/blog/archives/advanced-vim-skills-catalog/
 
-来学习的。希望我的学习历程可以帮助到和我一样的菜鸟，能更好地使用这款神器～
-
-第一篇：入门/存活 Survival
-
-* * *
-<br>
-<nr>
 ## Vim 是什么
-* * *
 
 简单的说，[Vim][Vim] 就是广大的编辑器中的一员，但是对程序猿来说，她并不是一款简单的编辑器。她强大的编辑能力、苗条的身材（软件体积小、启动速度快）和 Linux 系统的血缘关系（几乎是 Linux 系统的标配），使其在全世界有成千上万的粉丝，以至于掌握 Vim 成为每个码农必备技能。
 
@@ -29,7 +22,7 @@ Wikipedia 上 Vim 的介绍：
 
 [Vim]: http://www.vim.org/
 
-###历史
+### 历史
 
 **摘抄（翻译）自 [Wikipedia][viwiki]**
 
@@ -144,10 +137,8 @@ vim 现在是 [GNU General Public （GPL）][GPL]下的自由软件，几乎在�
 [Vim]: http://en.wikipedia.org/wiki/Vim-(text-editor)
 [GPL]: http://en.wikipedia.org/wiki/GNU-General-Public-License
 
-<br>
-
 ## 为什么选择 Vim
-* * *
+
 程序猿界的 **圣战：**
 
 + **Windows** vs **Linux**
@@ -180,9 +171,7 @@ vim 现在是 [GNU General Public （GPL）][GPL]下的自由软件，几乎在�
 
 + 我写的代码基本只限定在底层开发，主要代码是 C/C++、Shell脚本、Python脚本，不会涉及到 JAVA，更不会涉及前端开发；而且都是我的 ”玩具小程序“，几乎不涉及好几百个源文件的项目，所以我不需要 IDE 的强大的管理能力，写一个 makefile 就 OK 了。
 
-+ 学习过 CPU 知识的人都知道，频繁打断流水线才是最影响效率的东西。在调试代码的时候，显然纯键盘流要比不停的 ”鼠标 -> 键盘 -> 鼠标 -> ...“ 有效率的多，而且省事。[](http://www.zhihu.com/question/22096642/answer/20290505)
-
-+ 崇尚 Geek 文化，喜欢 ”折腾“，Linux 哲学教导我要学习轻量级的 Vim，而不是笨重的 IDE 。
++ [学习过 CPU 知识的人都知道，频繁打断流水线才是最影响效率的东西。在调试代码的时候，显然纯键盘流要比不停的 ”鼠标 -> 键盘 -> 鼠标 -> ...“ 有效率的多，而且省事。](http://www.zhihu.com/question/22096642/answer/20290505)
 
 ### vim & emacs
 
@@ -233,10 +222,7 @@ UNIX 用户中流行一个游戏，考验一个 Emacs 用户对这个编辑器�
 [Editor war]: http://en.wikipedia.org/wiki/Editor-war
 [Richard-Stallman]: http://en.wikipedia.org/wiki/Richard-Stallman
 
-<br>
-
 ## 开始学习 Vim
-* * *
 
 闲扯了这么多，终于开始学习 vim 了...
 
@@ -271,8 +257,6 @@ UNIX 用户中流行一个游戏，考验一个 Emacs 用户对这个编辑器�
 [7habits]: http://www.moolenaar.net/habits.html
 [video]: http://v.youku.com/v-show/id-XMTIwNDY5MjY4.html
 [advanced-vim-skills]: http://easwy.com/blog/archives/advanced-vim-skills-catalog/
-
-<br>
 
 ## 参考
 

@@ -125,7 +125,7 @@ apt 由 `apt-get`、`apt-cache` 和 `apt-config` 等小工具组成
 
 ### Aptitude
 
-[aptitude on wiki][aptitude]
+[aptitude on wiki][aptitude ]
 
 > aptitude is a front-end to the Advanced Packaging Tool (APT). It displays a list of software packages and allows the user to interactively pick packages to install or remove. It has an especially powerful search system utilizing flexible search patterns. It was initially created for Debian, but has appeared in RPM Package Manager (RPM) based distributions as well (such as Conectiva).
 
@@ -150,7 +150,14 @@ aptitude 是 APT 的文本界面客户端，它的交互性比 apt 好，似乎�
 
 #### 彩蛋
 
-![aptitude](/images/learning-linux-package-management/aptitude.png)
+    #!sh
+    aptitude moo
+    aptitude -v moo
+    aptitude -vv moo
+    aptitude -vvv moo
+    aptitude -vvvv moo
+    aptitude -vvvvv moo
+    aptitude -vvvvvv moo
 
 ### YUM
 

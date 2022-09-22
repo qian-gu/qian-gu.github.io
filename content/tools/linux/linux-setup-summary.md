@@ -4,6 +4,7 @@ Category: Tools
 Tags: linux
 Slug: linux-setup-summary
 Author: Qian Gu
+Status: draft
 Summary: 总结 linux 环境安装步骤
 
 ## 原因

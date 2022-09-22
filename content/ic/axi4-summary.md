@@ -4,6 +4,7 @@ Category: IC
 Tags: AXI4
 Slug: axi4-summary
 Author: Qian Gu
+Status: draft
 Summary: AXI4 协议阅读 & 实践笔记
 
 ## 参考资源

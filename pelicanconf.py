@@ -94,16 +94,16 @@ GOOGLE_ANALYTICS = "UA-48826831-1"
 # THEME = '../pelican-themes/Flex'
 THEME = 'Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts', 
-           'sitemap', 'representative_image', 'tipue_search', 'render_math', 'series',
-           'pelican_comment_system',
+PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts',
+           'sitemap', 'representative_image', 'tipue_search', 'render_math', 
+           'series', 'pelican_comment_system',
           ]
 GITHUB_CORNER_URL = 'https://github.com/qian-gu/qian-gu.github.io'
 # i18n_subsites
 I18N_TEMPLATES_LANG = 'en'
 # setion_number
 SECTION_NUMBER_MAX = 5
-#sitemap
+# sitemap
 SITEMAP = {
     'format': 'xml',
     'priorities': {

@@ -25,10 +25,7 @@ Summary: 最近花了一个星期的时间，终于把 Code 看完了，感慨�
 [CPwiki]: http://en.wikipedia.org/wiki/Charles-Petzold
 [wsm]: http://stackoverflow.com/questions/1711/what-is-the-single-most-influential-book-every-programmer-should-read
 
-<br>
-
-##打通任督二脉
-* * *
+## 打通任督二脉
 
 纵观程序员的 “武功秘籍”，不外乎两种：一种是讲 `道`，另外一种是讲 `术` 。
 
@@ -54,10 +51,8 @@ Summary: 最近花了一个星期的时间，终于把 Code 看完了，感慨�
 
 还有等等...
 
-* * *
-<br>
-胡扯了这么多，书固然是好书，但是更让人深思的是 国内外教育的差异 。吐槽我们的教育体制毫无意义，吐槽的人都当不上教育部长，没有能力去改变现状，有能力的 guan猿却根本没有动力去改变。作为普通人，我们能做到的就是自己努力，找真正的好书、向真正的大师学习，比如上面提到过的
+胡扯了这么多，书固然是好书，但是更让人深思的是国内外教育的差异。吐槽我们的教育体制毫无意义，作为普通人，我们能做到的就是自己努力，找真正的好书、向真正的大师学习，比如上面提到过的
 
 [What is the single most influential book every programmer should read?][wsm]
 
-除了技术、还有很多程序员需要看的书。找到一本好书，然后 Let's start it !
+除了技术、还有很多程序员需要看的书。找到一本好书，然后 Let's start it!
