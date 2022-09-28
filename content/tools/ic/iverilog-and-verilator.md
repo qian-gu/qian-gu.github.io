@@ -67,7 +67,7 @@ iverilog 的常用参数：
      iverilog 对 sv 语法的支持比较弱，很多 sv 的新语法都不支持。相比之下 verilator 的支持力度更好。
 
 ## Verilator
- 
+
 [verilator][verilator] 号称是 the fastest verilog/systemverilog simulator。是仿真器 4 巨头之一，其他 3 个分别是，
 
 - vcs
@@ -87,13 +87,15 @@ verilator 文档和手册中说大部分 simulator 都必须兼容 IEEE-1364 和
 
 方式一：直接用 apt 安装，好处是省心，但是缺点是可能获取的不是最新稳定版本。
 
-```bash
+```
+#!bash
 sudo apt-get install verilator
 ```
 
 方式二：从源码编译，好处是可以获得最新的稳定版本，缺点就是稍微麻烦一点。
 
-```bash
+```
+#!bash
 autoconf
 ./configure
 make
@@ -106,7 +108,8 @@ sudo make install
 
 一个简单的 dut 例子：
 
-```cpp
+```
+#!cpp
 #include "Vcounter.h"
 #include "verilated-vcd-c.h"
 #include "verilated.h"
@@ -156,7 +159,8 @@ int main(int argc, char **argv, char **env)
 
 然后使用下面的命令编译：
 
-```bash
+```
+#!bash
 verilator main.cpp counter.sv -Wall -top-module counter --cc --trace --exe --build
 ```
 

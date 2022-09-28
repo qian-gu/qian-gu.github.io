@@ -7,10 +7,10 @@ Author: Qian Gu
 Summary: 学习 BufExplorer、NERDTree、WinManager、Powerline 插件
 
 ## BufExplorer
-* * *
 
 我们可以使用 `:ls` 命令可以查看打开的 buffer，然后在不同的 buffer 之间切换：
 
+    #!vim
     :bn
 
 其中 `n` 是 buffer 的标号。
@@ -33,10 +33,12 @@ Summary: 学习 BufExplorer、NERDTree、WinManager、Powerline 插件
 
 1. 在 .vimrc 中添加
 
+        #!vim
         Bundle 'bufexplorer.zip'
 
 2. 打开 vim，输入
 
+        #!vim
         :BundleInstall
 
 ### Config
@@ -44,6 +46,7 @@ Summary: 学习 BufExplorer、NERDTree、WinManager、Powerline 插件
 查看 help 文档，自定义配置，我的简单配置如下：
 
 
+    #!vim
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
     " Config BufExplorer
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -51,15 +54,11 @@ Summary: 学习 BufExplorer、NERDTree、WinManager、Powerline 插件
     let g:bufExplorerShowRelativePath=1  " Show relative paths.
     let g:bufExplorerSortBy='mru'        " Sort by most recently used.
 
-
 [bufexplorer]: http://www.vim.org/scripts/script.php?script-id=42
 [mini]: http://www.vim.org/scripts/script.php?script-id=159
 [question1]: http://stackoverflow.com/questions/1649187/vim-minibufexpl-versus-bufexplorer-plugins
 
-<br>
-
 ## NERDTree
-* * *
 
 NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以在 vim 内以树形结构浏览文件目录。
 
@@ -69,10 +68,12 @@ NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以
 
 1. 在 .vimrc 中添加
 
+        #!vim
         Bundle 'The-NERD-tree'
 
 2. 打开 vim，输入
 
+        #!vim
         :BundleInstall
 
 ### Usage
@@ -93,13 +94,11 @@ NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以
 
 + q 关闭 NERDTree 窗口
 
-<br>
-
 ## Powerline
-* * *
 
 状态栏也是一个非常重要的窗口，可以为我们提供一些文档的基本信息，我们可以自己 DIY，在 .vimrc 文件中添加相关的设置
 
+    #!vim
     set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
 
 也可以使用 [Powerline][powerline] 插件，一款可以提供非常漂亮的状态栏的插件。它会覆盖掉 .vimrc 中对状态的配置，删除插件后配置信息可以重新起作用。
@@ -110,34 +109,35 @@ NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以
 
 1. 在 .vimrc 中添加
 
+        #!vim
         Bundle 'Lokaltog/vim-powerline'
 
 2. 打开 vim，输入
 
+        #!vim
         :BundleInstall
 
 ### Config
 
 为了保证状态栏始终显示，在 .vimrc 中添加
 
+    #!vim
     set laststatus=2
 
 设置之后，应该就可以看到漂亮的状态栏了。
 
 查看 help：
 
+    #!vim
     :help powerline
 
 我们还可以自定义一些选项，比如颜色主题等。
 
 [powerline]: https://github.com/Lokaltog/vim-powerline
 
-<br>
-
 ## WinManager
-* * *
 
-我们已经安装很多插件，比如 Taglist，BufExlporer、NERDTree 等，这时候我们就需要一个窗口管理插件来将它们组合起来 —— [WinManager][winmanager] 
+我们已经安装很多插件，比如 Taglist，BufExlporer、NERDTree 等，这时候我们就需要一个窗口管理插件来将它们组合起来 —— [WinManager][winmanager]
 
 ### Install
 
@@ -145,43 +145,59 @@ NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以
 
 1. 在 .vimrc 中添加
 
+        #!vim
         Bundle 'winmanager'
 
 2. 打开 vim，输入
 
+        #!vim
         :BundleInstall
+
+### bugfix
+
+修改 `~/.vim/bundle/winmanager/plugin/winmanager.vim` 中的 `ToggleWindowsManager` 函数，给 else 分支新增一行(下段代码第 7 行)：
+
+```
+#!vim
+" toggle showing the explorer plugins.
+function! <SID>ToggleWindowsManager()
+	if IsWinManagerVisible()
+		call s:CloseWindowsManager()
+	else
+		call s:StartWindowsManager()
+		exe 'q'
+	end
+endfunction
+```
 
 ### Config
 
 查看 help 文档，我们可以进行简单的设置：
 
+    #!vim
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
     " Config Winmanager
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
     let g:winManagerWindowLayout="NERDTree|TagList"
-    let g:NERDTree-title="[NERDTree]"  
-    
-    nmap <C-m> :WMToggle<CR> 
-    
-    function! NERDTree-Start()  
-        exec 'NERDTree'  
-    endfunction  
-          
-    function! NERDTree-IsValid()  
-        return 1  
-    endfunction 
+    let g:NERDTree-title="[NERDTree]"
+
+    nmap <C-m> :WMToggle<CR>
+
+    function! NERDTree-Start()
+        exec 'NERDTree'
+    endfunction
+
+    function! NERDTree-IsValid()
+        return 1
+    endfunction
 
 这时候我们按下组合键 Ctrl-m 即可切换是否显示 winmanager 窗口布局。
 
 [winmanager]: http://www.vim.org/scripts/script.php?script-id=95
 
-<br>
-
 最后附上效果图一张：
 
 ![image](/images/learning-vim-bufexplorer-nerdtree-winmanager-powerline/screenshot.png)
-
-<br>
 
 ## Ref
 

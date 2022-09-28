@@ -27,7 +27,8 @@ ARTICLE_URL = 'posts/{category}/{slug}.html'
 ARTICLE_SAVE_AS = 'posts/{category}/{slug}.html'
 PAGE_URL = 'pages/{slug}.html'
 PAGE_SAVE_AS = 'pages/{slug}.html'
-DIRECT_TEMPLATES = {'index', 'categories', 'authors', 'archives', 'tags', 'search'}
+DIRECT_TEMPLATES = {'index', 'categories', 'authors', 'archives', 'tags',
+                    'search'}
 
 FEED_ALL_ATOM = 'feeds/all.atom.xml'
 CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
@@ -95,9 +96,8 @@ GOOGLE_ANALYTICS = "UA-48826831-1"
 THEME = 'Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
 PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts',
-           'sitemap', 'representative_image', 'tipue_search', 'render_math', 
-           'series', 'pelican_comment_system',
-          ]
+           'sitemap', 'representative_image', 'tipue_search', 'render_math',
+           'series', 'pelican_comment_system', ]
 GITHUB_CORNER_URL = 'https://github.com/qian-gu/qian-gu.github.io'
 # i18n_subsites
 I18N_TEMPLATES_LANG = 'en'
@@ -118,7 +118,7 @@ SITEMAP = {
     }
 }
 
-### dark mode
+# dark mode
 THEME_COLOR = 'ligtht'
 THEME_COLOR_AUTO_DETECT_BROWSER_PREFERENCE = True
 THEME_COLOR_ENABLE_USER_OVERRIDE = True
@@ -126,17 +126,17 @@ THEME_COLOR_ENABLE_USER_OVERRIDE = True
 PYGMENTS_STYLE = 'monokai'
 PYGMENTS_STYLE_DARK = 'monokai'
 
-## render_math
+# render_math
 MATH_JAX = {'color': 'blue'}
-## cjk-auto-spacing
+# cjk-auto-spacing
 CJK_AUTO_SPAING_TITLE = True
 
 MARKDOWN = {
     'extension_configs': {
-        'markdown.extensions.codehilite' : {'css_class': 'highlight'},
+        'markdown.extensions.codehilite': {'css_class': 'highlight'},
         'markdown.extensions.extra': {},
         'markdown.extensions.meta': {},
-        'markdown.extensions.admonition' :{},
+        'markdown.extensions.admonition': {},
         'markdown.extensions.toc': {"title": "Table of Contents"},
     },
     'output_format': 'html5'
