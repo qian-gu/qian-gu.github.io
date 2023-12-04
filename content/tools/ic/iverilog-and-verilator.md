@@ -182,7 +182,7 @@ verilator main.cpp counter.sv -Wall -top-module counter --cc --trace --exe --bui
 
 ### Dive into Verilator
 
-1. verilator 本质上是一个 compiler，把 tb/dut（.v 和 .sv 文件）编译成 .h 和 .cpp，并提供一个 runtime lib，这个库默认安装在 `/usr/local/share/verilator/include` 下面。编译过程叫做 `verilating`，输出的模型叫做 `verilated module`
+1. verilator 本质上是一个 compiler，把 tb/dut（.v 和 .sv 文件）编译成 .h 和 .cpp，并提供一个 runtime lib，这个库默认安装在 `/usr/local/share/verilator/include` 下面。编译过程叫做 `verilating`，输出的模型叫做 `verilated model`
 2. 需要用户提供一个包含 `main()` 函数的 C++ wrapper 来例化 verilated model
 3. 经过 verilation 后调用 C++ 编译器将 verilated model 编译为可执行文件，运行可执行文件，完成仿真
 4. verilating 时会生成两个 makefile，分别是 `V{top}.mk` 和 `V{top}-classes.mk`。其中 `V{top}-classes.mk` 会根据命令行参数给一些 verilator 预定义的变量赋值。`V{top}.mk` 作为顶层的 makefile 会自动 include 生成的 `V{top}-classes.mk` 和 `$VERILATOR-ROOT/include/verilated.mk` 文件。举个例子，如果命令行加了 `--trace` 选项，那么 `V{top}-classes.mk` 中会包含一行 `VM-TRACE = 1`，然后通过 `verilated.mk` 和 `V{top}.mk` 最终传递给 g++ 参数 `-DVM-TRACE=1`，所以我们就可以直接在 wrapper 中使用 `#if VM-TRACE` 来开启 trace 功能了
