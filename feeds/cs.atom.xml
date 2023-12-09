@@ -1050,7 +1050,7 @@ end&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;inn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;这样就不需要像原来那样再定义一个同名的变量，多做一次赋值。decorator 就在函数声明的附近，&lt;code&gt;@&lt;/code&gt; 符号可以明确表明这里有一些新语法。&lt;/p&gt;
-&lt;p&gt;Decorator 的顺序设计是为了和数学中的函数规则相匹配，比如 $(g \circ f)(x)$ 和 $g(f(x))$ 是等价的，在 python 中，&lt;code&gt;@g @f def foo()&lt;/code&gt; 会翻译成 &lt;code&gt;foo=g(f(foo))&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;Decorator 的顺序设计是为了和数学中的函数规则相匹配，比如 &lt;span class="math"&gt;\((g \circ f)(x)\)&lt;/span&gt; 和 &lt;span class="math"&gt;\(g(f(x))\)&lt;/span&gt; 是等价的，在 python 中，&lt;code&gt;@g @f def foo()&lt;/code&gt; 会翻译成 &lt;code&gt;foo=g(f(foo))&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;decorator 语法允许调用一个返回 decorator 的函数，&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!python&lt;/span&gt;
 &lt;span class="nd"&gt;@decomaker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;argA&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;argB&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -1266,7 +1266,69 @@ end&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;inn
 &lt;p&gt;&lt;a href="https://www.cnblogs.com/cicaday/p/python-decorator.html"&gt;详解 Python 的装饰器&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://www.codementor.io/@sheena/advanced-use-python-decorators-class-function-du107nxsv"&gt;Advanced Uses of Python Decorators&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://wiki.python.org/moin/PythonDecoratorLibrary"&gt;Python Decorator Library&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://book.douban.com/subject/26381341/"&gt;Python Cookbook&lt;/a&gt;&lt;/p&gt;</content><category term="CS"></category><category term="PEP"></category><category term="python"></category></entry><entry><title>Python 学习笔记 #7 —— Generator 生成器</title><link href="https://qian-gu.github.io/posts/cs/python-notes-7-generator.html" rel="alternate"></link><published>2020-06-01T15:13:00+08:00</published><updated>2020-06-01T15:13:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2020-06-01:/posts/cs/python-notes-7-generator.html</id><summary type="html">&lt;p&gt;Generator 学习笔记&lt;/p&gt;</summary><content type="html">&lt;h2 id="what-is-generator"&gt;What is Generator&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://book.douban.com/subject/26381341/"&gt;Python Cookbook&lt;/a&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="CS"></category><category term="PEP"></category><category term="python"></category></entry><entry><title>Python 学习笔记 #7 —— Generator 生成器</title><link href="https://qian-gu.github.io/posts/cs/python-notes-7-generator.html" rel="alternate"></link><published>2020-06-01T15:13:00+08:00</published><updated>2020-06-01T15:13:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2020-06-01:/posts/cs/python-notes-7-generator.html</id><summary type="html">&lt;p&gt;Generator 学习笔记&lt;/p&gt;</summary><content type="html">&lt;h2 id="what-is-generator"&gt;What is Generator&lt;/h2&gt;
 &lt;p&gt;&lt;a href="https://www.python.org/dev/peps/pep-0255/"&gt;PEP 255 -- Simple Generators 原文链接&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;Python 中的 generator 有两类，generator function 和 generator expressions。Genrator Function 实际上是一个工厂函数（&lt;code&gt;factory&lt;/code&gt;），使用 lazily 计算方式。其特点就是：遇到 &lt;code&gt;yield&lt;/code&gt; 之后，函数后续代码就不再执行，但是也不会退出函数，在下次被调用时会从 yield 之后继续执行。&lt;/p&gt;
 &lt;p&gt;任意一个 &lt;code&gt;generator&lt;/code&gt; 都是一个 &lt;code&gt;iterator&lt;/code&gt;，但是反之不一定成立。generator 本质上是一种特殊的更高级的 &lt;code&gt;Iterator&lt;/code&gt;，高级的地方在于，不用实现 &lt;code&gt;--iter()--&lt;/code&gt; 和 &lt;code&gt;--next()--&lt;/code&gt; 方法，只需要一个关键字 &lt;code&gt;yield&lt;/code&gt;.&lt;/p&gt;
@@ -1706,7 +1768,7 @@ end&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;inn
 &lt;h2 id="understanding-and-using-list-comprehensions"&gt;Understanding and Using List Comprehensions&lt;/h2&gt;
 &lt;h3 id="list-comprehensions"&gt;以数学的角度理解 list comprehensions&lt;/h3&gt;
 &lt;p&gt;下面这个集合表示从自然数中挑选出符合条件 &lt;code&gt;x &amp;gt; 5&lt;/code&gt; 且 &lt;code&gt;x &amp;lt; 10&lt;/code&gt; 的所有元素，&lt;/p&gt;
-&lt;p&gt;$$new-list = {x | x \in N, x &amp;gt; 0, x &amp;lt; 10}$$&lt;/p&gt;
+&lt;div class="math"&gt;$$new\-list = \{x | x \in N, x &amp;gt; 0, x &amp;lt; 10\}$$&lt;/div&gt;
 &lt;p&gt;下面是 Python 的实现版本，&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!python&lt;/span&gt;
 &lt;span class="n"&gt;new&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
@@ -1809,7 +1871,69 @@ end&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;inn
 &lt;p&gt;显然因为最终生成的是集合，所以重复元素只会保存一个。&lt;/p&gt;
 &lt;h2 id="ref"&gt;Ref&lt;/h2&gt;
 &lt;p&gt;&lt;a href="https://treyhunner.com/2015/12/python-list-comprehensions-now-in-color/"&gt;Python List Comprehensions: Explained Visually&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://www.jianshu.com/p/dd85d2cd89d1"&gt;用数学思维理解 Comprehension&lt;/a&gt;&lt;/p&gt;</content><category term="CS"></category><category term="PEP"></category><category term="python"></category></entry><entry><title>Python 学习笔记 #4 —— Python 之禅</title><link href="https://qian-gu.github.io/posts/cs/python-notes-4-the-zen-of-python.html" rel="alternate"></link><published>2020-05-10T14:36:00+08:00</published><updated>2020-05-10T14:36:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2020-05-10:/posts/cs/python-notes-4-the-zen-of-python.html</id><summary type="html">&lt;p&gt;学习 Python 之禅&lt;/p&gt;</summary><content type="html">&lt;p&gt;著名的 python 之禅，&lt;a href="https://www.python.org/dev/peps/pep-0020/"&gt;PEP 20 -- The Zen of Python 原文链接&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.jianshu.com/p/dd85d2cd89d1"&gt;用数学思维理解 Comprehension&lt;/a&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="CS"></category><category term="PEP"></category><category term="python"></category></entry><entry><title>Python 学习笔记 #4 —— Python 之禅</title><link href="https://qian-gu.github.io/posts/cs/python-notes-4-the-zen-of-python.html" rel="alternate"></link><published>2020-05-10T14:36:00+08:00</published><updated>2020-05-10T14:36:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2020-05-10:/posts/cs/python-notes-4-the-zen-of-python.html</id><summary type="html">&lt;p&gt;学习 Python 之禅&lt;/p&gt;</summary><content type="html">&lt;p&gt;著名的 python 之禅，&lt;a href="https://www.python.org/dev/peps/pep-0020/"&gt;PEP 20 -- The Zen of Python 原文链接&lt;/a&gt;。&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -4743,16 +4867,16 @@ because it doesn’t know the value.&lt;/p&gt;
 &lt;p&gt;结论：在相加过程中最高位产生的进位和次高位产生的进位如果相同则没有溢出，如果不同则表示有溢出。逻辑电路的实现可以把这两个进位连接到一个异或门，把异或门的输出连接到溢出标志位。&lt;/p&gt;
 &lt;h4 id="_18"&gt;小技巧&lt;/h4&gt;
 &lt;p&gt;补码求值公式：&lt;/p&gt;
-&lt;p&gt;$$(-1)^{x-{n-1}}\cdot2^{n-1}+\sum-{i=0}^{n-2}{x-i\cdot2^i}$$&lt;/p&gt;
+&lt;div class="math"&gt;$$(-1)^{x-{n-1}}\cdot2^{n-1}+\sum-{i=0}^{n-2}{x-i\cdot2^i}$$&lt;/div&gt;
 &lt;p&gt;对一个补码快速取反的方法有两种：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;用 $2^n$ 减去它&lt;/p&gt;
-&lt;p&gt;原理：由 $x + (-x) = 2^n$ 可以得到 $-x = 2^n - x$&lt;/p&gt;
+&lt;p&gt;用 &lt;span class="math"&gt;\(2^n\)&lt;/span&gt; 减去它&lt;/p&gt;
+&lt;p&gt;原理：由 &lt;span class="math"&gt;\(x + (-x) = 2^n\)&lt;/span&gt; 可以得到 &lt;span class="math"&gt;\(-x = 2^n - x\)&lt;/span&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;按位取反后加 1&lt;/p&gt;
-&lt;p&gt;原理：由 $x + \overline{x} = -1$ 可以得到 $-x = \overline{x} + 1$&lt;/p&gt;
+&lt;p&gt;原理：由 &lt;span class="math"&gt;\(x + \overline{x} = -1\)&lt;/span&gt; 可以得到 &lt;span class="math"&gt;\(-x = \overline{x} + 1\)&lt;/span&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h4 id="_19"&gt;总结&lt;/h4&gt;
@@ -4785,4 +4909,66 @@ because it doesn’t know the value.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/Ones'-complement"&gt;Ones' complement&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/Two's-complement"&gt;Two's complement&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://learn.akae.cn/media/ch14s03.html"&gt;整数的加减运算&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://baike.baidu.com/view/60437.htm"&gt;机器数 —— 百度百科&lt;/a&gt;&lt;/p&gt;</content><category term="CS"></category><category term="Code"></category></entry></feed>
+&lt;p&gt;&lt;a href="http://baike.baidu.com/view/60437.htm"&gt;机器数 —— 百度百科&lt;/a&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="CS"></category><category term="Code"></category></entry></feed>

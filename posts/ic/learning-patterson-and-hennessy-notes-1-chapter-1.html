@@ -10,7 +10,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+    <link rel="stylesheet/less" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
 
     <link id="dark-theme-style" rel="stylesheet" type="text/css"
           media="(prefers-color-scheme: dark)"
@@ -343,9 +344,9 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <p>所以很多时候我们要根据类型来区分不同的计算机，对每个类型采用不同的 {performance matrics, applications} 的组合作为 benchmark。</p>
 <p>在接下来的前几章中我们主要关心的是 response time，对于这个指标，性能最大意味着 response time 最小，所以可以这么定义计算机的性能：</p>
-<p>$$Performance-X = \frac{1}{Execution\ time-X}$$</p>
+<div class="math">$$Performance-X = \frac{1}{Execution\ time-X}$$</div>
 <p>在比较两个不同的计算机时，“X 比 Y 快 n 倍 ” = “X 的速度是 Y 的 n 倍 ” 指的是同一个意思，即</p>
-<p>$$\frac{Performance-X}{Performance-Y} = n$$</p>
+<div class="math">$$\frac{Performance-X}{Performance-Y} = n$$</div>
 <p>为了简单起见，统一使用 “X 的速度是 Y 的 n 倍 ”（<code>as fast as</code>）这种方式。因为 performance 和 execution time 是倒数关系，为了避免歧义，约定下面的描述</p>
 <ul>
 <li>improve performance = increase performance</li>
@@ -371,9 +372,9 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <h3 id="the-classic-cpu-performance-equation">The Classic CPU Performance Equation</h3>
 <p>一个程序的执行时间 = 这个程序包含的 cycle 数 × 每个 cycle 的时长，所以有下面的公式，</p>
-<p>$$CPU\ execution\ time = CPU\ clock\ cycles * clock\ cycle\ time\tag{1}$$</p>
+<div class="math">$$CPU\ execution\ time = CPU\ clock\ cycles * clock\ cycle\ time\tag{1}$$</div>
 <p>其中一个程序包含的 cycle 数 = 包含的所有指令数 × 平均每条指令的 cycle 数，即</p>
-<p>$$CPU\ clock\ cycles = Instructions * Average\ clock\ cycles\ per\ Instr\tag{2}$$</p>
+<div class="math">$$CPU\ clock\ cycles = Instructions * Average\ clock\ cycles\ per\ Instr\tag{2}$$</div>
 <p>这里涉及到一个非常重要的概念 <code>clock cycles per instruction</code>，也简称为 <strong><code>CPI</code></strong>，表示执行一条指令花费的 cycle 数。因为不同的指令完成的任务不同，花费的时间也不同，所以 CPI 指的是所有指令的平均 cycle 数。有了 CPI， 两个使用相同 ISA 的不同计算机之间的比较就很容易了，因为它们的指令条数肯定是一样多的。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -381,11 +382,11 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>CPI 实际上是有可能小于 1 的，所以有些人用 CPI 的倒数作为另外一个指标，<code>instructions per clock cycle</code>，简称 <code>IPC</code>。</p>
 </div>
 <p>把公式 2 带入到公式 1 之中，就可以得到经典的 CPU 性能公式：</p>
-<p>$$CPU\ time = Instruction\ count * CPI * Clock\ cycle\ time\tag{3}$$</p>
+<div class="math">$$CPU\ time = Instruction\ count * CPI * Clock\ cycle\ time\tag{3}$$</div>
 <p>也可以写成，</p>
-<p>$$CPU\ time = \frac{Instruction\ count * CPI}{Clock\ rate}\tag{4}$$</p>
+<div class="math">$$CPU\ time = \frac{Instruction\ count * CPI}{Clock\ rate}\tag{4}$$</div>
 <p>这个公式其实就是下面公式，只不过给了每个元素一个新的定义，</p>
-<p>$$Time = \frac{Seconds}{Program} = \frac{Instructions}{Program} * \frac{Clock\ cycles}{Instruction} * \frac{Seconds}{Clock\ cycle}\tag{5}$$</p>
+<div class="math">$$Time = \frac{Seconds}{Program} = \frac{Instructions}{Program} * \frac{Clock\ cycles}{Instruction} * \frac{Seconds}{Clock\ cycle}\tag{5}$$</div>
 <p>永远都要记住：<strong>只有 time 是最可靠的指标，其他子指标比如指令条数、CPI 等都不可靠。</strong></p>
 <p>下表列出了影响一个程序的 performance 的因素，以及具体的影响方式，</p>
 <table>
@@ -422,7 +423,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <h2 id="the-power-wall">The Power Wall</h2>
 <p>功耗分为两部分：动态功耗、静态功耗。</p>
 <p>动态功耗可以通过公式算出来，</p>
-<p>$$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched\tag{6}$$</p>
+<div class="math">$$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched\tag{6}$$</div>
 <p>其中 <code>Frequency switched</code> 是时钟频率的函数，<code>Capacitive load</code> 是晶体管的 fanout 和工艺的函数。</p>
 <p>从 Intel X86 架构芯片 30 年间 8 代 CPU 的时钟频率和 power 关系图中可以看到，随着时间发展，时钟频率提高了近 1000 倍，但是 power 只提高了大概 30 倍，原因就在于电压的不断降低。</p>
 <p>从前面 performance 的讨论可以知道，我们不能采用降低时钟频率的方式来降功耗，因为这会伤害到性能。那么我们可以无限降低电压吗？答案是不行，现在业界遇到的问题就是电压不能再低了，否则晶体管就像水龙头一样，无法完全关闭。虽然动态功耗是 CMOS 功耗中的大头，但是静态功耗也逐渐占据主角，在服务器中静态功耗能达到 40%，所以人们发明了各种技术来降低静态功耗，但是电压很难再进一步降低了。</p>
@@ -448,9 +449,9 @@ rel="me"           href="mailto:guqian110@163.com"
 <p><code>common case fast</code> 思想对整体性能的提升效果取决于 common case 到底有多 common，典型例子就是 <a href="https://en.wikipedia.org/wiki/Amdahl%27s-law">Amdahl's Law</a>。</p>
 <p>假设一个程序运行时间是 100s，其中 80s 是乘法运算，那么应该把乘法运算的性能提高到原来的多少倍才能使总计算时间减小到 20s 呢？</p>
 <p>根据 Amdahl 定律，</p>
-<p>$$T^* = \frac{T-{improved}}{Amout\ of\ improve} + T-{unaffected}\tag{7}$$</p>
+<div class="math">$$T^* = \frac{T-{improved}}{Amout\ of\ improve} + T-{unaffected}\tag{7}$$</div>
 <p>在这个例子里，有</p>
-<p>$$20 = \frac{80}{n} + 20$$</p>
+<div class="math">$$20 = \frac{80}{n} + 20$$</div>
 <p>可以知道实际上不可能达到 20s 的。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -462,14 +463,16 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>能量是功耗在时间上的积分，所以如果通过软硬件优化减少了程序的计算时间，就能同时降低功耗。</p>
 <p><strong>陷阱：把性能公式中的子集作为评价性能的标准</strong></p>
 <p>前面已经描述过，只有把 3 个因素都考虑进去，得到的性能结果才是可靠的，取其中任何一个、两个子指标都会导致不可靠的结果。比如，常用的 <code>MIPS(million instructions per second)</code> 指标，</p>
-<p>$$MIPS = \frac{Instrcution\ count}{Execution\ time * 10^6}\tag{8}$$</p>
+<div class="math">$$MIPS = \frac{Instrcution\ count}{Execution\ time * 10^6}\tag{8}$$</div>
 <p>MIPS 描述的是指令执行速度，计算机越快相应的 MIPS 指标就越高。MIPS 指标非常容易理解，但是把它作为性能指标是有问题的，</p>
 <ol>
 <li>只考虑了指令执行速度，但是没考虑指令的数量，对于不同 ISA 的计算机，不能直接比较它们的 MIPS</li>
 <li>
 <p>即使是同一台计算机，MIPS 值也会随着程序的不同而变化，没有固定值</p>
 <p>实际上，把公式 3 和公式 8 可以得到下面的公式，</p>
-<p>$$MIPS = \frac{clock\ rate}{CPI * 10^6}$$</p>
+<p>
+<div class="math">$$MIPS = \frac{clock\ rate}{CPI * 10^6}$$</div>
+</p>
 <p>因为 CPI 是个变化值，所以 MIPS 也是个变化值。</p>
 </li>
 <li>
@@ -526,6 +529,68 @@ rel="me"           href="mailto:guqian110@163.com"
 <li><code>Input</code>：Chapter 5, Chapter 6</li>
 <li><code>Ouptut</code>：Chapter 5, Chapter 6</li>
 </ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div>
 
 

@@ -10,7 +10,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+    <link rel="stylesheet/less" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
 
     <link id="dark-theme-style" rel="stylesheet" type="text/css"
           media="(prefers-color-scheme: dark)"
@@ -195,7 +196,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 
   <div class="related-posts">
-    <h4>Part <built-in method index of str object at 0x7f5445d9ddb0> of the  series</h4>
+    <h4>Part <built-in method index of str object at 0x7f9e75a31eb0> of the  series</h4>
   </div>
 
   <div>
@@ -475,11 +476,73 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>RV64 需要 2 个 csr 保存配置信息 <code>pmpcfg0</code>, <code>pmpcfg2</code></li>
 </ul>
 <p>每个 pmpcfg 规定了对应 pmpaddr 中那段地址的属性：R/W/X 以及如何解释（使用） <code>pmpaddrx</code> 的内容，即如何确定该 entry 的起始地址和大小。具体来说是通过 pmpcfg.A 字段联合 pmpaddr 中的低位 bit 共同确定。原理也很简单，对于某段按照 2 的幂次对齐的地址，其实低位是冗余的，所以可以用这些低位来表示对齐基数。</p>
-<p>若地址为 <code>yyy...y01...1</code> 这种形式，且低位连续 1 的位数为 n，那么对齐基数就是 $2^{n+3}$ Byte（因为 pmpaddr 是从物理地址的 bit[2] 开始存储，所以 bit[1:0] 天然为 0，这也符合 RV32 的最小访问粒度 32bit = 4Byte）。</p>
+<p>若地址为 <code>yyy...y01...1</code> 这种形式，且低位连续 1 的位数为 n，那么对齐基数就是 <span class="math">\(2^{n+3}\)</span> Byte（因为 pmpaddr 是从物理地址的 bit[2] 开始存储，所以 bit[1:0] 天然为 0，这也符合 RV32 的最小访问粒度 32bit = 4Byte）。</p>
 <h4 id="pmp-and-paging">PMP and Paging</h4>
 <p>设计 PMP 机制的主要目的是实现基于 page 技术的 Virtual-Memory 系统。</p>
 <h2 id="supervisor-level-isa">Supervisor-Level ISA</h2>
 <p>TODO</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div>
 
 

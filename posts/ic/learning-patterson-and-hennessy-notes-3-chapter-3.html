@@ -10,7 +10,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+    <link rel="stylesheet/less" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
 
     <link id="dark-theme-style" rel="stylesheet" type="text/css"
           media="(prefers-color-scheme: dark)"
@@ -221,7 +222,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p><strong>实现方案</strong></p>
 <p>加法器的设计是一个非常经典的 IC 话题，它的速度取决于进位链的速度，有很多技术会预测进位 bit，其最坏的结果就是进位时间是 log2(W) 的函数（其中 W 是加法器的位宽）。这些预测信号的逻辑门更少所以速度更快，付出的代价就是消耗了更多的硬件资源来预测进位信号的正确值，最流行的结构就是超前进位加法器 <code>CLA</code>(carry lookahead adder)。</p>
 <h3 id="multiplication">Multiplication</h3>
-<p>$1010 * 1011 = 0110-1110$，动手算一下就知道将 1010 和 1011 解释成 10 进制数或者是 2 进制等式都是成立的，因为他们的原理都一样：移位相加。</p>
+<p><span class="math">\(1010 * 1011 = 0110\-1110\)</span>，动手算一下就知道将 1010 和 1011 解释成 10 进制数或者是 2 进制等式都是成立的，因为他们的原理都一样：移位相加。</p>
 <p><strong>实现方案</strong></p>
 <ol>
 <li>
@@ -230,7 +231,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </li>
 <li>
 <p>更快速的实现方案：资源换速度，乘法器展开</p>
-<p>前面的方案只有一个硬件通过若干次重复计算后累加出结果，将这个过程展开（unroll）就可以得到一个更快的（latency 更小）方案：给乘数的每一 bit 都和被乘数相与，然后相邻 bit 的结果相加，显然宽度是 W 的乘法只需要 W 个加法器，latency 是 W 个加法器 latency 的总和。显然这个组合逻辑太大了时钟频率很可能上不去。继续优化的思路是：采用并行树的方式。latency 只有 $log2(W)$ 次加法，代价是消耗了更多的硬件资源。</p>
+<p>前面的方案只有一个硬件通过若干次重复计算后累加出结果，将这个过程展开（unroll）就可以得到一个更快的（latency 更小）方案：给乘数的每一 bit 都和被乘数相与，然后相邻 bit 的结果相加，显然宽度是 W 的乘法只需要 W 个加法器，latency 是 W 个加法器 latency 的总和。显然这个组合逻辑太大了时钟频率很可能上不去。继续优化的思路是：采用并行树的方式。latency 只有 <span class="math">\(log2(W)\)</span> 次加法，代价是消耗了更多的硬件资源。</p>
 </li>
 <li>
 <p>ALU 中的方案：</p>
@@ -246,7 +247,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </div>
 <h3 id="division">Division</h3>
 <p>比乘法的使用频率更底，也更诡异，可能会出现无效运算：除数为 0 的情况。</p>
-<p>$$Dividend = Quotient * Divisor + Remainder$$</p>
+<div class="math">$$Dividend = Quotient * Divisor + Remainder$$</div>
 <p><strong>实现方案</strong></p>
 <ol>
 <li>
@@ -260,7 +261,9 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>
 <p>更快的除法器：<code>non-restoring division</code></p>
 <p>前面两种都是 restoring 除法，每次迭代相减的结果是负数，需要将 divisor 恢复回去。不恢复的数学原理是：</p>
-<p>$$(r+d)<em>2-d=r</em>2+d<em>2-d=r</em>2+d$$</p>
+<p>
+<div class="math">$$(r+d)*2-d=r*2+d*2-d=r*2+d$$</div>
+</p>
 </li>
 <li>
 <p>更更快的除法器：<code>non-performing division</code></p>
@@ -269,7 +272,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </ol>
 <p><strong>Signed 处理</strong></p>
 <p>Q：如何处理 signed/unsigned？</p>
-<p>A：需要特别注意 signed 除法必须保证 $-(x \div y)=(-x)\div y$，也即<strong>保证 dividend 和 remainder 的符号必须相同。</strong></p>
+<p>A：需要特别注意 signed 除法必须保证 <span class="math">\(-(x \div y)=(-x)\div y\)</span>，也即<strong>保证 dividend 和 remainder 的符号必须相同。</strong></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>RISC-V 除法指令会忽略 overflow，所以软件必须自己检测 quotient 是否发生了溢出；对于除 0 运算也是一样，软件必须自己检测。</p>
@@ -280,7 +283,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <li><code>normalized number</code>：没有 leading 0s</li>
 </ul>
 <p>对于二进制浮点数，标准格式是：</p>
-<p>$$1.xxxxx\ast2^{yyyy}$$</p>
+<div class="math">$$1.xxxxx\ast2^{yyyy}$$</div>
 <p>因为 word 的位宽是固定的，所以浮点数必须在 fraction 和 exponent 之间做折中，也就是精度和范围之间的取舍，</p>
 <ul>
 <li>增加 fraction 的 bit 位数可以提高精度但是会减小表示的范围</li>
@@ -288,7 +291,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <p>如 chapter 2 所述，<strong>一个好的设计需要有合理的折中。</strong></p>
 <p>float 数的表示方法实际上就是 sign-and-magnitude 方式，1bit 符号 + E bit 指数 + F bit 尾数，表示的数据大小为，</p>
-<p>$$(-1)^S * F * 2^E$$</p>
+<div class="math">$$(-1)^S * F * 2^E$$</div>
 <p><strong>处理 overflow</strong></p>
 <p>float 同理也会有 overflow 和 underflow，</p>
 <ul>
@@ -333,7 +336,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>对于 unsigned 类型来说的确如此，但是对于 signed 类型的数据则显然不对，负数右移后在高位补充符号位，最后会永远是 -1，不会变成 0。</p>
 <p><strong>陷阱：结合律不适用于浮点运算</strong></p>
 <p>对于 integer 的运算，即使会发生 overflow 结合律也是适用的。但是对于浮点数，结合律是不适用的，因为计算机内的浮点数是用有限的 bit 来近似真实的数字，无法保存 overflow 的数字。这里有意思的是，对于定点的整数而言即使发生了 overflow 结合律仍然是适用的，找个例子就可以验证下面的等式是成立的，</p>
-<p>$$-128+127+3 = -128+(127+3) = -128+(-126)=2$$</p>
+<div class="math">$$-128+127+3 = -128+(127+3) = -128+(-126)=2$$</div>
 <p>原因也很简单：整数运算 overflow 只会影响高位 bit，低位 bit 是不受影响的。</p>
 <p><strong>谬论：并行执行策略不仅适用于 integer 类型，也适用于 float 类型</strong></p>
 <p>上一条已经证明了结合律不适用于 float 类型，所以并行执行策略不一定适合 float 类型。所以写并行代码并且使用了浮点数的时候，程序猿要自己判断结果是不是可靠的，处理这个问题的领域叫做数值分析，关于这个问题本身就可以写一本书了。这也是 <code>LAPACK</code> 和 <code>SCALAPAK</code> 这类数学库流行的原因，它们的顺序执行和并行执行都已经被验证过是有效的。</p>
@@ -348,6 +351,68 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>不同定位的处理器的性能差别的一个重要因素就是 ALU 中这些组件的实现方式和性能不同，这是个折中取舍的问题</li>
 </ul>
 </div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div>
 
 

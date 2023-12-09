@@ -10,7 +10,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+    <link rel="stylesheet/less" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
 
     <link id="dark-theme-style" rel="stylesheet" type="text/css"
           media="(prefers-color-scheme: dark)"
@@ -242,9 +243,9 @@ rel="me"           href="mailto:guqian110@163.com"
 <h2 id="an-overview-of-pipeling">An Overview of Pipeling</h2>
 <p>Pipeline 的基本概念，是在一个很长的组合逻辑路径中插入寄存器，切分成多个小段，这样时钟周期只需要 cover 住 latency 最长的小段即可，因此 Pipeline 可以提高时钟频率。需要注意的是插入寄存器后，处理单条指令的总时间（<code>latency</code>）实际上变长了，因为寄存器翻转也需要时间，但是由于指令可以重叠在一起并行处理，所以 Pipeline 提高系统的吞吐率（<code>throughput</code>），提高了整体性能（所有指令的总处理时间变小）。</p>
 <p>假设整个组合逻辑被切分成 n 个 latency 相似的 stage，每个 stage 的 latency 为 T₀，则单周期方案需要的总时间为</p>
-<p>$$T-{nopipe} = n * T-0$$</p>
+<div class="math">$$T-{nopipe} = n * T-0$$</div>
 <p>而 pipeline 方案，假设指令之间没有冒险，则所有之间直接可以完美重叠，则每条指令的执行时间为</p>
-<p>$$T-{pipe} = T-0$$</p>
+<div class="math">$$T-{pipe} = T-0$$</div>
 <p>显然在理想情况下，pipeline 版本的性能近似可以提高 n 倍，流水线切分地越细，每条指令的执行时间 T₀ 就越小，性能越高。一般低端 MCU 大概 2～3 个 stage，而高端 CPU 高达 10 个 stage。</p>
 <p>性能提升 n 倍是非常理想的理论数据，实际上有很多因素导致最终效果稍差：</p>
 <ul>
@@ -602,6 +603,68 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>在功耗墙的背景下，现在的趋势是舍弃以前超深的流水线和复杂的推测算法，转向多核，在更粗粒度上寻求并行性</li>
 </ul>
 </div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div>
 
 

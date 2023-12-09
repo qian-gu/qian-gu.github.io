@@ -10,7 +10,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+    <link rel="stylesheet/less" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
 
     <link id="dark-theme-style" rel="stylesheet" type="text/css"
           media="(prefers-color-scheme: dark)"
@@ -197,7 +198,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 
   <div class="related-posts">
-    <h4>Part <built-in method index of str object at 0x7f5445b53630> of the  series</h4>
+    <h4>Part <built-in method index of str object at 0x7f9e75b23730> of the  series</h4>
   </div>
 
   <div>
@@ -469,27 +470,27 @@ rel="me"           href="mailto:guqian110@163.com"
 <p><code>Q：如何评价一个 cache 的性能？</code></p>
 <h3 id="amat">AMAT</h3>
 <p>Cache 最常用的性能指标是： <code>AMAT</code>(Average memory aceess time) ，显然 Cache 系统设计越合理，对 core 表现出来的性能越好，AMAT 就越小。根据定义可以知道 AMAT 的计算公式如下：</p>
-<p>$AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty$</p>
+<p><span class="math">\(AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty\)</span></p>
 <p>对于多级 Cache 系统，AMAT 公式如下（以两级 Cache 为例）：</p>
-<p>$T-{avg}=H-1<em>C-1 + (1-H-1)</em>(H-2<em>(C-1 + C-2) + (1-H-2)</em>(C-1 + C-2 + M)$</p>
+<p><span class="math">\(T-{avg}=H-1*C-1 + (1-H-1)*(H-2*(C-1 + C-2) + (1-H-2)*(C-1 + C-2 + M)\)</span></p>
 <p>每个符号的含义：</p>
 <ul>
-<li>$H-1$ 表示 L1 cache 的命中率</li>
-<li>$H-2$ 表示 L2 cache 的命中率</li>
-<li>$C-1$ 表示 L1 cache 命中访问时间</li>
-<li>$C-2$ 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）</li>
-<li>$M$ 表示 DDR 的访问时间（即 L2 miss 的 penalty）</li>
+<li><span class="math">\(H-1\)</span> 表示 L1 cache 的命中率</li>
+<li><span class="math">\(H-2\)</span> 表示 L2 cache 的命中率</li>
+<li><span class="math">\(C-1\)</span> 表示 L1 cache 命中访问时间</li>
+<li><span class="math">\(C-2\)</span> 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）</li>
+<li><span class="math">\(M\)</span> 表示 DDR 的访问时间（即 L2 miss 的 penalty）</li>
 </ul>
 <p>也可以换一种算法：</p>
-<p>$T-{avg}= C-1 + (1-H-1)<em>C-2 + (1-H-1)</em>(1-H-2)*M$</p>
+<p><span class="math">\(T-{avg}= C-1 + (1-H-1)*C-2 + (1-H-1)*(1-H-2)*M\)</span></p>
 <p>可以证明两种方式是等价的。</p>
 <h3 id="_6">其他指标</h3>
 <p>AMAT 是 dcache 对外表现出来的综合性指标，如果想评估深入评估 dcache 微架构，那么应该用更多的细分指标来衡量。</p>
 <p>最基本的指标是所有硬件都适用的 <code>throughput</code> 和 <code>latency</code>，描述 cache 响应命令的吞吐率和时延。</p>
 <p>Cache 特有的最简单的指标是命中率 <code>hit ratio</code>，描述 cache 规格 / 微架构是否合理，合理的设计命中率都比较高，95% 以上。</p>
 <p>另外如果想衡量 prefetch 的性能，主要有两个指标 <code>coverage</code> 和 <code>accuracy</code>，</p>
-<p>$$coverage=\frac{miss\ eliminated\ by\ prefetch}{total\ miss\ without\ prefetch}$$</p>
-<p>$$accuracy=\frac{miss\ eliminated\ by\ prefetch}{total\ prefetch}$$</p>
+<div class="math">$$coverage=\frac{miss\ eliminated\ by\ prefetch}{total\ miss\ without\ prefetch}$$</div>
+<div class="math">$$accuracy=\frac{miss\ eliminated\ by\ prefetch}{total\ prefetch}$$</div>
 <p>coverage 描述了漏警性能，accuracy 描述了虚警性能，一般这两者很难兼得。同理，victim cache 也可以用类似的指标来衡量。</p>
 <h2 id="cache_2">Cache 的性能分析模型</h2>
 <p><strong>3C 模型</strong>，也就是分析清楚 cache 的 miss 可以分为几类，每一类的产生原因是什么：</p>
@@ -751,6 +752,68 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>Processor Microarchitecture: An Implementation Perspective. Antonio Gonzalez</p>
 <p>《计算机体系结构》 胡伟武</p>
 <p>《超标量处理器》 姚永斌</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div>
 
 

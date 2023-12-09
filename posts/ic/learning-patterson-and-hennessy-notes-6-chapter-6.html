@@ -10,7 +10,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+    <link rel="stylesheet/less" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
 
     <link id="dark-theme-style" rel="stylesheet" type="text/css"
           media="(prefers-color-scheme: dark)"
@@ -255,10 +256,10 @@ rel="me"           href="mailto:guqian110@163.com"
 <li><code>Amdahl</code> 定律</li>
 </ul>
 <p>Amdahl 定律：</p>
-<p>$$T-{after} = \frac{T-{affected}}{Amout\ of\ improve} + T-{unaffected}$$</p>
+<div class="math">$$T-{after} = \frac{T-{affected}}{Amout\ of\ improve} + T-{unaffected}$$</div>
 <p>也可以改写成：</p>
-<p>$$speed-up = \frac{T-{before}}{(T-{before}-T-{affected})+\frac{T-{affected}}{n}}$$</p>
-<p>$$speed-up = \frac{1}{(1-Frac-{affected}) + \frac{Frac-{affected}}{n}}$$</p>
+<div class="math">$$speed\-up = \frac{T-{before}}{(T-{before}-T-{affected})+\frac{T-{affected}}{n}}$$</div>
+<div class="math">$$speed\-up = \frac{1}{(1-Frac-{affected}) + \frac{Frac-{affected}}{n}}$$</div>
 <p>从书里面的两个例子可以看到，有时候必须增加问题的规模才能保持高加速比，而且负载不均衡对加速效果影响很大。</p>
 <p>1960 年代提出的一种基于指令流和数据流的数量进行分类的方法：</p>
 <table>
@@ -414,7 +415,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>存储：最常见的指标就是带宽</li>
 </ul>
 <p>根据下面这个量纲公式，</p>
-<p>$$\frac{Operation/Sec}{Operation/Byte} = Byte/Sec$$</p>
+<div class="math">$$\frac{Operation/Sec}{Operation/Byte} = Byte/Sec$$</div>
 <p>可以知道，分母表述了一个算子自身的性质，算子对计算量和数据量需求的比例。这个指标叫做计算密度 <code>arithmetic intensity</code>。</p>
 <p>将这几个概念组合在一起就得到了大名鼎鼎的 <code>Roofline Model</code>：</p>
 <ul>
@@ -469,6 +470,68 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>想要达到高性能，程序员必须将自己的串行程序并行化，或者直接重写全新的并行程序</li>
 </ul>
 </div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'blue ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div>
 
 
