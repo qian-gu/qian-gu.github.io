@@ -1,0 +1,534 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+          media="(prefers-color-scheme: dark)"
+    href="https://qian-gu.github.io/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: dark)"
+          href="https://qian-gu.github.io/theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+          href="https://qian-gu.github.io/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="https://qian-gu.github.io/theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="/static/custom.css">
+
+  <link rel="shortcut icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+  <link rel="icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+  <link href="https://qian-gu.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Qian's Blog Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48826831-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+ 
+
+<meta name="author" content="Qian Gu" />
+<meta name="description" content="总结 FPGA 中的时钟设计方案" />
+<meta name="keywords" content="clock design">
+
+
+  <meta property="og:site_name" content="Qian's Blog"/>
+  <meta property="og:title" content="FPGA 时钟设计 2 —— 时钟设计"/>
+  <meta property="og:description" content="总结 FPGA 中的时钟设计方案"/>
+  <meta property="og:locale" content="en"/>
+  <meta property="og:url" content="https://qian-gu.github.io/posts/ic/the-clock-design-in-fpga-2-clock-design.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2014-09-12 12:45:00+08:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://qian-gu.github.io/author/qian-gu.html">
+  <meta property="article:section" content="IC"/>
+  <meta property="article:tag" content="clock design"/>
+  <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
+
+  <title>Qian's Blog &ndash; FPGA 时钟设计 2 —— 时钟设计</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-1821536199377100",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body >
+
+<aside>
+  <div>
+    <a href="https://qian-gu.github.io/">
+      <img src="https://qian-gu.github.io/images/logo.png" alt="Qian Gu" title="Qian Gu">
+    </a>
+
+    <h1>
+      <a href="https://qian-gu.github.io/">Qian Gu</a>
+    </h1>
+
+    <p>Read >> Think >> Write</p>
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..."/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_blank"
+                 href="https://qian-gu.github.io/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-envelope"
+rel="me"           href="mailto:guqian110@163.com"
+           target="_blank">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/qian-gu"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-twitter"
+           href="https://twitter.com/qian_gu"
+           target="_blank">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-rss"
+           href="/feeds/all.atom.xml"
+           target="_blank">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="https://qian-gu.github.io/">Home</a>
+
+  <a href="/authors.html">Authors</a>
+  <a href="/archives.html">Archives</a>
+  <a href="/categories.html">Categories</a>
+  <a href="/tags.html">Tags</a>
+
+  <a href="https://qian-gu.github.io/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="the-clock-design-in-fpga-2-clock-design">FPGA 时钟设计 2 —— 时钟设计</h1>
+    <p>
+      Posted on 2014-09-12 12:45 in <a href="https://qian-gu.github.io/category/ic.html">IC</a>
+
+    </p>
+    <div class="tag-cloud">
+      <p>
+        <a href="https://qian-gu.github.io/tag/clock-design.html">clock design</a>
+      </p>
+    </div>
+  </header>
+
+
+
+  <div>
+    <blockquote>
+<p>无论是离散逻辑、可编程逻辑，还是用全定制硅器件实现的任何数字设计，为了成功地操作，可靠的时钟是非常关键的。</p>
+<p>设计不良的时钟在极限的温度、电压或者制造工艺的偏差情况下将导致错误的行为，并且调试困难、花销很大。</p>
+</blockquote>
+<p>总结一下 FPGA 中的时钟设计原则。</p>
+<p><br></p>
+<h2 id="clock-design">Clock Design</h2>
+<hr>
+<blockquote>
+<p>在 FPGA/CPLD 中通常采用几种时钟类型：</p>
+<ul>
+<li>
+<p>全局时钟</p>
+</li>
+<li>
+<p>门控时钟</p>
+</li>
+<li>
+<p>多级逻辑时钟</p>
+</li>
+<li>
+<p>波动式时钟</p>
+</li>
+</ul>
+<p>多时钟系统能够包括上述 4 种时钟类型的任意组合。</p>
+</blockquote>
+<p>上面是 <a href="http://book.douban.com/subject/10593491/">《Xiliinx FPGA 高级设计及应用》</a> 中的分类方法，个人觉得并不是很清晰，我总结了一下，大概可以分为下面的这 4 种：</p>
+<ol>
+<li>
+<p>全局时钟 Global Clock</p>
+</li>
+<li>
+<p>门控时钟 Gated Clock</p>
+</li>
+<li>
+<p>逻辑时钟 Logic Clock</p>
+</li>
+<li>
+<p>分频 / 倍频时钟 Divied/Multiplied Clock</p>
+</li>
+</ol>
+<h3 id="gloabl-clock">Gloabl Clock</h3>
+<p>关于全局时钟，前面一篇 blog  <a href="">FPGA 时钟设计 1 —— 时钟资源总结</a> 中有总结。</p>
+<p>对于一个项目来说，全局时钟是 <strong>最简单</strong>、<strong>最可预测</strong> 的时钟。</p>
+<p>在 PLD/FPGA 项目中 <strong>最好的时钟方案</strong> 是：由专用的全局时钟输入引脚驱动的单个主时钟去钟控设计项目中的每一个触发器。只要可能就应该尽量在设计中采用全局时钟</p>
+<p>PLD/FPGA 都具有专门的全局时钟引脚，它直接连接到器件中的每一个寄存器，这种全局时钟提供最短的时钟到输出的延时。</p>
+<h3 id="gated-clock">Gated Clock</h3>
+<p>门控时钟的意思是通过组合逻辑，控制、禁止或允许时钟输入到寄存器和其他同步原件上的一种方法。因为它能够有效地降低功耗，所以被广泛地应用于 ASIC 设计中。但是，它不符合 <code>同步设计</code> 的思想，可能会影响系统设计的实现和验证，所以，<strong>在 FPGA 设计中应该避免使用门控时钟。</strong></p>
+<p>因为 ASIC 和 FPGA 结构设计上的区别，两者对待门控时钟的态度是完全不同的：</p>
+<p><a href="http://electronics.stackexchange.com/questions/73398/gated-clocks-and-clock-enables-in-fpga-and-asics">Gated clocks and clock enables in FPGA and ASICS</a></p>
+<p>往往可以将门控时钟转化为全局时钟以改善项目设计的可靠性。</p>
+<p><strong>方法一</strong> </p>
+<p>就是使用寄存器 <code>时钟使能 (clock enable, CE)</code> 端口。</p>
+<p>单纯从功能来看，使用使能时钟代替门控时钟是一个不错的选项，但是使能时钟在使能信号关闭时，时钟信号仍然工作，它无法像门控时钟那样降低系统的功耗。</p>
+<p>推译带使能端的触发器的代码：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="n">dout</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ce</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">dout</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">din</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">dout</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">dout</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></td></tr></table></div>
+
+<p>得到的结果就是原语 <code>FDCE</code></p>
+<blockquote>
+<p>// FDCE: Single Data Rate D Flip-Flop with Asynchronous Clear and</p>
+<p>//       Clock Enable (posedge clk).</p>
+</blockquote>
+<p><strong>方法二</strong></p>
+<p>使用 <code>多路选择器（mux）</code> 将组合逻辑从时钟通路搬移到数据通路。如下图所示</p>
+<p><img alt="mux" src="/images/the-clock-design-in-fpga-2-clock-design/mux.png"></p>
+<p>如果在设计中无法避免门控时钟，那么只要保证满足下面两个条件就可以使门控时钟和全局时钟一样可靠地工作：</p>
+<ol>
+<li>
+<p>驱动时钟的逻辑必须只包含一个与门（或门），而且这个与门（或门）必须只有两个输入端。如果采用任何附加逻辑，则会出现竞争产生的毛刺。</p>
+</li>
+<li>
+<p>逻辑门的一个输入端为实际时钟。</p>
+</li>
+</ol>
+<p>这些条件的目的就是为了避免组合逻辑中的竞争带来的毛刺。</p>
+<p>根据数字电路的知识，我们知道可以通过添加 “ 冗余逻辑 ” 的方法来消除组合逻辑的冒险，但是，FPGA 的编译器在 综合时会去掉这些冗余逻辑，所以不能采用这种方法。</p>
+<h3 id="logic-clock">Logic Clock</h3>
+<p>有时候会用到组合逻辑的输出作为时钟信号或者复位信号，但是这种时钟信号有两个非常重要的缺陷：</p>
+<ol>
+<li>
+<p>组合逻辑产生的信号不可避免地会出现毛刺，会导致系统运行失败。</p>
+</li>
+<li>
+<p>组合逻辑产生的时钟信号使用的是通用布线资源，和专用时钟布线相比，延迟长、时钟偏移大，满足时序要求会更加困难。如果大量的逻辑使用了这种时钟，这个问题会更加突出。</p>
+</li>
+</ol>
+<p>（看到书上提出一个解决方案是：使用系统专用的时钟信号，将组合逻辑的输出打一拍，避免组合逻辑的直接输出，达到同步的效果。但是我个人认为这个方案不是非常好。）</p>
+<p>综上，对于 FPGA 来说，还是应该<strong>尽量避免使用组合逻辑的输出作为时钟</strong>。</p>
+<h3 id="dividemultiplied-clock">Divide/Multiplied Clock</h3>
+<p><strong>Guideline：</strong> 尽量避免分频时钟</p>
+<p>在我们的设计中，一般都不止一个时钟频率。如果不加注意，随意使用分频时钟，这叫做时钟满天飞，是非常不好的设计风格。</p>
+<p>如果一定要使用分频时钟：</p>
+<ol>
+<li>
+<p>对于资源比较丰富的 FPGA</p>
+<p>使用内部提供的 PLL/DLL，输出时钟信号可以配置成不同的频率（倍频 / 分频）和相位，这样的分频时钟是最稳定的。</p>
+</li>
+<li>
+<p>对于无法使用 PLL/DLL 的 FPGA</p>
+<p>对于这些情况，首先检查是否可以用 <code>CE</code> (clock enable) 来代替分频时钟，如果不行，则使用 <a href="http://guqian110.github.io/pages/2014/10/13/clock-dividers.html">时钟分频器</a> 中讨论的分频方法。</p>
+</li>
+</ol>
+<p><br></p>
+<h2 id="other-tips">Other Tips</h2>
+<hr>
+<ul>
+<li>
+<p><strong>只使用时钟的单个边沿</strong></p>
+<p>除了一些特殊的电路（如 DDR）外，设计应该只使用单个边沿（上 / 下边沿）。使用两个边沿的问题是时钟占空比不一定是 50%，这会对电路的正常工作产生影响。</p>
+</li>
+<li>
+<p><strong>使用差分时钟</strong></p>
+<p>通常认为频率高于 100 MHz 就属于 <code>高频</code>。建议在高频下使用差分时钟，因为差分时钟的抗噪声性能更好。</p>
+</li>
+<li>
+<p><strong>检测时钟缺失</strong></p>
+<p>使用 DCM/MMCM 的 <code>locked</code> 输出，在使用时钟前先检查时钟是否锁定。</p>
+</li>
+</ul>
+<p><br></p>
+<h2 id="reference">Reference</h2>
+<p><a href="http://book.douban.com/subject/10593491/">Xilinx FPGA 高级设计及应用</a></p>
+<p><a href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00FW1RTZG">FPGA 高手设计实战真经 100 则</a></p>
+<p><a href="http://book.douban.com/subject/11523088/">Xilinx FPGA 开发实用教程</a></p>
+<p><a href="http://book.douban.com/subject/4893454/">深入浅出玩转 FPGA</a></p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://qian-gu.github.io/posts/telecom/digital-signal-processing-and-matlab.html" title="数字信号处理和相关matlab函数总结">
+      <i class="fa fa-angle-left"></i> Previous Post
+    </a>
+    <a class="btn float-right" href="https://qian-gu.github.io/posts/ic/vhdl-notes-1-circuit-design.html" title="VHDL 笔记 1 —— 电路设计">
+      Next Post <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>You might enjoy</h4>
+    <ul class="related-posts">
+      <li><a href="https://qian-gu.github.io/posts/ic/clock-dividers.html">时钟分频器</a></li>
+      <li><a href="https://qian-gu.github.io/posts/ic/the-clock-design-in-fpga-3-multiasynchronous-clock-design.html">FPGA 时钟设计 3 —— 跨时钟域设计</a></li>
+      <li><a href="https://qian-gu.github.io/posts/ic/the-clock-design-in-fpga-1-summary-of-clock-resource.html">FPGA 时钟设计 1 —— 时钟资源总结</a></li>
+    </ul>
+  </div>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="ca-pub-1821536199377100"
+         data-ad-slot="4843941849"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ChienGu';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+
+  	<style>
+#pcs-comment-form input,
+#pcs-comment-form textarea {
+	width: 100%;
+}
+#pcs-comment-form-display-replyto {
+	border: solid 1px black;
+	padding: 2px;
+}
+#pcs-comment-form-display-replyto p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+#pcs-comments ul {
+	list-style: none;
+}
+#pcs-comments .comment-left {
+	display: table-cell;
+	padding-right: 10px;
+}
+#pcs-comments .comment-body {
+	display: table-cell;
+	vertical-align: top;
+	width: 100%;
+}
+</style>
+
+	<section id="pcs-comments">
+	<header>
+		<h2>Comments</h2>
+		<hr/>
+	</header>
+		<p>There are no comments yet.</p>
+	<section>
+	<form id="pcs-comment-form" action="#">
+		<legend id="pcs-comment-form-title" style="font-size: 2em; line-height: 3em;">Add a Comment</legend>
+		<input type="hidden" id="pcs-comment-form-input-replyto">
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-name" style="font-size: 1.5em; line-height: 2em;">Name</label>
+			<input  id="pcs-comment-form-input-name" type="text" placeholder="Enter your name or nickname" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-website" style="font-size: 1.5em; line-height: 2em;">Website</label>
+			<input  id="pcs-comment-form-input-website" type="text" placeholder="Enter your website (optional)" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label   for="pcs-comment-form-input-textarea" style="font-size: 1.5em; line-height: 2em;">Your Comment</label>
+			<textarea id="pcs-comment-form-input-textarea" rows="5" style="resize:vertical;" placeholder="Your comment"></textarea>
+			<p>You can use the <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> syntax to format your comment.</p>
+			<div style="display: none; " id="pcs-comment-form-display-replyto"></div>
+		</fieldset>
+
+		<button type="submit"
+				id="pcs-comment-form-button-submit"
+				>Post via email</button>
+
+	</form>
+</section>
+
+</section>
+
+			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="https://qian-gu.github.io/theme/js/comments.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			CommentSystem.email_user   = "guqian110";
+			CommentSystem.email_domain = "163.com";
+			CommentSystem.display_replyto_html = function(comment_content, article_slug, author) { 
+				return ''
+					+ '<button style="float:right;" onclick="CommentSystem.cancelReply(); return false;" title="Cancel the reply">'
+					+ 	'×'
+					+ '</button>'
+					+ '<p>This comment will be posted as a reply to \'<a title="'+comment_content+'" href="#comment-'+article_slug+'">'+author+'</a>\'</p>';
+			};
+
+			$('#pcs-comment-form').on("submit",
+				function( event )
+				{
+					event.preventDefault();
+					$(location).attr('href', CommentSystem.getMailtoLink("the-clock-design-in-fpga-2-clock-design"));
+				}
+			);
+		});
+	</script>
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2023  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+  <span class="footer-separator">|</span>
+  Switch to the <a href="javascript:void(0)" onclick="theme.switch(`dark`)">dark</a> | <a href="javascript:void(0)" onclick="theme.switch(`light`)">light</a> | <a href="javascript:void(0)" onclick="theme.switch(`browser`)">browser</a> theme
+  <script id="dark-theme-script"
+          src="https://qian-gu.github.io/theme/dark-theme/dark-theme.min.js"
+          data-enable-auto-detect-theme="True"
+          data-default-theme="ligtht"
+          type="text/javascript">
+  </script>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Qian's Blog ",
+  "url" : "https://qian-gu.github.io",
+  "image": "https://qian-gu.github.io/images/logo.png",
+  "description": "Qian's Thoughts and Writings"
+}
+</script><a href="https://github.com/qian-gu/qian-gu.github.io" target="_blank" class="github-corner" aria-label="View source on Github">
+    <svg width="80"
+         height="80"
+         viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+         aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor"
+              style="transform-origin: 130px 106px;"
+              class="octo-arm">
+        </path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor"
+              class="octo-body">
+        </path>
+    </svg>
+</a>
+  <script src="https://qian-gu.github.io/theme/stork/stork.js"></script>
+  <script>
+    stork.register("sitesearch", "https://qian-gu.github.io/search-index.st", {showProgress: false});
+  </script>
+
+</body>
+</html>

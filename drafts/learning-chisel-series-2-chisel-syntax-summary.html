@@ -1,0 +1,937 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+          media="(prefers-color-scheme: dark)"
+    href="https://qian-gu.github.io/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: dark)"
+          href="https://qian-gu.github.io/theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+          href="https://qian-gu.github.io/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="https://qian-gu.github.io/theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="/static/custom.css">
+
+  <link rel="shortcut icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+  <link rel="icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+  <link href="https://qian-gu.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Qian's Blog Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48826831-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+ 
+
+<meta name="author" content="Qian Gu" />
+<meta name="description" content="chisel-tutorial 和 chisel3 的 wiki学习笔记" />
+<meta name="keywords" content="chisel">
+
+
+  <meta property="og:site_name" content="Qian's Blog"/>
+  <meta property="og:title" content="学习 chisel 系列 #2： Chisel Syntax Summary"/>
+  <meta property="og:description" content="chisel-tutorial 和 chisel3 的 wiki学习笔记"/>
+  <meta property="og:locale" content="en"/>
+  <meta property="og:url" content="https://qian-gu.github.io/drafts/learning-chisel-series-2-chisel-syntax-summary.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2020-05-10 14:56:00+08:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://qian-gu.github.io/author/qian-gu.html">
+  <meta property="article:section" content="IC"/>
+  <meta property="article:tag" content="chisel"/>
+  <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
+
+  <title>Qian's Blog &ndash; 学习 chisel 系列 #2： Chisel Syntax Summary</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-1821536199377100",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body >
+
+<aside>
+  <div>
+    <a href="https://qian-gu.github.io/">
+      <img src="https://qian-gu.github.io/images/logo.png" alt="Qian Gu" title="Qian Gu">
+    </a>
+
+    <h1>
+      <a href="https://qian-gu.github.io/">Qian Gu</a>
+    </h1>
+
+    <p>Read >> Think >> Write</p>
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..."/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_blank"
+                 href="https://qian-gu.github.io/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-envelope"
+rel="me"           href="mailto:guqian110@163.com"
+           target="_blank">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/qian-gu"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-twitter"
+           href="https://twitter.com/qian_gu"
+           target="_blank">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-rss"
+           href="/feeds/all.atom.xml"
+           target="_blank">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="https://qian-gu.github.io/">Home</a>
+
+  <a href="/authors.html">Authors</a>
+  <a href="/archives.html">Archives</a>
+  <a href="/categories.html">Categories</a>
+  <a href="/tags.html">Tags</a>
+
+  <a href="https://qian-gu.github.io/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="learning-chisel-series-2-chisel-syntax-summary">学习 chisel 系列 #2： Chisel Syntax Summary</h1>
+    <p>
+      Posted on 2020-05-10 14:56 in <a href="https://qian-gu.github.io/category/ic.html">IC</a>
+
+    </p>
+    <div class="tag-cloud">
+      <p>
+        <a href="https://qian-gu.github.io/tag/chisel.html">chisel</a>
+      </p>
+    </div>
+  </header>
+
+
+  <div class="related-posts">
+    <h4>Part <built-in method index of str object at 0x7f90cfa98630> of the  series</h4>
+  </div>
+
+  <div>
+    <p><a href="https://qiangu.cool/riscv/learning-chisel-series-1-install.html">chisel 环境安装</a>成功之后，就可以正式开始 chisel 的学习之旅了。下面是我总结的 chisel 语法笔记。</p>
+<h2 id="chisel-tutorial-chisel3">Chisel Tutorial &amp; Chisel3</h2>
+<p><a href="https://github.com/ucb-bar/chisel-tutorial">Chisel Tutorial</a> 是官方提供的教程，阅读 wiki，走完整个流程，就能掌握一部分 chisel 的基本语法了。</p>
+<p>Tutorial 下面的 <code>doc</code> 目录里面包含了一篇 chisel 入门论文，只要按照 Makefile 中的提示把所有的依赖包都安装好，就可以生成最终的 [pdf 论文 ][paper] 了。</p>
+<p>[paper]: </p>
+<p>[Chisel3][chisel3] 官方的 wiki 页面详细介绍了 chisel3 的语法。</p>
+<p>[chisel3]: </p>
+<hr>
+<h2 id="scala-chisel">Scala 和 Chisel</h2>
+<p>因为 Chisel 是 Scala 的方言，所以它本质是还是 scala 代码，但是 scala 是一门功能强大的复杂语言，融合了指令式编程、面向对象编程、函数式编程，有很多高级和复杂的概念，学习 scala 的所有特性固然对 chisel 有帮助，但是因为 chisel 只限定于硬件描述领域，所以实际上有些 scala 的特性一般是用不到的，所以如果为了快速入门 chisel，scala 的部分主题是可以跳过的，总结如下表：</p>
+<table>
+<thead>
+<tr>
+<th>Scala 功能</th>
+<th>Chisel 是否用到</th>
+<th>Chisel 主要用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>集合（Array、List、Tuple、Map、Set</td>
+<td>Y</td>
+<td>构建寄存器组等</td>
+</tr>
+<tr>
+<td>内建控制结构</td>
+<td>Y</td>
+<td>重复逻辑、连线</td>
+</tr>
+<tr>
+<td>Class 多态</td>
+<td>N</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Class 继承</td>
+<td>Y</td>
+<td>电路本身没有继承关系，主要用来扩展接口</td>
+</tr>
+<tr>
+<td>特质</td>
+<td>Y</td>
+<td>提取电路公共属性，用来快速修改 / 删除电路功能</td>
+</tr>
+<tr>
+<td>模式匹配</td>
+<td>Y</td>
+<td>快速裁剪、参数化配置电路</td>
+</tr>
+<tr>
+<td>类型参数化</td>
+<td>N</td>
+<td>阅读 Chisel 源码，理解语言的机制，设计电路不会用到</td>
+</tr>
+<tr>
+<td>抽象成员</td>
+<td>N</td>
+<td>理解 Chisel API，设计电路不会用到</td>
+</tr>
+<tr>
+<td>隐式定义</td>
+<td>Y</td>
+<td>和模式匹配配合实现快速裁剪、配置，Chisel 高级功能的重点</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="_1">变量</h2>
+<h3 id="wire">wire</h3>
+<p>用 <code>val</code> 声明一个变量，只要这个变量不是用 <code>Reg</code> 类型来赋值，那么它就会被解释成一个 verilog 中的 <code>wire</code>，因此这个变量也可以随意赋值给其他变量，就像 verilog 中的 <code>wire</code> 的行为一样。</p>
+<p>verilog 中声明一个 <code>reg</code>，实际最终综合出来的可能是一条线 <code>wire</code>，也有可能是一个真正的寄存器 <code>register</code>，这是 verilog 语法的历史问题导致的。即使是很多老手，也经常声明错。</p>
+<p>chisel 和 verilog 的不同之处在于，如果一个 <code>Reg</code> 变量，那么它一定会综合出一个上升沿触发的寄存器。chisel 中声明寄存器的方法有好几种，</p>
+<ol>
+<li>声明类型时不传递参数，在后面的语句中赋值（适合有条件赋值）</li>
+<li>用 <code>RegNext()</code>声明的同时传参，那么在每个时钟上升沿都会采样该值（适合无条件打拍）</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="c1">// method 1</span>
+<span class="kd">val</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Reg</span><span class="p">(</span><span class="nc">UInt</span><span class="p">())</span>
+<span class="n">when</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">x</span><span class="o">:=</span><span class="w"> </span><span class="n">y</span><span class="p">}</span>
+<span class="w">  </span><span class="p">.</span><span class="n">elsewhen</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="n">x</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">z</span><span class="p">}</span>
+<span class="w">  </span><span class="p">.</span><span class="n">otherwise</span><span class="w"> </span><span class="p">{</span><span class="n">x</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">w</span><span class="p">}</span>
+
+<span class="c1">// method 2</span>
+<span class="kd">val</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io</span><span class="p">.</span><span class="n">x</span>
+<span class="kd">val</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">RegNext</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</code></pre></div>
+
+<p>需要注意的是，如果是用 <code>when</code> 语句有条件的赋值，那么要保证等号两边的数据类型和宽度相匹配，对于无条件赋值则无须这么做，因为编译器会根据右边的变量自动推断左边的寄存器类型和位宽。</p>
+<h2 id="_2">控制语句</h2>
+<h3 id="for-loop">for loop</h3>
+<div class="highlight"><pre><span></span><code><span class="c1">#!scala</span>
+<span class="o">//</span><span class="w"> </span><span class="n">exclusive</span><span class="w"> </span><span class="n">n</span>
+<span class="nf">for </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="n">until</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kc">...</span>
+<span class="p">}</span>
+
+<span class="o">//</span><span class="w"> </span><span class="n">include</span><span class="w"> </span><span class="n">n</span>
+<span class="nf">for </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kc">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="if-elseif-if">if-elseif-if</h3>
+<div class="highlight"><pre><span></span><code>#<span class="o">!</span><span class="nv">scala</span>
+<span class="k">if</span><span class="w"> </span><span class="ss">(</span><span class="o">&lt;</span><span class="nv">condition1</span><span class="o">&gt;</span><span class="ss">)</span><span class="w"> </span>{
+<span class="w">    </span>...
+<span class="w">    </span>}<span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="ss">(</span><span class="o">&lt;</span><span class="nv">condition2</span><span class="o">&gt;</span><span class="ss">)</span><span class="w"> </span>{
+<span class="w">        </span>...
+<span class="w">    </span>}<span class="w"> </span><span class="k">else</span><span class="w"> </span>{
+<span class="w">        </span>...
+<span class="w">    </span>}
+</code></pre></div>
+
+<h3 id="when">when</h3>
+<div class="highlight"><pre><span></span><code><span class="c1">#!scala</span>
+<span class="c1">// when clause</span>
+<span class="nf">when</span><span class="w"> </span><span class="p">(</span><span class="err">&lt;</span><span class="no">condition1</span><span class="err">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{...}</span>
+<span class="na">.elsewhen</span><span class="w"> </span><span class="p">(</span><span class="err">&lt;</span><span class="no">condition2</span><span class="p">)</span><span class="w"> </span><span class="p">{...}</span>
+<span class="na">.elsewhen</span><span class="w"> </span><span class="p">(</span><span class="err">&lt;</span><span class="no">condition3</span><span class="p">)</span><span class="w"> </span><span class="p">{...}</span>
+<span class="na">.otherwise</span><span class="w"> </span><span class="p">{...}</span>
+
+<span class="c1">// unless clause</span>
+<span class="nf">unless</span><span class="w"> </span><span class="p">(</span><span class="err">&lt;</span><span class="no">condition</span><span class="p">)</span><span class="w"> </span><span class="p">{...}</span>
+</code></pre></div>
+
+<h3 id="assignments-and-re-assignments">Assignments and Re-assignments</h3>
+<p>这是 chisel 的独特语法，在 chisel 中第一次定义变量时，必须使用 <code>=</code> 来告诉 chisel 生成这样一个硬件资源，之后如果想改变这个硬件的值，即重新赋值则必须使用 <code>:=</code>。</p>
+<p>在电路中重新赋值的操作是没有意义的，因为一旦电路中任意两个节点之间只需要声明一次即可，之后 source 就会每时每刻都在驱动着 destination。那么就会有个问题，</p>
+<p><code>Q：为什么 chisel 会出现重新赋值的语法？</code></p>
+<p>原因是 chisel 和 verilog 的编译顺序不一样，它是顺序编译的。如果某个变量的赋值出现在定义的后面，就需要重新赋值。</p>
+<p>一个最简单的例子就是 top 层的 I/O 信号，因为在端口上声明输出信号时我们并不知道它的值是多少，要在模块中计算更新才知道最终输出。</p>
+<h3 id="bit-extraction">Bit Extraction</h3>
+<p>和 verilog 类似，提取 bit 位的语法不同而已，<code>[:]</code> 改成了 <code>(,)</code>。</p>
+<div class="highlight"><pre><span></span><code>#!scala
+val x-to-y = value(x, y)
+val x-of-value = value(x)
+</code></pre></div>
+
+<h3 id="bit-concatenation">Bit Concatenation</h3>
+<p>和 verilog 的 bit 拼接不同，chisel 使用 <code>Cat()</code> 函数来实现 bit 拼接，和 bit 提取一样，高位部分是第一个参数，低位部分是第二个参数。<code>Cat()</code> 函数的实现在 chisel 的 util 包，不在 core 内，所以需要先 import 才能使用。</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!scala</span>
+<span class="kn">import</span> <span class="nn">chisel3.util.Cat</span>
+<span class="o">//</span> <span class="ow">or</span> <span class="kn">import</span> <span class="nn">all</span> <span class="n">the</span> <span class="n">utility</span> <span class="n">definitions</span> 
+<span class="o">//</span> <span class="kn">import</span> <span class="nn">chisel3.util.</span><span class="o">-</span>
+
+<span class="n">val</span> <span class="n">A</span> <span class="o">=</span> <span class="n">UInt</span><span class="p">(</span><span class="mf">32.</span><span class="n">W</span><span class="p">)</span>
+<span class="n">val</span> <span class="n">B</span> <span class="o">=</span> <span class="n">UInt</span><span class="p">(</span><span class="mf">32.</span><span class="n">W</span><span class="p">)</span>
+<span class="n">val</span> <span class="n">bus</span> <span class="o">=</span> <span class="n">Cat</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="bit-inference">Bit Inference</h3>
+<p>很多运算结果的位宽会比操作数更宽，比如加法和乘法，在传统的 verilog 编码中，硅农们必须手动指定每个 reg/wire 的位宽。相比之下，chisel 的一个强大功能是可以自动推断信号的位宽，所以它能节省广大硅农的很多时间，而且自动推断不会产生眼花手抖等情况，bug 率也大幅下降，妈妈再也不用担心我的代码位宽不匹配了 XD。</p>
+<p>常见的 bit 位宽推断如下，</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Result Bit Width</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Z = X + Y</td>
+<td>max(Width(X), Width(Y))</td>
+</tr>
+<tr>
+<td>Z = X - Y</td>
+<td>max(Width(X), Width(Y))</td>
+</tr>
+<tr>
+<td>Z = X</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>Z = X ^ Y</td>
+<td>max(Width(X), Width(Y))</td>
+</tr>
+<tr>
+<td>Z = ~X</td>
+<td>Width(X)</td>
+</tr>
+<tr>
+<td>Z = Mux(C, X, Y)</td>
+<td>max(Width(X), Width(Y))</td>
+</tr>
+<tr>
+<td>Z = X * Y</td>
+<td>Width(X) + Width(Y)</td>
+</tr>
+<tr>
+<td>Z = X &lt;&lt; n</td>
+<td>Width(X) + n</td>
+</tr>
+<tr>
+<td>Z = X &gt;&gt; n</td>
+<td>Width(X) -n</td>
+</tr>
+<tr>
+<td>Z = Cat(X, Y)</td>
+<td>Width(X) + Width(Y)</td>
+</tr>
+<tr>
+<td>Z = Fill(n, x)</td>
+<td>Width(X) + n</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reset">复位 reset</h2>
+<p>需要注意的是，前面的代码没有声明 clk 和 reset 信号，因为编译器会自动隐式地生成一个时钟信号和一个同步复位信号。</p>
+<p>像 <code>val x = Reg(UInt())</code> 这种方式声明的寄存器是不带复位信号的，如果我们想指定复位的初始值，可以有两种方式，</p>
+<ol>
+<li>用 <code>RegInit()</code></li>
+<li>在后续赋值中对寄存器进行初始化，chisel 自动隐式地生成的复位信号名字叫 <code>reset</code>，我们可以直接在代码中使用这个信号，但是为了把它转换成一个 Bool 类型的变量，需要显式地添加 <code>toBool</code> 来转换。</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="o">#!</span><span class="nv">scala</span>
+<span class="o">//</span><span class="w"> </span><span class="nv">method</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="nv">using</span><span class="w"> </span><span class="nf">RegInit</span><span class="p">()</span>
+<span class="nv">val</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">RegInit</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="nv">W</span><span class="p">))</span>
+
+<span class="o">//</span><span class="w"> </span><span class="nv">method</span><span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="nv">using</span><span class="w"> </span><span class="nv">reset</span><span class="o">.</span><span class="k">to</span><span class="nv">Bool</span>
+<span class="nf">when</span><span class="p">(</span><span class="nv">reset</span><span class="o">.</span><span class="k">to</span><span class="nv">Bool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">x</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mi">0</span><span class="o">.</span><span class="nv">U</span>
+<span class="p">}</span><span class="w"> </span><span class="o">.</span><span class="k">else</span><span class="nf">when</span><span class="p">(</span><span class="nv">io</span><span class="o">.</span><span class="nv">enable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nv">x</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">y</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>下面用一个 4bit 的 shift register 实例来说明，</p>
+<p>版本一：使用 <code>RegInit()</code> 的代码，</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!scala</span>
+<span class="n">package</span> <span class="n">examples</span>
+
+<span class="kn">import</span> <span class="nn">chisel3.</span><span class="o">-</span>
+
+<span class="k">class</span> <span class="nc">ResetShiftRegister</span> <span class="n">extends</span> <span class="n">Module</span> <span class="p">{</span>
+  <span class="n">val</span> <span class="n">io</span> <span class="o">=</span> <span class="n">IO</span><span class="p">(</span><span class="n">new</span> <span class="n">Bundle</span> <span class="p">{</span>
+    <span class="n">val</span> <span class="ow">in</span>    <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+    <span class="n">val</span> <span class="n">shift</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">Bool</span><span class="p">())</span>
+    <span class="n">val</span> <span class="n">out</span>   <span class="o">=</span> <span class="n">Output</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+  <span class="p">})</span>
+  <span class="o">//</span> <span class="n">Register</span> <span class="n">reset</span> <span class="n">to</span> <span class="n">zero</span>
+  <span class="n">val</span> <span class="n">r0</span> <span class="o">=</span> <span class="n">RegInit</span><span class="p">(</span><span class="mf">0.</span><span class="n">U</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+  <span class="n">val</span> <span class="n">r1</span> <span class="o">=</span> <span class="n">RegInit</span><span class="p">(</span><span class="mf">0.</span><span class="n">U</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+  <span class="n">val</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">RegInit</span><span class="p">(</span><span class="mf">0.</span><span class="n">U</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+  <span class="n">val</span> <span class="n">r3</span> <span class="o">=</span> <span class="n">RegInit</span><span class="p">(</span><span class="mf">0.</span><span class="n">U</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+  <span class="n">when</span> <span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">r0</span> <span class="o">:=</span> <span class="n">io</span><span class="o">.</span><span class="ow">in</span>
+    <span class="n">r1</span> <span class="o">:=</span> <span class="n">r0</span>
+    <span class="n">r2</span> <span class="o">:=</span> <span class="n">r1</span>
+    <span class="n">r3</span> <span class="o">:=</span> <span class="n">r2</span>
+  <span class="p">}</span>
+  <span class="n">io</span><span class="o">.</span><span class="n">out</span> <span class="o">:=</span> <span class="n">r3</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>版本二：使用 <code>reset.toBool</code> 的代码如下，</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!scala</span>
+<span class="n">package</span> <span class="n">examples</span>
+
+<span class="kn">import</span> <span class="nn">chisel3.</span><span class="o">-</span>
+
+<span class="k">class</span> <span class="nc">EnableShiftRegister</span> <span class="n">extends</span> <span class="n">Module</span> <span class="p">{</span>
+  <span class="n">val</span> <span class="n">io</span> <span class="o">=</span> <span class="n">IO</span><span class="p">(</span><span class="n">new</span> <span class="n">Bundle</span> <span class="p">{</span>
+    <span class="n">val</span> <span class="ow">in</span>    <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+    <span class="n">val</span> <span class="n">shift</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">Bool</span><span class="p">())</span>
+    <span class="n">val</span> <span class="n">out</span>   <span class="o">=</span> <span class="n">Output</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+  <span class="p">})</span>
+  <span class="n">val</span> <span class="n">r0</span> <span class="o">=</span> <span class="n">Reg</span><span class="p">(</span><span class="n">UInt</span><span class="p">())</span>
+  <span class="n">val</span> <span class="n">r1</span> <span class="o">=</span> <span class="n">Reg</span><span class="p">(</span><span class="n">UInt</span><span class="p">())</span>
+  <span class="n">val</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">Reg</span><span class="p">(</span><span class="n">UInt</span><span class="p">())</span>
+  <span class="n">val</span> <span class="n">r3</span> <span class="o">=</span> <span class="n">Reg</span><span class="p">(</span><span class="n">UInt</span><span class="p">())</span>
+  <span class="n">when</span><span class="p">(</span><span class="n">reset</span><span class="o">.</span><span class="n">toBool</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">r0</span> <span class="o">:=</span> <span class="mf">0.</span><span class="n">U</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">)</span>
+    <span class="n">r1</span> <span class="o">:=</span> <span class="mf">0.</span><span class="n">U</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">)</span>
+    <span class="n">r2</span> <span class="o">:=</span> <span class="mf">0.</span><span class="n">U</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">)</span>
+    <span class="n">r3</span> <span class="o">:=</span> <span class="mf">0.</span><span class="n">U</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">)</span>
+  <span class="p">}</span> <span class="o">.</span><span class="n">elsewhen</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">r0</span> <span class="o">:=</span> <span class="n">io</span><span class="o">.</span><span class="ow">in</span>
+    <span class="n">r1</span> <span class="o">:=</span> <span class="n">r0</span>
+    <span class="n">r2</span> <span class="o">:=</span> <span class="n">r1</span>
+    <span class="n">r3</span> <span class="o">:=</span> <span class="n">r2</span>
+  <span class="p">}</span>
+  <span class="n">io</span><span class="o">.</span><span class="n">out</span> <span class="o">:=</span> <span class="n">r3</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>两个版本生成的 rtl 是一样的，核心部分如下，</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="o">!</span><span class="nt">verilog</span>
+<span class="nt">module</span><span class="w"> </span><span class="nt">ResetShiftRegister</span><span class="o">(</span>
+<span class="w">  </span><span class="nt">input</span><span class="w">        </span><span class="nt">clock</span><span class="o">,</span>
+<span class="w">  </span><span class="nt">input</span><span class="w">        </span><span class="nt">reset</span><span class="o">,</span>
+<span class="w">  </span><span class="nt">input</span><span class="w">  </span><span class="cp">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">0</span><span class="cp">]</span><span class="w"> </span><span class="nt">io-in</span><span class="o">,</span>
+<span class="w">  </span><span class="nt">input</span><span class="w">        </span><span class="nt">io-shift</span><span class="o">,</span>
+<span class="w">  </span><span class="nt">output</span><span class="w"> </span><span class="cp">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">0</span><span class="cp">]</span><span class="w"> </span><span class="nt">io-out</span>
+<span class="o">);</span>
+<span class="w">  </span><span class="c">/* some code */</span>
+<span class="w">  </span><span class="nt">always</span><span class="w"> </span><span class="o">@(</span><span class="nt">posedge</span><span class="w"> </span><span class="nt">clock</span><span class="o">)</span><span class="w"> </span><span class="nt">begin</span>
+<span class="w">    </span><span class="nt">if</span><span class="w"> </span><span class="o">(</span><span class="nt">reset</span><span class="o">)</span><span class="w"> </span><span class="nt">begin</span>
+<span class="w">      </span><span class="nt">r0</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nt">4</span><span class="s1">&#39;h0;</span>
+<span class="s1">    end else begin</span>
+<span class="s1">      if (io-shift) begin</span>
+<span class="s1">        r0 &lt;= io-in;</span>
+<span class="s1">      end</span>
+<span class="s1">    end</span>
+<span class="s1">    if (reset) begin</span>
+<span class="s1">      r1 &lt;= 4&#39;</span><span class="nt">h0</span><span class="o">;</span>
+<span class="w">    </span><span class="nt">end</span><span class="w"> </span><span class="nt">else</span><span class="w"> </span><span class="nt">begin</span>
+<span class="w">      </span><span class="nt">if</span><span class="w"> </span><span class="o">(</span><span class="nt">io-shift</span><span class="o">)</span><span class="w"> </span><span class="nt">begin</span>
+<span class="w">        </span><span class="nt">r1</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nt">r0</span><span class="o">;</span>
+<span class="w">      </span><span class="nt">end</span>
+<span class="w">    </span><span class="nt">end</span>
+<span class="w">    </span><span class="nt">if</span><span class="w"> </span><span class="o">(</span><span class="nt">reset</span><span class="o">)</span><span class="w"> </span><span class="nt">begin</span>
+<span class="w">      </span><span class="nt">r2</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nt">4</span><span class="s1">&#39;h0;</span>
+<span class="s1">    end else begin</span>
+<span class="s1">      if (io-shift) begin</span>
+<span class="s1">        r2 &lt;= r1;</span>
+<span class="s1">      end</span>
+<span class="s1">    end</span>
+<span class="s1">    if (reset) begin</span>
+<span class="s1">      r3 &lt;= 4&#39;</span><span class="nt">h0</span><span class="o">;</span>
+<span class="w">    </span><span class="nt">end</span><span class="w"> </span><span class="nt">else</span><span class="w"> </span><span class="nt">begin</span>
+<span class="w">      </span><span class="nt">if</span><span class="w"> </span><span class="o">(</span><span class="nt">io-shift</span><span class="o">)</span><span class="w"> </span><span class="nt">begin</span>
+<span class="w">        </span><span class="nt">r3</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nt">r2</span><span class="o">;</span>
+<span class="w">      </span><span class="nt">end</span>
+<span class="w">    </span><span class="nt">end</span>
+<span class="w">  </span><span class="nt">end</span>
+<span class="nt">endmodule</span>
+</code></pre></div>
+
+<h2 id="uint-class">UInt Class</h2>
+<p>UInt（无符号整数类型）等价于 verilog 中的 unsigned 类型，UInt 运算的操作数类型必须也是 UInt 类型，支持的常见运算有，</p>
+<table>
+<thead>
+<tr>
+<th>Operand</th>
+<th>Operation</th>
+<th>Ooutput Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+</td>
+<td>Add</td>
+<td>UInt</td>
+</tr>
+<tr>
+<td>-</td>
+<td>Subtract</td>
+<td>UInt</td>
+</tr>
+<tr>
+<td>*</td>
+<td>Multiply</td>
+<td>UInt</td>
+</tr>
+<tr>
+<td>/</td>
+<td>UInt Divide</td>
+<td>UInt</td>
+</tr>
+<tr>
+<td>%</td>
+<td>Modulo</td>
+<td>UInt</td>
+</tr>
+<tr>
+<td>~</td>
+<td>Bitwise Negation</td>
+<td>UInt</td>
+</tr>
+<tr>
+<td>^</td>
+<td>Bitwise XOR</td>
+<td>UInt</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>Bitwise AND</td>
+<td>UInt</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>Bitwise OR</td>
+</tr>
+<tr>
+<td>===</td>
+<td>Equal</td>
+<td>Bool</td>
+</tr>
+<tr>
+<td>=/=</td>
+<td>Not Equal</td>
+<td>Bool</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>Greater</td>
+<td>Bool</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>Less</td>
+<td>Bool</td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>Greater or Equal</td>
+<td>Bool</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>Less or Equal</td>
+<td>Bool</td>
+</tr>
+</tbody>
+</table>
+<p>大部分运算符和 verilog 都是相同的，不同之处是 <code>|</code>、<code>===</code> 和 <code>=/=</code> 操作。</p>
+<h2 id="bool-class">Bool Class</h2>
+<p>Bool 类用来表示逻辑表达式的结果，可以在 <code>when</code> 之类的条件语句中使用，</p>
+<div class="highlight"><pre><span></span><code>#!scala
+val change = io.a == io.b
+when (change) {
+    //...
+} .otherwise {
+    //...
+}
+
+val true-value  = true.B
+val false-value = flase.B
+</code></pre></div>
+
+<h2 id="casting-between-types">Casting Between Types</h2>
+<p>chisel 要求赋值表达式的两边数据类型是一致的。如果直接把一个 Bool 类型的变量赋值给一个 UInt 类型会报错，正确做法是显式地进行转换，</p>
+<div class="highlight"><pre><span></span><code><span class="o">#!</span><span class="nv">scala</span>
+<span class="nv">val</span><span class="w"> </span><span class="nv">io</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">IO</span><span class="p">(</span><span class="nv">new</span><span class="w"> </span><span class="nv">Bundle</span><span class="p">{</span>
+<span class="w">    </span><span class="nv">val</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">Input</span><span class="p">(</span><span class="nf">UInt</span><span class="p">(</span><span class="mi">2</span><span class="o">.</span><span class="nv">W</span><span class="p">))</span>
+<span class="w">    </span><span class="nv">val</span><span class="w"> </span><span class="nv">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">Ouptut</span><span class="p">(</span><span class="nf">UInt</span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="nv">W</span><span class="p">))</span>
+<span class="p">})</span>
+<span class="nv">io</span><span class="o">.</span><span class="nv">out</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="p">(</span><span class="nv">in</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0</span><span class="o">.</span><span class="nv">U</span><span class="p">)</span><span class="o">.</span><span class="nv">asUInt</span>
+</code></pre></div>
+
+<p>常见的类型转换：</p>
+<ul>
+<li><code>asUInt()</code></li>
+<li><code>asSInt()</code></li>
+<li><code>asBool()</code></li>
+</ul>
+<h2 id="moudule-instantiation">Moudule Instantiation</h2>
+<p>chisel 中例化一个 module class 就等价于例化一个 verilog 的 module，具体方法就是 <code>Module</code> 调用 <code>new</code> 来创建一个新的 module，并把它赋值给一个 <code>val</code>，以便我们做端口连接。</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#!scala</span>
+<span class="k">class</span><span class="w"> </span><span class="n">Adder4</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="n">Module</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">io</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IO</span><span class="p">(</span><span class="n">new</span><span class="w"> </span><span class="n">Bundle</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="n">A</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">Input</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+<span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="n">B</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">Input</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+<span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="n">Cin</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">Input</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">1.</span><span class="n">W</span><span class="p">))</span>
+<span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="n">Sum</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">Input</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">4.</span><span class="n">W</span><span class="p">))</span>
+<span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="n">Cout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Input</span><span class="p">(</span><span class="n">UInt</span><span class="p">(</span><span class="mf">1.</span><span class="n">W</span><span class="p">))</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Adder</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">Adder0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Module</span><span class="p">(</span><span class="n">new</span><span class="w"> </span><span class="n">FullAdder</span><span class="p">())</span>
+<span class="w">    </span><span class="n">Adder0</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">a</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">io</span><span class="o">.</span><span class="n">A</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Adder0</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">a</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">io</span><span class="o">.</span><span class="n">B</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Adder0</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">cin</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">io</span><span class="o">.</span><span class="n">Cin</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="n">s0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Adder0</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">sum</span>
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="vec-class">Vec Class</h2>
+<p><code>Vec</code> 类等价于 verilog 中的寄存器组，语法如下，</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="p">!</span><span class="nx">scala</span>
+<span class="nx">val</span><span class="w"> </span><span class="nx">myVec</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">Vec</span><span class="p">(</span><span class="nx">Seq</span><span class="p">.</span><span class="nx">fill</span><span class="p">(</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">number</span><span class="w"> </span><span class="nx">of</span><span class="w"> </span><span class="nx">elements</span><span class="p">&gt;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">data</span><span class="w"> </span><span class="k">type</span><span class="p">})</span>
+</code></pre></div>
+
+<p>有点类似 C++ 中的 vector，需要指明内部存放的数据类型，但是还需要额外指定 vector 的长度，举例如下，</p>
+<div class="highlight"><pre><span></span><code><span class="p">#</span><span class="o">!</span><span class="n">scala</span>
+<span class="n">val</span><span class="w"> </span><span class="n">ufix</span><span class="o">-</span><span class="n">vec10</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">Vect</span><span class="p">(</span><span class="n">Seq</span><span class="p">.</span><span class="n">fill</span><span class="p">(</span><span class="mh">10</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UInt</span><span class="p">(</span><span class="mf">5.</span><span class="n">W</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
+<span class="n">val</span><span class="w"> </span><span class="kt">reg</span><span class="o">-</span><span class="n">vec32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Reg</span><span class="p">(</span><span class="n">Vec</span><span class="p">(</span><span class="n">Seq</span><span class="p">.</span><span class="n">fill</span><span class="p">(</span><span class="mh">32</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UInt</span><span class="p">()</span><span class="w"> </span><span class="p">}))</span>
+</code></pre></div>
+
+<p>给 vec 中的元素赋值或访问特定元素的方法，也和 verilog 类似，只不过是用 <code>()</code>，</p>
+<div class="highlight"><pre><span></span><code><span class="p">#</span><span class="o">!</span><span class="n">scala</span>
+<span class="n">val</span><span class="w"> </span><span class="n">reg5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">reg</span><span class="o">-</span><span class="n">vec</span><span class="p">(</span><span class="mh">5</span><span class="p">)</span>
+<span class="kt">reg</span><span class="o">-</span><span class="n">vec32</span><span class="p">(</span><span class="mh">0</span><span class="p">)</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="mf">0.</span><span class="n">U</span>
+</code></pre></div>
+
+<p>还能用 vec 来例化一组 module，此时语法稍微有点不一样，因为 module 的数据类型和内置的 primitive 类型不一样，应该用 module 的 io Bundle，</p>
+<div class="highlight"><pre><span></span><code>#!scala
+val FullAdders = Vec(Seq.fill(16) { Module(new FullAdder()).io })
+</code></pre></div>
+
+<h2 id="parameterization">Parameterization</h2>
+<p>chisel 也可以实现 verilog 的参数化，</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#!chisel</span>
+<span class="k">class</span><span class="w"> </span><span class="n">FIFO</span><span class="p">(</span><span class="n">width</span><span class="p">:</span><span class="w"> </span><span class="n">Int</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="p">:</span><span class="w"> </span><span class="n">Int</span><span class="p">)</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="n">Module</span><span class="w"> </span><span class="p">{</span><span class="o">...</span><span class="p">}</span>
+
+<span class="n">val</span><span class="w"> </span><span class="n">fifo1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Module</span><span class="p">(</span><span class="n">new</span><span class="w"> </span><span class="n">FIFO</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="p">))</span>
+<span class="n">val</span><span class="w"> </span><span class="n">fifo2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Module</span><span class="p">(</span><span class="n">new</span><span class="w"> </span><span class="n">FIFO</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="p">))</span>
+<span class="n">val</span><span class="w"> </span><span class="n">fifo3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Moudle</span><span class="p">(</span><span class="n">new</span><span class="w"> </span><span class="n">FIFO</span><span class="p">(</span><span class="n">depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">))</span>
+</code></pre></div>
+
+<h2 id="built-in-primitives">Built In Primitives</h2>
+<p>和 verilog 类似，chisel 中也定义了很多原语，这些原语和编译器绑定在一起，可以直接使用，比如 <code>Reg</code>, <code>UInt</code>, <code>Bundle</code>, <code>Mem</code> 和 <code>Vec</code> 等。</p>
+<p><code>Mux</code> 原语，有三个输入，<code>select</code> 信号是 Bool 类型，<code>A</code> 和 <code>B</code> 可以是任意类型，任意宽度的信号，只要他们的类型一致即可。当 select 为 <code>true</code> 时输出 <code>A</code>，反之 select 是 <code>flase</code> 时输出 <code>B</code>。</p>
+<div class="highlight"><pre><span></span><code>#!chisel
+val out = Mux(select, A, B)
+</code></pre></div>
+
+<h2 id="writing-scala-testbenches">Writing Scala Testbenches</h2>
+<p>模板：</p>
+<ul>
+<li>使用 <code>poke</code> 设置输入</li>
+<li>使用 <code>step</code> 控制仿真的进度</li>
+<li>使用 <code>expect</code> 或者是 <code>peek</code> 检查输出</li>
+<li>不断重复直到所有的 test case 全部验证通过</li>
+</ul>
+<p>chisel 的 testbench 可以做简单的检查，跑基本的测试，但是对于比较大的设计，因为 chisel 本身的不完备，testbench 会变得非常复杂，速度也很很慢。所以官方建议用 C++ 的 emulator 或者是 verilog 的一套工具进行严谨的测试。</p>
+<h2 id="creating-your-own-project">Creating Your Own Project</h2>
+<p>如果是自己创建项目，需要按照 sbt 的规则创建目录，很麻烦。推荐使用官方提供的模板 [chisel template][tempalte]，在其基础上修改是最省事的。</p>
+<h2 id="memory">Memory</h2>
+<p>只读 memory 可以用 <code>Vec</code> 实现，</p>
+<div class="highlight"><pre><span></span><code>#!scala
+val numbers = Vec(0.U, 1.U, 2.U, 3.U)
+</code></pre></div>
+
+<p>可读可写的 memory 用原语 <code>Mem</code>实现，</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="p">!</span><span class="nx">scala</span>
+<span class="c1">// asynchronous read</span>
+<span class="nx">val</span><span class="w"> </span><span class="nx">CombMem</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">Mem</span><span class="p">(&lt;</span><span class="nx">size</span><span class="p">&gt;,</span><span class="w"> </span><span class="p">&lt;</span><span class="k">type</span><span class="p">&gt;)</span>
+
+<span class="c1">// synchromous read</span>
+<span class="nx">val</span><span class="w"> </span><span class="nx">SeqMem</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">SyncReadMem</span><span class="p">(&lt;</span><span class="nx">size</span><span class="p">&gt;,</span><span class="w"> </span><span class="p">&lt;</span><span class="k">type</span><span class="p">&gt;)</span>
+
+<span class="c1">// adding write ports</span>
+<span class="nx">when</span><span class="w"> </span><span class="p">(&lt;</span><span class="nx">write</span><span class="w"> </span><span class="nx">condiation</span><span class="p">&gt;)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nx">memory</span><span class="w"> </span><span class="nx">name</span><span class="p">&gt;(</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">write</span><span class="w"> </span><span class="nx">address</span><span class="p">&gt;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">:=</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">write</span><span class="w"> </span><span class="nx">data</span><span class="p">&gt;</span>
+<span class="p">}</span>
+
+<span class="c1">// asynchronous read ports</span>
+<span class="nx">when</span><span class="w"> </span><span class="p">(&lt;</span><span class="nx">read</span><span class="w"> </span><span class="nx">condition</span><span class="p">&gt;)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nx">read</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="mi">1</span><span class="p">&gt;</span><span class="w"> </span><span class="p">:=</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">memory</span><span class="w"> </span><span class="nx">name</span><span class="p">&gt;(</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">read</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="mi">1</span><span class="p">&gt;)</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nx">read</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="nx">N</span><span class="p">&gt;</span><span class="w"> </span><span class="p">:=</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">memory</span><span class="w"> </span><span class="nx">name</span><span class="p">&gt;(</span><span class="w"> </span><span class="p">&lt;</span><span class="nx">read</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="nx">N</span><span class="p">&gt;)</span>
+<span class="p">}</span>
+
+<span class="c1">// synchromous read ports</span>
+<span class="nx">val</span><span class="w"> </span><span class="nx">read</span><span class="o">-</span><span class="nx">port</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">Reg</span><span class="p">(</span><span class="nx">UInt</span><span class="p">(</span><span class="mi">32</span><span class="p">.</span><span class="nx">W</span><span class="p">))</span>
+<span class="nx">when</span><span class="w"> </span><span class="p">(</span><span class="nx">re</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">read</span><span class="o">-</span><span class="nx">port</span><span class="w"> </span><span class="p">:=</span><span class="w"> </span><span class="nx">myMem</span><span class="p">(</span><span class="nx">raddr</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>注意：chisel 中 <code>Mem</code> 不能指定初始化值。</p>
+<h2 id="def">def</h2>
+<div class="highlight"><pre><span></span><code>#!scala
+</code></pre></div>
+
+<h2 id="ref">Ref</h2>
+<p><a href="https://github.com/ucb-bar/chisel-tutorial">Chisel Tutorial Wiki</a></p>
+<p>[Chilse3 Wiki][chisel3]</p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="ca-pub-1821536199377100"
+         data-ad-slot="4843941849"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ChienGu';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+
+  	<style>
+#pcs-comment-form input,
+#pcs-comment-form textarea {
+	width: 100%;
+}
+#pcs-comment-form-display-replyto {
+	border: solid 1px black;
+	padding: 2px;
+}
+#pcs-comment-form-display-replyto p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+#pcs-comments ul {
+	list-style: none;
+}
+#pcs-comments .comment-left {
+	display: table-cell;
+	padding-right: 10px;
+}
+#pcs-comments .comment-body {
+	display: table-cell;
+	vertical-align: top;
+	width: 100%;
+}
+</style>
+
+	<section id="pcs-comments">
+	<header>
+		<h2>Comments</h2>
+		<hr/>
+	</header>
+		<p>There are no comments yet.</p>
+	<section>
+	<form id="pcs-comment-form" action="#">
+		<legend id="pcs-comment-form-title" style="font-size: 2em; line-height: 3em;">Add a Comment</legend>
+		<input type="hidden" id="pcs-comment-form-input-replyto">
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-name" style="font-size: 1.5em; line-height: 2em;">Name</label>
+			<input  id="pcs-comment-form-input-name" type="text" placeholder="Enter your name or nickname" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-website" style="font-size: 1.5em; line-height: 2em;">Website</label>
+			<input  id="pcs-comment-form-input-website" type="text" placeholder="Enter your website (optional)" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label   for="pcs-comment-form-input-textarea" style="font-size: 1.5em; line-height: 2em;">Your Comment</label>
+			<textarea id="pcs-comment-form-input-textarea" rows="5" style="resize:vertical;" placeholder="Your comment"></textarea>
+			<p>You can use the <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> syntax to format your comment.</p>
+			<div style="display: none; " id="pcs-comment-form-display-replyto"></div>
+		</fieldset>
+
+		<button type="submit"
+				id="pcs-comment-form-button-submit"
+				>Post via email</button>
+
+	</form>
+</section>
+
+</section>
+
+			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="https://qian-gu.github.io/theme/js/comments.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			CommentSystem.email_user   = "guqian110";
+			CommentSystem.email_domain = "163.com";
+			CommentSystem.display_replyto_html = function(comment_content, article_slug, author) { 
+				return ''
+					+ '<button style="float:right;" onclick="CommentSystem.cancelReply(); return false;" title="Cancel the reply">'
+					+ 	'×'
+					+ '</button>'
+					+ '<p>This comment will be posted as a reply to \'<a title="'+comment_content+'" href="#comment-'+article_slug+'">'+author+'</a>\'</p>';
+			};
+
+			$('#pcs-comment-form').on("submit",
+				function( event )
+				{
+					event.preventDefault();
+					$(location).attr('href', CommentSystem.getMailtoLink("learning-chisel-series-2-chisel-syntax-summary"));
+				}
+			);
+		});
+	</script>
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2023  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+  <span class="footer-separator">|</span>
+  Switch to the <a href="javascript:void(0)" onclick="theme.switch(`dark`)">dark</a> | <a href="javascript:void(0)" onclick="theme.switch(`light`)">light</a> | <a href="javascript:void(0)" onclick="theme.switch(`browser`)">browser</a> theme
+  <script id="dark-theme-script"
+          src="https://qian-gu.github.io/theme/dark-theme/dark-theme.min.js"
+          data-enable-auto-detect-theme="True"
+          data-default-theme="ligtht"
+          type="text/javascript">
+  </script>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Qian's Blog ",
+  "url" : "https://qian-gu.github.io",
+  "image": "https://qian-gu.github.io/images/logo.png",
+  "description": "Qian's Thoughts and Writings"
+}
+</script><a href="https://github.com/qian-gu/qian-gu.github.io" target="_blank" class="github-corner" aria-label="View source on Github">
+    <svg width="80"
+         height="80"
+         viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+         aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor"
+              style="transform-origin: 130px 106px;"
+              class="octo-arm">
+        </path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor"
+              class="octo-body">
+        </path>
+    </svg>
+</a>
+  <script src="https://qian-gu.github.io/theme/stork/stork.js"></script>
+  <script>
+    stork.register("sitesearch", "https://qian-gu.github.io/search-index.st", {showProgress: false});
+  </script>
+
+</body>
+</html>
