@@ -5,8 +5,8 @@ Personal blog generator powered by pelican.
 ## Dependency
 
 + [pelican-plugins](https://github.com/getpelican/pelican-plugins)
-+ [Flex Theme](https://github.com/qian-gu/Flex)
-+ [stork](https://stork-search.net/docs/install)
++ using [Flex Theme](https://github.com/qian-gu/Flex)
++ pelican search depends on [stork](https://stork-search.net/docs/install)
 
 ## Build
 
@@ -35,9 +35,6 @@ Open the generated html pages within a browse.
 ## Publish
 
 ```bash
-# build upon latest content
-make clean
-make html
 # publish to github
 make github
 ```
