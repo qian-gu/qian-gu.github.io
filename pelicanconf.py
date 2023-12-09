@@ -65,7 +65,6 @@ CC_LICENSE = {
 
 COPYRIGHT_YEAR = datetime.now().year
 
-DISQUS_SITENAME = "ChienGu"
 # ADD_THIS_ID = 'ra-55adbb025d4f7e55'
 
 STATIC_PATHS = ['images', 'files', 'extra/custom.css']
