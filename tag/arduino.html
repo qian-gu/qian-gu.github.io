@@ -60,6 +60,11 @@
   ga('send', 'pageview');
 </script>
 
+
+
+
+
+
  
 
     <meta name="author" content="Qian Gu" />
@@ -98,7 +103,7 @@
     <p>Read >> Think >> Write</p>
 
     <div class="stork">
-      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..."/>
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..." onclick="loadStorkIndex()"/>
       <div class="stork-output" data-stork="sitesearch-output"></div>
     </div>
 
@@ -294,10 +299,13 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
         </path>
     </svg>
 </a>
-  <script src="https://qian-gu.github.io/theme/stork/stork.js"></script>
   <script>
-    stork.register("sitesearch", "https://qian-gu.github.io/search-index.st", {showProgress: false});
+    window.loadStorkIndex = function () {
+      stork.initialize("https://qian-gu.github.io/theme/stork/stork.wasm")
+      stork.register("sitesearch", "https://qian-gu.github.io/search-index.st", { showProgress: false });
+    }
   </script>
+  <script src="https://qian-gu.github.io/theme/stork/stork.js"></script>
 
 </body>
 </html>
