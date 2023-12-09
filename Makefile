@@ -4,19 +4,16 @@ PELICANOPTS=
 
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
-# OUTPUTDIR=$(BASEDIR)/../qian-gu.github.io
 OUTPUTDIR=$(BASEDIR)/output
-OUTPUTDIR_GITEE=$(BASEDIR)/../guqian110
 CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
-PUBLISHCONF_GITEE=$(BASEDIR)/publishconf_gitee.py
 
 SSH_HOST=localhost
 SSH_PORT=22
 SSH_USER=root
 SSH_TARGET_DIR=/var/www
 
-GITHUB_PAGES_BRANCH=master
+GITHUB_PAGES_BRANCH=gh-pages
 
 
 DEBUG ?= 0
@@ -49,11 +46,7 @@ help:
 	@echo '                                                                          '
 
 html:
-ifdef gitee
-	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR_GITEE) -s $(CONFFILE) $(PELICANOPTS)
-else
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
-endif
 
 clean:
 	[ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
@@ -84,11 +77,7 @@ else
 endif
 
 publish:
-ifdef gitee
-	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR_GITEE) -s $(PUBLISHCONF_GITEE) $(PELICANOPTS)
-else
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)
-endif
 
 ssh_upload: publish
 	scp -P $(SSH_PORT) -r $(OUTPUTDIR)/* $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET_DIR)

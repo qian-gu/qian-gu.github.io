@@ -35,7 +35,9 @@ Open the generated html pages within a browse.
 ## Publish
 
 ```bash
+# build upon latest content
 make clean
 make html
+# publish to github
 make github
 ```
