@@ -3,7 +3,7 @@
 from datetime import datetime
 
 AUTHOR = 'Qian Gu'
-SITEURL = ''
+SITEURL = 'https://qian-gu.github.io'
 SITENAME = "Qian's Blog"
 SITETITLE = AUTHOR
 SITESUBTITLE = u"Read >> Think >> Write"
@@ -22,6 +22,7 @@ OG_LOCALE = 'en'
 LOCALE = 'en_US.utf-8'
 DATE_FORMATS = {'en': '%Y-%m-%d %H:%M'}
 
+OUTPUT_PATH = 'output'
 PATH = 'content'
 ARTICLE_URL = 'posts/{category}/{slug}.html'
 ARTICLE_SAVE_AS = 'posts/{category}/{slug}.html'
@@ -95,9 +96,9 @@ GOOGLE_ANALYTICS = "UA-48826831-1"
 # THEME = '../pelican-themes/Flex'
 THEME = 'Flex'
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'related_posts',
-           'sitemap', 'representative_image', 'tipue_search', 'render_math',
-           'series', 'pelican_comment_system', ]
+PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'search', 'related_posts',
+           'sitemap', 'representative_image', 'render_math',
+           'series',]
 GITHUB_CORNER_URL = 'https://github.com/qian-gu/qian-gu.github.io'
 # i18n_subsites
 I18N_TEMPLATES_LANG = 'en'
@@ -130,6 +131,8 @@ PYGMENTS_STYLE_DARK = 'monokai'
 MATH_JAX = {'color': 'blue'}
 # cjk-auto-spacing
 CJK_AUTO_SPAING_TITLE = True
+
+STORK_INPUT_OPTIONS = {"url_prefix": SITEURL}
 
 MARKDOWN = {
     'extension_configs': {

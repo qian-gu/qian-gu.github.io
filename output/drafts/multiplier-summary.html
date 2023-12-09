@@ -1,0 +1,1448 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="../theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+          media="(prefers-color-scheme: dark)"
+    href="../theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: dark)"
+          href="../theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+          href="../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="../theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="../theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="/static/custom.css">
+
+  <link rel="shortcut icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+  <link rel="icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+  <link href="https://qian-gu.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Qian's Blog Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48826831-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+ 
+
+<meta name="author" content="Qian Gu" />
+<meta name="description" content="总结几种乘法器实现方式" />
+<meta name="keywords" content="multiplier, Baugh-Wooley, Booth-Wallace">
+
+
+  <meta property="og:site_name" content="Qian's Blog"/>
+  <meta property="og:title" content="乘法器小结"/>
+  <meta property="og:description" content="总结几种乘法器实现方式"/>
+  <meta property="og:locale" content="en"/>
+  <meta property="og:url" content="../drafts/multiplier-summary.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2022-03-26 11:24:00+08:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="../author/qian-gu.html">
+  <meta property="article:section" content="IC"/>
+  <meta property="article:tag" content="multiplier"/>
+  <meta property="article:tag" content="Baugh-Wooley"/>
+  <meta property="article:tag" content="Booth-Wallace"/>
+  <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
+
+  <title>Qian's Blog &ndash; 乘法器小结</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-1821536199377100",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body >
+
+<aside>
+  <div>
+    <a href="../">
+      <img src="https://qian-gu.github.io/images/logo.png" alt="Qian Gu" title="Qian Gu">
+    </a>
+
+    <h1>
+      <a href="../">Qian Gu</a>
+    </h1>
+
+    <p>Read >> Think >> Write</p>
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..."/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_blank"
+                 href="../pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-envelope"
+rel="me"           href="mailto:guqian110@163.com"
+           target="_blank">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/qian-gu"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-twitter"
+           href="https://twitter.com/qian_gu"
+           target="_blank">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-rss"
+           href="/feeds/all.atom.xml"
+           target="_blank">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="../">Home</a>
+
+  <a href="/authors.html">Authors</a>
+  <a href="/archives.html">Archives</a>
+  <a href="/categories.html">Categories</a>
+  <a href="/tags.html">Tags</a>
+
+  <a href="https://qian-gu.github.io/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="multiplier-summary">乘法器小结</h1>
+    <p>
+      Posted on 2022-03-26 11:24 in <a href="../category/ic.html">IC</a>
+
+    </p>
+    <div class="tag-cloud">
+      <p>
+        <a href="../tag/multiplier.html">multiplier</a>
+        <a href="../tag/baugh-wooley.html">Baugh-Wooley</a>
+        <a href="../tag/booth-wallace.html">Booth-Wallace</a>
+      </p>
+    </div>
+  </header>
+
+
+
+  <div>
+    <h2 id="array-multiplier">Array Multiplier</h2>
+<p>阵列乘法器原理非常简单，就和人类手算乘法的过程一样，把每个位置的乘积算出来，求和即可。如下图所示，</p>
+<div class="highlight"><pre><span></span><code><span class="c">#!text</span>
+<span class="c">bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0 </span><span class="nb">-</span><span class="c">1</span>
+
+<span class="c">   A                            a  a  a  a  a  a  a  a</span>
+<span class="c"> x B                            b  b  b  b  b  b  b  b </span>
+<span class="nb">-----------------------------------------------------------------------</span>
+<span class="c">pp0                          p  p  p  p  p  p  p  p  p</span>
+<span class="c">pp1                    p  p  p  p  p  p  p  p  p</span>
+<span class="c">pp2              p  p  p  p  p  p  p  p  p</span>
+<span class="c">pp3        p  p  p  p  p  p  p  p  p</span>
+<span class="nb">-----------------------------------------------------------------------</span>
+<span class="c">   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x</span>
+</code></pre></div>
+
+<p>$$p-{ij}=b-{i}\cdot a-{j}$$</p>
+<p>不同 pp 之间求和用 full adder 和 half adder 即可。这种乘法器实现消耗的资源非常多，且因为组合逻辑链路很长，所以时序也不好，实际中几乎不会真正使用到。</p>
+<h2 id="shift-accumulate-mulitplier">Shift-Accumulate Mulitplier</h2>
+<p>《P&amp;H》中的乘法器，速度慢但是消耗的资源少。主要原理就是每个 cycle 计算一个 pp 并将其累积到 psum，经过多个 cycle 逐渐累加得到最终结果。这种算法过程和除法过程类似，所以可以合并到一起，一个模块同时实现乘法和除法。</p>
+<h2 id="booth-wallace-multiplier">Booth-Wallace Multiplier</h2>
+<p>Booth-Wallace 乘法器是目前应用最广泛的乘法器。</p>
+<h3 id="modified-booth-encode-i">Modified Booth Encode I</h3>
+<p>booth radix-4 算法的原理：假设两个有符号数 A 和 B 相乘，</p>
+<p>$$B=-b-{n-1}2^{n-1}+\sum-{i=0}^{n-2}b-i2^i = \sum-{i=0}^{n/2-1}(-2b-{2i+1}+b-{2i}+b-{2i-1})2^{2i}$$</p>
+<p>所以给 B 补上 $b-{-1}=0$ 后，按照每 3bit 一组的方式进行编码，得到下表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$b-{2i+1}$</th>
+<th style="text-align: center;">$b-{2i}$</th>
+<th style="text-align: center;">$b-{2i-1}$</th>
+<th style="text-align: center;">code</th>
+<th style="text-align: center;">Operation</th>
+<th style="text-align: center;">$Neg-i$</th>
+<th style="text-align: center;">$One-i$</th>
+<th style="text-align: center;">$Two-i$</th>
+<th style="text-align: center;">$p-{ij}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$0$</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">+A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-j$</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">+A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-j$</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+2</td>
+<td style="text-align: center;">+2A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$a-{j-1}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-2</td>
+<td style="text-align: center;">-2A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$\overline{a-{j-1}}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">-A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$\overline{a-j}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">-A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$\overline{a-j}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$0$</td>
+</tr>
+</tbody>
+</table>
+<p>先考虑最简单的情况：假设每个 pp 都是正数且 code 没有负数，那么就不需要在每个 pp 的高位补符号位 0，且计算每个 pp 时没有取反过程。计算过程如下图所示：</p>
+<div class="highlight"><pre><span></span><code><span class="c">#!text</span>
+<span class="c">bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0 </span><span class="nb">-</span><span class="c">1</span>
+
+<span class="c">   A                            a  a  a  a  a  a  a  a</span>
+<span class="c"> x B                            b  b  b  b  b  b  b  b  0</span>
+<span class="nb">-----------------------------------------------------------------------</span>
+<span class="c">pp0                          p  p  p  p  p  p  p  p  p</span>
+<span class="c">pp1                    p  p  p  p  p  p  p  p  p</span>
+<span class="c">pp2              p  p  p  p  p  p  p  p  p</span>
+<span class="c">pp3        p  p  p  p  p  p  p  p  p</span>
+<span class="nb">-----------------------------------------------------------------------</span>
+<span class="c">   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x</span>
+</code></pre></div>
+
+<p>说明：因为包含 x2 的操作，所以每个 partial product 的位宽为 N+1。</p>
+<h3 id="sign-extension">Sign Extension</h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>这部分主要参考了 <a href="http://i.stanford.edu/pub/cstr/reports/csl/tr/94/617/CSL-TR-94-617.appendix.pdf">Appendix A. Sign Extension in Booth Multipliers</a>，仿照原文的无符号数乘法可以得到有符号数的 MBE 算法。</p>
+</div>
+<p>以 N = 8 bit 乘法为例。首先，假设每个 pp 都为负数且 code 为负数，</p>
+<ul>
+<li>因为 pp 为负数，所以每个 pp 高位扩展符号位 1</li>
+<li>因为 code 为负数，所以计算每个 pp 时，除了取反操作外，还需要给 pp 的 LSB 加 1</li>
+</ul>
+<p>所以乘法过程如下所示：</p>
+<div class="highlight"><pre><span></span><code>#!text
+bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0 -1
+
+   A                            a  a  a  a  a  a  a  a
+ x B                            b  b  b  b  b  b  b  b  0
+-----------------------------------------------------------------------
+pp0     1  1  1  1  1  1  1  p  p  p  p  p  p  p  p  p
+pp1     1  1  1  1  1  p  p  p  p  p  p  p  p  p     1
+pp2     1  1  1  p  p  p  p  p  p  p  p  p     1
+pp3     1  p  p  p  p  p  p  p  p  p     1
+pp4                                1
+-----------------------------------------------------------------------
+   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
+</code></pre></div>
+
+<p>这些前缀会额外消耗资源和功耗，所以需要做一些处理将其尽量消除，具体过程如下。</p>
+<p>首先，对上图的前缀 1 进行预求和，可以等效出下面的过程：</p>
+<div class="highlight"><pre><span></span><code>#!text
+bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  -1
+
+   A                            a  a  a  a  a  a  a  a
+ x B                            b  b  b  b  b  b  b  b  0
+-----------------------------------------------------------------------
+pp0                    1  1  p  p  p  p  p  p  p  p  p
+pp1              1  0  p  p  p  p  p  p  p  p  p     1
+pp2        1  0  p  p  p  p  p  p  p  p  p     1
+pp3     0  p  p  p  p  p  p  p  p  p     1
+pp4                                1
+-----------------------------------------------------------------------
+   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
+</code></pre></div>
+
+<p>当某个 pp 为正数时需要撤销前缀，假设 pp 的符号位为 s，</p>
+<ul>
+<li>当 s = 0 时，pp 为正数，给前缀的 LSB 加 1</li>
+<li>当 s = 1 时，pp 为负数，不需要额外处理</li>
+</ul>
+<p>当 code 为正数时，需要撤销 LSB 的 1。这两种情况可以用下面的过程表示：</p>
+<div class="highlight"><pre><span></span><code>#!text
+bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  -1
+
+   A                            a  a  a  a  a  a  a  a
+ x B                            b  b  b  b  b  b  b  b  0
+-----------------------------------------------------------------------
+                         ~s
+pp0                    1  1  p  p  p  p  p  p  p  p  p
+pp1              1 ~s  p  p  p  p  p  p  p  p  p     n
+pp2        1 ~s  p  p  p  p  p  p  p  p  p     n
+pp3    ~s  p  p  p  p  p  p  p  p  p     n
+pp4                                n
+-----------------------------------------------------------------------
+   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
+</code></pre></div>
+
+<p>其中</p>
+<ul>
+<li>s 表示 pp 的符号</li>
+<li>n 表示 code 的符号，当 code 为负数时 n = 1，否则 n = 0</li>
+</ul>
+<p>这时，我们已经消除了大部分的前缀 1，但是引入了一个额外的 pp，即 pp0 上方的 ~s。根据真值表可将 s 合并到 pp0 中：</p>
+<div class="highlight"><pre><span></span><code>#!text
+bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  -1
+
+   A                            a  a  a  a  a  a  a  a
+ x B                            b  b  b  b  b  b  b  b  0
+-----------------------------------------------------------------------
+pp0                ~s  s  s  p  p  p  p  p  p  p  p  p
+pp1              1  s  p  p  p  p  p  p  p  p  p     n
+pp2        1 ~s  p  p  p  p  p  p  p  p  p     n
+pp3    ~s  p  p  p  p  p  p  p  p  p     n
+pp4                                n
+-----------------------------------------------------------------------
+   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
+</code></pre></div>
+
+<p>我们将 pp 的数量从 N/2+2 降低到了 N/2+1 个。仔细观察，上面这个图示中每个 pp 的第 9 bit 实际上就是 s，所以将其可以改写成：</p>
+<div class="highlight"><pre><span></span><code>#!text
+bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  -1
+
+   A                            a  a  a  a  a  a  a  a
+ x B                            b  b  b  b  b  b  b  b  0
+-----------------------------------------------------------------------
+pp0                ~s  s  s  s  p  p  p  p  p  p  p  p
+pp1              1  s  s  p  p  p  p  p  p  p  p     n
+pp2        1 ~s  s  p  p  p  p  p  p  p  p     n
+pp3    ~s  s  p  p  p  p  p  p  p  p     n
+pp4                                n
+-----------------------------------------------------------------------
+   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
+</code></pre></div>
+
+<p>对于 pp2 和 pp3 的 MSB 部分组成的小三角，根据真值表可以把 pp2 的前缀 1 合并到 pp 3 里面，同理 pp1 的可以前缀可以合并到 pp2 里面；合并后剩下的左上角的 4 个 s 也可以改写成下面的形式。</p>
+<div class="highlight"><pre><span></span><code>#!text
+bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  -1
+
+   A                            a  a  a  a  a  a  a  a
+ x B                            b  b  b  b  b  b  b  b  0
+-----------------------------------------------------------------------
+pp0                   ~s  s  s  p  p  p  p  p  p  p  p
+pp1                 1 ~s  p  p  p  p  p  p  p  p     n
+pp2           1 ~s  p  p  p  p  p  p  p  p     n
+pp3     1 ~s  p  p  p  p  p  p  p  p     n
+pp4                                n
+-----------------------------------------------------------------------
+   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
+</code></pre></div>
+
+<p>可以列出真值表证明这个计算过程和上面是等价的，但是每个 pp 的长度都缩减了 1bit。</p>
+<p>至此，我们就得到了 conventional Modified Booth Encoding(MBE I) 算法。</p>
+<p><strong>encoder:</strong></p>
+<p>$$neg-i=b-{2i+1}\cdot(\overline{b-{2i}}+\overline{b-{2i-1}})$$
+$$one-i=b-{2i} \oplus b-{2i-1}$$
+$$two-i=\overline{b-{2i+1}}\cdot b-{2i}\cdot b-{2i-1}+b-{2i+1}\cdot\overline{b-{2i}}\cdot\overline{b-{2i-1}}$$</p>
+<p><strong>decoder:</strong></p>
+<p>$$p-{ij}=one-i\cdot(neg-i\oplus a-j) + two-i\cdot(neg-i\oplus a-{j-1})=\overline{(\overline{one-i} + neg-i \odot a-j) \cdot (\overline{two-i} + neg-i \odot a-{j-1})}$$</p>
+<p><strong>综合结果：</strong></p>
+<p>TSMC 7nm + synopsys DC, 1GHz + 30% over constrain</p>
+<table>
+<thead>
+<tr>
+<th>implementation</th>
+<th>area (mm^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MBCODEC</td>
+<td>11.9153</td>
+</tr>
+<tr>
+<td>Wallace-tree</td>
+<td>13.0234</td>
+</tr>
+<tr>
+<td>CLA</td>
+<td>7.8660</td>
+</tr>
+<tr>
+<td>Total</td>
+<td><strong>32.9962</strong></td>
+</tr>
+</tbody>
+</table>
+<p>后续的改进集中在以下几个方面：</p>
+<ul>
+<li>让 pp 更规则化，更规则的 pp 会让 area 更小，frequency 更高<ul>
+<li>方法 1：每个 n 和上方的 p 合并，产生更规则的 pp</li>
+<li>方法 2：优化掉最后一个 pp，将 pp 的数量缩减到 N/2</li>
+</ul>
+</li>
+<li>提高 pp 求和的速度，主要就是 wallace tree 和 CLA</li>
+</ul>
+<h3 id="modified-booth-encode-ii">Modified Booth Encode II</h3>
+<p>参考文献：<a href="https://ieeexplore.ieee.org/abstract/document/863039">High-speed Booth encoded parallel multiplier design</a></p>
+<p>MBE II 的优化方向是提出一种新的 encode 方案，使得 encoder 和 decoder 都得到简化，从而降低功耗，提高速度。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$b-{2i+1}$</th>
+<th style="text-align: center;">$b-{2i}$</th>
+<th style="text-align: center;">$b-{2i-1}$</th>
+<th style="text-align: center;">code</th>
+<th style="text-align: center;">Operation</th>
+<th style="text-align: center;">$neg-i$</th>
+<th style="text-align: center;">$one-i$</th>
+<th style="text-align: center;">$two-i$</th>
+<th style="text-align: center;">$z-i$</th>
+<th style="text-align: center;">$p-{ij}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$0$</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">+A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$a-j$</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">+A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-j$</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+2</td>
+<td style="text-align: center;">+2A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-{j-1}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-2</td>
+<td style="text-align: center;">-2A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$\overline{a-{j-1}}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">-A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$\overline{a-j}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">-A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$\overline{a-j}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-0</td>
+<td style="text-align: center;">-0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$0$</td>
+</tr>
+</tbody>
+</table>
+<p>同理，根据 truth table 可以推导出 encoder 和 decoder 的表达式：</p>
+<p><strong>encoder:</strong></p>
+<p>$$neg-i=b-{2i+1}$$
+$$one-i=b-{2i} \odot b-{2i-1}$$
+$$two-i=b-{2i+1}\oplus b-{2i}$$
+$$z-i=b-{2i+1} \odot b-{2i}$$
+$$neg-fix-i=b-{2i+1} \cdot \overline{b-{2i} \cdot b-{2i-1}}$$</p>
+<p><strong>decoder:</strong></p>
+<p>$$p-{ij}=\overline{one-i} \cdot (neg-i\oplus a-j) + \overline{two-i + z-i} \cdot (neg-i\oplus a-{j-1})=\overline{(one-i + neg-i \odot a-{j}) \cdot (two-i + z-i + neg-i \odot a-{j-1})}$$</p>
+<p><strong>综合结果：</strong></p>
+<p>TSMC 7nm + synopsys DC, 1GHz + 30% over constrain</p>
+<table>
+<thead>
+<tr>
+<th>implementation</th>
+<th>area (mm^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MBCODEC</td>
+<td>14.8154</td>
+</tr>
+<tr>
+<td>Wallace-tree</td>
+<td>12.9276</td>
+</tr>
+<tr>
+<td>CLA</td>
+<td>7.5650</td>
+</tr>
+<tr>
+<td>Total</td>
+<td><strong>35.3081</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>从表达式就可以看出来，MBE II 的 encoder 要比 MBE I 的简单很多。需要注意的是：因为这种编码方案里面，neg/one/two 的值和其本身定义并不一致，所以需要额外的 z 来纠正。同理，pp 阵列示意图中的 n 必须使用修正过的 neg-fix。</p>
+<p>从实际综合结果来看，虽然 MBE II 的门数更少，但是面积要比 MBE I 的大一些，推测原因是 MBE II 用到了较多的 XOR，而 XOR 的面积是 AND 和 OR 的 1.5~3 倍之间，所以虽然门数减少了，但总面积反而增大了。</p>
+</div>
+<h3 id="modified-booth-encode-iii">Modified Booth Encode III</h3>
+<p>参考文献：<a href="https://ieeexplore.ieee.org/abstract/document/863039">High-speed Booth encoded parallel multiplier design</a></p>
+<p>在 MBE I 的基础上继续优化，因为 $a-{-1}$ 和 $b-{-1}$ 是我们在低位补的 1'b0，这是预先确定的，所以可以直接列出 $pp-0$ 和 $neg-i$ 的 truth table，然后把每个 $pp-0$ 和 $neg-i$ 合并，得到求和结果 $t-{i0}$ 和进位 $c-i$。因为 $c-i$ 相比于 $neg-i$ 左移了 1bit，使得 pp 更规则，节省了相应的求和操作，所以可以减小一些面积。</p>
+<p>$$t-{i0} = p-{i0} \oplus neg-i$$</p>
+<p>$$c-{i} = p-{i0} \cdot neg-i$$</p>
+<p>将其扩展到 MBE I 的 truth table 上，可以得到：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$b-{2i+1}$</th>
+<th style="text-align: center;">$b-{2i}$</th>
+<th style="text-align: center;">$b-{2i-1}$</th>
+<th style="text-align: center;">code</th>
+<th style="text-align: center;">Operation</th>
+<th style="text-align: center;">$Neg-i$</th>
+<th style="text-align: center;">$One-i$</th>
+<th style="text-align: center;">$Two-i$</th>
+<th style="text-align: center;">$p-{ij}$</th>
+<th style="text-align: center;">$t-{i0}$</th>
+<th style="text-align: center;">$c-i$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$0$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">+A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-j$</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">+A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-j$</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+2</td>
+<td style="text-align: center;">+2A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$a-{j-1}$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-2</td>
+<td style="text-align: center;">-2A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$\overline{a-{j-1}}$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">-A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$\overline{a-j}$</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">$\overline{a-0}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">-A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$\overline{a-j}$</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">$\overline{a-0}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$0$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>可以推出 $t-{i0}$ 和 $c-i$ 的表达式：</p>
+<p>$$t-{i0}=a-0\cdot(b-{2i-1} \oplus b-{2i})$$
+$$c-i=b-{2i+1}\cdot(\overline{b-{2i}+b-{2i-1}}+\overline{a-0 + b-{2i}}+\overline{a-0 + b-{2i} \odot b-{2i-1}})$$</p>
+<p>或者</p>
+<p>$$c-i=neg-i \odot (\overline{a-0} + \overline{one-i})$$</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>参考论文中的 $c-i$ 计算公式是错误的。</p>
+</div>
+<p>相应的 pp 阵列如下图所示：</p>
+<div class="highlight"><pre><span></span><code>#!text
+bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  -1
+
+   A                            a  a  a  a  a  a  a  a
+ x B                            b  b  b  b  b  b  b  b  0
+-----------------------------------------------------------------------
+pp0                   ~s  s  s  p  p  p  p  p  p  p  t
+pp1                 1 ~s  p  p  p  p  p  p  p  d  c
+pp2           1 ~s  p  p  p  p  p  p  p  t  c
+pp3     1 ~s  p  p  p  p  p  p  p  t  c
+pp4                             c
+-----------------------------------------------------------------------
+   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
+</code></pre></div>
+
+<p><strong>综合结果：</strong></p>
+<p>TSMC 7nm + synopsys DC, 1GHz + 30% over constrain</p>
+<table>
+<thead>
+<tr>
+<th>implementation</th>
+<th>area (mm^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MBCODEC</td>
+<td>10.5883</td>
+</tr>
+<tr>
+<td>Wallace-tree</td>
+<td>11.1902</td>
+</tr>
+<tr>
+<td>CLA</td>
+<td>6.8810</td>
+</tr>
+<tr>
+<td>Total</td>
+<td><strong>28.6596</strong></td>
+</tr>
+</tbody>
+</table>
+<p>从综合结果上可以看到这种方法相比于 MBE I 面积有了一定优化，但是因为没有消除掉最后一个 pp，所以面积还是较大。</p>
+<h3 id="modified-booth-encode-iv">Modified Booth Encode IV</h3>
+<p>参考文献：<a href="https://ieeexplore.ieee.org/document/4912330">Modified Booth Multipliers With a Regular Partial Product Array</a></p>
+<p>将最后一个 pp 优化掉后，wallace tree 就可以少一级，资源、面积和功耗都会相应有优化。具体做法也很简单，就是将上面阵列中的 $p-{i1}$ 和 $c-i$ 再做一次加法，得到 $t-{i1}$ 和进位 $d-i$，然后将 $d-i$ 和 $pp-0$ 的高位 $\overline{s-0}s-0s-0$ 合并出新的 $\alpha-2\alpha-1\alpha-0$。</p>
+<p>由二进制加法的定义可以知道：</p>
+<p>$$t-{i1} = p-{i1} \oplus c-i$$</p>
+<p>$$d-{i} = p-{i1} \cdot c-i$$</p>
+<p>将其扩展到 MBE III 的 truth table 上，就可以得到：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$b-{2i+1}$</th>
+<th style="text-align: center;">$b-{2i}$</th>
+<th style="text-align: center;">$b-{2i-1}$</th>
+<th style="text-align: center;">code</th>
+<th style="text-align: center;">Operation</th>
+<th style="text-align: center;">$Neg-i$</th>
+<th style="text-align: center;">$One-i$</th>
+<th style="text-align: center;">$Two-i$</th>
+<th style="text-align: center;">$p-{ij}$</th>
+<th style="text-align: center;">$t-{i0}$</th>
+<th style="text-align: center;">$c-i$</th>
+<th style="text-align: center;">$t-{i1}$</th>
+<th style="text-align: center;">$d-{i}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$0$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">+A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-j$</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-1$</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">+1</td>
+<td style="text-align: center;">+A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-j$</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-1$</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+2</td>
+<td style="text-align: center;">+2A</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$a-{j-1}$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-2</td>
+<td style="text-align: center;">-2A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$\overline{a-{j-1}}$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">$\overline{a-0}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">-A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$\overline{a-j}$</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">$\overline{a-0}$</td>
+<td style="text-align: center;">$\overline{a-0}\oplus\overline{a-1}$</td>
+<td style="text-align: center;">$\overline{a-0+a-1}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-1</td>
+<td style="text-align: center;">-A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$\overline{a-j}$</td>
+<td style="text-align: center;">$a-0$</td>
+<td style="text-align: center;">$\overline{a-0}$</td>
+<td style="text-align: center;">$\overline{a-0}\oplus\overline{a-1}$</td>
+<td style="text-align: center;">$\overline{a-0+a-1}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">+0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">$0$</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>根据 truth table，可以推出下面的表达式：</p>
+<p>$$\epsilon=a-1\oplus (a-0\cdot b-{2i+1})$$
+$$t-{i1}=neg-i\cdot\epsilon + two-i\cdot a-0$$
+$$d-{i1}=neg-i\cdot\overline{a-0+a-1\cdot(b-{2i} \oplus b-{2i-1})}$$</p>
+<p>或</p>
+<p>$$d-{i1}=\overline{\overline{b-{2i+1}}+a-0}\cdot\overline{(b-{2i-1}+a-1)\cdot(b-{2i}+a-1)\cdot(b-{2i}+b-{2i-1})}$$</p>
+<p>还可以列出 $\overline{s-0}s-0s-0$ 和 $d-i$ 的 truth table 如下，</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">$\overline{s-0}$</th>
+<th style="text-align: center;">$s-0$</th>
+<th style="text-align: center;">$s-0$</th>
+<th style="text-align: center;">$d-i$</th>
+<th style="text-align: center;">$\alpha-2$</th>
+<th style="text-align: center;">$\alpha-1$</th>
+<th style="text-align: center;">$\alpha-0$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>根据 truth table，可以推出下面的表达式：</p>
+<p>$$\alpha2=\overline{s-0\cdot \overline{d-i}}$$
+$$\alpha1=s-0\cdot \overline{d-i}=\overline{\alpha2}$$
+$$\alpha0=s-0\odot\overline{d-i}$$</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>原文中 Table II 中关于 $t-{i1}$ 的值有笔误，但是表达式是正确的。</p>
+</div>
+<p>相应的 pp 阵列如下图所示：</p>
+<div class="highlight"><pre><span></span><code><span class="c">#!text</span>
+<span class="c">bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  </span><span class="nb">-</span><span class="c">1</span>
+
+<span class="c">   A                            a  a  a  a  a  a  a  a</span>
+<span class="c"> x B                            b  b  b  b  b  b  b  b  0</span>
+<span class="nb">-----------------------------------------------------------------------</span>
+<span class="c">pp0                   ~a  a  a  p  p  p  p  p  p  p  t</span>
+<span class="c">pp1                 1 ~s  p  p  p  p  p  p  p  d  c</span>
+<span class="c">pp2           1 ~s  p  p  p  p  p  p  p  t  c</span>
+<span class="c">pp3     1 ~s  p  p  p  p  p  p  t  t  c</span>
+<span class="nb">-----------------------------------------------------------------------</span>
+<span class="c">   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x</span>
+</code></pre></div>
+
+<p><strong>综合结果：</strong></p>
+<p>TSMC 7nm + synopsys DC, 1GHz + 30% over constrain</p>
+<table>
+<thead>
+<tr>
+<th>implementation</th>
+<th>area (mm^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MBCODEC</td>
+<td>11.2723</td>
+</tr>
+<tr>
+<td>Wallace-tree</td>
+<td>8.8920</td>
+</tr>
+<tr>
+<td>CLA</td>
+<td>7.2504</td>
+</tr>
+<tr>
+<td>Total</td>
+<td><strong>27.4147</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="unsigned-and-signed">Unsigned and Signed</h3>
+<p>如果要同时支持 unsigned 和 singed 乘法，有两种情况：</p>
+<ol>
+<li>只支持同类型相乘，即 singed x signed 或 unsigned x unsigned</li>
+<li>支持任意类型相乘</li>
+</ol>
+<p>由<a href="http://i.stanford.edu/pub/cstr/reports/csl/tr/94/617/CSL-TR-94-617.appendix.pdf">参考文献 1</a>可以知道，8bit unsigned 的 pp 阵列如下图所示：</p>
+<div class="highlight"><pre><span></span><code>#!text
+bit    15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0  -1
+
+   A                            a  a  a  a  a  a  a  a
+ x B                            b  b  b  b  b  b  b  b  0
+-----------------------------------------------------------------------
+pp0                ~n  n  n  p  p  p  p  p  p  p  p  p
+pp1              1  n  p  p  p  p  p  p  p  p  p     n
+pp2        1 ~n  p  p  p  p  p  p  p  p  p     n
+pp3    ~n  p  p  p  p  p  p  p  p  p     n
+pp4     p  p  p  p  p  p  p  p     n
+-----------------------------------------------------------------------
+   C    x  x  x  x  x  x  x  x  x  x  x  x  x  x  x  x
+</code></pre></div>
+
+<p>unsigned 和 signed 的主要区别是：</p>
+<ul>
+<li>每个 pp 的高位由 n 而不是 s 组成</li>
+<li>unsigned 的每个 pp 位宽要多 1bit</li>
+<li>unsigend 的 last pp 组成与 unsigned 不同</li>
+</ul>
+<p>所以支持第一种情况很简单，只需要根据数据类型，条件生成 pp 即可，后级的 wallace-tree 和 cla 可以复用。</p>
+<p>支持第二种情况时：</p>
+<ul>
+<li>对于被乘数，当其为 unsigned 时，需要在 MSB 扩展 1bit 的 0，转化为 signed 类型</li>
+<li>对于乘数，unsigned/signed 主要影响的是 last pp 的组装方式<ul>
+<li>当其为 signed 类型时 , last pp 只由 neg 和 padding 0 组成</li>
+<li>当其为 unsigned 类型时，last pp 由 neg 和额外产生的 pp 组成</li>
+<li>如果是基于 MBE-IV，那么 unsigned 类型需要重新计算出 4 个 $\alpha$ 值</li>
+</ul>
+</li>
+</ul>
+<p>根据 truth table，可以得到</p>
+<p>$$s-i=(i==0)?\ p-{MSB} : neg-i$$
+$$\alpha-0=d\oplus s-0$$
+$$\alpha-1=\overline{n-0}\cdot s-0\cdot d + n-0\cdot(\overline{s-0}+s-0\oplus d)$$
+$$\alpha-2=n-0\cdot\overline{s-0\cdot d}$$
+$$\alpha-3=\overline{n-0}+n-0\cdot s-0\cdot d$$</p>
+<h3 id="wallace-tree">Wallace Tree</h3>
+<h2 id="summary">Summary</h2>
+<p>Array multiplier 实现最简单，但是消耗的面积最大，频率也最低，所以现实中不会有人使用这种方式；Baugh-Wooley multiplier 实现简单，消耗的资源少，但是需要多个 cycle 才能完成一次计算，所以一般应用在对性能要求不高的低功耗场景中；Booth-Wallce multiplier 应用最广泛，目前绝大多数乘法器都是基于 MBE 设计的。</p>
+<p><strong>Signed 实际综合结果：</strong></p>
+<p>TSMC 7nm + synopsys DC, 1GHz + 30% over constrain</p>
+<table>
+<thead>
+<tr>
+<th>implementation</th>
+<th>DesignWare</th>
+<th>MBE-I area (mm^2)</th>
+<th>MBE-II area (mm^2)</th>
+<th>MBE-III area (mm^2)</th>
+<th>MBE-IV area (mm^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MBCODEC</td>
+<td>-</td>
+<td>11.9153</td>
+<td>14.8154</td>
+<td>10.5883</td>
+<td>11.2723</td>
+</tr>
+<tr>
+<td>Wallace-tree</td>
+<td>-</td>
+<td>13.0234</td>
+<td>12.9276</td>
+<td>18.1902</td>
+<td>8.8920</td>
+</tr>
+<tr>
+<td>CLA</td>
+<td>-</td>
+<td>7.8660</td>
+<td>7.5650</td>
+<td>6.8810</td>
+<td>7.2504</td>
+</tr>
+<tr>
+<td>Total</td>
+<td><strong>22.5310</strong></td>
+<td><strong>32.9962</strong></td>
+<td><strong>35.3081</strong></td>
+<td><strong>28.6596</strong></td>
+<td><strong>27.4147</strong></td>
+</tr>
+<tr>
+<td>increase</td>
+<td></td>
+<td>46.4%</td>
+<td>56.7%</td>
+<td>27.2%</td>
+<td>21.7%</td>
+</tr>
+</tbody>
+</table>
+<p>最优化的版本还是比 DesignWare 差了 21.7%，可能的原因是 DesignWare 用了更先进的 wallace-tree，待深入研究。</p>
+<p><strong>Unsigned 实际综合结果：</strong></p>
+<p>TSMC 7nm + synopsys DC, 1GHz + 30% over constrain</p>
+<table>
+<thead>
+<tr>
+<th>implementation</th>
+<th>DesignWare</th>
+<th>MBE-I area (mm^2)</th>
+<th>MBE-II area (mm^2)</th>
+<th>MBE-III area (mm^2)</th>
+<th>MBE-IV area (mm^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MBCODEC</td>
+<td>-</td>
+<td>14.4734</td>
+<td>18.5638</td>
+<td>13.5432</td>
+<td>17.4830</td>
+</tr>
+<tr>
+<td>Wallace-tree</td>
+<td>-</td>
+<td>18.3722</td>
+<td>18.7279</td>
+<td>18.3175</td>
+<td>22.1479</td>
+</tr>
+<tr>
+<td>CLA</td>
+<td>-</td>
+<td>7.4830</td>
+<td>8.3448</td>
+<td>7.1136</td>
+<td>7.8250</td>
+</tr>
+<tr>
+<td>Total</td>
+<td><strong>26.7991</strong></td>
+<td><strong>40.3970</strong></td>
+<td><strong>45.8006</strong></td>
+<td><strong>39.1111</strong></td>
+<td><strong>47.8937</strong></td>
+</tr>
+<tr>
+<td>increase</td>
+<td></td>
+<td>50.7%</td>
+<td>70.9%</td>
+<td>45.9%</td>
+<td>78.7%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ref">Ref</h2>
+<p><a href="http://i.stanford.edu/pub/cstr/reports/csl/tr/94/617/CSL-TR-94-617.appendix.pdf">Appendix A. Sign Extension in Booth Multipliers</a>
+<a href="https://ieeexplore.ieee.org/abstract/document/863039">High-speed Booth encoded parallel multiplier design</a>
+<a href="https://ieeexplore.ieee.org/document/4912330">Modified Booth Multipliers With a Regular Partial Product Array</a></p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="ca-pub-1821536199377100"
+         data-ad-slot="4843941849"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ChienGu';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+
+  	<style>
+#pcs-comment-form input,
+#pcs-comment-form textarea {
+	width: 100%;
+}
+#pcs-comment-form-display-replyto {
+	border: solid 1px black;
+	padding: 2px;
+}
+#pcs-comment-form-display-replyto p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+#pcs-comments ul {
+	list-style: none;
+}
+#pcs-comments .comment-left {
+	display: table-cell;
+	padding-right: 10px;
+}
+#pcs-comments .comment-body {
+	display: table-cell;
+	vertical-align: top;
+	width: 100%;
+}
+</style>
+
+	<section id="pcs-comments">
+	<header>
+		<h2>Comments</h2>
+		<hr/>
+	</header>
+		<p>There are no comments yet.</p>
+	<section>
+	<form id="pcs-comment-form" action="#">
+		<legend id="pcs-comment-form-title" style="font-size: 2em; line-height: 3em;">Add a Comment</legend>
+		<input type="hidden" id="pcs-comment-form-input-replyto">
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-name" style="font-size: 1.5em; line-height: 2em;">Name</label>
+			<input  id="pcs-comment-form-input-name" type="text" placeholder="Enter your name or nickname" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-website" style="font-size: 1.5em; line-height: 2em;">Website</label>
+			<input  id="pcs-comment-form-input-website" type="text" placeholder="Enter your website (optional)" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label   for="pcs-comment-form-input-textarea" style="font-size: 1.5em; line-height: 2em;">Your Comment</label>
+			<textarea id="pcs-comment-form-input-textarea" rows="5" style="resize:vertical;" placeholder="Your comment"></textarea>
+			<p>You can use the <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> syntax to format your comment.</p>
+			<div style="display: none; " id="pcs-comment-form-display-replyto"></div>
+		</fieldset>
+
+		<button type="submit"
+				id="pcs-comment-form-button-submit"
+				>Post via email</button>
+
+	</form>
+</section>
+
+</section>
+
+			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="../theme/js/comments.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			CommentSystem.email_user   = "guqian110";
+			CommentSystem.email_domain = "163.com";
+			CommentSystem.display_replyto_html = function(comment_content, article_slug, author) { 
+				return ''
+					+ '<button style="float:right;" onclick="CommentSystem.cancelReply(); return false;" title="Cancel the reply">'
+					+ 	'×'
+					+ '</button>'
+					+ '<p>This comment will be posted as a reply to \'<a title="'+comment_content+'" href="#comment-'+article_slug+'">'+author+'</a>\'</p>';
+			};
+
+			$('#pcs-comment-form').on("submit",
+				function( event )
+				{
+					event.preventDefault();
+					$(location).attr('href', CommentSystem.getMailtoLink("multiplier-summary"));
+				}
+			);
+		});
+	</script>
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2023  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+  <span class="footer-separator">|</span>
+  Switch to the <a href="javascript:void(0)" onclick="theme.switch(`dark`)">dark</a> | <a href="javascript:void(0)" onclick="theme.switch(`light`)">light</a> | <a href="javascript:void(0)" onclick="theme.switch(`browser`)">browser</a> theme
+  <script id="dark-theme-script"
+          src="../theme/dark-theme/dark-theme.min.js"
+          data-enable-auto-detect-theme="True"
+          data-default-theme="ligtht"
+          type="text/javascript">
+  </script>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Qian's Blog ",
+  "url" : "..",
+  "image": "https://qian-gu.github.io/images/logo.png",
+  "description": "Qian's Thoughts and Writings"
+}
+</script><a href="https://github.com/qian-gu/qian-gu.github.io" target="_blank" class="github-corner" aria-label="View source on Github">
+    <svg width="80"
+         height="80"
+         viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+         aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor"
+              style="transform-origin: 130px 106px;"
+              class="octo-arm">
+        </path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor"
+              class="octo-body">
+        </path>
+    </svg>
+</a>
+  <script src="../theme/stork/stork.js"></script>
+  <script>
+    stork.register("sitesearch", "../search-index.st", {showProgress: false});
+  </script>
+
+</body>
+</html>

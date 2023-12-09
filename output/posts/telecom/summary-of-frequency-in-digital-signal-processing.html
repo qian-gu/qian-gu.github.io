@@ -1,0 +1,544 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="../../theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+          media="(prefers-color-scheme: dark)"
+    href="../../theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: dark)"
+          href="../../theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+          href="../../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="../../theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="/static/custom.css">
+
+  <link rel="shortcut icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+  <link rel="icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+  <link href="https://qian-gu.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Qian's Blog Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48826831-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+ 
+
+<meta name="author" content="Qian Gu" />
+<meta name="description" content="总结信号处理中的各种角频率" />
+<meta name="keywords" content="digital procesing, frequency">
+
+
+  <meta property="og:site_name" content="Qian's Blog"/>
+  <meta property="og:title" content="数字信号处理中的各种频率"/>
+  <meta property="og:description" content="总结信号处理中的各种角频率"/>
+  <meta property="og:locale" content="en"/>
+  <meta property="og:url" content="../../posts/telecom/summary-of-frequency-in-digital-signal-processing.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2015-08-27 22:06:00+08:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="../../author/qian-gu.html">
+  <meta property="article:section" content="Telecom"/>
+  <meta property="article:tag" content="digital procesing"/>
+  <meta property="article:tag" content="frequency"/>
+  <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
+
+  <title>Qian's Blog &ndash; 数字信号处理中的各种频率</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-1821536199377100",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body >
+
+<aside>
+  <div>
+    <a href="../../">
+      <img src="https://qian-gu.github.io/images/logo.png" alt="Qian Gu" title="Qian Gu">
+    </a>
+
+    <h1>
+      <a href="../../">Qian Gu</a>
+    </h1>
+
+    <p>Read >> Think >> Write</p>
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..."/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_blank"
+                 href="../../pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-envelope"
+rel="me"           href="mailto:guqian110@163.com"
+           target="_blank">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/qian-gu"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-twitter"
+           href="https://twitter.com/qian_gu"
+           target="_blank">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-rss"
+           href="/feeds/all.atom.xml"
+           target="_blank">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="../../">Home</a>
+
+  <a href="/authors.html">Authors</a>
+  <a href="/archives.html">Archives</a>
+  <a href="/categories.html">Categories</a>
+  <a href="/tags.html">Tags</a>
+
+  <a href="https://qian-gu.github.io/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="summary-of-frequency-in-digital-signal-processing">数字信号处理中的各种频率</h1>
+    <p>
+      Posted on 2015-08-27 22:06 in <a href="../../category/telecom.html">Telecom</a>
+
+    </p>
+    <div class="tag-cloud">
+      <p>
+        <a href="../../tag/digital-procesing.html">digital procesing</a>
+        <a href="../../tag/frequency.html">frequency</a>
+      </p>
+    </div>
+  </header>
+
+
+
+  <div>
+    <p>最近实习的时候，发现自己的 DSP 基本功还是不够扎实，关于模拟 / 数字角频率，频率，采样速率等一些概念理解的都不太深刻，愧对老师和这么多年的学习，Google 到一些讲解的比较清楚的 blog，备忘（抄袭）过来，温故而知新。</p>
+<h2 id="unit-circle-sincos">unit circle &amp; sin(cos)</h2>
+<hr>
+<p>首先从最基本的三角函数的定义开始：</p>
+<p>三角函数的定义方式有很多种，我觉得基于单位圆的定义是最形象，对之后理解各种角频率的物理 / 数学含义最有帮助。</p>
+<p>我们应该是在初中的时候第一次接触到三角函数，那时候三角函数的定义是直接给个三角形，然后直接定义 sin(cos) 为哪条边比哪条边的值，然后给出 sin(cos)  的波形如下图所示：</p>
+<p><img alt="sine &amp; cosine" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Sine-cosine-one-period.svg/600px-Sine-cosine-one-period.svg.png">
+"Sine cosine one period" by Geek3 - Own work. Licensed under CC BY 3.0 via Commons - https://commons.wikimedia.org/wiki/File:Sine-cosine-one-period.svg#/media/File:Sine-cosine-one-period.svg</p>
+<p>当我们将这个三角形和单位圆联系在一起的时候，sin(cos) 的几何意义就很明显了：</p>
+<p><img alt="enter image description here" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Circle-trig6.svg/338px-Circle-trig6.svg.png"></p>
+<p>"Circle-trig6" by This is a vector graphic version of Image:Circle-trig6.png by user:Tttrung which was licensed under the GFDL. Based on en:Image:Circle-trig6.png, which was donated to Wikipedia under GFDL by Steven G. Johnson. - This is a vector graphic version of Image:Circle-trig6.png by user:Tttrung which was licensed under the GFDL. ; Based on en:Image:Circle-trig6.png, which was donated to Wikipedia under GFDL by Steven G. Johnson.. Licensed under CC BY-SA 3.0 via Commons - https://commons.wikimedia.org/wiki/File:Circle-trig6.svg#/media/File:Circle-trig6.svg</p>
+<p>图中红色的线段长度就是 sin 的值，蓝色的线段长度就是 cos 的值，如果我们假设坐标系的原点和单位圆重合，脑补一下下面的场景：有个小球（只能）沿着单位圆的圆周做运动。这时候，我们就会发现一个事实：</p>
+<p><strong>sin(t) 是小球 t 时刻在 y 轴上的投影，cos(t) 是小球 t 时刻在 x 轴上的投影。</strong></p>
+<p>进一步，当小球的运动速率是匀速率的时候，就有了上面提到的波形，更加形象的图如下：</p>
+<p><img alt="enter image description here" src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Circle-cos-sin.gif"></p>
+<p>"Circle cos sin" by LucasVB - Own work. Licensed under Public Domain via Commons - https://commons.wikimedia.org/wiki/File:Circle-cos-sin.gif#/media/File:Circle-cos-sin.gif</p>
+<p><strong>P.S.</strong> 关于投影，wiki 上有个解释欧拉公式的图特别好：</p>
+<p>"Sine and Cosine fundamental relationship to Circle (and Helix)" by Tdadamemd - Own work by uploader (.gif frames created in Powerpoint). Licensed under CC BY-SA 3.0 via Commons - https://commons.wikimedia.org/wiki/File:Sine-and-Cosine-fundamental-relationship-to-Circle-(and-Helix).gif#/media/File:Sine-and-Cosine-fundamental-relationship-to-Circle-(and-Helix).gif</p>
+<p><br></p>
+<p><em>有了上面简单的背景，就可以开始逐个讨论信号处理中的概念了。</em></p>
+<p><br></p>
+<h2 id="_1">Ω</h2>
+<hr>
+<p>我们已经知道小球在圆周上做匀速率的圆周运动时，它在两个坐标轴上的投影就分别是 sin(cos)，如果我们想进一步描述小球的运动速率的快慢呢？</p>
+<p>假设小球完整转一圈所花费的时间为 T，转动的角度为 2π，则我们可以定义</p>
+<p><strong>模拟角频率</strong> <code>Ω = 2π/T</code>，单位是 rad / s</p>
+<p>来描述小球的转动速率的快慢。</p>
+<p>当 t = 2π 时，y = sin(Ω<em>2π)，这时候可以看出 Ω 的物理含义：</em><em>在 2π 的时间内，小球所完成的圈数。</em>*</p>
+<p>下面的 Matlab 小程序演示了 2π 时间内 Ω 和周期的对应关系：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">t</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w"> </span><span class="nb">pi</span><span class="o">/</span><span class="mi">50</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="nb">pi</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="n">OMEGA</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span>
+<span class="w">    </span><span class="n">y</span><span class="p">(:,</span><span class="n">OMEGA</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">sin</span><span class="p">(</span><span class="n">OMEGA</span><span class="o">*</span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="n">str</span><span class="p">{</span><span class="n">OMEGA</span><span class="p">}</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;OMEGA=&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">num2str</span><span class="p">(</span><span class="n">OMEGA</span><span class="p">)];</span>
+<span class="k">end</span>
+<span class="n">h</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="s">on</span><span class="p">;</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;t / s&#39;</span><span class="p">);</span><span class="w"> </span><span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;amp&#39;</span><span class="p">);</span><span class="w"> </span><span class="nb">title</span><span class="p">(</span><span class="s">&#39;y = sin(OMEGA*t)&#39;</span><span class="p">);</span>
+<span class="nb">legend</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+<p>结果如下图：</p>
+<p><img alt="OMEGA" src="/images/summary-of-frequency-in-digital-signal-processing/OMEGA.jpg"></p>
+<p><br></p>
+<h2 id="f">f</h2>
+<hr>
+<p>小球在二维平面上的圆周运动投影到一维的坐标轴 x(y) 轴上看，则是左右（上下）振动。和 Ω 类似，我们也可以定义一个物理量来描述这种振动的快慢：</p>
+<p>小球完成一次完整的圆周运动所花费的时间为 T，也就是完成一次振动花费了 T 时间，我们定义</p>
+<p><strong>频率</strong> <code>f = 1 / T</code>，单位是 Hz</p>
+<p>来描述振动的快慢。由前面 Ω 的定义式可知，<code>Ω = 2π * f</code>，有 y = sin(2π * f * t)。</p>
+<p>当 t = 1s 时，y = sin(2π * f)，这时候可以看出 f 的物理意义：<strong>在 1s 的时间内，小球所完成的振动次数。</strong></p>
+<p>下面的 Matlab 小程序演示了 1s 时间内 f 和振动周期的对应关系：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">t</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">100</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span>
+<span class="w">    </span><span class="n">y</span><span class="p">(:,</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">pi</span><span class="o">*</span><span class="n">f</span><span class="o">*</span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="n">str</span><span class="p">{</span><span class="n">f</span><span class="p">}</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;f=&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">num2str</span><span class="p">(</span><span class="n">f</span><span class="p">)];</span>
+<span class="k">end</span>
+<span class="n">h</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="p">);</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="s">on</span><span class="p">;</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;t / s&#39;</span><span class="p">);</span><span class="w"> </span><span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;amp&#39;</span><span class="p">);</span><span class="w"> </span><span class="nb">title</span><span class="p">(</span><span class="s">&#39;y = sin(2*pi*f*t)&#39;</span><span class="p">);</span>
+<span class="nb">legend</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+<p>结果如下图：</p>
+<p><img alt="f" src="/images/summary-of-frequency-in-digital-signal-processing/f.jpg"></p>
+<p><br></p>
+<h2 id="w">w</h2>
+<hr>
+<p>计算机的世界是离散的，所以当连续信号经过采样、量化得到离散信号后：</p>
+<p>y = sin(Ω<em>t) = sin(Ω</em>n<em>Ts) = sin(Ω</em>Ts<em>n) = sin(w</em>n)</p>
+<p>从数学上我们就可以得到：</p>
+<p><strong>数字角频率</strong> <code>w = Ω*Ts = Ω / Fs</code>，单位是 rad</p>
+<p>可以看到，w 是用采样频率 Fs 对 Ω 进行归一化得到的，所以 w 准确地应该叫做归一化数字角频率。</p>
+<p>连接模拟和数字的桥梁就是采样频率 Fs，由计算过程可以知道，w 相同的两个信号，它们的 Ω 不一定相同。因为丢失了 Fs 信息，所以单独讨论 w 是没有意义的。</p>
+<p>虽然单独讨论 w 是没有意义的，但是这不代表 w 没有物理意义，当小球的振动频率为 f 时，每秒在圆周上转过的角度为 Ω = 2π * f，而采样频率为 Fs 就是说每秒钟对小球进行 Fs 次采样（拍照），显然有 Fs 个样值（照片）。这些样值（照片）是均匀分布的，所以每两个样值点之间的弧度为 2π * f / Fs = w，这也就是 w 的物理含义：<strong>相邻两个样值点之间的弧度数。</strong></p>
+<p>================================== summary ====================================</p>
+<p>这几个频率之间是线性关系，可以得到下面的对应关系：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Item</th>
+<th style="text-align: center;">Min</th>
+<th style="text-align: center;">Mid</th>
+<th style="text-align: center;">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">n</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">(N-1)/2</td>
+<td style="text-align: center;">N</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ω</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">Ωs/2</td>
+<td style="text-align: center;">Ωs</td>
+</tr>
+<tr>
+<td style="text-align: left;">f</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">Fs/2</td>
+<td style="text-align: center;">Fs</td>
+</tr>
+<tr>
+<td style="text-align: left;">w</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">π</td>
+<td style="text-align: center;">2*π</td>
+</tr>
+</tbody>
+</table>
+<p>由频谱的搬移过程可以知道，w 从 π 到 2π 是负频率搬移的结果，所以通常分析的时候 w 的范围为 [-π, π)，如下</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Item</th>
+<th style="text-align: center;">Min</th>
+<th style="text-align: center;">Mid</th>
+<th style="text-align: center;">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Ω</td>
+<td style="text-align: center;">-Ωs/2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">Ωs/2</td>
+</tr>
+<tr>
+<td style="text-align: left;">f</td>
+<td style="text-align: center;">-Fs/2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">Fs/2</td>
+</tr>
+<tr>
+<td style="text-align: left;">w</td>
+<td style="text-align: center;">-π</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">π</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h2 id="ref">Ref</h2>
+<p><a href="https://en.wikipedia.org/wiki/Trigonometric-functions">Trigonometric functions</a></p>
+<p><a href="http://anony3721.blog.163.com/blog/static/51197420111129503233/">阿英讲频率 f，角频率 Ω 和数字频率 w 的物理含义 -- 附 MATLAB 仿真</a></p>
+<p><a href="http://zhuanlan.zhihu.com/wille/19763358">傅里叶分析之掐死教程（完整版）更新于 2014.06.06</a></p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="../../posts/ic/low-power-design.html" title="低功耗设计">
+      <i class="fa fa-angle-left"></i> Previous Post
+    </a>
+    <a class="btn float-right" href="../../posts/ic/fifo-design-notes.html" title="FIFO 设计笔记">
+      Next Post <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>You might enjoy</h4>
+    <ul class="related-posts">
+      <li><a href="../../posts/telecom/digital-signal-processing-and-matlab.html">数字信号处理和相关matlab函数总结</a></li>
+    </ul>
+  </div>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="ca-pub-1821536199377100"
+         data-ad-slot="4843941849"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ChienGu';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+
+  	<style>
+#pcs-comment-form input,
+#pcs-comment-form textarea {
+	width: 100%;
+}
+#pcs-comment-form-display-replyto {
+	border: solid 1px black;
+	padding: 2px;
+}
+#pcs-comment-form-display-replyto p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+#pcs-comments ul {
+	list-style: none;
+}
+#pcs-comments .comment-left {
+	display: table-cell;
+	padding-right: 10px;
+}
+#pcs-comments .comment-body {
+	display: table-cell;
+	vertical-align: top;
+	width: 100%;
+}
+</style>
+
+	<section id="pcs-comments">
+	<header>
+		<h2>Comments</h2>
+		<hr/>
+	</header>
+		<p>There are no comments yet.</p>
+	<section>
+	<form id="pcs-comment-form" action="#">
+		<legend id="pcs-comment-form-title" style="font-size: 2em; line-height: 3em;">Add a Comment</legend>
+		<input type="hidden" id="pcs-comment-form-input-replyto">
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-name" style="font-size: 1.5em; line-height: 2em;">Name</label>
+			<input  id="pcs-comment-form-input-name" type="text" placeholder="Enter your name or nickname" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-website" style="font-size: 1.5em; line-height: 2em;">Website</label>
+			<input  id="pcs-comment-form-input-website" type="text" placeholder="Enter your website (optional)" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label   for="pcs-comment-form-input-textarea" style="font-size: 1.5em; line-height: 2em;">Your Comment</label>
+			<textarea id="pcs-comment-form-input-textarea" rows="5" style="resize:vertical;" placeholder="Your comment"></textarea>
+			<p>You can use the <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> syntax to format your comment.</p>
+			<div style="display: none; " id="pcs-comment-form-display-replyto"></div>
+		</fieldset>
+
+		<button type="submit"
+				id="pcs-comment-form-button-submit"
+				>Post via email</button>
+
+	</form>
+</section>
+
+</section>
+
+			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="../../theme/js/comments.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			CommentSystem.email_user   = "guqian110";
+			CommentSystem.email_domain = "163.com";
+			CommentSystem.display_replyto_html = function(comment_content, article_slug, author) { 
+				return ''
+					+ '<button style="float:right;" onclick="CommentSystem.cancelReply(); return false;" title="Cancel the reply">'
+					+ 	'×'
+					+ '</button>'
+					+ '<p>This comment will be posted as a reply to \'<a title="'+comment_content+'" href="#comment-'+article_slug+'">'+author+'</a>\'</p>';
+			};
+
+			$('#pcs-comment-form').on("submit",
+				function( event )
+				{
+					event.preventDefault();
+					$(location).attr('href', CommentSystem.getMailtoLink("summary-of-frequency-in-digital-signal-processing"));
+				}
+			);
+		});
+	</script>
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2023  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+  <span class="footer-separator">|</span>
+  Switch to the <a href="javascript:void(0)" onclick="theme.switch(`dark`)">dark</a> | <a href="javascript:void(0)" onclick="theme.switch(`light`)">light</a> | <a href="javascript:void(0)" onclick="theme.switch(`browser`)">browser</a> theme
+  <script id="dark-theme-script"
+          src="../../theme/dark-theme/dark-theme.min.js"
+          data-enable-auto-detect-theme="True"
+          data-default-theme="ligtht"
+          type="text/javascript">
+  </script>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Qian's Blog ",
+  "url" : "../..",
+  "image": "https://qian-gu.github.io/images/logo.png",
+  "description": "Qian's Thoughts and Writings"
+}
+</script><a href="https://github.com/qian-gu/qian-gu.github.io" target="_blank" class="github-corner" aria-label="View source on Github">
+    <svg width="80"
+         height="80"
+         viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+         aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor"
+              style="transform-origin: 130px 106px;"
+              class="octo-arm">
+        </path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor"
+              class="octo-body">
+        </path>
+    </svg>
+</a>
+  <script src="../../theme/stork/stork.js"></script>
+  <script>
+    stork.register("sitesearch", "../../search-index.st", {showProgress: false});
+  </script>
+
+</body>
+</html>

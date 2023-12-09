@@ -1,0 +1,750 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="../../theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+          media="(prefers-color-scheme: dark)"
+    href="../../theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: dark)"
+          href="../../theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+          href="../../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="../../theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="/static/custom.css">
+
+  <link rel="shortcut icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+  <link rel="icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+  <link href="https://qian-gu.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Qian's Blog Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48826831-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+ 
+
+<meta name="author" content="Qian Gu" />
+<meta name="description" content="总结 FPGA 中的计数器设计" />
+<meta name="keywords" content="">
+
+
+  <meta property="og:site_name" content="Qian's Blog"/>
+  <meta property="og:title" content="计数器设计小结"/>
+  <meta property="og:description" content="总结 FPGA 中的计数器设计"/>
+  <meta property="og:locale" content="en"/>
+  <meta property="og:url" content="../../posts/ic/counter-design-summary.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2014-11-04 20:40:00+08:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="../../author/qian-gu.html">
+  <meta property="article:section" content="IC"/>
+  <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
+
+  <title>Qian's Blog &ndash; 计数器设计小结</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-1821536199377100",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body >
+
+<aside>
+  <div>
+    <a href="../../">
+      <img src="https://qian-gu.github.io/images/logo.png" alt="Qian Gu" title="Qian Gu">
+    </a>
+
+    <h1>
+      <a href="../../">Qian Gu</a>
+    </h1>
+
+    <p>Read >> Think >> Write</p>
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..."/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_blank"
+                 href="../../pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-envelope"
+rel="me"           href="mailto:guqian110@163.com"
+           target="_blank">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/qian-gu"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-twitter"
+           href="https://twitter.com/qian_gu"
+           target="_blank">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-rss"
+           href="/feeds/all.atom.xml"
+           target="_blank">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="../../">Home</a>
+
+  <a href="/authors.html">Authors</a>
+  <a href="/archives.html">Archives</a>
+  <a href="/categories.html">Categories</a>
+  <a href="/tags.html">Tags</a>
+
+  <a href="https://qian-gu.github.io/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="counter-design-summary">计数器设计小结</h1>
+    <p>
+      Posted on 2014-11-04 20:40 in <a href="../../category/ic.html">IC</a>
+
+    </p>
+    <div class="tag-cloud">
+      <p>
+      </p>
+    </div>
+  </header>
+
+
+
+  <div>
+    <h2 id="introduction">Introduction</h2>
+<hr>
+<p>计数器 在数字电路设计 和 计算机程序设计 中都应用非常广泛，其功能顾名思义，就是用来计数。这里只讨论数字电路设计中的计数器。</p>
+<p>通常，将包含触发器 flip-flop 的电路（即使含有组合电路部分）认为是时序电路。时序电路通常不以电路命名，而是以功能进行分类，分别是 <strong>寄存器</strong> 和 <strong>计数器</strong>。</p>
+<p>计数器 <a href="http://en.wikipedia.org/wiki/Counter">counter</a> 从本质上来说也是寄存器，不过它是在预先设定好的状态序列中转移，尽管计数器是寄存器的一种特殊形式，通常还是以不同的名称来加以区分。</p>
+<p><br></p>
+<h2 id="type">Type</h2>
+<p>按照不同的标准来划分，计数器可以有不同的划分方法：</p>
+<ol>
+<li>
+<p>触发方式</p>
+<p>同步 / 异步 计数器</p>
+</li>
+<li>
+<p>计数增减</p>
+<p>加法 / 减法 / 可逆计数器</p>
+</li>
+</ol>
+<p>因为第二种方法没有明确显示计数器的计数方式，所以一般使用第一种方法。</p>
+<p>这里总结了一些常见的计数器：</p>
+<ol>
+<li>
+<p>Basic Binary Counter</p>
+</li>
+<li>
+<p>BCD Counter</p>
+</li>
+<li>
+<p>Ring Counter</p>
+</li>
+<li>
+<p>Johnson Counter</p>
+</li>
+<li>
+<p>Ripple Counter</p>
+</li>
+</ol>
+<p>计数器在数字电路中的用途非常广，可以作为定时器、实用计数器、状态机等。在具体实现时，有前面总结的不同的计数器类型可供选择，每种计数器由其特点决定了适用场合，我们要做到就是在不同计数器类型和配置之间进行权衡，选择正确的设计，以节省大量逻辑资源，并提高性能。</p>
+<p>下面分别讨论各种计数器的特点和 HDL 实现。</p>
+<h2 id="implement">Implement</h2>
+<hr>
+<h3 id="binary-counter">Binary Counter</h3>
+<p>最简单、最基本的计数器就是 二进制计数器 Binary Counter。它的计数方式就是从 0 开始每个脉冲进行 “+1” 操作，直到最大值，然后重新从 0 开始。</p>
+<p><a href="http://www.amazon.com/FPGA-Prototyping-Verilog-Examples-Spartan-3/dp/0470185325">FPGA Prototyping By Verilog Examples: Xilinx Spartan-3 Version</a> 里面有个例子，这里稍作修改就可以当作通用模块，供其他模块调用了。</p>
+<p><strong>Code</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">module</span><span class="w"> </span><span class="n">free</span><span class="o">-</span><span class="n">run</span><span class="o">-</span><span class="n">bin</span><span class="o">-</span><span class="n">counter</span><span class="p">(</span>
+<span class="w">    </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="p">,</span><span class="w"> </span><span class="n">q</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">parameter</span><span class="w">   </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">8</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">input</span><span class="w">                     </span><span class="n">clk</span><span class="p">;</span>
+<span class="w">    </span><span class="k">input</span><span class="w">                     </span><span class="n">rst</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w">  </span><span class="kt">reg</span><span class="w">               </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w">  </span><span class="kt">reg</span><span class="w">  </span><span class="p">[</span><span class="n">N</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mh">0</span><span class="p">]</span><span class="w">  </span><span class="n">q</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// count</span>
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="c1">// reset</span>
+<span class="w">            </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w">  </span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="w">    </span><span class="c1">// max-tick</span>
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">q</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">{</span><span class="n">N</span><span class="p">{</span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">}})</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="k">endmodule</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="bcd-counter-mod-m-counter">BCD Counter (mod-m counter)</h3>
+<p>人类更习惯使用十进制进行计数，十进制一共有 10 个符号，我们只需要从 4 bit 的二进制计数器中选取 10 个数字，只使用这 10 个数字进行计数即可，通常去掉 1010 ~ 1111 这 6 个数字，即使用 8421BCD 码 来对十进制数进行编码、计数，即 BCD Counter。</p>
+<p>将十进制进行推广，我们就可以写出任意的 模 m 的计数器，在下面的例子中，M 表示计数器的模值（默认为 10），N 表示计数器需要的位数（默认为 4）。在例化时如果要修改，则需要手动计算这两个参数进行赋值。</p>
+<p><strong>Code</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">module</span><span class="w"> </span><span class="n">bcd</span><span class="o">-</span><span class="n">counter</span><span class="p">(</span>
+<span class="w">    </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="p">,</span><span class="w"> </span><span class="n">q</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">parameter</span><span class="w">   </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">4</span><span class="p">,</span><span class="w">  </span><span class="c1">// number of bits in counter</span>
+<span class="w">                </span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">10</span><span class="p">;</span><span class="w"> </span><span class="c1">// mod-M</span>
+
+<span class="w">    </span><span class="k">input</span><span class="w">       </span><span class="n">clk</span><span class="p">;</span>
+<span class="w">    </span><span class="k">input</span><span class="w">       </span><span class="n">rst</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w">  </span><span class="kt">reg</span><span class="w">  </span><span class="p">[</span><span class="n">N</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mh">0</span><span class="p">]</span><span class="w">    </span><span class="n">q</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w">  </span><span class="kt">reg</span><span class="w">                 </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="c1">// reset</span>
+<span class="w">            </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">q</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="p">))</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="c1">// reset</span>
+<span class="w">            </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">q</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="n">M</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="p">))</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="k">endmodule</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="ring-counter">Ring Counter</h3>
+<p>基于线性移位寄存器 <a href="http://en.wikipedia.org/wiki/Linear-feedback-shift-register"><code>LFSR</code> (Linear feedback shift register) </a> 可以衍生出两种计数器：<a href="http://en.wikipedia.org/wiki/Ring-counter">环形计数器 (ring counter)</a> 和 扭环计数器（约翰逊计数器）。</p>
+<p>将 LFSR 中存储的数字设置为独热码的形式，即只有一位为 1，其他位为 0。然后把最后一级的输出直接反馈到第一级的输入，这样，输入和输出组成了一个环形，所以称为 环形计数器。4 bit 的环形计数器电路图如下：</p>
+<p><img alt="ring counter" src="/images/counter-design-summary/ring-counter.png"></p>
+<p>(ref: http://electronics-course.com/ring-counter)</p>
+<p><strong>Adv</strong></p>
+<ol>
+<li>
+<p>相比于 binary counter，ring counter 不需要后者必需的加法器来实现计数，所以它在电路上占用的资源要更少。</p>
+</li>
+<li>
+<p>因为没有额外的加法器，所以 ring counter 也不存在加法器带来的进位时延，它的最大时延是固定值，和计数器的模值无关。所以它的时序性能也比 binary counter 好。</p>
+</li>
+<li>
+<p>因为 ring counter 的汉明距离为 2，所以它可以检查单比特翻转的错误。</p>
+</li>
+</ol>
+<p><strong>Disadv</strong></p>
+<p>Ring counter 最大的缺点就是它的低密度码，同样适用 N 个寄存器，binary counter 可以计数到 2^N，而 ring counter 只能计数到 N，经过改良后的 Johnson counter 也才能到 2N。所以，如果寄存器比组合逻辑更加珍贵的情况下，不适合使用 ring counter。</p>
+<p><strong>Code</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">module</span><span class="w"> </span><span class="n">ring</span><span class="o">-</span><span class="n">counter</span><span class="p">(</span>
+<span class="w">    </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst</span><span class="p">,</span><span class="w"> </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="p">,</span><span class="w"> </span><span class="n">q</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">parameter</span><span class="w">   </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">10</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">input</span><span class="w">       </span><span class="n">clk</span><span class="p">;</span>
+<span class="w">    </span><span class="k">input</span><span class="w">       </span><span class="n">rst</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w">  </span><span class="kt">reg</span><span class="w">                 </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w">  </span><span class="kt">reg</span><span class="w">  </span><span class="p">[</span><span class="n">N</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mh">0</span><span class="p">]</span><span class="w">    </span><span class="n">q</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="c1">// reset</span>
+<span class="w">            </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">            </span><span class="n">q</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="p">{</span><span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">],</span><span class="w"> </span><span class="n">q</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mh">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mh">1</span><span class="p">]};</span><span class="w">    </span><span class="c1">// right shift</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="c1">// reset</span>
+<span class="w">            </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">1</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">                </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="k">endmodule</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="johnson-counter">Johnson Counter</h3>
+<p>在 ring counter 的反馈链路中加入一个反相器，就好象把一个环扭了一下，所以称为 扭环计数器 (Johnson Counter)</p>
+<p>4 bit 的 Johnson Counter 如下图所示：</p>
+<p><img alt="johnson counter" src="http://upload.wikimedia.org/wikipedia/commons/e/e8/JohnsonCounter2.png"></p>
+<p><strong>Adv</strong></p>
+<p>最大的优点就是它可以计数的范围和 ring counter 相比，扩大了一倍，达到了 2N。</p>
+<p><strong>Disadv</strong></p>
+<p>最大的缺点就是一旦它进入了错误状态，则永远无法返回到正确状态，除非外界干预。</p>
+<p><strong>Code</strong></p>
+<p>首先，将前面例子第 行的反馈语句修改一下，</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="p">{</span><span class="o">~</span><span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">],</span><span class="w"> </span><span class="n">q</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mh">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mh">1</span><span class="p">]};</span><span class="w">    </span><span class="c1">// right shift</span>
+</code></pre></div></td></tr></table></div>
+
+<p>同时，计数器的终点也要进行相应的修改，</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mh">1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">q</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="p">;</span>
+<span class="k">end</span>
+<span class="k">else</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="n">max</span><span class="o">-</span><span class="n">tick</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">0</span><span class="p">;</span>
+<span class="k">end</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="ripple-counter">Ripple Counter</h3>
+<p>前面总结的这些计数器都是同步计数器，组成它们的 flip-flop 是由同一个脉冲信号触发的。还有一种计数器是异步计数器，它内部的 flip-flop 不是由同一个脉冲信号触发的。由于 FPGA 特殊的结构原因，在 FPGA 中应该使用同步设计，所以一般 FPGA 不会使用这种计数器。</p>
+<p>ripple counter 的每个 flip-flop 使用前一级的 flip-flop 的输出信号作为触发信号，所以后一级的触发器必须等到前一级的触发器输出之后才能工作，所以对于一个长度为 N 的触发器链，从输入时间开始，要等 N 个触发器依次工作完之后才能输出有效结果。</p>
+<p>示意图：</p>
+<p><img alt="ripple counter" src="/images/counter-design-summary/ripple-counter.png"></p>
+<p>(ref: http://www.eecs.tufts.edu/~dsculley/tutorial/flopsandcounters/flops6.html)</p>
+<p><strong>Adv</strong></p>
+<ol>
+<li>
+<p>面积小（不需要电路来实现 “+1” 功能）</p>
+</li>
+<li>
+<p>功率少（因为面积小）</p>
+</li>
+</ol>
+<p>所以在一些对面积、成本、功率敏感的应用中，ripple counter 很有用。比如：一个电子时钟，因为秒 s 对于纳秒 ns 来说是很缓慢的，所以可以忍受这种累积误差的。</p>
+<p><strong>Dis</strong></p>
+<p>所有的 flip-flop 不是同时触发的，每个 flip-flop 的时延会累积到输出，当所有的时延累积到一起，有时候（很长的 flip-flop 级联在一起）相对于时钟信号而言，就不能忽略这种时延了，严重时会导致系统出错。</p>
+<p><strong>Code</strong></p>
+<p>代码在</p>
+<p><a href="http://www.amazon.com/Hdl-Chip-Design-Synthesizing-Simulating/dp/0965193438">Hdl Chip Design: A Practical Guide for Designing, Synthesizing &amp; Simulating Asics &amp; Fpgas Using Vhdl or Verilog</a></p>
+<p>里面有介绍。</p>
+<h3 id="gray-code-counter">Gray Code Counter</h3>
+<p>Gray 码和普通的二进制编码相比，优势就是它相邻数字之间只有一位不同，这样在计数时，就避免的多位不是同时变化导致的毛刺。</p>
+<p><a href="http://en.wikipedia.org/wiki/Gray-code">Gray Code wiki</a>:</p>
+<blockquote>
+<p>A typical use of Gray code counters is building a FIFO (first-in, first-out) data buffer that has read and write ports that exist in different clock domains. The input and output counters inside such a dual-port FIFO are often stored using Gray code to prevent invalid transient states from being captured when the count crosses clock domains.[10] The updated read and write pointers need to be passed between clock domains when they change, to be able to track FIFO empty and full status in each domain. Each bit of the pointers is sampled non-deterministically for this clock domain transfer. So for each bit, either the old value or the new value is propagated. Therefore, if more than one bit in the multi-bit pointer is changing at the sampling point, a "wrong" binary value (neither new nor old) can be propagated. By guaranteeing only one bit can be changing, Gray codes guarantee that the only possible sampled values are the new or old multi-bit value. Typically Gray codes of power-of-two length are used.</p>
+</blockquote>
+<p>在大神 Clifford E. Cummings 的论文 </p>
+<p><a href="http://www.sunburst-design.com/papers/CummingsSNUG2001SJ-AsyncClk.pdf">synthesis and scripting techniques for designing multi-asynchronous clock designs</a></p>
+<p>中有详细介绍如何设计一个 Gray Code Counter 的过程，其基本思想就是利用一个 binary counter 来实现目的，计数器的计数功能由内部的 binary counter 实现，将 binary 的计数结果通过一个 binary2gray 的转换电路转化为 gray code 后再输出；输出的 gray code 反馈回计数器之前，再通过一个 gray2bianry 的电路转化回 binary 形式，以供内部的 binary counter 使用。模块示意图如下：</p>
+<p><img alt="gray code counter" src="/images/counter-design-summary/gray-code-counter.png"></p>
+<p>代码略 ...</p>
+<p><br></p>
+<h2 id="reference">Reference</h2>
+<p><a href="http://www.amazon.com/FPGA-Prototyping-Verilog-Examples-Spartan-3/dp/0470185325">FPGA Prototyping By Verilog Examples: Xilinx Spartan-3 Version</a></p>
+<p><a href="http://www.amazon.com/Hdl-Chip-Design-Synthesizing-Simulating/dp/0965193438">Hdl Chip Design: A Practical Guide for Designing, Synthesizing &amp; Simulating Asics &amp; Fpgas Using Vhdl or Verilog</a></p>
+<p><a href="http://www.sunburst-design.com/papers/CummingsSNUG2001SJ-AsyncClk.pdf">synthesis and scripting techniques for designing multi-asynchronous clock designs</a></p>
+<p><a href="http://www.amazon.com/Design-Recipes-FPGAs-Embedded-Technology/dp/0750668458/ref=sr-1-1?s=books&amp;ie=UTF8&amp;qid=1415197345&amp;sr=1-1&amp;keywords=design+recipes+for+fpgas">Design Recipes for FPGAs: Using Verilog and VHDL (Embedded Technology) </a></p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="../../posts/book/the-pomodoro-technique-practices.html" title="番茄工作法 总结 + 实践">
+      <i class="fa fa-angle-left"></i> Previous Post
+    </a>
+    <a class="btn float-right" href="../../posts/ic/delay-in-fpgas.html" title="FPGA 中的延时">
+      Next Post <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="ca-pub-1821536199377100"
+         data-ad-slot="4843941849"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ChienGu';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+
+  	<style>
+#pcs-comment-form input,
+#pcs-comment-form textarea {
+	width: 100%;
+}
+#pcs-comment-form-display-replyto {
+	border: solid 1px black;
+	padding: 2px;
+}
+#pcs-comment-form-display-replyto p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+#pcs-comments ul {
+	list-style: none;
+}
+#pcs-comments .comment-left {
+	display: table-cell;
+	padding-right: 10px;
+}
+#pcs-comments .comment-body {
+	display: table-cell;
+	vertical-align: top;
+	width: 100%;
+}
+</style>
+
+	<section id="pcs-comments">
+	<header>
+		<h2>Comments</h2>
+		<hr/>
+	</header>
+		<p>There are no comments yet.</p>
+	<section>
+	<form id="pcs-comment-form" action="#">
+		<legend id="pcs-comment-form-title" style="font-size: 2em; line-height: 3em;">Add a Comment</legend>
+		<input type="hidden" id="pcs-comment-form-input-replyto">
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-name" style="font-size: 1.5em; line-height: 2em;">Name</label>
+			<input  id="pcs-comment-form-input-name" type="text" placeholder="Enter your name or nickname" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-website" style="font-size: 1.5em; line-height: 2em;">Website</label>
+			<input  id="pcs-comment-form-input-website" type="text" placeholder="Enter your website (optional)" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label   for="pcs-comment-form-input-textarea" style="font-size: 1.5em; line-height: 2em;">Your Comment</label>
+			<textarea id="pcs-comment-form-input-textarea" rows="5" style="resize:vertical;" placeholder="Your comment"></textarea>
+			<p>You can use the <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> syntax to format your comment.</p>
+			<div style="display: none; " id="pcs-comment-form-display-replyto"></div>
+		</fieldset>
+
+		<button type="submit"
+				id="pcs-comment-form-button-submit"
+				>Post via email</button>
+
+	</form>
+</section>
+
+</section>
+
+			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="../../theme/js/comments.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			CommentSystem.email_user   = "guqian110";
+			CommentSystem.email_domain = "163.com";
+			CommentSystem.display_replyto_html = function(comment_content, article_slug, author) { 
+				return ''
+					+ '<button style="float:right;" onclick="CommentSystem.cancelReply(); return false;" title="Cancel the reply">'
+					+ 	'×'
+					+ '</button>'
+					+ '<p>This comment will be posted as a reply to \'<a title="'+comment_content+'" href="#comment-'+article_slug+'">'+author+'</a>\'</p>';
+			};
+
+			$('#pcs-comment-form').on("submit",
+				function( event )
+				{
+					event.preventDefault();
+					$(location).attr('href', CommentSystem.getMailtoLink("counter-design-summary"));
+				}
+			);
+		});
+	</script>
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2023  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+  <span class="footer-separator">|</span>
+  Switch to the <a href="javascript:void(0)" onclick="theme.switch(`dark`)">dark</a> | <a href="javascript:void(0)" onclick="theme.switch(`light`)">light</a> | <a href="javascript:void(0)" onclick="theme.switch(`browser`)">browser</a> theme
+  <script id="dark-theme-script"
+          src="../../theme/dark-theme/dark-theme.min.js"
+          data-enable-auto-detect-theme="True"
+          data-default-theme="ligtht"
+          type="text/javascript">
+  </script>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Qian's Blog ",
+  "url" : "../..",
+  "image": "https://qian-gu.github.io/images/logo.png",
+  "description": "Qian's Thoughts and Writings"
+}
+</script><a href="https://github.com/qian-gu/qian-gu.github.io" target="_blank" class="github-corner" aria-label="View source on Github">
+    <svg width="80"
+         height="80"
+         viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+         aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor"
+              style="transform-origin: 130px 106px;"
+              class="octo-arm">
+        </path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor"
+              class="octo-body">
+        </path>
+    </svg>
+</a>
+  <script src="../../theme/stork/stork.js"></script>
+  <script>
+    stork.register("sitesearch", "../../search-index.st", {showProgress: false});
+  </script>
+
+</body>
+</html>

@@ -4,7 +4,8 @@ PELICANOPTS=
 
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
-OUTPUTDIR=$(BASEDIR)/../qian-gu.github.io
+# OUTPUTDIR=$(BASEDIR)/../qian-gu.github.io
+OUTPUTDIR=$(BASEDIR)/output
 OUTPUTDIR_GITEE=$(BASEDIR)/../guqian110
 CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
@@ -55,13 +56,7 @@ else
 endif
 
 clean:
-	# [ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
-	# delete all except for .git folder, CNAME, README.md, LICENSE file
-ifdef gitee
-	cd $(OUTPUTDIR_GITEE); ls | grep -v CNAME | grep -v README.md | grep -v LICENSE | xargs rm -rf
-else
-	cd $(OUTPUTDIR); ls | grep -v CNAME | grep -v README.md | grep -v LICENSE | xargs rm -rf
-endif
+	[ ! -d $(OUTPUTDIR) ] || rm -rf $(OUTPUTDIR)
 
 regenerate:
 	$(PELICAN) -r $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)

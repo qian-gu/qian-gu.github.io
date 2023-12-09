@@ -1,0 +1,547 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="../../theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+          media="(prefers-color-scheme: dark)"
+    href="../../theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: dark)"
+          href="../../theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+          href="../../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="../../theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="../../theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="/static/custom.css">
+
+  <link rel="shortcut icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+  <link rel="icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+  <link href="https://qian-gu.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Qian's Blog Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48826831-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+ 
+
+<meta name="author" content="Qian Gu" />
+<meta name="description" content="总结信号处理和matlab相关应用" />
+<meta name="keywords" content="digital procesing, matlab">
+
+
+  <meta property="og:site_name" content="Qian's Blog"/>
+  <meta property="og:title" content="数字信号处理和相关matlab函数总结"/>
+  <meta property="og:description" content="总结信号处理和matlab相关应用"/>
+  <meta property="og:locale" content="en"/>
+  <meta property="og:url" content="../../posts/telecom/digital-signal-processing-and-matlab.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2014-09-03 23:16:00+08:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="../../author/qian-gu.html">
+  <meta property="article:section" content="Telecom"/>
+  <meta property="article:tag" content="digital procesing"/>
+  <meta property="article:tag" content="matlab"/>
+  <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
+
+  <title>Qian's Blog &ndash; 数字信号处理和相关matlab函数总结</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-1821536199377100",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body >
+
+<aside>
+  <div>
+    <a href="../../">
+      <img src="https://qian-gu.github.io/images/logo.png" alt="Qian Gu" title="Qian Gu">
+    </a>
+
+    <h1>
+      <a href="../../">Qian Gu</a>
+    </h1>
+
+    <p>Read >> Think >> Write</p>
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..."/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_blank"
+                 href="../../pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-envelope"
+rel="me"           href="mailto:guqian110@163.com"
+           target="_blank">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/qian-gu"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-twitter"
+           href="https://twitter.com/qian_gu"
+           target="_blank">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-rss"
+           href="/feeds/all.atom.xml"
+           target="_blank">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="../../">Home</a>
+
+  <a href="/authors.html">Authors</a>
+  <a href="/archives.html">Archives</a>
+  <a href="/categories.html">Categories</a>
+  <a href="/tags.html">Tags</a>
+
+  <a href="https://qian-gu.github.io/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="digital-signal-processing-and-matlab">数字信号处理和相关matlab函数总结</h1>
+    <p>
+      Posted on 2014-09-03 23:16 in <a href="../../category/telecom.html">Telecom</a>
+
+    </p>
+    <div class="tag-cloud">
+      <p>
+        <a href="../../tag/digital-procesing.html">digital procesing</a>
+        <a href="../../tag/matlab.html">matlab</a>
+      </p>
+    </div>
+  </header>
+
+
+
+  <div>
+    <p>学了这么多年的通信，却还是对信号处理的知识一知半解，应付考试还可以，但在实际应用中还是感到力不从心，很多知识都忘了。翻了一下午的 《信号与系统》、《数字信号处理》，简单总结一下。</p>
+<p>《信号与系统》算是通信专业最基础的专业课了。</p>
+<p>信号部分主要介绍信号的相关定义、分类、常用信号和三大变换：傅立叶变换、拉普拉斯变换和 z 变换。</p>
+<p>系统部分主要从时域和频域使用不同的方法分析线性时不变系统（LTI）的性质。</p>
+<p>《数字信号处理》算是前一门课的深入，现在利用计算机处理信号，首先就是要将模拟信号数字化，然后进行处理。这门课也就是讲相关的知识。</p>
+<p>一般教材就讲两大部分：第一部分首先承接《信号与系统》，时域的连续信号要在计算机中处理就必须采样，变为时域离散信号，这部分就讲离散时间信号的处理，比如 z 变换 和离散傅立叶变换。第二部分讲数字滤波器的设计，包括 FIR 和 IIR 两种。</p>
+<p><br></p>
+<h2 id="signal-processing">Signal Processing</h2>
+<hr>
+<p><em>这部分是我串联的这两本书中很小的一部分知识，算是一个备忘的笔记吧，作为一名学渣，一个月不看也会忘记不少 =.=</em></p>
+<p><em>从 《信号与系统》 中我们可以知道：</em></p>
+<p><strong>周期信号 （连续）傅立叶级数 （CFS）</strong></p>
+<p>首先，由高数知识可以知道：只要满足 Dirichlet 条件，周期信号就可以进行傅立叶级数分解，可以得到幅度频谱和相位频谱。</p>
+<p>时域信号是周期的、连续的，频域信号是离散的。</p>
+<p><strong>非周期信号 （连续）傅立叶变换 （CFT)</strong></p>
+<p>周期信号的周期无限增大，就可以将周期信号转化为非周期信号，从而得到非周期信号的傅立叶变换。</p>
+<p>得到的频率域的结果为连续信号，计算结果为时域信号的频谱密度函数，简称频谱函数。</p>
+<p><strong>周期信号 （连续）傅立叶变换 （CFT)</strong></p>
+<p>对于周期信号，因为它不满足绝对可积的条件，所以从非周期信号无法直接推广。但是借助 <em>奇异函数</em>（如冲激函数）的概念，可以使许多不满足绝对可积的信号（如周期信号）存在傅立叶变换。</p>
+<p>周期信号的傅立叶变换结果由一些冲激函数组成，冲激函数的强度是对应的傅立叶级数的 2pi 倍，频谱是离散的。</p>
+<p>这样，周期信号和非周期信号的傅立叶分析得到了统一。</p>
+<p><em>接下来，就要进入《数字信号处理》部分了：</em></p>
+<p><strong>离散时间信号傅立叶变换 （DTFT)</strong></p>
+<p>时域连续信号经过采样，得到离散时间信号，对于离散时间信号，可以从 z 变换中引出 DTFT 的定义。</p>
+<p>DTFT 是一种特殊的傅立叶变换（FT），它满足所有的傅立叶变换的性质。</p>
+<p><strong>离散傅立叶变换 （DFT）</strong></p>
+<p>虽然 DTFT 解决了信号在时域的连续问题，但是变换结果仍然是连续信号，也就是说在频域仍然是连续的，这样计算机仍然是无法处理的。所以，就引出了离散傅立叶级数（DFS) 和离散傅立叶变换（DFT）。</p>
+<p>时域信号的周期性对应着频域的离散化，而且时域信号的离散化对应着频域的周期性。由这两点，可以知道周期的离散信号具有离散的、周期的频谱，也就是离散傅立叶级数（DFS）。</p>
+<p>把时域和频域的数据长度都限定在主周期，那么就得到了标准的离散傅立叶变换（DFT）。</p>
+<p>经过分析，可以知道，DFT 是 z 变换的取样，也是 DTFT 的取样结果。</p>
+<p>DFT 因为是离散的，长度有限，所以很适合计算机计算，而且人们发明了高效地计算 DFT 的方法 —— FFT 。</p>
+<p>知乎上还有一篇专栏的文章，得到了非常多人的赞同，可以进一步参考。</p>
+<p><a href="http://zhuanlan.zhihu.com/wille/19763358">傅里叶分析之掐死教程（完整版）更新于 2014.06.06</a></p>
+<p><br></p>
+<h2 id="matlab">Matlab</h2>
+<hr>
+<h3 id="basic">basic</h3>
+<p>分析各种变化，可以得到以下的关系：</p>
+<p>N 点的 DFT（FFT），其结果对应的</p>
+<p>数字角频率 w 为 [0, 2pi)</p>
+<p>模拟角频率 Ω 为 [0, Ωs)</p>
+<p>模拟频率 f 为 [0, fs)</p>
+<p>所以对于 N 点 FFT 的结果，对应的横坐标频率的范围为 [0, fs)。</p>
+<p>matlab 提供了函数 fft 和 fftshift 直接完成变换。</p>
+<h3 id="adv">adv</h3>
+<p>我们在对一个信号进行采样分析时，首先需要确定两个参数：参数有采样频率 <code>Fs</code>，采样点数 <code>N</code>，这两个因素决定了之后可以得到的时频域效果。</p>
+<p>假设我们的采样频率为 Fs （采样周期为 T = 1/Fs），一共采了 N 个点，那么相当于对信号进行了截断，截断长度为 L = N * T 秒。这 3 个参数就决定了我们的最终结果。</p>
+<p>在信号处理中存在下面的 3 个问题：</p>
+<ul>
+<li>
+<p>频谱混叠。如果信号不是带限的，那么为了减小频谱混叠的影响，我们应该<strong>尽可能提高采样频率 Fs</strong>，而且 Fs 越大，时频域分辨率也越高。</p>
+</li>
+<li>
+<p>频率分辨率和栅栏效应。因为 DFT 是 DTFT 的等间隔采样，那么 N 越大，采样点数越多，栅栏就越小。为了提高频率分辨率 <code>f0 = Fs/N</code>，我们应该<strong>尽可能增大 N</strong>，而且为了提高计算效率，N 等于 2 的 M 次方）。</p>
+</li>
+<li>
+<p>截断效应和频谱泄漏。如果信号是无限长的，那么必须把它截断到长度 <code>L = N*T = N/Fs</code>。截断会带来吉布斯效应，并且引入窗函数的频谱，造成频谱泄漏。应该<strong>使得 L 包含信号的绝大部分</strong>。</p>
+</li>
+</ul>
+<p>下面举例说明非周期信号和周期信号的分析：</p>
+<ol>
+<li>
+<p>非周期信号</p>
+<p>假设我们要分析 tau = 1 的矩形窗函数，我们知道它的频谱，且取第一零点 1/tau = 1 为最高频，假设 8 倍采样，即 Fs = 8 Hz，假设频谱分辨率小于 0.1 Hz 即达到需求，则可以得到 N = 128，此时验证 L = 16 满足条件。由 tau 和 Fs 得到采样点包含 8 个 1 和 120 个 0，所以：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Fs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
+<span class="n">N</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">128</span><span class="p">;</span>
+<span class="n">x</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="nb">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">),</span><span class="w"> </span><span class="n">zeors</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">)];</span>
+<span class="n">X</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="nb">fftshift</span><span class="p">(</span><span class="nb">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)));</span>
+<span class="n">f</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Fs</span><span class="o">/</span><span class="n">N</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Fs</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="nb">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">);</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="s">on</span><span class="p">;</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;f / Hz&#39;</span><span class="p">);</span><span class="w"> </span><span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;Amplitude Response&#39;</span><span class="p">);</span>
+<span class="nb">title</span><span class="p">(</span><span class="s">&#39;tau = 1 rectangle window&#39;</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+<p>结果如下图：</p>
+<p><img alt="rect" src="/images/digital-signal-processing-and-matlab/rect-window.jpg"></p>
+</li>
+<li>
+<p>周期信号</p>
+<p>假设信号为 x = 1 + 1/2<em>cos(2</em>pi<em>15</em>t) + 2<em>sin(2</em>pi<em>40</em>t)，包含一个直流分量和 f1 = 15, f2 = 40 Hz 的分量，fm = f2 = 40 Hz，若 8 倍采样，有 Fs = fm*8，若 fdelta &lt; 0.1 hz，有 N = 4096，所以：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">f1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">15</span><span class="p">;</span>
+<span class="n">f2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">40</span><span class="p">;</span>
+<span class="n">Fs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">f2</span><span class="o">*</span><span class="mi">8</span><span class="p">;</span>
+<span class="n">w1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="nb">pi</span><span class="o">*</span><span class="n">f1</span><span class="o">/</span><span class="n">Fs</span><span class="p">;</span>
+<span class="n">w2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="nb">pi</span><span class="o">*</span><span class="n">f2</span><span class="o">/</span><span class="n">Fs</span><span class="p">;</span>
+<span class="n">n</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">x</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="nb">cos</span><span class="p">(</span><span class="n">w1</span><span class="o">*</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="nb">sin</span><span class="p">(</span><span class="n">w2</span><span class="o">*</span><span class="n">n</span><span class="p">);</span>
+<span class="n">X</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="nb">fftshift</span><span class="p">(</span><span class="nb">fft</span><span class="p">(</span><span class="n">x</span><span class="p">)));</span>
+<span class="n">f</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">Fs</span><span class="o">/</span><span class="n">N</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Fs</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="nb">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">);</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="s">on</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;f / Hz&#39;</span><span class="p">);</span><span class="w"> </span><span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;Amplitude Response&#39;</span><span class="p">);</span>
+<span class="nb">title</span><span class="p">(</span><span class="s">&#39;x = 1 + 1/2*cos(w1*n) + 2*sin(w2*n)&#39;</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+<p>结果如下：</p>
+<p><img alt="period" src="/images/digital-signal-processing-and-matlab/period.jpg"></p>
+</li>
+</ol>
+<p><br></p>
+<p>综上，我们就有分析一个信号的<strong>通用步骤</strong>：</p>
+<ol>
+<li>
+<p><strong>首先确定 Fs</strong>：信号的频率信息对于我们是未知的，我们最多只知道信号的带宽，根据信号带宽，我们就可以确定一个采样率 Fs，比如 8 倍采样</p>
+</li>
+<li>
+<p>确定了 Fs，实际上的 w 就已经确定了，只是我们是不知道它的具体值（因为不知道 fm）</p>
+</li>
+<li>
+<p><strong>下一步应该确定 N</strong>：由公式 1 和公式 2 可以推出 <code>N = Fs/fm*k</code>。当 Fs 最小为奈奎斯特采样速率，k = 1 时，N 取到最小值 2，这种情况下虽然没有混叠，但是 fdelta 太大了，不利于观察频谱，应该由 <code>fdelta = Fs/N</code> 决定 N 的最小值</p>
+</li>
+</ol>
+<p>====================================== 补充一下 FFT 补零 ========================================</p>
+<p>验证程序：假设一个 sin 信号，f = 125， 8 倍采样有 Fs = 1000，</p>
+<ol>
+<li>
+<p>N = 8，结果如图：</p>
+<p><img alt="period" src="/images/digital-signal-processing-and-matlab/N-8.jpg"></p>
+</li>
+<li>
+<p>N = 8，补零到 64 点，结果如图：</p>
+<p><img alt="period" src="/images/digital-signal-processing-and-matlab/padding.jpg"></p>
+</li>
+<li>
+<p>N = 64，结果如图：</p>
+<p><img alt="period" src="/images/digital-signal-processing-and-matlab/N-64.jpg"></p>
+</li>
+</ol>
+<p>直接给结论（上面的图也证明了这些结论）：</p>
+<ol>
+<li>
+<p>在时域的采样序列后面添加后缀 0 ，等效在频域内插。频域内插只能从已有的样点推算，因为采样点数不够丢失的原始信号的信息无法通过内插来补偿。</p>
+</li>
+<li>
+<p>时域补零实际上改变了采样序列的，所以频域结果和原始信号不同，</p>
+</li>
+<li>
+<p>补零无法提高频率分辨率，内插出的新分量不是真正物理意义上的频率，是 “ 假频 ”，真正的频率分辨率并没有提高。频率分辨率只能由提高采样点数来提高。</p>
+</li>
+</ol>
+<p><br></p>
+<h2 id="reference">Reference</h2>
+<p><a href="http://book.douban.com/subject/3712794/">信号与系统引论</a></p>
+<p><a href="http://book.douban.com/subject/4025528/">数字信号处理</a></p>
+<p><a href="http://book.douban.com/subject/24868505/">数字信号处理教程 ——MATLAB 释义与实现</a></p>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="../../posts/ic/xilinx-fft-core-notes.html" title="Xilinx FFT IP core 笔记">
+      <i class="fa fa-angle-left"></i> Previous Post
+    </a>
+    <a class="btn float-right" href="../../posts/ic/the-clock-design-in-fpga-2-clock-design.html" title="FPGA 时钟设计 2 —— 时钟设计">
+      Next Post <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>You might enjoy</h4>
+    <ul class="related-posts">
+      <li><a href="../../posts/telecom/summary-of-frequency-in-digital-signal-processing.html">数字信号处理中的各种频率</a></li>
+      <li><a href="../../posts/telecom/correlation-coefficient-and-matlab-function.html">相关系数及Matlab函数</a></li>
+    </ul>
+  </div>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="ca-pub-1821536199377100"
+         data-ad-slot="4843941849"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ChienGu';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+
+  	<style>
+#pcs-comment-form input,
+#pcs-comment-form textarea {
+	width: 100%;
+}
+#pcs-comment-form-display-replyto {
+	border: solid 1px black;
+	padding: 2px;
+}
+#pcs-comment-form-display-replyto p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+#pcs-comments ul {
+	list-style: none;
+}
+#pcs-comments .comment-left {
+	display: table-cell;
+	padding-right: 10px;
+}
+#pcs-comments .comment-body {
+	display: table-cell;
+	vertical-align: top;
+	width: 100%;
+}
+</style>
+
+	<section id="pcs-comments">
+	<header>
+		<h2>Comments</h2>
+		<hr/>
+	</header>
+		<p>There are no comments yet.</p>
+	<section>
+	<form id="pcs-comment-form" action="#">
+		<legend id="pcs-comment-form-title" style="font-size: 2em; line-height: 3em;">Add a Comment</legend>
+		<input type="hidden" id="pcs-comment-form-input-replyto">
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-name" style="font-size: 1.5em; line-height: 2em;">Name</label>
+			<input  id="pcs-comment-form-input-name" type="text" placeholder="Enter your name or nickname" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label for="pcs-comment-form-input-website" style="font-size: 1.5em; line-height: 2em;">Website</label>
+			<input  id="pcs-comment-form-input-website" type="text" placeholder="Enter your website (optional)" />
+		</fieldset>
+		<fieldset style="border-style: none; outline-style: none;">
+			<label   for="pcs-comment-form-input-textarea" style="font-size: 1.5em; line-height: 2em;">Your Comment</label>
+			<textarea id="pcs-comment-form-input-textarea" rows="5" style="resize:vertical;" placeholder="Your comment"></textarea>
+			<p>You can use the <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> syntax to format your comment.</p>
+			<div style="display: none; " id="pcs-comment-form-display-replyto"></div>
+		</fieldset>
+
+		<button type="submit"
+				id="pcs-comment-form-button-submit"
+				>Post via email</button>
+
+	</form>
+</section>
+
+</section>
+
+			<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="../../theme/js/comments.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			CommentSystem.email_user   = "guqian110";
+			CommentSystem.email_domain = "163.com";
+			CommentSystem.display_replyto_html = function(comment_content, article_slug, author) { 
+				return ''
+					+ '<button style="float:right;" onclick="CommentSystem.cancelReply(); return false;" title="Cancel the reply">'
+					+ 	'×'
+					+ '</button>'
+					+ '<p>This comment will be posted as a reply to \'<a title="'+comment_content+'" href="#comment-'+article_slug+'">'+author+'</a>\'</p>';
+			};
+
+			$('#pcs-comment-form').on("submit",
+				function( event )
+				{
+					event.preventDefault();
+					$(location).attr('href', CommentSystem.getMailtoLink("digital-signal-processing-and-matlab"));
+				}
+			);
+		});
+	</script>
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2023  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+  <span class="footer-separator">|</span>
+  Switch to the <a href="javascript:void(0)" onclick="theme.switch(`dark`)">dark</a> | <a href="javascript:void(0)" onclick="theme.switch(`light`)">light</a> | <a href="javascript:void(0)" onclick="theme.switch(`browser`)">browser</a> theme
+  <script id="dark-theme-script"
+          src="../../theme/dark-theme/dark-theme.min.js"
+          data-enable-auto-detect-theme="True"
+          data-default-theme="ligtht"
+          type="text/javascript">
+  </script>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Qian's Blog ",
+  "url" : "../..",
+  "image": "https://qian-gu.github.io/images/logo.png",
+  "description": "Qian's Thoughts and Writings"
+}
+</script><a href="https://github.com/qian-gu/qian-gu.github.io" target="_blank" class="github-corner" aria-label="View source on Github">
+    <svg width="80"
+         height="80"
+         viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+         aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor"
+              style="transform-origin: 130px 106px;"
+              class="octo-arm">
+        </path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor"
+              class="octo-body">
+        </path>
+    </svg>
+</a>
+  <script src="../../theme/stork/stork.js"></script>
+  <script>
+    stork.register("sitesearch", "../../search-index.st", {showProgress: false});
+  </script>
+
+</body>
+</html>

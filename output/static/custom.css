@@ -1,0 +1,59 @@
+body {
+    line-height: 1.5em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #d9411e;
+    font-weight: normal;
+}
+
+aside nav ul li {
+    text-transform: none;
+}
+
+.toc {
+    border-radius: 0.5em;
+    margin-bottom: 1em;
+    background: #222831;
+    padding: .5em;
+    margin-top: 1em;
+    top: 30px;
+}
+
+.toc ul {
+    list-style: none;
+    padding: 0.5rem 1rem;
+    margin: 0;
+}
+
+.toc ul li {
+    padding: .25em;
+}
+
+.toc ul li a {
+    color: #d9411e;
+    transition: color .4s;
+    font-size: 1.36em;
+}
+
+.toc ul li a:hover {
+    color: #9166cc;
+    transition: color .4s;
+    border-bottom: 1px solid #9166cc;
+}
+
+.toc ul li ul {
+    font-weight: 500;
+    margin-left: 5px;;;;;
+}
+
+.toc ul li ul a {
+    color: #b2becd;
+    font-size: 1.2em;
+}
+
+.toctitle {
+    color: #d9411e;
+    font-size: 2em;
+    line-height: 2em;
+}
