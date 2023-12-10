@@ -198,9 +198,8 @@ rel="me"           href="mailto:guqian110@163.com"
 
   <div>
     <h2 id="const">为什么要使用 const 限定符</h2>
-<hr>
 <h3 id="const_1">一个需要使用 const 的简单例子</h3>
-<p><a href="http://book.douban.com/subject/1767741/"><em>C++ Primer</em></a> 中的例子</p>
+<p><a href="http://book.douban.com/subject/1767741/">C++ Primer</a> 中的例子</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">512</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">index</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -217,22 +216,19 @@ rel="me"           href="mailto:guqian110@163.com"
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">buf</span><span class="o">-</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">512</span><span class="p">;</span>
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">buf</span><span class="o">-</span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">index</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">buf_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">512</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">buf_size</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">index</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">//...</span>
 <span class="p">}</span>
 </code></pre></div></td></tr></table></div>
 
 <p>通过定义一个好记的变量，就可以增强程序的可读性，而且需要改变这个值时，只需要咋初始化的地方做修改 。这种方法不仅明显减小了工作量，而且大大减小了出错的可能性 。</p>
-<p><em>看起来问题好像已经解决了，但是，事实上，我们可以进一步</em></p>
-<p>在上面的代码中，<code>buf-size</code> 是可以被修改的，它有可能会被有意或者无意修改 。为了避免这种情况，就需要使用 const 限定符了 。</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="n">buf</span><span class="o">-</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">512</span><span class="p">;</span>
+<p>看起来问题好像已经解决了，但是，事实上，我们可以进一步。在上面的代码中，<code>buf_size</code> 是可以被修改的，它有可能会被有意或者无意修改 。为了避免这种情况，就需要使用 const 限定符了 。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="n">buf_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">512</span><span class="p">;</span>
 </code></pre></div></td></tr></table></div>
 
-<p>定义 <code>buf-size</code> 为 <strong>常量（constant）</strong>，并且初始化为 512 .<strong>变量（variable）</strong> <code>buf-size</code> 仍然是一个左值，但是这个左值现在是不能被修改的。（因为 const 把变量转化为常量，所以在定义的时候必须初始化！）</p>
-<p><br></p>
+<p>上面的代码定义 <code>buf-size</code> 为常量（constant）并且初始化为 512。变量（variable）<code>buf_size</code> 仍然是一个左值，但是这个左值现在是不能被修改的，因为 const 把变量转化为常量，所以在定义的时候必须初始化。</p>
 <h2 id="const_2">如何使用 const 限定符</h2>
-<hr>
 <p>C++ Primer 中有这么一句话</p>
 <blockquote>
 <p>It (const) transforms an object into a constant.</p>
@@ -243,7 +239,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </blockquote>
 <p>这是矛盾的，因为常量是不能当左值的 。个人感觉严谨的说法应该是 "cosnt 使变量具有了常量的属性 “</p>
 <h3 id="_1">文件的局部变量</h3>
-<p>const 限定符修同时也改变了变量的作用范围 。普通非 const 变量的默认是具有 <em>外部连接（external linkage）</em>的，在全局作用域内定义非 const 变量时，它在整个程序中都可以被访问 。比如</p>
+<p>const 限定符修同时也改变了变量的作用范围 。普通非 const 变量的默认是具有外部连接（<code>external linkage</code>）的，在全局作用域内定义非 const 变量时，它在整个程序中都可以被访问 。比如</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -257,7 +253,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <span class="o">++</span><span class="n">counter</span><span class="p">;</span>
 </code></pre></div></td></tr></table></div>
 
-<p>但是，对于 全局作用域内的 const 类型的对象，其默认是 <em>内部连接（internal linkage）</em>，仅在定义该对象的文件内可见，不能被其他文件访问 。要想在整个程序里面访问，就必须在定义的时候显式地声明为 <code>extern</code> 类型 。比如</p>
+<p>但是，对于全局作用域内的 const 类型的对象，其默认是内部连接（<code>internal linkage</code>），仅在定义该对象的文件内可见，不能被其他文件访问 。要想在整个程序里面访问，就必须在定义的时候显式地声明为 <code>extern</code> 类型 。比如</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -265,18 +261,18 @@ rel="me"           href="mailto:guqian110@163.com"
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">//file1.cpp</span>
-<span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">buf</span><span class="o">-</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fcn</span><span class="w"> </span><span class="p">();</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">buf_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fcn</span><span class="p">();</span>
 
 <span class="c1">//fiel2.cpp</span>
-<span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">buf</span><span class="o">-</span><span class="n">size</span><span class="p">;</span>
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">buf</span><span class="o">-</span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">index</span><span class="p">)</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">buf_size</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">buf_size</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">index</span><span class="p">)</span>
 <span class="w">    </span><span class="c1">//...</span>
 </code></pre></div></td></tr></table></div>
 
 <h3 id="const_3">使用 const 的方法</h3>
 <ul>
 <li>
-<p>定义在头文件中 inlcude</p>
+<p>在头文件中定义，源文件需要使用时 include</p>
 <p>如果 const 变量是用常量表达式初始化的，那么就可以把它的定义放在头文件中，即使多次包含这个头文件也不会产生 ” 重定义 “  的问题 。</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
@@ -287,23 +283,23 @@ rel="me"           href="mailto:guqian110@163.com"
 <span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">bufsize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">512</span><span class="p">;</span>
 
 <span class="c1">// file2.cpp</span>
-<span class="n">include</span><span class="w"> </span><span class="s">&quot;file1.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;file1.h&quot;</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bufsize</span>
 </code></pre></div></td></tr></table></div>
 
 </li>
 <li>
-<p>定义时声明为 extern</p>
+<p>在源文件中定义，声明为 extern</p>
 <p>如果 const 变量不是用常量表达式初始化的，那么就不能把它当在头文件中 。只能在源文件中定义并初始化 。因为 const 变量是文件局部变量，所以要在其他文件中使用该变量，必须在定义时加上 <code>extern</code> 声明 。</p>
-<p>比如</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// file1.cpp</span>
 <span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">bufsize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">512</span><span class="p">;</span>
 </code></pre></div></td></tr></table></div>
 
+<p>其他文件要使用这个变量，有两种方法：</p>
 <ul>
 <li>
-<p>在头文件中声明为 extern 类型，以使其他文件共享。</p>
+<p>在头文件中声明为 extern 类型，以使其他文件共享</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -319,7 +315,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 </li>
 <li>
-<p>不需要在头文件中声明，在其他文件中使用前声明</p>
+<p>不在头文件中声明，其他文件中使用前声明</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// file2.cpp</span>
@@ -331,7 +327,10 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 </li>
 </ul>
-<p><strong>P.S.</strong> 在 C 中 const 是默认为外部连接的，在 C++ 中是默认为内部连接的 。</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>在 C 中 const 是默认为外部连接的，在 C++ 中是默认为内部连接的。</p>
+</div>
 <p>至于为什么要这么规定，<a href="http://book.douban.com/subject/1459728/">Thinking in C++</a> 中有说明</p>
 <blockquote>
 <p>Constants were introduced in early versions of C++ while the Standard C specification was
@@ -381,22 +380,19 @@ because it doesn’t know the value.</p>
 <p>因为引用只是对象的另外一个名字，它们指向的是统一块内存空间，所以通过修改引用的值就能达到修改对象的值的目的 。</p>
 <p>当对象是 const 类型时，隐含的含义是该对象不能被修改，所以只能定义 const 类型的引用指向它；nonconst 类型的引用隐含的意思是可以通过引用修改对象值，这对于 const 类型的对象来说是不允许的 。</p>
 <p>当对象是 nonconst 类型时，隐含的含义是该对象可以通过引用来修改，此时，const 引用和 nonconst 引用都可以指向该对象 。当使用 nonconst 引用时，可以通过引用修改对象的值；当使用 const 引用时，虽然对象的值是可以改变的，但是不能通过该引用修改，因为引用的类型是 const，定义以后，不能再修改 。 </p>
-<p><br></p>
 <h2 id="const_4">何时应该使用 const</h2>
-<hr>
 <p>Scott Meyers 大神的经典著作 <a href="http://book.douban.com/subject/1842426/">Effective C++</a> 里面提到的关于 const 的使用 。</p>
 <h3 id="effective-c-02-constenuminline-defineprefer-constsenumsand-inline-to-define">Effective C++ 条款 02：尽量以 const、enum、inline 替换 #define（Prefer consts,enums,and inline to #define）</h3>
-<p>使用 const 代替 #define，事实上 <code>const</code> 的最初动机就是取代预处理器 <code>#define</code> 来进行值替代 。因为 #define 不被视为语言的一部分，这就是它的问题所在 。</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#define ASPECT-RATIO 1.653;</span>
+<p>事实上设计 <code>const</code> 的最初动机就是取代预处理器 <code>#define</code> 来进行值替代 。因为 #define 不被视为语言的一部分，这就是它的问题所在。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#define ASPECT_RATIO 1.653;</span>
 </code></pre></div></td></tr></table></div>
 
-<p>记号名 ASPECT-RATIO 也许从未被编译器看见，也许在编译器开始处理代码前就被与处理器移走了，于是记号没有进入记号表，当出现编译错误时，也许会提示是 1.653 而不是 ASPECT-RATIO，这回带来很多困惑 。</p>
+<p>记号名 ASPECT_RATIO 也许从未被编译器看见，也许在编译器开始处理代码前就被与处理器移走了，于是记号没有进入记号表，当出现编译错误时，也许会提示是 1.653 而不是 ASPECT_RATIO，这回带来很多困惑 。</p>
 <p>解决之道就是以一个常量代替上述的宏</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">AspectRatio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.653</span><span class="p">;</span>
 </code></pre></div></td></tr></table></div>
 
-<h3 id="effective-c-03-constuse-const-whenever-possile">Effective C++ 条款 03：尽可能使用 const（Use const whenever possile）</h3>
-<p><br></p>
+<h3 id="effective-c-03-constuse-const-whenever-possible">Effective C++ 条款 03：尽可能使用 const（Use const whenever possible）</h3>
 <h2 id="_2">参考</h2>
 <p><a href="http://book.douban.com/subject/1767741/">C++ Primer</a></p>
 <p><a href="http://book.douban.com/subject/1459728/">Thinking in C++</a></p>

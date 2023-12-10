@@ -24899,9 +24899,8 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 &lt;h2 id="_1"&gt;参考&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://book.douban.com/subject/6126937/"&gt;学习 vi 和 Vim 编辑器&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://github.com/amix/vimrc"&gt;The Ultimate vimrc&lt;/a&gt;&lt;/p&gt;</content><category term="Tools"></category><category term="Vim"></category></entry><entry><title>C++ const 限定符</title><link href="https://qian-gu.github.io/posts/cs/cosnt-qualifier.html" rel="alternate"></link><published>2014-04-09T11:13:00+08:00</published><updated>2014-04-09T11:13:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2014-04-09:/posts/cs/cosnt-qualifier.html</id><summary type="html">&lt;p&gt;总结 const 限定符的用法。&lt;/p&gt;</summary><content type="html">&lt;h2 id="const"&gt;为什么要使用 const 限定符&lt;/h2&gt;
-&lt;hr&gt;
 &lt;h3 id="const_1"&gt;一个需要使用 const 的简单例子&lt;/h3&gt;
-&lt;p&gt;&lt;a href="http://book.douban.com/subject/1767741/"&gt;&lt;em&gt;C++ Primer&lt;/em&gt;&lt;/a&gt; 中的例子&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://book.douban.com/subject/1767741/"&gt;C++ Primer&lt;/a&gt; 中的例子&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;
 &lt;span class="normal"&gt;3&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
@@ -24918,22 +24917,19 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;
 &lt;span class="normal"&gt;3&lt;/span&gt;
-&lt;span class="normal"&gt;4&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf_size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf_size&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;//...&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
 &lt;p&gt;通过定义一个好记的变量，就可以增强程序的可读性，而且需要改变这个值时，只需要咋初始化的地方做修改 。这种方法不仅明显减小了工作量，而且大大减小了出错的可能性 。&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;看起来问题好像已经解决了，但是，事实上，我们可以进一步&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;在上面的代码中，&lt;code&gt;buf-size&lt;/code&gt; 是可以被修改的，它有可能会被有意或者无意修改 。为了避免这种情况，就需要使用 const 限定符了 。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;p&gt;看起来问题好像已经解决了，但是，事实上，我们可以进一步。在上面的代码中，&lt;code&gt;buf_size&lt;/code&gt; 是可以被修改的，它有可能会被有意或者无意修改 。为了避免这种情况，就需要使用 const 限定符了 。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf_size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;p&gt;定义 &lt;code&gt;buf-size&lt;/code&gt; 为 &lt;strong&gt;常量（constant）&lt;/strong&gt;，并且初始化为 512 .&lt;strong&gt;变量（variable）&lt;/strong&gt; &lt;code&gt;buf-size&lt;/code&gt; 仍然是一个左值，但是这个左值现在是不能被修改的。（因为 const 把变量转化为常量，所以在定义的时候必须初始化！）&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;上面的代码定义 &lt;code&gt;buf-size&lt;/code&gt; 为常量（constant）并且初始化为 512。变量（variable）&lt;code&gt;buf_size&lt;/code&gt; 仍然是一个左值，但是这个左值现在是不能被修改的，因为 const 把变量转化为常量，所以在定义的时候必须初始化。&lt;/p&gt;
 &lt;h2 id="const_2"&gt;如何使用 const 限定符&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;C++ Primer 中有这么一句话&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;It (const) transforms an object into a constant.&lt;/p&gt;
@@ -24944,7 +24940,7 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 &lt;/blockquote&gt;
 &lt;p&gt;这是矛盾的，因为常量是不能当左值的 。个人感觉严谨的说法应该是 "cosnt 使变量具有了常量的属性 “&lt;/p&gt;
 &lt;h3 id="_1"&gt;文件的局部变量&lt;/h3&gt;
-&lt;p&gt;const 限定符修同时也改变了变量的作用范围 。普通非 const 变量的默认是具有 &lt;em&gt;外部连接（external linkage）&lt;/em&gt;的，在全局作用域内定义非 const 变量时，它在整个程序中都可以被访问 。比如&lt;/p&gt;
+&lt;p&gt;const 限定符修同时也改变了变量的作用范围 。普通非 const 变量的默认是具有外部连接（&lt;code&gt;external linkage&lt;/code&gt;）的，在全局作用域内定义非 const 变量时，它在整个程序中都可以被访问 。比如&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;
 &lt;span class="normal"&gt;3&lt;/span&gt;
@@ -24958,7 +24954,7 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 &lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;counter&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;p&gt;但是，对于 全局作用域内的 const 类型的对象，其默认是 &lt;em&gt;内部连接（internal linkage）&lt;/em&gt;，仅在定义该对象的文件内可见，不能被其他文件访问 。要想在整个程序里面访问，就必须在定义的时候显式地声明为 &lt;code&gt;extern&lt;/code&gt; 类型 。比如&lt;/p&gt;
+&lt;p&gt;但是，对于全局作用域内的 const 类型的对象，其默认是内部连接（&lt;code&gt;internal linkage&lt;/code&gt;），仅在定义该对象的文件内可见，不能被其他文件访问 。要想在整个程序里面访问，就必须在定义的时候显式地声明为 &lt;code&gt;extern&lt;/code&gt; 类型 。比如&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;
 &lt;span class="normal"&gt;3&lt;/span&gt;
@@ -24966,18 +24962,18 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 &lt;span class="normal"&gt;5&lt;/span&gt;
 &lt;span class="normal"&gt;6&lt;/span&gt;
 &lt;span class="normal"&gt;7&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;//file1.cpp&lt;/span&gt;
-&lt;span class="k"&gt;extern&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fcn&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="k"&gt;extern&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf_size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fcn&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
 
 &lt;span class="c1"&gt;//fiel2.cpp&lt;/span&gt;
-&lt;span class="k"&gt;extern&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;extern&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf_size&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;!=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buf_size&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;//...&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
 &lt;h3 id="const_3"&gt;使用 const 的方法&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;定义在头文件中 inlcude&lt;/p&gt;
+&lt;p&gt;在头文件中定义，源文件需要使用时 include&lt;/p&gt;
 &lt;p&gt;如果 const 变量是用常量表达式初始化的，那么就可以把它的定义放在头文件中，即使多次包含这个头文件也不会产生 ” 重定义 “  的问题 。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;
@@ -24988,23 +24984,23 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 &lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bufsize&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
 &lt;span class="c1"&gt;// file2.cpp&lt;/span&gt;
-&lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;quot;file1.h&amp;quot;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="cpf"&gt;&amp;quot;file1.h&amp;quot;&lt;/span&gt;
 &lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bufsize&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;定义时声明为 extern&lt;/p&gt;
+&lt;p&gt;在源文件中定义，声明为 extern&lt;/p&gt;
 &lt;p&gt;如果 const 变量不是用常量表达式初始化的，那么就不能把它当在头文件中 。只能在源文件中定义并初始化 。因为 const 变量是文件局部变量，所以要在其他文件中使用该变量，必须在定义时加上 &lt;code&gt;extern&lt;/code&gt; 声明 。&lt;/p&gt;
-&lt;p&gt;比如&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;// file1.cpp&lt;/span&gt;
 &lt;span class="k"&gt;extern&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bufsize&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
+&lt;p&gt;其他文件要使用这个变量，有两种方法：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;在头文件中声明为 extern 类型，以使其他文件共享。&lt;/p&gt;
+&lt;p&gt;在头文件中声明为 extern 类型，以使其他文件共享&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;
 &lt;span class="normal"&gt;3&lt;/span&gt;
@@ -25020,7 +25016,7 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;不需要在头文件中声明，在其他文件中使用前声明&lt;/p&gt;
+&lt;p&gt;不在头文件中声明，其他文件中使用前声明&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;
 &lt;span class="normal"&gt;3&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;// file2.cpp&lt;/span&gt;
@@ -25032,7 +25028,10 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;P.S.&lt;/strong&gt; 在 C 中 const 是默认为外部连接的，在 C++ 中是默认为内部连接的 。&lt;/p&gt;
+&lt;div class="admonition warning"&gt;
+&lt;p class="admonition-title"&gt;Warning&lt;/p&gt;
+&lt;p&gt;在 C 中 const 是默认为外部连接的，在 C++ 中是默认为内部连接的。&lt;/p&gt;
+&lt;/div&gt;
 &lt;p&gt;至于为什么要这么规定，&lt;a href="http://book.douban.com/subject/1459728/"&gt;Thinking in C++&lt;/a&gt; 中有说明&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Constants were introduced in early versions of C++ while the Standard C specification was
@@ -25082,22 +25081,19 @@ because it doesn’t know the value.&lt;/p&gt;
 &lt;p&gt;因为引用只是对象的另外一个名字，它们指向的是统一块内存空间，所以通过修改引用的值就能达到修改对象的值的目的 。&lt;/p&gt;
 &lt;p&gt;当对象是 const 类型时，隐含的含义是该对象不能被修改，所以只能定义 const 类型的引用指向它；nonconst 类型的引用隐含的意思是可以通过引用修改对象值，这对于 const 类型的对象来说是不允许的 。&lt;/p&gt;
 &lt;p&gt;当对象是 nonconst 类型时，隐含的含义是该对象可以通过引用来修改，此时，const 引用和 nonconst 引用都可以指向该对象 。当使用 nonconst 引用时，可以通过引用修改对象的值；当使用 const 引用时，虽然对象的值是可以改变的，但是不能通过该引用修改，因为引用的类型是 const，定义以后，不能再修改 。 &lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="const_4"&gt;何时应该使用 const&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;Scott Meyers 大神的经典著作 &lt;a href="http://book.douban.com/subject/1842426/"&gt;Effective C++&lt;/a&gt; 里面提到的关于 const 的使用 。&lt;/p&gt;
 &lt;h3 id="effective-c-02-constenuminline-defineprefer-constsenumsand-inline-to-define"&gt;Effective C++ 条款 02：尽量以 const、enum、inline 替换 #define（Prefer consts,enums,and inline to #define）&lt;/h3&gt;
-&lt;p&gt;使用 const 代替 #define，事实上 &lt;code&gt;const&lt;/code&gt; 的最初动机就是取代预处理器 &lt;code&gt;#define&lt;/code&gt; 来进行值替代 。因为 #define 不被视为语言的一部分，这就是它的问题所在 。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cp"&gt;#define ASPECT-RATIO 1.653;&lt;/span&gt;
+&lt;p&gt;事实上设计 &lt;code&gt;const&lt;/code&gt; 的最初动机就是取代预处理器 &lt;code&gt;#define&lt;/code&gt; 来进行值替代 。因为 #define 不被视为语言的一部分，这就是它的问题所在。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cp"&gt;#define ASPECT_RATIO 1.653;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;p&gt;记号名 ASPECT-RATIO 也许从未被编译器看见，也许在编译器开始处理代码前就被与处理器移走了，于是记号没有进入记号表，当出现编译错误时，也许会提示是 1.653 而不是 ASPECT-RATIO，这回带来很多困惑 。&lt;/p&gt;
+&lt;p&gt;记号名 ASPECT_RATIO 也许从未被编译器看见，也许在编译器开始处理代码前就被与处理器移走了，于是记号没有进入记号表，当出现编译错误时，也许会提示是 1.653 而不是 ASPECT_RATIO，这回带来很多困惑 。&lt;/p&gt;
 &lt;p&gt;解决之道就是以一个常量代替上述的宏&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;double&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;AspectRatio&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;1.653&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;h3 id="effective-c-03-constuse-const-whenever-possile"&gt;Effective C++ 条款 03：尽可能使用 const（Use const whenever possile）&lt;/h3&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h3 id="effective-c-03-constuse-const-whenever-possible"&gt;Effective C++ 条款 03：尽可能使用 const（Use const whenever possible）&lt;/h3&gt;
 &lt;h2 id="_2"&gt;参考&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://book.douban.com/subject/1767741/"&gt;C++ Primer&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://book.douban.com/subject/1459728/"&gt;Thinking in C++&lt;/a&gt;&lt;/p&gt;
@@ -25109,18 +25105,14 @@ because it doesn’t know the value.&lt;/p&gt;
 &lt;p&gt;解决方案 1 是最省事的，也是目前最流行的，目前各大互联网公司都提供各种云服务，比如国外的 Google Drive、Dropbox，国内的百度云、360 网盘什么的。这种方案最大的有点是跨平台，不过这个方案是借助了第三方的服务器，需要连接到互联网才行，而且对网速是有一定要求的。&lt;/p&gt;
 &lt;p&gt;解决方案 2 相比于方案 1 的优势是：不是必须要连接到互联网，在局域网内也可以同步文件 。一般局域网内传输文件的速度要比连外界的服务器快很多 。&lt;/p&gt;
 &lt;p&gt;考虑到校园网的环境，明显方案 2 更加好 。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="ssh"&gt;什么是 SSH&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;最早的时候，互联网通信都是明文通信，一旦被截获，内容就暴露无疑 。&lt;a href="http://en.wikipedia.org/wiki/Secure-Shell"&gt;SSH&lt;/a&gt; 协议，将登录信息全部加密，成为互联网安全的一个基本解决方案，迅速在全世界获得推广，目前已经成为 Linux 系统的标准配置 。&lt;/p&gt;
 &lt;p&gt;最初的 SSH 协议是由芬兰的一家公司的研究员 Tatu Ylönen 于 1995 年设计开发的，但是因为受版权和加密算法等等的限制，现在很多人都转而使用 OpenSSH 。OpenSSH 是 SSH 的替代软件包，而且是开放源代码和免费的 。—— Wikipedia&lt;/p&gt;
 &lt;p&gt;关于 SSH 的原理，找到了一系列 &lt;a href="http://www.ruanyifeng.com/blog/"&gt;阮一峰&lt;/a&gt;的文章，很简洁明了 :&lt;/p&gt;
 &lt;h3 id="ssh_1"&gt;SSH&lt;/h3&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/12/ssh-remote-login.html"&gt;SSH 原理与运用（一）：远程登录&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/12/ssh-port-forwarding.html"&gt;SSH 原理与运用（二）：远程操作与端口转发&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="ssh_2"&gt;SSH 的用法&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;最简单明了的教程就是 man page 了&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;man&lt;span class="w"&gt; &lt;/span&gt;ssh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
@@ -25262,9 +25254,7 @@ ssh&lt;span class="w"&gt; &lt;/span&gt;lab
 ssh&lt;span class="w"&gt; &lt;/span&gt;dom
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="scp"&gt;使用 SCP 传输文件&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;SSH 提供了一些命令和 shell 用来登录远程服务器 。在默认情况下它不允许你拷贝文件 , 但是还是提供了一个 "scp" 命令 。scp 命令是 SSH 中最方便有用的命令了，试想，在两台服务器之间直接传送文件。仅仅用 scp 一个命令就完全解决了 。&lt;/p&gt;
 &lt;p&gt;man page&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;man&lt;span class="w"&gt; &lt;/span&gt;scp
@@ -25299,16 +25289,13 @@ SYNOPSIS
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;scp&lt;span class="w"&gt; &lt;/span&gt;-r&lt;span class="w"&gt; &lt;/span&gt;~/test&lt;span class="w"&gt; &lt;/span&gt;chien@lab:~/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;至此，就实现了两台电脑的之间相互远程访问的功能 。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/12/ssh-remote-login.html"&gt;数字签名是什么？&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/12/ssh-port-forwarding.html"&gt;What is a Digital Signature?&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/08/what-is-a-digital-signature.html"&gt;SSH 原理与运用（一）：远程登录&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.youdzone.com/signature.html"&gt;SSH 原理与运用（二）：远程操作与端口转发&lt;/a&gt;&lt;/p&gt;</content><category term="Tools"></category><category term="SSH"></category></entry><entry><title>学习 FPGA 入门</title><link href="https://qian-gu.github.io/posts/ic/learning-fpga-getting-started.html" rel="alternate"></link><published>2014-04-03T12:40:00+08:00</published><updated>2014-04-03T12:40:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2014-04-03:/posts/ic/learning-fpga-getting-started.html</id><summary type="html">&lt;p&gt;总结 FPGA 的学习经历，温故而知新。&lt;/p&gt;</summary><content type="html">&lt;h2 id="fpga"&gt;FPGA 是什么&lt;/h2&gt;
-&lt;hr&gt;
-&lt;p&gt;FPGA 是 PLD 家族中的一员，要说清楚什么是 FPGA，就不得不说一说 PLD 。（&lt;strong&gt;以下内容来自 wikipedia&lt;/strong&gt;）&lt;/p&gt;
+&lt;p&gt;FPGA 是 PLD 家族中的一员，要说清楚什么是 FPGA，就不得不说一说 PLD。（&lt;strong&gt;以下内容来自 wikipedia&lt;/strong&gt;）&lt;/p&gt;
 &lt;h3 id="pld-asic"&gt;PLD &amp;amp; ASIC&lt;/h3&gt;
 &lt;p&gt;早期的数字逻辑系统，是由中、小规模集成电路芯片搭建而成的。这种形式的电路在可靠性、工作速度、功耗和体积方面都难以满足大规模、高性能信息处理系统的要求 。后来，随着集成电路的发展，出现可专用集成电路 。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;专用集成电路&lt;/strong&gt;（Application Specific Integrated Circuits, &lt;a href="http://en.wikipedia.org/wiki/Application-specific-integrated-circuit"&gt;&lt;code&gt;ASIC&lt;/code&gt;&lt;/a&gt;）是指依产品需求不同而非通用目的，而自定义的特殊规格集成电路 。ASIC 可以将整个系统集成到一个芯片上。由于芯片内集成度高、连线短，所以它可以满足之前 ” 搭建系统 “ 难以满足的性能指标 。&lt;/p&gt;
@@ -25317,7 +25304,7 @@ SYNOPSIS
 &lt;p&gt;&lt;strong&gt;可编程逻辑器件&lt;/strong&gt;（Programmable Logic Device,&lt;a href="http://en.wikipedia.org/wiki/Programmable-logic-devices"&gt;&lt;code&gt;PLD&lt;/code&gt;&lt;/a&gt;）是一种用来搭建可重配置数字电路的电子器件。和逻辑门（logic gate）不同，PLD 出厂时逻辑功能是没有被定义的，在使用之前，必须先重配置（reconfigure）。&lt;/p&gt;
 &lt;h3 id="_1"&gt;历史&lt;/h3&gt;
 &lt;h4 id="rom-as-pld"&gt;ROM as PLD&lt;/h4&gt;
-&lt;p&gt;在 PLD 器件被发明之前，就已经有人 &lt;em&gt;将 &lt;a href="http://en.wikipedia.org/wiki/Read-only-memory"&gt;ROM&lt;/a&gt; 以 PLD 的概念来运用&lt;/em&gt;，用 ROM 芯片来充当一些输入性的组合逻辑（combinatorial logic）的函数发生器。ROM 有 m 个地址线，则有 &lt;code&gt;n = 2^m&lt;/code&gt; 个输出结果，这和布尔逻辑是一一对应的，所以如果把 ROM 的地址线当作相互之间没有关系的输入，则相应的输出就可以实现不同的函数。&lt;/p&gt;
+&lt;p&gt;在 PLD 器件被发明之前，就已经有人将 &lt;a href="http://en.wikipedia.org/wiki/Read-only-memory"&gt;ROM&lt;/a&gt; 以 PLD 的概念来运用，用 ROM 芯片来充当一些输入性的组合逻辑（combinatorial logic）的函数发生器。ROM 有 m 个地址线，则有 &lt;code&gt;n = 2^m&lt;/code&gt; 个输出结果，这和布尔逻辑是一一对应的，所以如果把 ROM 的地址线当作相互之间没有关系的输入，则相应的输出就可以实现不同的函数。&lt;/p&gt;
 &lt;p&gt;早期的 Mask ROM 存储数据的方式是使用内部的硬件电路，所以只能在出厂时就写入数据，而且以后不能更改。这就导致了一系列缺点：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
@@ -25412,33 +25399,27 @@ SYNOPSIS
 &lt;p&gt;Xilinx 公司的共同创世人 &lt;a href="http://en.wikipedia.org/wiki/Ross-Freeman"&gt;Ross Freeman&lt;/a&gt; 和 &lt;a href="http://en.wikipedia.org/wiki/Bernard-Vonderschmitt"&gt;Bernard Vonderschmitt&lt;/a&gt; 在 1985 年发明出第一款商业 FPGA —— XC2064 。XC2064 芯片有可以编程的逻辑门和可以编程的内部连接线，这开辟了一项新的技术和市场 。XC2064 有 64 个可配置逻辑块（configurable logic blocks，CLBs），和 3 输入查找表（lookup tables，LUTs）。&lt;/p&gt;
 &lt;p&gt;从 1985 开始到 90 年代中期，Xilinx 一直处于高速发展阶段，之后竞争对手出现了，截至 1993 年，Actel 占据了 18% 的市场 。&lt;/p&gt;
 &lt;p&gt;90 年代是 FPGA 爆炸式发展的年代，这一期间出现了大量高端技术和产品。在 90 年代初期，FPGA 主要应用于通信领域，在 90 年代后期，FPGA 已经广泛应用于消费品、汽车和工业应用 。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="fpga_2"&gt;为什么选择 FPGA&lt;/h2&gt;
-&lt;hr&gt;
 &lt;h3 id="fpga-vs-asic"&gt;FPGA vs ASIC&lt;/h3&gt;
-&lt;p&gt;ASIC 的优点：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ASIC 的优点：&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;ASIC 在批量生产时与通用集成电路相比具有体积更小、功耗更低、可靠性提高、性能提高、保密性增强、成本降低 。&lt;/p&gt;
-&lt;p&gt;ASIC 的缺点：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ASIC 的缺点：&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;设计周期最长，设计成本贵，设计费用最高，适合于批量很大或者对产品成本不计较的场合。&lt;/p&gt;
 &lt;p&gt;至于 FPGA 的优点和缺点完全就是 ASIC 的取反 。FPGA 一般来说比专用集成电路（ASIC）的速度要慢，无法完成更复杂的设计，并且会消耗更多的电能。但是，FPGA 具有很多优点，比如可以快速成品，而且其内部逻辑可以被设计者反复修改，从而改正程序中的错误，此外，使用 FPGA 进行除错的成本较低 。在一些技术更新比较快的行业，FPGA 几乎是电子系统中的必要部件，因为在大批量供货前，必须迅速抢占市场，这时 FPGA 方便灵活的优势就显得很重要。这也是 FPGA 能够发展起来的原因，市场是不会允许一个毫无优势的技术发展到今天这种地步的 。&lt;/p&gt;
-&lt;p&gt;个人认为两者不是对立的，由于各自的特点，它们有各自适用的环境，不能一棒子打死，否定其中一个 。事实上更多的情况是：设计的开发是在普通的 FPGA 上完成的，然后将设计转移到一个类似于专用集成电路的芯片上 。&lt;/p&gt;
+&lt;p&gt;两者不是对立的，由于各自的特点它们有各自适用的环境，不能一棒子打死，否定其中一个。事实上更多的情况是：设计开发是在普通的 FPGA 上完成的，然后将设计转移到一个类似于 ASIC 的芯片上 。&lt;/p&gt;
 &lt;h3 id="fpga-vs-cpld"&gt;FPGA vs CPLD&lt;/h3&gt;
 &lt;p&gt;为了达到上述目的，还有一种方法是使用 CPLD 。
 CPLD 和 FPGA 都包括了一些相对大数量的可以编辑逻辑单元。CPLD 逻辑门的密度在几千到几万个逻辑单元之间，而 FPGA 通常是在几万到几百万。&lt;/p&gt;
 &lt;p&gt;FPGA 与 CLPD 最大的区别就是：FPGA 是基于查找表（look up table，LUT），而 CPLD 是基于海门架构（sea-of-gates），也就是它们的系统结构 。CPLD 的结构具有一定的局限性 。这个结构由一个或者多个可编辑的结果之和的逻辑组列和一些相对少量的锁定的寄存器组成 。这样的结果是缺乏编辑灵活性，但是它的优点是，其延迟时间易于预计，逻辑单元对连接单元比率较高 。而 FPGA 具有的连接单元数量很大，这样虽然让它可以更加灵活的编辑，但是结构却复杂的多 。&lt;/p&gt;
 &lt;p&gt;CPLD 和 FPGA 另外一个区别是大多数的 FPGA 含有高层次的内置模块（比如加法器和乘法器）和内置的存储器 。一个由此带来的重要区别是，很多新的 FPGA 支持完全的或者部分的系统内重新配置 。允许他们的设计随着系统升级或者动态重新配置而改变 。一些 FPGA 可以让设备的一部分重新编辑，而其他部分继续正常运行 。&lt;/p&gt;
 &lt;p&gt;CPLD 与 FPGA 之间结构、原理上的差别导致两者应用上的差别 。考虑成本、性能要求等因素，应该根据实际情况选择 。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="xilinx-altera"&gt;Xilinx &amp;amp; Altera&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;FPGA 的制造商主要是 Xilinx 和 Altera 两家，他们合起来市场占有率达到了 80% 之多 。两家是 FPGA 技术的领导者也是长期竞争对手 。&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/Xilinx"&gt;Xilinx&lt;/a&gt; 于 1984 年创建于美国加利福尼亚州的硅谷，总部位于硅谷核心的圣何塞。它是一家主要提供 FPGA 的科技公司 。并且就是它的创始人是发明了 FPGA 。&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/Altera"&gt;Altera&lt;/a&gt; 是一家位于美国硅谷的可编程逻辑器件和 CPLD 的制造商 。该公司于 1984 年推出了其首款可编程逻辑设备。&lt;/p&gt;
 &lt;p&gt;两家一直是互为竞争对手，一般来说，大学里面都 Altera 的器件和 VHDL 上课，所以在学校里面用 Xilinx 的人比较少 。&lt;/p&gt;
 &lt;p&gt;因为原理是一样的，所以只要学会一种，另一种就很容易上手。学校实验室里面用的是 Xilinx 。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="xilinx-fpga-architecture"&gt;Xilinx FPGA Architecture（架构）&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;FPGA 需要反复烧写，所以不能像 ASIC 一样通过固定的与非门来完成，只能采用一种易于反复配置的结构，查找表就可以很好的满足这一要求。目前主流 FPGA 都是采用了基于 SRAM 工艺的查找表结构（军品和宇航级 FPGA 采用 Flash 或者熔丝 / 反熔丝工艺），通过烧写文件改变查找表内容的方法来实现对 FPGA 的重复配置。&lt;/p&gt;
 &lt;p&gt;查找表（look-up table，LUT）本质上就是一个 RAM 。当用户通过原理图或 HDL 语言描述了一个电路以后，FPGA 开发软件会计算逻辑电路的所有可能结果，并把真值表事先写入 RAM，这样，每输入一个信号进行逻辑运算就相当于输入一个地址进行查找，这样 LUT 就具有了和逻辑电路相同的功能 。实际上，LUT 具有更快的执行速度和更大的规模 。&lt;/p&gt;
 &lt;p&gt;上电时，FPGA 将外部存储器中的数据读入片内 RAM，完成配置后，进入工作状态；掉电后 FPGA 恢复为白片，内部逻辑消失。这样 FPGA 不仅能够反复使用，还无须专门的 FPGA 编程器，只需通用的 EPROM、PROM 编程器即可。&lt;/p&gt;
@@ -25457,9 +25438,7 @@ CPLD 和 FPGA 都包括了一些相对大数量的可以编辑逻辑单元。CPL
 &lt;p&gt;内嵌功能模块只要是指 DLL、PLL、DSP 和 CPU 等 &lt;strong&gt;软核&lt;/strong&gt;，还有底层的 &lt;strong&gt;硬核&lt;/strong&gt; 资源，比如内嵌的 Power PC、ARM9、DSP 芯片等 。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;Xilinx 主流 FPGA&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Xilinx 主流的 FPGA 主要有 A 系列、K 系列、V 系列、Spartan 系列，如今还有最新的 Zynq 系列，官网上有详细介绍 。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="_3"&gt;开发流程&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;FPGA 的开发流程如下图所示：&lt;/p&gt;
 &lt;p&gt;&lt;img alt="design flow" src="/images/learning-fpga-getting-started/design-flow.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;整个开发过程就是使用开发工具 ISE Design Suite，按照流程图进行 。图示是标准流程，但是实际上并不是严格按照每一个步骤进行 。&lt;/p&gt;
@@ -25493,7 +25472,6 @@ CPLD 和 FPGA 都包括了一些相对大数量的可以编辑逻辑单元。CPL
 &lt;p&gt;将设计下载到芯片中调试。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="_4"&gt;参考&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/Programmable-logic-devices"&gt;PLD wikipedia&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/Field-programmable-gate-array"&gt;FPGA wikipedia&lt;/a&gt;&lt;/p&gt;</content><category term="IC"></category><category term="FPGA"></category></entry><entry><title>C/C++ 内置数据类型</title><link href="https://qian-gu.github.io/posts/cs/built-in-types.html" rel="alternate"></link><published>2014-03-31T13:37:00+08:00</published><updated>2014-03-31T13:37:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2014-03-31:/posts/cs/built-in-types.html</id><summary type="html">&lt;p&gt;重读经典 C++ Primer，总结 C++ 内置数据类型。&lt;/p&gt;</summary><content type="html">&lt;p&gt;类型是程序设计的基础。一些程序设计语言，比如 Smalltalk 和 Python，在运行的时候才检查预计中的对象的类型，相反 C++ 是静态类型（statically typed）语言，在编译时执行类型检查。导致的结果是：&lt;/p&gt;
@@ -25564,7 +25542,6 @@ CPLD 和 FPGA 都包括了一些相对大数量的可以编辑逻辑单元。CPL
 &lt;/blockquote&gt;
 &lt;h3 id="void"&gt;void&lt;/h3&gt;
 &lt;p&gt;void 类型没有对应的值，仅用在有限的一些情况下，通常用作无返回值函数的返回类型。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="initialize"&gt;初始化 Initialize&lt;/h2&gt;
 &lt;hr&gt;
 &lt;h3 id="_3"&gt;初始化 &amp;amp; 赋值&lt;/h3&gt;

@@ -203,18 +203,14 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>解决方案 1 是最省事的，也是目前最流行的，目前各大互联网公司都提供各种云服务，比如国外的 Google Drive、Dropbox，国内的百度云、360 网盘什么的。这种方案最大的有点是跨平台，不过这个方案是借助了第三方的服务器，需要连接到互联网才行，而且对网速是有一定要求的。</p>
 <p>解决方案 2 相比于方案 1 的优势是：不是必须要连接到互联网，在局域网内也可以同步文件 。一般局域网内传输文件的速度要比连外界的服务器快很多 。</p>
 <p>考虑到校园网的环境，明显方案 2 更加好 。</p>
-<p><br></p>
 <h2 id="ssh">什么是 SSH</h2>
-<hr>
 <p>最早的时候，互联网通信都是明文通信，一旦被截获，内容就暴露无疑 。<a href="http://en.wikipedia.org/wiki/Secure-Shell">SSH</a> 协议，将登录信息全部加密，成为互联网安全的一个基本解决方案，迅速在全世界获得推广，目前已经成为 Linux 系统的标准配置 。</p>
 <p>最初的 SSH 协议是由芬兰的一家公司的研究员 Tatu Ylönen 于 1995 年设计开发的，但是因为受版权和加密算法等等的限制，现在很多人都转而使用 OpenSSH 。OpenSSH 是 SSH 的替代软件包，而且是开放源代码和免费的 。—— Wikipedia</p>
 <p>关于 SSH 的原理，找到了一系列 <a href="http://www.ruanyifeng.com/blog/">阮一峰</a>的文章，很简洁明了 :</p>
 <h3 id="ssh_1">SSH</h3>
 <p><a href="http://www.ruanyifeng.com/blog/2011/12/ssh-remote-login.html">SSH 原理与运用（一）：远程登录</a></p>
 <p><a href="http://www.ruanyifeng.com/blog/2011/12/ssh-port-forwarding.html">SSH 原理与运用（二）：远程操作与端口转发</a></p>
-<p><br></p>
 <h2 id="ssh_2">SSH 的用法</h2>
-<hr>
 <p>最简单明了的教程就是 man page 了</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>man<span class="w"> </span>ssh
 </code></pre></div></td></tr></table></div>
@@ -356,9 +352,7 @@ ssh<span class="w"> </span>lab
 ssh<span class="w"> </span>dom
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <h2 id="scp">使用 SCP 传输文件</h2>
-<hr>
 <p>SSH 提供了一些命令和 shell 用来登录远程服务器 。在默认情况下它不允许你拷贝文件 , 但是还是提供了一个 "scp" 命令 。scp 命令是 SSH 中最方便有用的命令了，试想，在两台服务器之间直接传送文件。仅仅用 scp 一个命令就完全解决了 。</p>
 <p>man page</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>man<span class="w"> </span>scp
@@ -393,9 +387,7 @@ SYNOPSIS
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>scp<span class="w"> </span>-r<span class="w"> </span>~/test<span class="w"> </span>chien@lab:~/
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <p>至此，就实现了两台电脑的之间相互远程访问的功能 。</p>
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://www.ruanyifeng.com/blog/2011/12/ssh-remote-login.html">数字签名是什么？</a></p>
 <p><a href="http://www.ruanyifeng.com/blog/2011/12/ssh-port-forwarding.html">What is a Digital Signature?</a></p>

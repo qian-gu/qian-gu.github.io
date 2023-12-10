@@ -4496,18 +4496,14 @@ add&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;Lock&lt;/span&gt;&
 &lt;p&gt;解决方案 1 是最省事的，也是目前最流行的，目前各大互联网公司都提供各种云服务，比如国外的 Google Drive、Dropbox，国内的百度云、360 网盘什么的。这种方案最大的有点是跨平台，不过这个方案是借助了第三方的服务器，需要连接到互联网才行，而且对网速是有一定要求的。&lt;/p&gt;
 &lt;p&gt;解决方案 2 相比于方案 1 的优势是：不是必须要连接到互联网，在局域网内也可以同步文件 。一般局域网内传输文件的速度要比连外界的服务器快很多 。&lt;/p&gt;
 &lt;p&gt;考虑到校园网的环境，明显方案 2 更加好 。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="ssh"&gt;什么是 SSH&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;最早的时候，互联网通信都是明文通信，一旦被截获，内容就暴露无疑 。&lt;a href="http://en.wikipedia.org/wiki/Secure-Shell"&gt;SSH&lt;/a&gt; 协议，将登录信息全部加密，成为互联网安全的一个基本解决方案，迅速在全世界获得推广，目前已经成为 Linux 系统的标准配置 。&lt;/p&gt;
 &lt;p&gt;最初的 SSH 协议是由芬兰的一家公司的研究员 Tatu Ylönen 于 1995 年设计开发的，但是因为受版权和加密算法等等的限制，现在很多人都转而使用 OpenSSH 。OpenSSH 是 SSH 的替代软件包，而且是开放源代码和免费的 。—— Wikipedia&lt;/p&gt;
 &lt;p&gt;关于 SSH 的原理，找到了一系列 &lt;a href="http://www.ruanyifeng.com/blog/"&gt;阮一峰&lt;/a&gt;的文章，很简洁明了 :&lt;/p&gt;
 &lt;h3 id="ssh_1"&gt;SSH&lt;/h3&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/12/ssh-remote-login.html"&gt;SSH 原理与运用（一）：远程登录&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/12/ssh-port-forwarding.html"&gt;SSH 原理与运用（二）：远程操作与端口转发&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="ssh_2"&gt;SSH 的用法&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;最简单明了的教程就是 man page 了&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;man&lt;span class="w"&gt; &lt;/span&gt;ssh
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
@@ -4649,9 +4645,7 @@ ssh&lt;span class="w"&gt; &lt;/span&gt;lab
 ssh&lt;span class="w"&gt; &lt;/span&gt;dom
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="scp"&gt;使用 SCP 传输文件&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;SSH 提供了一些命令和 shell 用来登录远程服务器 。在默认情况下它不允许你拷贝文件 , 但是还是提供了一个 "scp" 命令 。scp 命令是 SSH 中最方便有用的命令了，试想，在两台服务器之间直接传送文件。仅仅用 scp 一个命令就完全解决了 。&lt;/p&gt;
 &lt;p&gt;man page&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;man&lt;span class="w"&gt; &lt;/span&gt;scp
@@ -4686,9 +4680,7 @@ SYNOPSIS
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;scp&lt;span class="w"&gt; &lt;/span&gt;-r&lt;span class="w"&gt; &lt;/span&gt;~/test&lt;span class="w"&gt; &lt;/span&gt;chien@lab:~/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;至此，就实现了两台电脑的之间相互远程访问的功能 。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/12/ssh-remote-login.html"&gt;数字签名是什么？&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.ruanyifeng.com/blog/2011/12/ssh-port-forwarding.html"&gt;What is a Digital Signature?&lt;/a&gt;&lt;/p&gt;
