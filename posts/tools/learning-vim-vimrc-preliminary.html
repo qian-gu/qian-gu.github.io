@@ -70,7 +70,7 @@
 
 <meta name="author" content="Qian Gu" />
 <meta name="description" content="总结初步配置 Vim，让 Vim 更顺手 。" />
-<meta name="keywords" content="Vim">
+<meta name="keywords" content="vim">
 
 
   <meta property="og:site_name" content="Qian's Blog"/>
@@ -83,7 +83,7 @@
   <meta property="article:modified_time" content=""/>
   <meta property="article:author" content="https://qian-gu.github.io/author/qian-gu.html">
   <meta property="article:section" content="Tools"/>
-  <meta property="article:tag" content="Vim"/>
+  <meta property="article:tag" content="vim"/>
   <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
 
   <title>Qian's Blog &ndash; 学习 Vim 初步配置 Vim</title>
@@ -187,7 +187,7 @@ rel="me"           href="mailto:guqian110@163.com"
     </p>
     <div class="tag-cloud">
       <p>
-        <a href="https://qian-gu.github.io/tag/vim.html">Vim</a>
+        <a href="https://qian-gu.github.io/tag/vim.html">vim</a>
       </p>
     </div>
   </header>
@@ -198,6 +198,17 @@ rel="me"           href="mailto:guqian110@163.com"
        <h5>Previous articles</h5>
        <ul>
            <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-survival.html">学习 Vim 存活</a></li>
+       </ul>
+       <h5>Next articles</h5>
+       <ul>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-vundle.html">学习 Vim 使用 Vundle 管理插件</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-save-project-configuration.html">学习 Vim 保存项目设置</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-doxygentoolkit.html">学习 Vim 插件 DoxygenToolKit.vim</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-ctags-gutentags-cscope-taglist.html">学习 Vim 之 Ctags/Gutentags/Cscope/Taglist</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-markdown.html">在 Vim 中写 Markdown 文件</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-airline.html">学习 Vim 之 BufExplorer、NERDTree、WinManager、Airline 插件</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-signature-plugin.html">学习 Vim 之 vim-signature 插件</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-pratical-vim-notes.html">学习 Vim 之《Pratical Vim》读书笔记</a></li>
        </ul>
   </div>
 
@@ -281,9 +292,7 @@ add<span class="w"> </span><span class="nv">Lock</span><span class="w"> </span><
 </li>
 </ul>
 <h3 id="vim_1">配置 Vim 特性</h3>
-<p>vimrc 配置很简单，网上有很多人都分享了自己的配置方案 。我找到一份注释良好的<a href="https://github.com/amix/vimrc">配置范例</a>，这篇博客的作者总结了自己 8 年的使用经验，给出了两份配置文件，基本版 <a href="https://github.com/amix/vimrc/blob/master/vimrcs/basic.vim">Basic</a> 和 终极版<a href="https://github.com/amix/vimrc">Ultimate</a> 。</p>
-<p>作为码农，当然要选择终极版了～不过个人喜欢用 Vundle 管理我的 Vim 插件（计划下篇博客记录我的配置过程），不是很喜欢作者选择的所有插件，想自己定制插件组合，那么目前只需要看 基础版就足够了 。</p>
-<p>我自己的配置文件：<a href="https://github.com/qian-gu/blob/main/dotfiles/.vimrc">.vimrc file</a></p>
+<p>vimrc 配置很简单，网上有很多人都分享了自己的配置方案 。我找到一份注释良好的<a href="https://github.com/amix/vimrc">配置范例</a>，这篇博客的作者总结了自己 8 年的使用经验，给出了 <a href="https://github.com/amix/vimrc/blob/master/vimrcs/basic.vim">Basic</a> 和 <a href="https://github.com/amix/vimrc">Awesome</a> 两份配置文件。一开始只需要看基础版就足够了，后续可以在高级版上定制自己的配置。</p>
 <h2 id="_1">参考</h2>
 <p><a href="http://book.douban.com/subject/6126937/">学习 vi 和 Vim 编辑器</a></p>
 <p><a href="https://github.com/amix/vimrc">The Ultimate vimrc</a></p>
@@ -304,9 +313,9 @@ add<span class="w"> </span><span class="nv">Lock</span><span class="w"> </span><
     <ul class="related-posts">
       <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-pratical-vim-notes.html">学习 Vim 之《Pratical Vim》读书笔记</a></li>
       <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-signature-plugin.html">学习 Vim 之 vim-signature 插件</a></li>
-      <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-lookupfile-plugin.html">学习 Vim 之 lookupfile 插件</a></li>
-      <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-powerline.html">学习 Vim 之 BufExplorer、NERDTree、WinManager、Powerline 插件</a></li>
+      <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-airline.html">学习 Vim 之 BufExplorer、NERDTree、WinManager、Airline 插件</a></li>
       <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-markdown.html">在 Vim 中写 Markdown 文件</a></li>
+      <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-ctags-gutentags-cscope-taglist.html">学习 Vim 之 Ctags/Gutentags/Cscope/Taglist</a></li>
     </ul>
   </div>
 

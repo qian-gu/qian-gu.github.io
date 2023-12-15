@@ -70,7 +70,7 @@
 
 <meta name="author" content="Qian Gu" />
 <meta name="description" content="总结将 Vim 配置为 IDE 的过程之一，保存项目设置 。" />
-<meta name="keywords" content="Vim">
+<meta name="keywords" content="vim">
 
 
   <meta property="og:site_name" content="Qian's Blog"/>
@@ -83,7 +83,7 @@
   <meta property="article:modified_time" content=""/>
   <meta property="article:author" content="https://qian-gu.github.io/author/qian-gu.html">
   <meta property="article:section" content="Tools"/>
-  <meta property="article:tag" content="Vim"/>
+  <meta property="article:tag" content="vim"/>
   <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
 
   <title>Qian's Blog &ndash; 学习 Vim 保存项目设置</title>
@@ -187,33 +187,41 @@ rel="me"           href="mailto:guqian110@163.com"
     </p>
     <div class="tag-cloud">
       <p>
-        <a href="https://qian-gu.github.io/tag/vim.html">Vim</a>
+        <a href="https://qian-gu.github.io/tag/vim.html">vim</a>
       </p>
     </div>
   </header>
 
 
+  <div class="related-posts">
+    <h4>Part 4 of the Learning Vim series</h4>
+       <h5>Previous articles</h5>
+       <ul>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-survival.html">学习 Vim 存活</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-vimrc-preliminary.html">学习 Vim 初步配置 Vim</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-vundle.html">学习 Vim 使用 Vundle 管理插件</a></li>
+       </ul>
+       <h5>Next articles</h5>
+       <ul>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-doxygentoolkit.html">学习 Vim 插件 DoxygenToolKit.vim</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-ctags-gutentags-cscope-taglist.html">学习 Vim 之 Ctags/Gutentags/Cscope/Taglist</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-markdown.html">在 Vim 中写 Markdown 文件</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-airline.html">学习 Vim 之 BufExplorer、NERDTree、WinManager、Airline 插件</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-signature-plugin.html">学习 Vim 之 vim-signature 插件</a></li>
+           <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-pratical-vim-notes.html">学习 Vim 之《Pratical Vim》读书笔记</a></li>
+       </ul>
+  </div>
 
   <div>
-    <blockquote>
+    <div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
-<li>
-<p>关于 Vim 和 IDE 的争论，这是程序猿的圣战，不再浪费时间 :-D</p>
-</li>
-<li>
-<p>在参考了很多人分享的博客和教程之后，终于把 Vim 搭建成为一个自己定制的 IDE（这种说法严格意义上说，是不对的，应该是 “ 组合一组工具成为一个 IDE ”），总结一下～</p>
-</li>
-<li>
-<p>本系列的内容很多都是参考别人的博客写的，也包含部分自己摸索的结果 。虽然部分内容和参考文章相同，但是总结一下自己的学习过程还是一件有必要的事 :-P</p>
-</li>
+<li>关于 Vim 和 IDE 的争论，这是程序猿的圣战，不再浪费时间 :-D</li>
+<li>在参考了很多人分享的博客和教程之后，终于把 Vim 搭建成为一个自己定制的 IDE（这种说法严格意义上说，是不对的，应该是 “ 组合一组工具成为一个 IDE ”），总结一下～</li>
 </ul>
-</blockquote>
-<p><br></p>
-<p>很多编辑器都有一个功能是以前打开过的文档会有记忆，再次打开时会直接跳转到上次编辑的地方，比如  <a href="http://www.sublimetext.com/2"><code>Sublime Text 2</code></a>，强大的 Vim 当然也有这个功能，<strong>我们的目标就是让 Vim 和其他 IDE 一样，可以记住上次的编辑状态 。</strong></p>
-<p>Vim 要实现这个功能，涉及到两个地方的配置：<code>session</code> &amp; <code>viminfo</code> 。</p>
-<p><br></p>
+</div>
+<p>很多编辑器都有一个功能是以前打开过的文档会有记忆，再次打开时会直接跳转到上次编辑的地方，比如 <code>Sublime Text 2</code>，强大的 Vim 当然也有这个功能，<strong>我们的目标就是让 Vim 和其他 IDE 一样，可以记住上次的编辑状态</strong>。Vim 要实现这个功能，涉及到两个地方的配置：<code>session</code> 和 <code>viminfo</code>。</p>
 <h2 id="session">Session</h2>
-<hr>
 <h3 id="intro">Intro</h3>
 <p>在 Vim 中输入</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>:help<span class="w"> </span>session
@@ -275,8 +283,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div></td></tr></table></div>
 
 <p>这时候可以看到，已经恢复了之前的状态 。</p>
-<p><br></p>
-<p><em>只使用 session 就可以恢复一些上次编辑的信息，但是这还不够，我们还可以配合使用 <code>viminfo</code> 来恢复更多的信息 。在 Vim 的 <code>:help 21.4</code> 中有介绍两者的关系</em></p>
+<p>只使用 session 就可以恢复一些上次编辑的信息，但是这还不够，我们还可以配合使用 <code>viminfo</code> 来恢复更多的信息 。在 Vim 的 <code>:help 21.4</code> 中有介绍两者的关系：</p>
 <blockquote>
 <ul>
 <li><strong>Sessions store many things, but not the position of marks, contents of registers and the command line history.</strong>  You need to use the viminfo feature for these things.</li>
@@ -286,9 +293,7 @@ rel="me"           href="mailto:guqian110@163.com"
 enter Vim and directly start working in your desired setup.</li>
 </ul>
 </blockquote>
-<p><br></p>
 <h2 id="viminfo">Viminfo</h2>
-<hr>
 <h3 id="intro_1">Intro</h3>
 <p>在 Vim 中输入</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>:help<span class="w"> </span>viminfo
@@ -324,7 +329,7 @@ enter Vim and directly start working in your desired setup.</li>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>:wviminfo<span class="w"> </span>project.viminfo
 </code></pre></div></td></tr></table></div>
 
-<h3 id="viminfo_1">载入 viminfo 文件</h3>
+<h3 id="load_1">Load</h3>
 <p>载入命令 <code>rviminfo</code> 帮助</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>:help<span class="w"> </span>:rviminfo
 </code></pre></div></td></tr></table></div>
@@ -333,7 +338,6 @@ enter Vim and directly start working in your desired setup.</li>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>:rviminfo<span class="w"> </span>path/to/project.viminfo
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <h2 id="_1">总结</h2>
 <p>为了节省每次都要手动输入一些设置命令，我们可以把部分相同的设置放在 <code>.vimrc</code> 文件中</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
@@ -353,7 +357,6 @@ enter Vim and directly start working in your desired setup.</li>
 :rviminfo<span class="w"> </span>projetc.viminfo
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <h2 id="_2">参考</h2>
 <p><a href="http://easwy.com/blog/archives/advanced-vim-skills-session-file-and-viminfo/">vi/vim 使用进阶 : 使用会话和 viminfo</a></p>
 <p><a href="http://easwy.com/blog/archives/advanced-vim-skills-save-project-configuration/">vi/vim 使用进阶 : 保存项目相关配置</a></p>
@@ -374,9 +377,9 @@ enter Vim and directly start working in your desired setup.</li>
     <ul class="related-posts">
       <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-pratical-vim-notes.html">学习 Vim 之《Pratical Vim》读书笔记</a></li>
       <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-signature-plugin.html">学习 Vim 之 vim-signature 插件</a></li>
-      <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-lookupfile-plugin.html">学习 Vim 之 lookupfile 插件</a></li>
-      <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-powerline.html">学习 Vim 之 BufExplorer、NERDTree、WinManager、Powerline 插件</a></li>
+      <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-airline.html">学习 Vim 之 BufExplorer、NERDTree、WinManager、Airline 插件</a></li>
       <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-markdown.html">在 Vim 中写 Markdown 文件</a></li>
+      <li><a href="https://qian-gu.github.io/posts/tools/learning-vim-ctags-gutentags-cscope-taglist.html">学习 Vim 之 Ctags/Gutentags/Cscope/Taglist</a></li>
     </ul>
   </div>
 

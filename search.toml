@@ -154,11 +154,6 @@ url = "/posts/tools/learning-vim-signature-plugin.html"
 title = "学习 Vim 之 vim-signature 插件"
 
 [[input.files]]
-path = "posts/tools/learning-vim-lookupfile-plugin.html"
-url = "/posts/tools/learning-vim-lookupfile-plugin.html"
-title = "学习 Vim 之 lookupfile 插件"
-
-[[input.files]]
 path = "posts/cs/summary-of-regular-expression.html"
 url = "/posts/cs/summary-of-regular-expression.html"
 title = "Regular Expression 小结"
@@ -219,9 +214,9 @@ url = "/posts/telecom/summary-of-snr-and-noise.html"
 title = "信噪比小结"
 
 [[input.files]]
-path = "posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-powerline.html"
-url = "/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-powerline.html"
-title = "学习 Vim 之 BufExplorer、NERDTree、WinManager、Powerline 插件"
+path = "posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-airline.html"
+url = "/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-airline.html"
+title = "学习 Vim 之 BufExplorer、NERDTree、WinManager、Airline 插件"
 
 [[input.files]]
 path = "posts/tools/learning-vim-markdown.html"
@@ -229,9 +224,9 @@ url = "/posts/tools/learning-vim-markdown.html"
 title = "在 Vim 中写 Markdown 文件"
 
 [[input.files]]
-path = "posts/tools/learning-vim-ctags-cscope-taglist.html"
-url = "/posts/tools/learning-vim-ctags-cscope-taglist.html"
-title = "学习 Vim 之 Ctags/Cscope/Taglist"
+path = "posts/tools/learning-vim-ctags-gutentags-cscope-taglist.html"
+url = "/posts/tools/learning-vim-ctags-gutentags-cscope-taglist.html"
+title = "学习 Vim 之 Ctags/Gutentags/Cscope/Taglist"
 
 [[input.files]]
 path = "posts/ic/doxygen-for-verilog.html"

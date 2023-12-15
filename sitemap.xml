@@ -5,42 +5,42 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://qian-gu.github.io/tags.html</loc>
-<lastmod>2023-12-10T16:07:32-00:00</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
-<loc>https://qian-gu.github.io/categories.html</loc>
-<lastmod>2023-12-10T16:07:32-00:00</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
-<loc>https://qian-gu.github.io/authors.html</loc>
-<lastmod>2023-12-10T16:07:32-00:00</lastmod>
+<lastmod>2023-12-15T21:45:05-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
 
 <url>
 <loc>https://qian-gu.github.io/search.html</loc>
-<lastmod>2023-12-10T16:07:32-00:00</lastmod>
+<lastmod>2023-12-15T21:45:05-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
 
 <url>
-<loc>https://qian-gu.github.io/</loc>
-<lastmod>2023-12-10T16:07:32-00:00</lastmod>
+<loc>https://qian-gu.github.io/categories.html</loc>
+<lastmod>2023-12-15T21:45:05-00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.6</priority>
+</url>
+
+<url>
+<loc>https://qian-gu.github.io/authors.html</loc>
+<lastmod>2023-12-15T21:45:05-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
 
 <url>
 <loc>https://qian-gu.github.io/archives.html</loc>
-<lastmod>2023-12-10T16:07:32-00:00</lastmod>
+<lastmod>2023-12-15T21:45:05-00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.6</priority>
+</url>
+
+<url>
+<loc>https://qian-gu.github.io/</loc>
+<lastmod>2023-12-15T21:45:05-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
@@ -256,13 +256,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>https://qian-gu.github.io/posts/tools/learning-vim-lookupfile-plugin.html</loc>
-<lastmod>2015-05-03T00:00:00+08:00</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
 <loc>https://qian-gu.github.io/posts/cs/summary-of-regular-expression.html</loc>
 <lastmod>2015-04-27T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
@@ -347,7 +340,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>https://qian-gu.github.io/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-powerline.html</loc>
+<loc>https://qian-gu.github.io/posts/tools/learning-vim-bufexplorer-nerdtree-winmanager-airline.html</loc>
 <lastmod>2015-03-04T22:40:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.6</priority>
@@ -361,7 +354,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>https://qian-gu.github.io/posts/tools/learning-vim-ctags-cscope-taglist.html</loc>
+<loc>https://qian-gu.github.io/posts/tools/learning-vim-ctags-gutentags-cscope-taglist.html</loc>
 <lastmod>2015-01-25T21:32:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.6</priority>
@@ -865,13 +858,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>https://qian-gu.github.io/tag/lookupfile.html</loc>
-<lastmod>2015-05-03T00:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
 <loc>https://qian-gu.github.io/tag/regular-expression.html</loc>
 <lastmod>2015-04-27T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
@@ -1012,7 +998,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>https://qian-gu.github.io/tag/powerline.html</loc>
+<loc>https://qian-gu.github.io/tag/airline.html</loc>
 <lastmod>2015-03-04T22:40:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
@@ -1027,6 +1013,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://qian-gu.github.io/tag/ctags.html</loc>
+<lastmod>2015-01-25T21:32:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.6</priority>
+</url>
+
+<url>
+<loc>https://qian-gu.github.io/tag/gutentags.html</loc>
 <lastmod>2015-01-25T21:32:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
@@ -1084,13 +1077,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://qian-gu.github.io/tag/comment-style.html</loc>
 <lastmod>2015-01-13T18:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
-<loc>https://qian-gu.github.io/tag/linux.html</loc>
-<lastmod>2015-01-12T15:21:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
@@ -1209,6 +1195,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://qian-gu.github.io/tag/arduino.html</loc>
+<lastmod>2014-06-13T20:31:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.6</priority>
+</url>
+
+<url>
+<loc>https://qian-gu.github.io/tag/linux.html</loc>
 <lastmod>2014-06-13T20:31:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
