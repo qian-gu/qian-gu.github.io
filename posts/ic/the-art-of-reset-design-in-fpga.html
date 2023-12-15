@@ -197,9 +197,7 @@ rel="me"           href="mailto:guqian110@163.com"
   <div>
     <p>复位信号在系统中的地位和时钟信号几乎同等重要，我们想尽量把系统设计为可控，那么最基本的控制信号就是复位信号了。</p>
 <p>复位信号的设计需要考虑的因素，各种书刊、论文、白皮书、网上论坛都有相关讨论，但是至今对于给定 FPGA 设计中使用哪种复位方案仍然没有明确答案。本文总结了一些大神的经典论文和网上的许多博客，尽可能用简单的图说明选择某种设计方案及其理由，涉及的更深入的原理请自行 Google :-P</p>
-<p><br></p>
 <h2 id="understanding-the-flip-flop-reset-behavior">Understanding the flip-flop reset behavior</h2>
-<hr>
 <p>在开始详细讨论之前，首先得理解 FPGA 的基本单元 Slice 中的 FF 的复位方式。Xilinx 的 Virtex 5 系列的芯片中的 FF 的类型都是 DFF (D-type flip flop)，这些 DFF 的控制端口包括一个时钟 CLK，一个高有效的使能 CE，一个高有效的置位 / 复位 SR。这个 SR 端口可以配置为同步的置位 / 复位，也可以配置为异步方式的置位 / 复位。如下图所示</p>
 <p><img alt="dff" src="/images/the-art-of-reset-design-in-fpga/dff.jpg"></p>
 <p>例化（<code>instantiation</code>）和 推译（<code>inference</code>）是在 FPGA 设计中使用元件的两种不同方法。综合器是通过 HDL 代码 推译（<code>infer</code>） 最终的电路，所以我们写的 RTL 代码风格会影响最终综合出来的 FF 类型。</p>
@@ -207,9 +205,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>同理，如果代码的敏感列表中不包含复位信号，那么就会综合出一个同步复位的 DFF，SR 端口将被配置为置位 / 复位端口 (FDSE &amp; FDRE primitive)。当 SR 变高时，FF 的输出值在下一个时钟的上升沿变为 SRVAL。</p>
 <p>虽然 FPGA 的 FF 可以配额为 preset/clear/set/reset 等不同的结构，但是在实现时，只能配置为其中的一种，如果在代码中多于一个 preset/clear/set/reset，那么就会产生其他的逻辑，消耗 FPGA 资源。</p>
 <p>另外，基于 SRAM 的 FPGA 可以设定上电初始化的值：如果我们在定义 reg 变量时给它一个初始值，那么 FPGA 在上电配置 (GSR 变高 ) 时，载入这个值。</p>
-<p><br></p>
 <h2 id="active-low-vs-active-high">Active low  V.S.  Active high</h2>
-<hr>
 <p>大多数书籍和博客都推荐使用 “ 低电平有效 ” 的复位方案，却没有明确说明为什么使用 “ 低电平有效 ”。</p>
 <p>目前大多数书籍中都使用 低电平复位，网上给出的理由是</p>
 <ol>
@@ -238,9 +234,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>对于 Xilinx 器件，应该使用高电平复位方式</p>
 </li>
 </ol>
-<p><br></p>
 <h2 id="synchronous-vs-asynchronous">Synchronous V.S. Asynchronous</h2>
-<hr>
 <p>因为 DFF 有两种复位端口，所以对应的有两种复位方式：同步复位 和 异步复位。两种复位方式各有特点，适用于不同的应用场景。下面先分别总结两种方案的优劣，最后总结当前流行的的主流复位方案。</p>
 <h3 id="synchronous-reset">Synchronous Reset</h3>
 <h4 id="coding-style">Coding Style</h4>
@@ -265,7 +259,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div></td></tr></table></div>
 
 <p>对应的 RTL Schematic 如下：</p>
-<p><img alt="sync reset" src="/images/the-art-of-reset-design-in-fpga/sync-reset.png"></p>
+<p><img alt="sync reset" src="/images/the-art-of-reset-design-in-fpga/sync_reset.png"></p>
 <p>其中 <code>fdr</code> 是 Xilinx 的原语，表示 <code>Singal Data Rate D Flip-Flop with Synchronous Reset and Clock Enable (posedge clk)</code></p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -317,15 +311,17 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>综合工具无法很轻松地从其他逻辑信号中识别出复位信号。（这可能导致一些仿真的问题，注意只是仿真问题，实际电路会正常工作，正确复位）</p>
 <p><strong>solution:</strong></p>
 <p>synposys 提供了综合指令 <code>sync-set-reset</code></p>
-<div class="highlight"><pre><span></span><code><span class="c1">// synposys sync-set-reset &quot;rst&quot;</span>
-</code></pre></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// synposys sync-set-reset &quot;rst&quot;</span>
+</code></pre></div></td></tr></table></div>
 
 <p>这个指令的作用是告诉综合工具指定的信号是同步 set/reset，那么综合工具就会尽量把这个信号放在靠近寄存器的位置，以防前面说仿真问题。</p>
-<p><strong>P.S.</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p><strong>通常，只有在综合指令是不许的而且是紧要的时候，我们才使用它们。</strong>我们应该遵守这一原则，因为综合指令的使用可能导致前后仿真的不一致。</p>
 <p>但是 <code>sync-set-reset</code> 是个例外情况，因为它不会影响逻辑行为，只影响设计的功能实现。</p>
 <p>所以明智的设计者在项目开始的时候就把 <code>sync-set-reset</code> 添加到 RTL 代码中，以避免以后的多次综合。由于每个模块对这条指令只要求使用一次（模块只有一个复位信号），所以推荐为每个模块添加这条指令。</p>
 <p>如果觉得每个模块都添加这种方式太繁琐，还有另外一种方法：在读取 RTL 代码前，设置综合变量 <code>hdlin-ff-always-sync-set-reset</code> 为 <code>true</code>，可以达到同样的效果。</p>
+</div>
 <h4 id="advantage">Advantage</h4>
 <ol>
 <li>
@@ -358,7 +354,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>
 <p>如果逻辑器件的目标库内的 FF 只有异步复位端口，那么使用同步复位的话，综合器会将复位信号综合为输入信号的使能信号，这时候就需要额外的逻辑资源了。</p>
 <p>有很多教材和博客都直接说 “ 同步复位会产生额外的逻辑资源 ”，可能他们是基于 Altera 的 FPGA 这么做的，如下图所示：</p>
-<p><img alt="extra logic" src="/images/the-art-of-reset-design-in-fpga/extra-logic.png"></p>
+<p><img alt="extra logic" src="/images/the-art-of-reset-design-in-fpga/extra_logic.png"></p>
 <p>但是根据我实际的测试结果，对于 Virtex 5 系列的芯片，它的原语里面已经含有各种带同步、异步复位端口的 FF，ISE 自带的 XST 也已经很智能了，它会根据代码分析，自动选择合适的 FF。所以上面同步复位综合出来的 RTL Schematic 中没有所谓的 “ 多余的逻辑资源 ”。</p>
 <p>所以，是否占用多余的资源，还得针对具体的芯片分析。</p>
 </li>
@@ -384,7 +380,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div></td></tr></table></div>
 
 <p>对应的 RTL Schematic 如下：</p>
-<p><img alt="aync reset" src="/images/the-art-of-reset-design-in-fpga/async-reset.png"></p>
+<p><img alt="aync reset" src="/images/the-art-of-reset-design-in-fpga/async_reset.png"></p>
 <p>其中 <code>fdc</code> 是 Xilinx 的原语，表示 <code>Single Data Rate D Flip-Flop with Asynchronous Clear and Clock Enable (posedge clk)</code></p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -431,7 +427,10 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>由于复位信号和时钟在传输延迟的轻微差别，导致有的寄存器的复位信号早于时钟信号，在时钟沿之前寄存器就被先复位；有些复位信号晚于时钟信号，在时钟沿之后寄存器才复位，从而有些寄存器先于其他寄存器退出复位状态。</p>
 </li>
 </ol>
-<p><em>异步复位和同步复位是互补，一个的优点（缺点）即使另外一个的缺点（优点）：</em></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>异步复位和同步复位是互补关系，一个的优点（缺点）即使另外一个的缺点（优点）。</p>
+</div>
 <h4 id="advantage_1">Advantage</h4>
 <ol>
 <li>
@@ -462,9 +461,9 @@ rel="me"           href="mailto:guqian110@163.com"
 <h3 id="reset-synchronizer">Reset Synchronizer</h3>
 <p>两种复位方式各有优缺点，设计者应该根据实际情况选择合适的复位方法。目前，很多文献书籍中都推荐一种 “ 异步复位，同步释放 ” 的方法。这种方法可以将两者结合起来，取长补短。</p>
 <p>它的原理如下图所示</p>
-<p><img alt="reset synchronizer" src="/images/the-art-of-reset-design-in-fpga/reset-synchronizer.png"></p>
+<p><img alt="reset synchronizer" src="/images/the-art-of-reset-design-in-fpga/reset_synchronizer.png"></p>
 <p>需要注意到是，上图的复位是传统的低电平有效方式，对于 Xilinx 器件，原理图稍有不同，其复位按钮接到了 FF 的置位端，第一级 FF 的输入也由 <code>Vcc</code> 变为 <code>GND</code>。 <a href="http://www.eetimes.com/document.asp?doc-id=1278998">How do I reset my FPGA</a> 介绍了对应的 RTL Schematic ：</p>
-<p><img alt="reset-synchronizer-xilinx" src="/images/the-art-of-reset-design-in-fpga/reset-synchronizer-xilinx.jpg"></p>
+<p><img alt="reset-synchronizer-xilinx" src="/images/the-art-of-reset-design-in-fpga/reset_synchronizer_xilinx.jpg"></p>
 <p>对于 Xilinx 器件，用代码具体实现</p>
 <h4 id="coding-style_2">Coding Style</h4>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
@@ -500,34 +499,34 @@ rel="me"           href="mailto:guqian110@163.com"
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">module</span><span class="w"> </span><span class="n">SYSRST</span><span class="p">(</span>
-<span class="w">    </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst</span><span class="o">-</span><span class="n">pb</span><span class="p">,</span><span class="w"> </span><span class="n">sys</span><span class="o">-</span><span class="n">rst</span>
+<span class="w">    </span><span class="n">clk</span><span class="p">,</span><span class="w"> </span><span class="n">rst_pb</span><span class="p">,</span><span class="w"> </span><span class="n">sys_rst</span>
 <span class="w">    </span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">input</span><span class="w">       </span><span class="n">clk</span><span class="p">;</span>
-<span class="w">    </span><span class="k">input</span><span class="w">       </span><span class="n">rst</span><span class="o">-</span><span class="n">pb</span><span class="p">;</span>
+<span class="w">    </span><span class="k">input</span><span class="w">       </span><span class="n">rst_pb</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">output</span><span class="w">      </span><span class="n">sys</span><span class="o">-</span><span class="n">rst</span><span class="p">;</span>
-<span class="w">    </span><span class="kt">reg</span><span class="w">         </span><span class="n">sys</span><span class="o">-</span><span class="n">rst</span><span class="p">;</span>
+<span class="w">    </span><span class="k">output</span><span class="w">      </span><span class="n">sys_rst</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w">         </span><span class="n">sys_rst</span><span class="p">;</span>
 
-<span class="w">    </span><span class="kt">reg</span><span class="w">         </span><span class="n">rst</span><span class="o">-</span><span class="n">r</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">reg</span><span class="w">         </span><span class="n">rst_r</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">rst</span><span class="o">-</span><span class="n">pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">rst_pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="o">-</span><span class="n">pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">            </span><span class="c1">// reset</span>
-<span class="w">            </span><span class="n">rst</span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">            </span><span class="n">rst_r</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
 <span class="w">        </span><span class="k">end</span>
 <span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">            </span><span class="n">rst</span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+<span class="w">            </span><span class="n">rst_r</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
 <span class="w">        </span><span class="k">end</span>
 <span class="w">    </span><span class="k">end</span>
 
-<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">rst</span><span class="o">-</span><span class="n">pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="o">-</span><span class="n">pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">rst_pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst_pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">            </span><span class="c1">// reset</span>
-<span class="w">            </span><span class="n">sys</span><span class="o">-</span><span class="n">rst</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+<span class="w">            </span><span class="n">sys_rst</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
 <span class="w">        </span><span class="k">end</span>
 <span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">            </span><span class="n">sys</span><span class="o">-</span><span class="n">rst</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">rst</span><span class="o">-</span><span class="n">r</span><span class="p">;</span>
+<span class="w">            </span><span class="n">sys_rst</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">rst_r</span><span class="p">;</span>
 <span class="w">        </span><span class="k">end</span>
 <span class="w">    </span><span class="k">end</span>
 
@@ -535,18 +534,18 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div></td></tr></table></div>
 
 <p>对应的 RTL Schematic 如下：</p>
-<p><img alt="reset synchronizer" src="/images/the-art-of-reset-design-in-fpga/reset-synchronizer-rtl.png"></p>
-<p>其中，<code>rst-pb</code> 是系统的复位按钮，<code>sys-rst</code> 是同步化的结果。可以看到综合结果和上图是一致的。</p>
+<p><img alt="reset synchronizer" src="/images/the-art-of-reset-design-in-fpga/reset_synchronizer_rtl.png"></p>
+<p>其中，<code>rst_pb</code> 是系统的复位按钮，<code>sys_rst</code> 是同步化的结果。可以看到综合结果和上图是一致的。</p>
 <p><strong>Simulation:</strong></p>
-<p><img alt="simulation" src="/images/the-art-of-reset-design-in-fpga/reset-synchronizer-simulation.png"></p>
-<p>所谓 “ 异步复位 ”，如上图 ( 由于连接到了置位端，叫 “ 异步置位 ” 更合适 )，一旦复位信号 <code>rst-pb</code> 有效，那么输出端口 <code>sys-rst</code> 立即被置为 <code>1</code>，否则输出为 <code>0</code>。</p>
-<p>所谓 “ 同步释放 ”。如上图，当复位信号 <code>rst-pb</code> 释放时 ( 从有效变为无效 )，输出端口 <code>sys-rst</code> 不是立即变化，而是被 FF 延迟了一个时钟输出，从而使其和时钟同步化。</p>
+<p><img alt="simulation" src="/images/the-art-of-reset-design-in-fpga/reset_synchronizer_simulation.png"></p>
+<p>所谓 “ 异步复位 ”，如上图 ( 由于连接到了置位端，叫 “ 异步置位 ” 更合适 )，一旦复位信号 <code>rst_pb</code> 有效，那么输出端口 <code>sys_rst</code> 立即被置为 <code>1</code>，否则输出为 <code>0</code>。</p>
+<p>所谓 “ 同步释放 ”。如上图，当复位信号 <code>rst_pb</code> 释放时 ( 从有效变为无效 )，输出端口 <code>sys_rst</code> 不是立即变化，而是被 FF 延迟了一个时钟输出，从而使其和时钟同步化。</p>
 <p><strong>是否存在亚稳态？</strong></p>
 <p>答案：不存在。</p>
 <p>分析：第一个寄存器的输入和输出在复位变有效前后是不一致的，当复位信号很靠近时钟信号时，可能违反 recovery time，其输出可能存在亚稳态。但是到了第二个寄存器，因为它的输入和输出在复位信号有效前后是一致的，所以它的输出没有机会在两个电平之间抖动，所以不存在亚稳态。</p>
 <p>可以看到，这种 “ 异步复位，同步释放 ” 的方法既解决了同步复位对脉冲宽度的要求，又解决了异步复位可能导致的亚稳态问题。</p>
 <blockquote>
-<p><strong>Guidelien:</strong> Every ASIC using an asynchronous reset should include a reset synchronizer circuit!!</p>
+<p><strong>Guideline:</strong> Every ASIC using an asynchronous reset should include a reset synchronizer circuit!!</p>
 </blockquote>
 <h3 id="conclusion_1">Conclusion</h3>
 <p>知道了这点，选择复位信号的策略就很明显了：</p>
@@ -561,11 +560,8 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>如果不带有同步复位端口，那么就需要异步复位时，必须包含同步器</p>
 </li>
 </ol>
-<p><br></p>
 <p><em>在详细讨论了复位的有效电平、复位方式之后，我们开始讨论稍微复杂一点的复位设计：包括系统的复位方案、多时钟域的复位方案、复位信号的去除毛刺等。</em></p>
-<p><br></p>
 <h2 id="think-local-vs-think-global">Think Local V.S. Think Global</h2>
-<hr>
 <p>我们使用复位信号的一个目的就是为了使电路可控，当上电时或者系统出错时，可以通过复位的方式回到正常状态。为了达到完全可控，传统的做法是对系统内的每个 FF 都连接复位信号，这样就造成了复位信号的高扇出，而高扇出会导致一系列的问题。</p>
 <p>Xilinx 有个 White Paper，<a href="http://www.xilinx.com/support/documentation/white-papers/wp272.pdf">Get Smart About Reset: Think Local, Not Global</a>，提出一种新的复位思路： 能不用全局复位时，尽量不要使用，这样可以降低复位信号的扇出。</p>
 <p>这个原则和我们平时的理解和习惯是相反的，它不使用全局复位的原因主要有三个：</p>
@@ -592,7 +588,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 <p>和 reg 类似，BRAM 也可以在配置的时候初始化，随着嵌入式系统的 BRAM 逐渐增大，BRAM 初始化非常有用：因为预先定义 RAM 的值可以使仿真更容易，而且无需使用引导序列为嵌入式设计清空内存。</p>
 <p>使用 GSR 的好处是 <strong>可以解决复位信号高扇出的问题</strong>，因为 GSR 是预布线的资源，它不占用每个 FF 和 Latch 的 set/reset 端口，如下图所示。很多资料都推荐将设计中的 reset 按钮连接到 GSR，以利用它比较低的 skew。</p>
-<p><img alt="gsr rset" src="/images/the-art-of-reset-design-in-fpga/gsr-reset.gif"></p>
+<p><img alt="gsr rset" src="/images/the-art-of-reset-design-in-fpga/gsr_reset.gif"></p>
 <p>既然 GSR 这么好，那么是不是只使用 GSR 就可以了，不必再用 FF 和 Latch 的 set/reset 端口了呢？</p>
 <p>答案当然是否定的。由于 GSR 的释放是异步方式，所以，如果我们只使用 GSR 作为系统的唯一复位机制，那么可能导致系统不可靠。所以还是需要显式地使用同步复位信号来复位状态机、计数器等能自动改变状态的逻辑。</p>
 <p>所以，应该使用 <strong>GSR + explict reset</strong> 的解决方案：</p>
@@ -617,7 +613,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <h3 id="conclusion_2">Conclusion</h3>
 <p>应该优先选择有全局复位的设计方案，并且这个全局复位信号是用户定义的，不要使用 GSR 。</p>
 <p>P.S. 事实上没有一个通用的、适合所有器件的复位方案，我们应该首先了解所使用的器件和工具，针对它们的特点进行复位方案的设计。</p>
-<p><br></p>
 <h3 id="shift-register-reset">Shift Register Reset</h3>
 <p>并不是每一个设计，器件中的每一个寄存器都需要复位的。最好的做法是只将复位连接到那些需要复位的寄存器。一个典型特例就是移位寄存器的复位。</p>
 <p>如果一个模块内部含有一组触发器 ( 移位寄存器 )，这些寄存器可以分为两类：</p>
@@ -685,7 +680,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 <p><strong>RTL Schematic:</strong></p>
 <p>如下图，复位信号 <code>rst</code> 对于第二个 ff 来说，是一个片选信号 <code>ce</code>，这样的设计产生额外的逻辑，是不好的。</p>
-<p><img alt="bad style" src="/images/the-art-of-reset-design-in-fpga/bad-style.png"></p>
+<p><img alt="bad style" src="/images/the-art-of-reset-design-in-fpga/bad_style.png"></p>
 <p><strong>Good Style:</strong></p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -744,19 +739,17 @@ rel="me"           href="mailto:guqian110@163.com"
 
 <p><strong>RTL Schematic:</strong></p>
 <p>如下图，复位信号 <code>rst</code> 对于两个 ff 来说，都是复位信号，不需要额外的逻辑，这样的设计是比较好的。</p>
-<p><img alt="good style" src="/images/the-art-of-reset-design-in-fpga/good-style.png"></p>
-<p><br></p>
+<p><img alt="good style" src="/images/the-art-of-reset-design-in-fpga/good_style.png"></p>
 <h2 id="reset-distribution-tree">Reset Distribution Tree</h2>
-<hr>
 <p>复位信号的 <code>reset distribution tree</code> 和 时钟信号的 <code>clock distribution tree</code> 差不多同等重要，因为在设计中，几乎每个器件都有时钟端口和复位端口 ( 同步 / 异步 )。</p>
 <p>reset distribution tree 和 clock distribution tree 如下图所示：</p>
-<p><img alt="reset tree" src="/images/the-art-of-reset-design-in-fpga/reset-tree.png"></p>
+<p><img alt="reset tree" src="/images/the-art-of-reset-design-in-fpga/reset_tree.png"></p>
 <p>系统中的主复位信号经过 reset distribution tree 达到每个元件，实现复位。<code>reset distribution tree</code> 和 <code>clock distribution tree</code> 最大的区别就是它们对 <code>skew</code> 的要求不同。由上面的讨论可知，复位信号和时钟的关系最好是 “ 同步释放 ”，不像时钟信号的要求那么严格，复位信号之间的 skew 不需要那么严格，只要复位信号的延迟足够小，满足能在一个时钟周期内到达所有的复位负载端，并且满足各个 reg 和 flip-flop 的 <code>recovery time</code> 即可。</p>
 <h3 id="in-asic">in ASIC</h3>
 <p>在 ASIC 设计中，两种 tree 的关系有以下两种方式：</p>
 <p><strong>方案一：</strong></p>
 <p>驱动 reset tree 最安全的方法就是使用 clock tree 的叶子节点的时钟信号来驱动，如下图所示。如果采用这种方法且时序分析是满足的，那么就没有问题。</p>
-<p><img alt="reset tree driven delayed clock" src="/images/the-art-of-reset-design-in-fpga/reset-tree-delayed-clock.png"></p>
+<p><img alt="reset tree driven delayed clock" src="/images/the-art-of-reset-design-in-fpga/reset_tree_delayed_clock.png"></p>
 <p>分析以下情况：clock tree 中的一路叶子时钟信号驱动 <code>reset synchroinzer</code>，得到的复位信号 masterrst-n 穿过 reset tree，输入到 DFF 的复位端口；clock tree 的另外一路叶子时钟信号直接连接 DFF 的时钟端。</p>
 <ol>
 <li>
@@ -777,11 +770,11 @@ rel="me"           href="mailto:guqian110@163.com"
 </li>
 </ol>
 <p>一般来说，只有最后完成布局布线之后，才能根据具体情况进行分析调整 clock tree 和 reset tree。</p>
-<p><img alt="reset tree driven delayed clock" src="/images/the-art-of-reset-design-in-fpga/reset-tree-parallel-clock.png"></p>
+<p><img alt="reset tree driven delayed clock" src="/images/the-art-of-reset-design-in-fpga/reset_tree_parallel_clock.png"></p>
 <p><em>对于 synchronou/asynchronous 两种 tree，可以用两种技术来进行优化：</em></p>
 <h4 id="synchronous-reset-distribution-tree">synchronous reset distribution tree</h4>
 <p>如下图所示，在 reset tree 中嵌入 DFF，在每个模块中，输入的 reset 信号首先经过一个 DFF，然后把经过 DFF 延迟输出的复位信号用作复位信号来复位逻辑、驱动子模块。这样 reset 信号就不必在一个时钟周期内到达每一个 DFF 的复位端口，从而可以把 reset 信号的时序要求降得很低。</p>
-<p><img alt="synchronous reset" src="/images/the-art-of-reset-design-in-fpga/synchronous-reset-distribution.png"></p>
+<p><img alt="synchronous reset" src="/images/the-art-of-reset-design-in-fpga/synchronous_reset_distribution.png"></p>
 <p>通过这种技巧，复位信号就被当作了普通的数据信号，而且时序分析要简单的多（因为 reset tree 的每一部分 stage 都有合理的扇出）。</p>
 <p>所以每个 module 里面都含有以下代码：</p>
 <p><strong>code</strong></p>
@@ -813,7 +806,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </ol>
 <h4 id="asynchronous-reset-distribution-tree">asynchronous reset distribution tree</h4>
 <p>和同步复位类似，异步复位也可以采用相同的策略，如下图所示：</p>
-<p><img alt="asynchronous reset" src="/images/the-art-of-reset-design-in-fpga/asynchronous-reset-distribution.png"></p>
+<p><img alt="asynchronous reset" src="/images/the-art-of-reset-design-in-fpga/asynchronous_reset_distribution.png"></p>
 <p>利用前面讨论过的 reset synchronizer 将异步复位信号同步到每个子模块当中。</p>
 <p>和 synchronous reset 一样，在 reset tree 中加入 synchronizer 之后，复位功能需要多个时钟周期才能完成。</p>
 <h4 id="problem_2">Problem</h4>
@@ -823,26 +816,22 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>作为对比，如果采用这里插入 synchronizer 的方法，则免去了手动调整的工作，让综合工具完成时序分析和调整工作。经过调整之后，全局（global）复位信号就变为本地（local）复位信号了。（synchronous 也一样，变为 local reset）</p>
 <h3 id="in-fpga">in FPGA</h3>
 <p>对于 FPGA，因为系统的 clock tree 是预先布线好的，而全局主复位信号一般也使用时钟布线资源，所以不存在两棵 tree 之间关系的调整问题，所以只需要采用上面的 synchronou/asynchronous reset distribution tree 即可。</p>
-<p><br></p>
 <h2 id="multi-clock-reset">Multi-clock Reset</h2>
-<hr>
 <p>在一个系统中，往往有多个时钟，每个时钟域都应该有独立的 synchronizer 和 reset tree，这么做的目的是为了保证每个时钟域的每个寄存器都能满足 removal time。</p>
 <p>因为只有一个全局复位的话，它与系统的时钟都没有关系，是异步复位信号，要求这个信号满足所有时钟域的 recovery 和 removal 时序不是一件容易的事情，因此为每个时钟域分配复位是有必要的。</p>
 <p>根据实际情况的不同，有两种方案可以采用：</p>
 <p><strong>Non-coordinated reset removal</strong></p>
 <p>对于多时钟域的设计，很多时候不同时钟域之间复位信号的先后顺序没有要求，尤其是在有 <code>request-acknowledge</code> 这样握手信号的系统中，不会引起硬件上的错误操作，这时候下图所示的方法就足够了。</p>
-<p><img alt="non coordinated reset" src="/images/the-art-of-reset-design-in-fpga/non-coordination.png"></p>
+<p><img alt="non coordinated reset" src="/images/the-art-of-reset-design-in-fpga/non_coordination.png"></p>
 <p><strong>Sequenced coordination of reset removal</strong></p>
 <p>对于一些设计，要求复位信号的释放顺序有一定顺序，这时候应该使用下图所示的方法</p>
-<p><img alt="sequenced rcoordination" src="/images/the-art-of-reset-design-in-fpga/sequenced-coordination.png"></p>
+<p><img alt="sequenced rcoordination" src="/images/the-art-of-reset-design-in-fpga/sequenced_coordination.png"></p>
 <p><a href="http://www.eetimes.com/document.asp?doc-id=1278998">How do I reset my FPGA</a> 在文中提供了一张图来说明典型的系统复位方案，图中 <code>MMCM</code> 的 <code>lock</code> 和外部输入的复位信号相与，目的是为了保证提供给后面的同步器的时钟信号是稳定的；每个时钟域都有一个同步器来同步复位信号。</p>
-<p><img alt="typical reset implementation in FPGA" src="/images/the-art-of-reset-design-in-fpga/typical-reset.jpg"></p>
-<p><br></p>
+<p><img alt="typical reset implementation in FPGA" src="/images/the-art-of-reset-design-in-fpga/typical_reset.jpg"></p>
 <h2 id="reset-glitch-filtering">Reset Glitch Filtering</h2>
-<hr>
 <p>最后讨论一下复位信号毛刺的问题。</p>
 <p>使用异步复位信号时，考虑到异步复位信号对毛次比较敏感，所以在一些系统中需要处理毛次，下图显示了一种简单但是比较丑陋的方法 ( 时延不是固定的，会随温度、电压变化 )</p>
-<p><img alt="reset glitch filtering" src="/images/the-art-of-reset-design-in-fpga/reset-glitch-filtering.png"></p>
+<p><img alt="reset glitch filtering" src="/images/the-art-of-reset-design-in-fpga/reset_glitch_filtering.png"></p>
 <p>需要注意的是</p>
 <ol>
 <li>
@@ -852,9 +841,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>不是所有的系统都需要过滤毛刺，设计者要先研究需求，再觉得是否使用延时来过滤毛次</p>
 </li>
 </ol>
-<p><br></p>
 <h2 id="summary">Summary</h2>
-<hr>
 <p>本文是读书笔记，总结了参考资料中的复位信号的设计方法和需要注意的问题，包含了底层的 DFF 复位方式、高 / 低电平有效、同步 / 异步复位、和系统级的复位方案选择、设计。</p>
 <ol>
 <li>
@@ -882,8 +869,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>每个时钟域都应该有一个同步器来同步复位信号。</p>
 </li>
 </ol>
-<p>总而言之，一句话：我们想象中的，简单的，统一的复位方案是 ... 不存在的 =.=</p>
-<p><br></p>
+<p>总而言之，一句话：我们想象中的，简单、统一的复位方案是 ... 不存在的 =.=</p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://www.sunburst-design.com/papers/CummingsSNUG2002SJ-Resets.pdf">Synchronous Resets? Asynchronous Resets? I am so confused! How will I ever know which to use?</a></p>
 <p><a href="http://www.sunburst-design.com/papers/CummingsSNUG2003Boston-Resets.pdf">Asynchronous &amp; Synchronous Reset Design Techniques - Part Deux</a></p>

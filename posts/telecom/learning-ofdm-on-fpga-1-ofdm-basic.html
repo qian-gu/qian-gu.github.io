@@ -196,7 +196,6 @@ rel="me"           href="mailto:guqian110@163.com"
 
   <div>
     <h2 id="why-ofdm">Why OFDM</h2>
-<hr>
 <h3 id="background">Background</h3>
 <p>移动通信的信道模型一般建立为 <strong>时变多径信道模型</strong>，描述信道多径时延特性的一个重要统计参量是 <strong>均方根时延扩展</strong> 。</p>
 <p>经过无线信道的时变多径传输，接收到的信号幅度会有起伏变化（瑞利分布 or 莱斯分布），这种现象称为 <strong>信号衰落</strong> 。按照已调信号的带宽可以将衰落分为两类：</p>
@@ -216,17 +215,13 @@ rel="me"           href="mailto:guqian110@163.com"
 <h3 id="solution">Solution</h3>
 <p><strong>信道均衡</strong> 是一种经典的对抗码间干扰的技术，许多移动通信系统都采用信道均衡技术消除码间干扰。但是如果数据速率非常高，采用单载波传输数据，需要设计几十审计上百个抽头的均衡器，这简直是硬件设计的噩梦 。</p>
 <p>既要对抗码间干扰，又要满足低复杂度且高效的手段传输高速数据业务，我们可以采用另外一种技术 —— <strong>OFDM</strong> 。</p>
-<p><br></p>
 <h2 id="ofdm-history">OFDM History</h2>
-<hr>
 <p>多载波调制技术早在 20 世纪 50 年代末至 60 年代初就已经应用于军事高频无线通信中，由于实现复杂，没有被广泛应用 。OFDM 就是一种多载波调制，其子载波间隔是子载波符号间隔的倒数，各子载波的频谱是重叠的，这种重叠可以使频谱效率显著提高 。</p>
 <p>20 世纪 70 年代，Weinstein 和 Ebert 提出用 <strong>离傅里叶变换 (DFT)</strong> 及其 <strong>逆变换 (IDFT)</strong> 进行 OFDM 多载波调制方式的运算。</p>
 <p>DFT 和 IDFT 的快速计算方法：FFT 和 IFFT 使 OFDM 能够以低成本的数字方式实现 。</p>
 <p>在 20 世纪 80 年代，随着 OFDM 理论的不断完善、数字信号处理及微电子技术的不断快速发展，OFDM 技术也逐步走向实用化 。</p>
 <p>大约从 20 世纪 90 年代起，OFDM 技术开始应用于各种有线及无线通信中，包括：DSL、DAB、DVB、WLAN 等。OFDM 已经成为下一代蜂窝移动通信空中接口的候选技术 。</p>
-<p><br></p>
 <h2 id="ofdm-theory">OFDM Theory</h2>
-<hr>
 <p>Orthogonal frequency-division multiplexing (OFDM) 的基本原理是将高速的数据流分解为多路并行的低速数据流，在多个载波上同时进行传输。</p>
 <p>通过将高速数据分解为多个并行低速速率，克服了信道时延扩展对数据速率的限制，其中各个子载波之间是相互正交的关系，如图：</p>
 <p><img alt="carrier wave" src="/images/learning-ofdm-basic/carriers.png"></p>
@@ -254,13 +249,12 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>增大滚降因子虽然能够使带外衰减更快，但降低了 OFDM 系统对多经实验的容忍能力，所以 <em>在实际系统设计中，应当选择较小的滚降因子 。</em></p>
 <h3 id="ofdm_1">OFDM 系统设计</h3>
 <p>OFDM 系统框图如下：</p>
-<p><img alt="ofdm-system" src="/images/learning-ofdm-basic/ofdm-system.jpg"></p>
+<p><img alt="ofdm-system" src="/images/learning-ofdm-basic/ofdm_system.jpg"></p>
 <p>其中，<strong>交织</strong> 是为了克服深衰落发生突发差错的影响，如果交织器的长度足够大，解交织后可将突发差错改造为独立差错，再通过纠错译码来纠正 。</p>
 <p><strong>在发送端：</strong></p>
 <p><em>二进制数据</em> 通过纠错编码、交织后映射到 QAM 星座得到 <em>一个 QAM 复数符号序列</em>，再经过并串转换，得到 <em>N 个并行 QAM 符号</em>，每个符号进行 IFFT，将 OFDM 复包络的频域样值变换为 <em>时域样值</em>，进行并串转换，将时域样值变换为按时间顺序排列的 <em>时域样值</em>，然后在每个 OFDM 符号前插入前缀，通过 D/A，将离散的复包络变成 <em>连续时间的复包络</em> 。再将复包络的 I(t) 和 Q(t) 正交调制得到 <em>OFDM 信号</em>，将基带信号上变频到射频，经过功放，发送出去 。</p>
 <p><strong>在接收端：</strong></p>
 <p>接收端于发送端进行相反的变换，恢复出原数据 .</p>
-<p><br></p>
 <h2 id="_4">参考</h2>
 <p><a href="http://book.douban.com/subject/1446684/">《通信原理》</a></p>
 <p><a href="http://book.douban.com/subject/4130536/">《移动通信原理》</a></p>
@@ -269,7 +263,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 
   <div class="neighbors">
-    <a class="btn float-left" href="https://qian-gu.github.io/posts/embedded/learning-yocto-from-zero-1-getting-started.html" title="Yocto 从零单排 1 —— 入门">
+    <a class="btn float-left" href="https://qian-gu.github.io/posts/misc/my-pkm.html" title="我的 PKM">
       <i class="fa fa-angle-left"></i> Previous Post
     </a>
     <a class="btn float-right" href="https://qian-gu.github.io/posts/ic/fpga-digital-processing-basic-1.html" title="FPGA 数字处理基础 (1)">

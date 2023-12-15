@@ -374,11 +374,6 @@ url = "/posts/telecom/learning-ofdm-on-fpga-1-ofdm-basic.html"
 title = "学习 OFDM 及其 FPGA 实现 1 —— OFDM Basic"
 
 [[input.files]]
-path = "posts/embedded/learning-yocto-from-zero-1-getting-started.html"
-url = "/posts/embedded/learning-yocto-from-zero-1-getting-started.html"
-title = "Yocto 从零单排 1 —— 入门"
-
-[[input.files]]
 path = "posts/misc/my-pkm.html"
 url = "/posts/misc/my-pkm.html"
 title = "我的 PKM"

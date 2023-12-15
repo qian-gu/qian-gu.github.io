@@ -206,15 +206,11 @@ rel="me"           href="mailto:guqian110@163.com"
 
   <div>
     <h2 id="linux-on-galileo-board">Linux on Galileo Board</h2>
-<hr>
 <p>Galileo 不是简单的 Arduino 板子，实际上它运行着一个 Linux 操作系统。把它看作是 “ 兼容 Arduibo 接口的板子 ” 或许更合适一些。</p>
 <p>Galileo 板子上容量为 8 MB 的 SPI Flash 中已经烧写了一个精简版的 Linux 系统，因为容量的限制，这个系统去掉了一些不常用的模块，比如 wi-fi 驱动，python 支持等。</p>
 <p>Galileo 也支持从 SD 卡启动系统，并且 Intel 提供了一个基于 Yocto 项目，已经制作好的完整版 Linux 系统。当精简版系统不能满足我们的要求时（添加外设等），我们可以下载这个完整版系统镜像，烧录到 SD 卡中，并从 SD 卡中启动即可。（也可以自己基于 Yocto 项目按照自己的需求制作系统镜像）</p>
-<p><br></p>
 <p><em>我们并不仅仅满足于通过 Arduino IDE 对 Galileo 进行操作，放着一个操作系统，为什么不去使用呢：-P 那么怎么才能登录到这个 Linux 系统中呢？</em></p>
-<p><br></p>
 <h2 id="using-ethernet">Using Ethernet</h2>
-<hr>
 <p>Intel 论坛的一个帖子列举了几种登录到 Galileo Linux 的方法</p>
 <p><a href="https://communities.intel.com/thread/46335">Connecting to Galileo via Linux Console</a></p>
 <ul>
@@ -298,7 +294,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <ol>
 <li>
 <p>网线直连 PC 和 Galileo，设置 PC 的 IP 地址为 <code>link-local only</code></p>
-<p><img alt="pc-ethernet-config" src="/images/learning-arduino-series-3-intel-galileo-linux/pc-ethernet-config.png"> </p>
+<p><img alt="pc-ethernet-config" src="/images/learning-arduino-series-3-intel-galileo-linux/pc_ethernet_config.png"> </p>
 </li>
 <li>
 <p>给 Galileo 供电</p>
@@ -314,7 +310,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <ol>
 <li>
 <p>打开 IDE 的 serial monitor，可以看到 Galileo 的 ethernet 配置信息</p>
-<p><img alt="galileo-ethernet-quary" src="/images/learning-arduino-series-3-intel-galileo-linux/galileo-ethernet-quary.png"></p>
+<p><img alt="galileo-ethernet-quary" src="/images/learning-arduino-series-3-intel-galileo-linux/galileo_ethernet_quary.png"></p>
 </li>
 <li>
 <p>查看 PC 的网络配置</p>
@@ -322,7 +318,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div></td></tr></table></div>
 
 <p>查询结果</p>
-<p><img alt="pc-ethernet-quary" src="/images/learning-arduino-series-3-intel-galileo-linux/pc-ethernet-quary.png"></p>
+<p><img alt="pc-ethernet-quary" src="/images/learning-arduino-series-3-intel-galileo-linux/pc_ethernet_quary.png"></p>
 </li>
 <li>
 <p>打开 PC 的终端 Terminal，使用 telnet 登录</p>
@@ -330,13 +326,11 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div></td></tr></table></div>
 
 <p>登录结果，如图</p>
-<p><img alt="pc-ethernet-login" src="/images/learning-arduino-series-3-intel-galileo-linux/pc-telnet-login.png"></p>
+<p><img alt="pc-ethernet-login" src="/images/learning-arduino-series-3-intel-galileo-linux/pc_telnet_login.png"></p>
 <p>可以看到，这个精简版的 Linux 系统是不支持 Python 的。</p>
 </li>
 </ol>
-<p><br></p>
 <h2 id="using-uart">Using UART</h2>
-<hr>
 <h3 id="about-serial-port">About serial port</h3>
 <p>如果有串口线的话，我们也可以通过串口来登录，包括 SPI 和 SD 卡上的系统。</p>
 <p>关于串口线，说明一下。估计是为了节省板子的面积，Intel 在板子上设置的是音频接口 (AV jack)，所以，这里需要额外的一个将音频接口转接为串口的器件。有两种方法：</p>
@@ -380,18 +374,18 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>
 <p>这时候我们应该就可以从串口看到板子上电后 <code>grub</code> 程序和系统启动的相关信息了。</p>
 <p>上电后，<code>grub</code> 引导启动哪个系统</p>
-<p><img alt="gtkterm boot information" src="/images/learning-arduino-series-3-intel-galileo-linux/gtkterm-boot-information.png"></p>
-<p><img alt="gtkterm grub" src="/images/learning-arduino-series-3-intel-galileo-linux/gtkterm-grub.png"></p>
+<p><img alt="gtkterm boot information" src="/images/learning-arduino-series-3-intel-galileo-linux/gtkterm_boot_information.png"></p>
+<p><img alt="gtkterm grub" src="/images/learning-arduino-series-3-intel-galileo-linux/gtkterm_grub.png"></p>
 </li>
 <li>
 <p>登录到 SPI Flash 中的 Linux 中</p>
 <p>如图，这个精简版的系统不支持 <code>python</code></p>
-<p><img alt="gtkterm login spi" src="/images/learning-arduino-series-3-intel-galileo-linux/gtkterm-login-spi.png"></p>
+<p><img alt="gtkterm login spi" src="/images/learning-arduino-series-3-intel-galileo-linux/gtkterm_login_spi.png"></p>
 </li>
 <li>
 <p>登录到 mirco-SD card 中的 Linux 中</p>
 <p>如图，SD 卡中的系统是支持 <code>python</code> 的</p>
-<p><img alt="gtkterm login spi" src="/images/learning-arduino-series-3-intel-galileo-linux/gtkterm-login-sd-card.png"></p>
+<p><img alt="gtkterm login spi" src="/images/learning-arduino-series-3-intel-galileo-linux/gtkterm_login_sd_card.png"></p>
 </li>
 </ol>
 <h3 id="windows-platform">Windows Platform</h3>
@@ -416,23 +410,21 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>
 <p>这时候我们应该就可以从串口看到板子上电后 <code>grub</code> 程序和系统启动的相关信息了。</p>
 <p>上电后，<code>grub</code> 引导启动哪个系统</p>
-<p><img alt="gtkterm boot information" src="/images/learning-arduino-series-3-intel-galileo-linux/putty-boot-information.png"></p>
-<p><img alt="gtkterm grub" src="/images/learning-arduino-series-3-intel-galileo-linux/putty-grub.png"></p>
+<p><img alt="gtkterm boot information" src="/images/learning-arduino-series-3-intel-galileo-linux/putty_boot_information.png"></p>
+<p><img alt="gtkterm grub" src="/images/learning-arduino-series-3-intel-galileo-linux/putty_grub.png"></p>
 </li>
 <li>
 <p>登录到 SPI Flash 中的 Linux 中</p>
 <p>如图，这个精简版的系统不支持 <code>python</code></p>
-<p><img alt="gtkterm login spi" src="/images/learning-arduino-series-3-intel-galileo-linux/putty-login-spi.png"></p>
+<p><img alt="gtkterm login spi" src="/images/learning-arduino-series-3-intel-galileo-linux/putty_login_spi.png"></p>
 </li>
 <li>
 <p>登录到 mirco-SD card 中的 Linux 中</p>
 <p>如图，SD 卡中的系统是支持 <code>python</code> 的</p>
-<p><img alt="gtkterm login spi" src="/images/learning-arduino-series-3-intel-galileo-linux/putty-login-sd-card.png"></p>
+<p><img alt="gtkterm login spi" src="/images/learning-arduino-series-3-intel-galileo-linux/putty_login_sd_card.png"></p>
 </li>
 </ol>
-<p><br></p>
 <h2 id="another-method">Another method</h2>
-<hr>
 <p>如果你觉得插网线、配置 IP 地址太麻烦，甚至懒得自己 DIY 串口线，也没有钱去买一个，别担心，因为 “ 天空飘来五个字，这都不是事～” 因为你可以借鉴下面这位大神的方法，只需要像下载普通 sketch 一样，将他提供的 sketch 下载到 Galileo 中就可以了，然后通过 IDE 的 serial monitor 就可以登录到 Linux 系统中：</p>
 <p><a href="(https://communities.intel.com/message/222211)">Poor man's telnet for Galileo</a></p>
 <p>他的 sketch 的原理就是使用 <code>system()</code> 函数将我们在 serial monitor 中的命令传到到 Linux shell 中 ，并将命令的结果返回到 serial monitor 中 。</p>
@@ -454,7 +446,6 @@ $<span class="w"> </span><span class="nb">pwd</span>
 //<span class="w"> </span>result<span class="w"> </span>is<span class="w"> </span>home<span class="w"> </span>directory
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="https://communities.intel.com/thread/46335">Connecting to Galileo via Linux Console</a></p>
 <p><a href="https://communities.intel.com/docs/DOC-22293">Tutorial 3: Connecting to Linux through telnet</a></p>

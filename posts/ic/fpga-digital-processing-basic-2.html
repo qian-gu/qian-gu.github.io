@@ -197,20 +197,15 @@ rel="me"           href="mailto:guqian110@163.com"
   <div>
     <p>讨论 FPGA 中无符号数 unsigned 和有符号数 signed 的问题。</p>
 <h2 id="basic-knowledge">Basic Knowledge</h2>
-<hr>
 <p><strong>整数的分类：</strong> 无符号数 <code>unsigned</code> 和 有符号数 <code>signed</code>。</p>
 <p><strong>数制：</strong> 10、2、8、16 进制</p>
 <p><strong>机器数：</strong> 机器数的意思是数字在机器中的表示方式。主要有 3 种</p>
 <p><code>原码 sign-magnitude</code>、<code>反码 one's complement</code>、<code>补码 two's complement</code></p>
-<p>以前写过的一篇总结： <a href="http://guqian110.github.io/pages/2014/03/19/signed-number-representations.html">原码、反码、补码</a></p>
+<p>以前写过的一篇总结： <a href="http://guqian110.github.io/posts/signed-number-representations.html">原码、反码、补码</a></p>
 <p><strong>计算机系统：</strong> 采用二进制、补码系统。</p>
-<p><br></p>
 <p><em>FPGA 中是如何表示数字的呢？</em></p>
-<p>以前写过一篇总结，<a href="http://guqian110.github.io/pages/2014/05/14/fpga-digital-processing-basic-1.html">FPGA 数字处理基础 (1)</a></p>
-<p>本文算是上面文章的续吧。</p>
-<p><br></p>
+<p>以前写过一篇总结，<a href="http://guqian110.github.io/posts/fpga-digital-processing-basic-1.html">FPGA 数字处理基础 (1)</a>，本文算是续。</p>
 <h2 id="unsigned-in-verilog">(un)signed in Verilog</h2>
-<hr>
 <h3 id="integer">Integer</h3>
 <p>标准格式：</p>
 <p><code>&lt;null|+|-&gt;&lt;size&gt;&lt;sign:s|S&gt;&lt;base:d|D|h|H|o|O|b|B&gt;&lt;0~9|0～f|0~7|0~1|x|z&gt;</code></p>
@@ -257,7 +252,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <span class="kt">reg</span><span class="w">     </span><span class="k">signed</span><span class="w">  </span><span class="p">[</span><span class="mh">8</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">   </span><span class="n">b</span><span class="p">;</span><span class="w">  </span><span class="c1">// signed</span>
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <p><strong>Problem</strong></p>
 <blockquote>
 <p>数据可以是 signed 和 unsigned，寄存器也可以是 signed 和 unsigned，那么综合时，是以哪个为准呢？</p>
@@ -275,11 +269,10 @@ rel="me"           href="mailto:guqian110@163.com"
 </li>
 </ol>
 </blockquote>
-<p><br></p>
-<p>========================================= 以下为详细的分类讨论 ==================================</p>
+<p>以下为详细的分类讨论。</p>
 <p>编写一个简单的测试程序，查看综合结果和仿真波形，就可以知道综合时的策略。</p>
-<p><strong>module: <a href="http://guqian110.github.io/files/test-signed.v">test-signed.v</a></strong></p>
-<p><strong>testbench: <a href="http://guqian110.github.io/files/tb-test-signed.v">tb-test-signed.v</a></strong></p>
+<p><strong>module: <a href="/files/test-signed.v">test-signed.v</a></strong></p>
+<p><strong>testbench: <a href="/files/tb-test-signed.v">tb_test_signed.v</a></strong></p>
 <h4 id="1-unsigned-reg-unsigned-value">1. unsigned reg &amp; unsigned value</h4>
 <p>定义 reg 为 unsigned 类型</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
@@ -341,8 +334,10 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div></td></tr></table></div>
 
 <p>综合出来的比较器为 unsigned 类型。</p>
-<p><strong>P.S.</strong> 变量 integer 也是也可综合的。在上例中，如果将 flag 的类型改为 integer 也是可综合的，但是，因为只用到了低 8 位，所以在综合时会提示高 24 位是未连接 unconnected，但是因为 integer 是一个整体，所以即使未连接也不能优化掉，这就是在 Verilog-1995 中 integer 不够灵活的体现，好在 Verilog-2001 中已经添加了支持 reg/wire 为 signed 的类型，而且综合工具 (XST) 也是支持的。</p>
-<p>======================================= 分割线结束 ==========================================</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>变量 integer 也是也可综合的。在上例中，如果将 flag 的类型改为 integer 也是可综合的，但是，因为只用到了低 8 位，所以在综合时会提示高 24 位是未连接 unconnected，但是因为 integer 是一个整体，所以即使未连接也不能优化掉，这就是在 Verilog-1995 中 integer 不够灵活的体现，好在 Verilog-2001 中已经添加了支持 reg/wire 为 signed 的类型，而且综合工具 (XST) 也是支持的。</p>
+</div>
 <p>以前只知道硬件上最基本的一些运算单元，比如加法器 (adder)、减法器 (subtractor)、比较器 (comparator) 等，完成的功能是固定的，电路是不会检查输入数据的类型的。涉及到 signed 和 unsigned 类型，就出现一个问题：对于基本运算单元 ( 比如加法器 )，运算单元并不知道输入的数据是哪种数据，对于 unsigned 和 signed 类型，必然出现适合一种时不适合另外一种的问题。</p>
 <p>所以可以推断出 <strong>对于不同的数据类型，同样是个加法器，底层的硬件电路是不一样的</strong>。</p>
 <p>如果我在程序中定义了 signed 和 unsigned 类型的数据，那么综合工具是否足够智能，能够根据数据的类型综合出正确适合的电路？</p>
@@ -350,20 +345,21 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>上面的程序证明了这一点，从 RTL 图中可以看到综合出的比较器是 signed 还是 unsigned 类型，仿真波形也可以看到，最终下载到板子上测试也符合预期。这些都证明 综合器足够智能。后来看到 <a href="http://www.xilinx.com/support/documentation/sw-manuals/xilinx14-7/xst.pdf">UG627(v14.5): XST User Guide</a>，才发现里面已经非常清楚地写着</p>
 <p>Chapter 3: Signed and Unsigned Support in XST</p>
 <blockquote>
-<p>When using Verilog or VHDL in XST, some macros, such as adders or counters, can be
-implemented for signed and unsigned values.
-To enable support for signed and unsigned values in Verilog, enable Verilog-2001
-as follows:
-+ ISE® Design Suite
-  Select Verilog 2001 as instructed in the Synthesis Options topic of ISE Design Suite
-Help
-+ XST Command Line
+<p>When using Verilog or VHDL in XST, some macros, such as adders or counters, can be implemented for signed and unsigned values.</p>
+<p>To enable support for signed and unsigned values in Verilog, enable Verilog-2001 as follows:</p>
+<ul>
+<li>
+<p>ISE® Design Suite
+  Select Verilog 2001 as instructed in the Synthesis Options topic of ISE Design Suite Help</p>
+</li>
+<li>
+<p>XST Command Line
   Set -verilog2001 to yes.</p>
+</li>
+</ul>
 </blockquote>
 <p>花费了大量时间上网找资料，在论坛里问别人无果，最后自己动手写程序测试，最后才发现原来官方资料里面早就写的清清楚楚 =.=</p>
-<p><br></p>
 <h2 id="conclusion">Conclusion</h2>
-<hr>
 <p>说了这么多，总结下来就是下面这几句话：</p>
 <p><strong>经验：</strong></p>
 <ol>

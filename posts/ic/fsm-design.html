@@ -197,12 +197,8 @@ rel="me"           href="mailto:guqian110@163.com"
 
 
   <div>
-    <p>有限状态机是数字电路中经常出现、非常重要的电路，设计一个安全、高效的状态机有一套程序化的方法，我们在数字电路课中就学习过了。搬运以前写的博客，总结一下相关知识，温故而知新～</p>
-<p><strong>写在前面的废话：</strong></p>
-<p>这篇博客是在我以前在 CSDN 上写的两篇博客的基础上，参考了其他各位大神、博主的文章，写的总结。欢迎批评、讨论，毕竟写博客的意义就在于给自己一个总结知识的机会、并且在和别人讨论的过程中进步 :-D</p>
-<p><br></p>
+    <p>有限状态机是数字电路中经常出现、非常重要的电路，设计一个安全、高效的状态机有一套程序化的方法，我们在数字电路课中就学习过了。总结一下相关知识，温故而知新～</p>
 <h2 id="what-is-fsm">What is FSM</h2>
-<hr>
 <p><a href="http://en.wikipedia.org/wiki/Finite-state-machine">FSM on wiki</a></p>
 <p><strong>有限状态机 (Finite State Machine, FSM)</strong> 有时候也简称为<strong>状态机 (state machine)</strong>，它是一种数学模型，通常用来设计电脑程序或者时序电路。它被构思设计为一个抽象的机器，并且某个时刻只能处于一个有限数字代表的状态之下。</p>
 <p>有限状态自动机在很多不同领域中是重要的，包括电子工程、语言学、计算机科学、哲学、生物学、数学和逻辑学。有限状态机是在自动机理论和计算理论中研究的一类自动机。在计算机科学中，有限状态机被广泛用于建模应用行为、硬件电路系统设计、软件工程，编译器、网络协议、和计算与语言的研究。( 这里讨论的只限于电子工程里的状态机 )</p>
@@ -227,9 +223,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>它的输出不仅和当前状态有关，而且和输入也有关。Mealy 有限状态机对输入的响应发生在当前时钟周期，比 Moore 有限状态机对输入信号的响应要早一个周期。因此，输入信号的噪声可能影响在输出的信号。</p>
 </li>
 </ul>
-<p><br></p>
 <h2 id="how-to-design-a-fsm">How to Design a FSM</h2>
-<hr>
 <p>关于如何设计一个状态机，这在数字电路和逻辑设计的书里有详细介绍。简单地总结一下步骤：</p>
 <ol>
 <li>逻辑抽象，建立原始状态转移图：确定输入、输出、状态变量、画状态转移图</li>
@@ -237,9 +231,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>状态分配，选择编码方案 (Binary、Gray、One-Hot)</li>
 <li>画逻辑图，检查能否自启动，得到了最终的状态机模型</li>
 </ol>
-<p><br></p>
 <h2 id="how-to-implement-a-fsm">How to implement a FSM</h2>
-<hr>
 <p>当设计好之后，就要使用 HDL 语言来实现这个 FSM 了。</p>
 <p><strong>语言：</strong> Verilog HDL</p>
 <p><strong>综合工具：</strong> XST (Xilinx Synthesis Tools)</p>
@@ -536,19 +528,20 @@ rel="me"           href="mailto:guqian110@163.com"
 <p><strong>结论：</strong></p>
 <p>Binary、Gray 编码使用最少的触发器，较多的组合逻辑。而 One-Hot  编码反之。由于 CPLD 更多的提供组合逻辑资源，而 FPGA 更多的提供触发器资源，所以 CPLD 多使用 Gray，而 FPGA  多使用 One-Hot 编码。另一方面，对于小型设计使用 Gray 和 Binary 编码更有效，而大型状态机使用 One-Hot 更高效。</p>
 <p>(XST 的选项 <code>FSM encoding algorithm</code> 值默认为 <code>auto</code>，编写程序测试发现，它会根据代码中状态的多少，FSM 的复杂度，自动选择合适的编码方式对状态进行编码。)</p>
-<p><strong>P.S.</strong>
-one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（如模板所示的 index one-hot），这种方式和传统的 one-hot 相比，它不再是对比整个状态向量的值，而是逐 bit 对比，从而简化了状态译码电路。</p>
-<p>利用前面的模板和结尾附录的模板，对参考文章 <a href="http://www.trilobyte.com/pdf/golson-snug94.pdf">Steve Golson State machine design techniques for Verilog and VHDL</a> 中的状态机例子进行综合测试，实际结果证实了 index 方式要更加节省资源（如果状态机更加复杂一些的话，两者的差别应该更大）：</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（如模板所示的 index one-hot），这种方式和传统的 one-hot 相比，它不再是对比整个状态向量的值，而是逐 bit 对比，从而简化了状态译码电路。</p>
+</div>
+<p>利用前面的模板和结尾附录的模板，对参考文章 <a href="http://www.trilobyte.com/pdf/golson-snug94.pdf">Steve Golson State machine design techniques for Verilog and VHDL</a> 中的状态机例子进行综合测试，实际结果证实了 index 方式要更加节省资源（如果状态机更加复杂一些的话，两者的差别应该更大）。</p>
 <p>index one-hot style:</p>
-<p><a href="https://github.com/guqian110/guqian110.github.io/blob/master/files/fsm-index.v">index.v</a></p>
-<p><img alt="indx style" src="/images/fsm-design/index-summary.png"></p>
+<p><a href="/files/fsm_index.v">index.v</a></p>
+<p><img alt="indx style" src="/images/fsm-design/index_summary.png"></p>
 <p>non-index one-hot style:</p>
-<p><a href="https://github.com/guqian110/guqian110.github.io/blob/master/files/fsm-non-index.v">non-index.v</a></p>
-<p><img alt="non-index" src="/images/fsm-design/non-index-summary.png"></p>
-<p>======================== 分割线 =============================</p>
+<p><a href="/files/fsm_non_index.v">non-index.v</a></p>
+<p><img alt="non-index" src="/images/fsm-design/non_index_summary.png"></p>
 <p>使用 XST 综合上面的 index one-hot + reverse case 风格的 FSM，结果 XST 并没有识别出 FSM，而 Synplify 我没有破解版本，只能作罢 =.=</p>
 <p>虽然 XST 没有识别出 non-index 的 FSM，但是 Modelsim 是可以识别出来的，可以在 Modelsim 中查看最终综合出来的 FSM 如下：</p>
-<p><img alt="diagram" src="/images/fsm-design/state-diagram.png"></p>
+<p><img alt="diagram" src="/images/fsm-design/state_diagram.png"></p>
 <p>补上普通的 one-hot + case 的模板，这个模板是可以被 XST 识别出来的：</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -697,7 +690,6 @@ one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（�
 <span class="k">end</span>
 </code></pre></div></td></tr></table></div>
 
-<p>======================== 分割线 =============================</p>
 <h3 id="safe-fsm">Safe FSM</h3>
 <p>所谓 “ 安全 ” 的状态机，就是说即使因为某些意外原因，状态机跑飞了，仍然可以自动回复到正常状态。</p>
 <p><strong>举例：可能出现的不安全情况</strong></p>
@@ -731,34 +723,45 @@ one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（�
 <p>显式地定义定义一个 ERROR state</p>
 <p>如模板所示。</p>
 <p>比如一个 FSM，有 4 个状态，分别是 IDLE、S1、S2、S3，那么额外定义一个 ERROR 状态机的框图如下：</p>
-<div class="highlight"><pre><span></span><code><span class="nt">parameter</span><span class="w">   </span><span class="cp">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">0</span><span class="cp">]</span><span class="w">   </span><span class="nt">IDLE</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nt">5</span><span class="s1">&#39;d0,</span>
-<span class="s1">                    S1    = 5&#39;</span><span class="nt">d1</span><span class="o">,</span>
-<span class="w">                    </span><span class="nt">S2</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nt">5</span><span class="s1">&#39;d2,</span>
-<span class="s1">                    S3    = 5&#39;</span><span class="nt">d3</span><span class="o">,</span>
-<span class="w">                    </span><span class="nt">ERROR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">5</span><span class="err">&#39;</span><span class="nt">d4</span><span class="o">;</span>
-</code></pre></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">parameter</span><span class="w">   </span><span class="p">[</span><span class="mh">4</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span><span class="w">   </span><span class="n">IDLE</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d0</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">S1</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d1</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">S2</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d2</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">S3</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d3</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">ERROR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d4</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
 
 <p>在每个 case item 中，最后添加一个 else 分支且 <code>NS[ERROR] = 1'b1</code>，并且多加一个 case item</p>
-<div class="highlight"><pre><span></span><code><span class="n">CS</span><span class="o">[</span><span class="n">ERROR</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">restart</span><span class="p">)</span><span class="w"> </span><span class="n">NS</span><span class="o">[</span><span class="n">IDLE</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="err">&#39;</span><span class="n">b1</span><span class="p">;</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">CS</span><span class="p">[</span><span class="n">ERROR</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">restart</span><span class="p">)</span><span class="w"> </span><span class="n">NS</span><span class="p">[</span><span class="n">IDLE</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 
 </li>
 <li>
 <p>zero-idle</p>
 <p>在状态定义时，不用显式地定义一个 ERROR 状态，而是用全 0 状态表示 ERROR 状态：</p>
-<div class="highlight"><pre><span></span><code><span class="nt">parameter</span><span class="w">   </span><span class="cp">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">1</span><span class="cp">]</span><span class="w">   </span><span class="nt">IDLE</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nt">5</span><span class="s1">&#39;d1,</span>
-<span class="s1">                    S1    = 5&#39;</span><span class="nt">d2</span><span class="o">,</span>
-<span class="w">                    </span><span class="nt">S2</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nt">5</span><span class="s1">&#39;d3,</span>
-<span class="s1">                    S3    = 5&#39;</span><span class="nt">d4</span><span class="o">;</span>
-</code></pre></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">parameter</span><span class="w">   </span><span class="p">[</span><span class="mh">4</span><span class="o">:</span><span class="mh">1</span><span class="p">]</span><span class="w">   </span><span class="n">IDLE</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d1</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">S1</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d2</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">S2</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d3</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">S3</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">5</span><span class="mi">&#39;d4</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
 
 <p>多加一个 case item：</p>
-<div class="highlight"><pre><span></span><code><span class="o">~|</span><span class="nl">CS</span><span class="p">:</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">restart</span><span class="p">)</span><span class="w"> </span><span class="n">NS</span><span class="o">[</span><span class="n">IDLE</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="err">&#39;</span><span class="n">b1</span><span class="p">;</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="o">~|</span><span class="nl">CS:</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">restart</span><span class="p">)</span><span class="w"> </span><span class="n">NS</span><span class="p">[</span><span class="n">IDLE</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 
 </li>
 </ol>
@@ -769,8 +772,8 @@ one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（�
 <ol>
 <li>
 <p>如果使用 “ 非 index one-hot + 非 reverse case” 的方法，那么在第二个 always block 中，在 case 前给 NS 一个默认值（如下）</p>
-<div class="highlight"><pre><span></span><code>NS = 8&#39;bx;
-</code></pre></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">NS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">8</span><span class="p">&#39;</span><span class="n">bx</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
 
 <p>这是个很有用的小技巧，它可以帮助我们在综合前发现状态是否完备：如果状态完备，则在下面的 <code>case</code> 中会给 <code>NS</code> 合适的值；如果状态不完备，则状态机会进入错误状态，输出不定，仿真时可以很快的发现。而且，综合工具对于 <code>x</code> 采取的态度是 <code>don't care</code>，综合时会自动将其忽略，生成的电路最简洁。</p>
 </li>
@@ -779,24 +782,26 @@ one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（�
 <ul>
 <li>
 <p>NS 必须赋值为全 0：</p>
-<div class="highlight"><pre><span></span><code>NS = 8&#39;b0;
-</code></pre></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">NS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">8</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
 
 </li>
 <li>
 <p>使用 synopsys 综合指令</p>
 <p>一般的原则是尽量不要使用综合指令，这里是个特殊情况。</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// synopsys full-case parallel-case</span>
-</code></pre></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// synopsys full-case parallel-case</span>
+</code></pre></div></td></tr></table></div>
 
 </li>
 <li>
 <p>default 分支</p>
 <p>使用了综合指令，则 default 分支在综合时就没有必要，但是仿真器并不能识别综合指令，所以在行为仿真的时候仍然需要 default 分支，所以可以用下面的方法：</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// synopsys translate-off</span>
-<span class="n">default</span><span class="p">:</span><span class="w"> </span><span class="no">$</span><span class="n">display</span><span class="p">(</span><span class="s">&quot;FSM is dead!&quot;</span><span class="p">);</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// synopsys translate-off</span>
+<span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="nb">$display</span><span class="p">(</span><span class="s">&quot;FSM is dead!&quot;</span><span class="p">);</span>
 <span class="c1">// synopsys translate-on</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 
 </li>
 </ul>
@@ -857,13 +862,12 @@ one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（�
 <p>跳转规律：状态机开始处于 IDLE 状态，当 jump 变高时，从 IDLE 跳转到 S1 状态，同时内部的一个 4 bit 计数器开始计数，当计数到 <code>4'b1111</code> 时，跳转到 S2，当再次计数到 <code>4'b1111</code> 时跳转到 S3，当再次计数到 <code>4'b1111</code> 时，跳转到 IDLE，等待 jump 再次变高。状态转移图：</p>
 <p><img alt="diagram" src="/images/fsm-design/diagram.png"></p>
 <p>程序：</p>
-<p><a href="https://github.com/guqian110/guqian110.github.io/blob/master/files/fsm.v">状态机源文件 fsm.v</a></p>
-<p><a href="https://github.com/guqian110/guqian110.github.io/blob/master/files/tb-fsm.v">测试平台 testbench tb-fsm.v</a></p>
+<p><a href="/files/fsm.v">状态机源文件 fsm.v</a></p>
+<p><a href="/files/tb_fsm.v">测试平台 testbench tb-fsm.v</a></p>
 <p>仿真结果：使用 <code>NS</code> 判断，结果如下图，可以看到，当 <code>CS</code> 发生变化时，输出同时改变。</p>
-<p><img alt="case ns" src="/images/fsm-design/case-ns.png"></p>
+<p><img alt="case ns" src="/images/fsm-design/case_ns.png"></p>
 <p>使用 <code>CS</code> 判断，结果如下图，可以看到，当 <code>CS</code> 发生变化时，输出变化相对于状态变化延时一个时钟周期。</p>
-<p><img alt="case ns" src="/images/fsm-design/case-cs.png"></p>
-<p><br></p>
+<p><img alt="case ns" src="/images/fsm-design/case_cs.png"></p>
 <h2 id="ref">Ref</h2>
 <p><a href="http://www.sunburst-design.com/papers/CummingsSNUG1998SJ-FSM.pdf">Clifford E. Cumming State Machine Coding Styles for Synthesis</a></p>
 <p><a href="http://www.sunburst-design.com/papers/CummingsICU2002-FSMFundamentals.pdf">Clifford E. Cumming The Fundamentals of Efficient Synthesizable Finite State Machine
