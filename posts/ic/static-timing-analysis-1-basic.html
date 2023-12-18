@@ -197,7 +197,6 @@ rel="me"           href="mailto:guqian110@163.com"
   <div>
     <p>静态时序分析（Static Timing）是数字 IC 设计中不可避免的话题，也是一个菜鸟成长必须掌握的技术。本文先总结 STA 中常见的定义、名词等。</p>
 <h2 id="clock">Clock</h2>
-<hr>
 <p>时钟是数字电路的动力系统，可以说数字电路中最重要的信号就是时钟信号了。一般时钟信号的时序特性分为：</p>
 <ol>
 <li>
@@ -260,9 +259,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <h3 id="duty-cycle-distortion">Duty Cycle Distortion</h3>
 <p><img alt="dcd" src="/images/static-timing-analysis-1-basic/dcd.jpg"></p>
 <p>占空比失真，即时钟不对称，有脉冲的时间和无脉冲的时间发生了变化。DCD 会吞噬大量的时序裕量，造成数字信号的失真，使过零区间偏离理想的位置。DCD 通常是由信号的上升沿和下降沿之间时序不同而造成的。</p>
-<p><br></p>
 <h2 id="ohters">Ohters</h2>
-<hr>
 <p>除去时钟信号，还有一些其他的相关定义。</p>
 <h3 id="fan-outfan-out">Fan-out/Fan-out</h3>
 <p><strong>Fan-out</strong></p>
@@ -283,9 +280,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>恢复时间 <code>recovery time</code> : 对于异步信号（比如异步复位 / 置位），信号变无效的边沿和下一个时钟沿之间必须满足一个最小的间隔。其意义在于，如果保证不了这个最小时间，也就是异步信号无效边离时钟边沿太近了，异步信号解除（无效）之后，没有给 DFF 足够的时间来恢复（recovery）到正常状态，那么就不能保证在时钟沿到来时 DFF 可以正常工作。</p>
 <p>撤销时间 <code>removal time</code> : 对于异步信号（比如异步复位 / 置位），信号变有效的边沿和前一个时钟沿之间必须满足一个最小的间隔。其意义在于，如果保证不了这个最小时间，也就是异步信号的有效沿离时钟太近了，在时钟信号去除（无效）之前，异步信号提前有效了，可能会造成 DFF 处于不确定状态。</p>
 <p><a href="http://blog.sina.cn/dpool/blog/s/blog-72c14a3d01013tpi.html?type=-1">更加详细的总结：锁存器 Latch v.s. 触发器 Flip-Flop</a>。</p>
-<p><br></p>
 <h2 id="sta-intro">STA Intro</h2>
-<hr>
 <p><a href="http://en.wikipedia.org/wiki/Static-timing-analysis">STA 的 wiki</a> 已经说的很明白了，下面的内容基本就是引用和翻译：</p>
 <blockquote>
 <p>Static timing analysis (STA) is a method of computing the expected timing of a digital circuit without requiring simulation.</p>
@@ -401,7 +396,6 @@ rel="me"           href="mailto:guqian110@163.com"
 
 <p>如果时序裕量 Slack 为正，表示满足时序，负值表示不满足时序。STA 按照上式分析设计中所有路径，如果 Slack 为负值，则该路径为影响设计的关键路径，需要修改设计以达到时序要求。</p>
 <p>STA 是通过 “ 穷举法 ” 抽取整个设计电路的所有时序路径，按照约束条件分析电路中是否有违反设计规则的问题，并计算出设计的最高频率。</p>
-<p><br></p>
 <p>========= Update 05/18/2015===========================</p>
 <p>很多笔试题里面都有考计算最大时钟频率的题，看到几篇文章 :</p>
 <p><a href="http://www.vlsiinterviewquestions.org/2011/12/17/static-timing-analysis-101/">Static Timing Analysis 101</a></p>
@@ -479,7 +473,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <div class="highlight"><pre><span></span><code>Th &lt;= {Tcomb}min = T2min
 </code></pre></div>
 
-<p><br></p>
 <h2 id="ref">Ref</h2>
 <p><a href="http://book.douban.com/subject/11523088/">Xilinx FPGA 开发实用教程</a></p>
 <p><a href="http://www.ictest8.com/debug/rf-pcb.htm">RF 类 IC demo 板 loadboard 设计参考资料之时钟部分</a></p>

@@ -194,9 +194,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
   <div>
     <p>在一些情况下，是不需要考虑低功耗设计的，但是更多的情况下，低功耗是必须考虑的，总结一下 <a href="http://www.amazon.com/The-Art-Hardware-Architecture-Techniques/dp/1461403960">THE ART OF HARDWARE ARCHITECTURE</a> 中介绍的低功耗设计的方法。</p>
-<p><br></p>
 <h2 id="sources-of-power-consumption">Sources of Power Consumption</h2>
-<hr>
 <p>首先，分析功耗的来源。</p>
 <p>功耗可以分为 3 类：</p>
 <ol>
@@ -218,18 +216,13 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div>
 
 <p>其中，动态功耗占了主要部分，典型应用中，动态功耗占到总功耗的 80% 。</p>
-<p><br></p>
 <h2 id="power-reduction-power-reduction">Power Reduction Power Reduction</h2>
-<hr>
 <p>可以从系统的不同层次来降低功耗，下图展示了不同级别的不同技术，虽然可以在各个级别进行，但是在抽象层次越高的级别，得到的效果越有效，即在系统层（system level）和体系结构层（architecture level）进行。</p>
 <p><img alt="level" src="/images/low-power-design/level.png"></p>
 <p>下面一张表展示了各个级别对功耗降低程度的影响：</p>
 <p><img alt="opportunities" src="/images/low-power-design/opportunities.png"></p>
-<p><br></p>
 <p><em>下面分别从不同层次总结。</em></p>
-<p><br></p>
 <h2 id="system-level">System Level</h2>
-<hr>
 <h3 id="soc-approach">SoC Approach</h3>
 <p>对于纳米级高端芯片，I/O 使用比芯片内核更高的电压，占到了总功耗的 50% 以上。如果有很多芯片的话，芯片之间的连线会消耗大量的功耗，所以就提出了 SoC，以缩减面积，降低成本。</p>
 <h3 id="hwsw-partitioning">HW/SW Partitioning</h3>
@@ -283,9 +276,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>因为减少了循环计数器（初始化、递增、比较），所以循环指令数目就减少了。</p>
 <h3 id="choice-of-processor">Choice of Processor</h3>
 <p>选择处理器会对整体功耗产生明显影响。（高级话题，以后再补）</p>
-<p><br></p>
 <h2 id="architecture-level-power-reduction">Architecture Level Power Reduction</h2>
-<hr>
 <h3 id="advanced-clock-gating">Advanced Clock Gating</h3>
 <p>同步设计中，时钟占据了整个动态功耗的绝大部分，在许多情况下都可以通过门控时钟将绝大多数不使用的电路关闭掉。</p>
 <p>门控时钟有如下的两种：</p>
@@ -313,9 +304,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>...</p>
 <h3 id="gate-memory-power">Gate Memory Power</h3>
 <p>...</p>
-<p><br></p>
 <h2 id="register-transfer-level-rtl-power-reduction">Register Transfer Level (RTL) Power Reduction</h2>
-<hr>
 <p>在大规模 ASIC 中，在 RTL 级完成时，至少 80% 的功耗已经确定了，后端流程无法解决所有的功耗问题，后端无法解决微架构、RTL 代码风格对动态和静态功耗的影响，所以在 RTL 阶段就要将功耗相关的问题一起解决。</p>
 <h3 id="state-machine-encoding-and-decomposition">State Machine Encoding and Decomposition</h3>
 <p>在各种状态机编码类型中，格雷码是最符合低功耗设计的。因为格雷码相邻码之间只有一位翻转，所以消耗的能量最少。（格雷码是最优的，有个 条件就是状态机是按顺序跳转的，如果状态跳转的次序是不定的，那么格雷码的优势就不存在了）</p>
@@ -398,10 +387,8 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>当总线上的当前数据和下一个数据之间的汉明距离大于 N/2 时（N 是总线宽度），就将下一个数据反向再传输。这样做可以降低总线上出现的转换次数，从而降低功耗。</p>
 <p>如下图所示：</p>
 <p><img alt="bus" src="/images/low-power-design/bus-trans.png"></p>
-<p><br></p>
 <h2 id="transistor-level-power-reduction">Transistor Level Power Reduction</h2>
 <p>寄存器级别的技术基本属于后端 &amp; 微电子科学了，就不再总结了。</p>
-<p><br></p>
 <h2 id="ref">Ref</h2>
 <p><a href="http://www.amazon.com/The-Art-Hardware-Architecture-Techniques/dp/1461403960">THE ART OF HARDWARE ARCHITECTURE</a></p>
   </div>

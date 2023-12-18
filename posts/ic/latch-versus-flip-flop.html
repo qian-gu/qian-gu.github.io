@@ -207,7 +207,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>Using this terminology, a latch is level-sensitive, whereas a flip-flop is edge-sensitive. That is, when a latch is enabled it becomes transparent, while a flip flop's output only changes on a single type (positive going or negative going) of clock edge.</p>
 </blockquote>
 <p>所以按照现在的约定习惯区分，latch 指的是电平触发的触发器，翻译为 “ 锁存器 ”；flip-flop 指边沿触发的触发器，就叫 “ 触发器 ”。</p>
-<p><br></p>
 <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#history">History</a></li>
 <li><a href="#implementation">Implementation</a><ul>
@@ -244,14 +243,11 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 </div>
 <h2 id="history">History</h2>
-<hr>
 <p><em>翻译自 <a href="http://en.wikipedia.org/wiki/Flip-flop-(electronics">wiki</a>:</em></p>
 <p>第一个电子触发器 (electronic flip-flop) 由  William Eccles 和 F. W. Jordan 于 1918 年发明的。它最早被称为 ：  <code>Eccles–Jordan trigger circuit</code>，由两个真空管组成。虽然现在由逻辑门 (logic gates) 组成的触发器很常见，但是在集成电路 (intergrated circuits) 中，这种元件及它的晶体管版本仍然也很常见。早期的触发器常用来构成触发电路或者多谐振荡器 (multivibrators)。</p>
 <p><img alt="flip-flop" src="http://upload.wikimedia.org/wikipedia/commons/9/98/Eccles-Jordan-trigger-circuit-flip-flip-drawings.png"></p>
 <p>根据一个 JPL 的工程师，P. L. Lindley 介绍，Montgomery Phister 于 1954 年在 UCLA 的 computer design 的课程上第一次对触发器进行了分类的讨论（RS、D、T、JK），然后在他的书 Logical Design of Digital Computers 中也进行了讨论。Lindley 当时在 Hughes Aircraft 的 Eldred Nelson 手下工作，而 Nelson 命名了 JK 触发器。其他的名字则是 Phister 命名的。Lindley 解释说他是从 Nelson 口中得知 JK 触发器的故事的，当时 Hughes Aircraft 使用的触发器都是 JK 触发器。在设计逻辑系统时，Nelson 给触发器的输入命名为 A&amp;B、C&amp;D、E&amp;F、G&amp;H、J&amp;K。在 1953 年 Nelson 申请专利时，采用了 J&amp;K 的命名方案。</p>
-<p><br></p>
 <h2 id="implementation">Implementation</h2>
-<hr>
 <blockquote>
 <p>Flip-flops can be either simple (transparent or asynchronous) or clocked (synchronous); the transparent ones are commonly called latches. The word latch is mainly used for storage elements, while clocked devices are described as flip-flops.</p>
 </blockquote>
@@ -340,9 +336,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>功能表：</p>
 <p><img alt="tff" src="/images/latch-versus-flip-flop/tff.png"></p>
 <p>可以看到 TFF 有 1/2 分频的作用，这一特点在很多电路中得到了应用。</p>
-<p><br></p>
 <h2 id="timing-considerations">Timing considerations</h2>
-<hr>
 <h3 id="metastability">Metastability</h3>
 <p>伴随着 flip-flop 的一个问题是 <code>亚稳态 Metastability</code>。当两个输入端口 ( 比如 data 和 clk，或者 reset 和 clk) 同时变化时，就会发生亚稳态的问题，需要消耗更长的时间来使输出达到稳定状态，而且这个稳定状态是不可预测的，有可能是 1，也有可能是 0。</p>
 <p>在计算机系统中，如果发生亚稳态，如果在下一个时钟使用数据时，还没有达到稳定状态，会导致数据传输错误或者程序崩溃。如果有两条路径同时用到了这个数据，有可能一条将它当作 1，另一条把它当作 0，这样会导致系统进入不一致的状态。</p>
@@ -376,9 +370,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <h3 id="propagation-delay">Propagation delay</h3>
 <p>flip-flop 还有一个参数叫做 clock-to-output delay (common symbol in data sheets: <code>tco</code>) 或者是 propagation delay (<code>tp</code>)，表示的是 flip-flop 从有效时钟沿开始到输出发生变化所消耗的时间。有时候从高电平变为低电平的时间 (high-to-low transition, tPHL)) 和从低电平变为高电平的时间 (low-to-high transition, tPLH) 不相等。</p>
 <p>当用同一时钟来驱动级联的 flip-flop ( 比如移位寄存器 shift register) 时，必须保证前一级的 tco 要大于后一级的 th。这是因为必须要保证前一级的数据能够正确移位到后一级中。当有效时钟沿到来时，前后两级的 ff 在同时变化，采样前一级的输出作为本级的输入，然后经过 tco 输出更新的值。当后一级 ff 在 tsu 到 th 段内采样时，必须保证前一级的输出保持不变，也就是说前一级 ff 的响应速度不能太快，至少要等后一级正确采样完成之后才能变化，即 <code>tco &gt; th</code>。如果采用物理构造完全相同的 ff，那么通常是可以保证这一条件的。</p>
-<p><br></p>
 <h2 id="in-fpga">in FPGA</h2>
-<hr>
 <p>latch 和 flip-flop 的特点决定了它们各自的应用场景</p>
 <p><strong>latch 的优点：</strong></p>
 <ol>
@@ -571,7 +563,6 @@ rel="me"           href="mailto:guqian110@163.com"
 </blockquote>
 <h3 id="conclusion">Conclusion</h3>
 <p>锁存器 latch 是一种基本电路单元 , 会影响到电路的时序性能 , 应该尽量避免使用 , 但出现锁存器造成设计和原始意图不符的情况 , 则是由于设计人员代码输入不正确造成的。</p>
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://en.wikipedia.org/wiki/Flip-flop-(electronics">Flip-flop (electronics) --wikipedia</a></p>
 <p><a href="http://book.douban.com/subject/2883561/">数字设计</a></p>

@@ -200,9 +200,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>设计不良的时钟在极限的温度、电压或者制造工艺的偏差情况下将导致错误的行为，并且调试困难、花销很大。</p>
 </blockquote>
 <p>总结一下 FPGA 中的时钟设计原则。</p>
-<p><br></p>
 <h2 id="clock-design">Clock Design</h2>
-<hr>
 <blockquote>
 <p>在 FPGA/CPLD 中通常采用几种时钟类型：</p>
 <ul>
@@ -322,9 +320,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>对于这些情况，首先检查是否可以用 <code>CE</code> (clock enable) 来代替分频时钟，如果不行，则使用 <a href="http://guqian110.github.io/pages/2014/10/13/clock-dividers.html">时钟分频器</a> 中讨论的分频方法。</p>
 </li>
 </ol>
-<p><br></p>
 <h2 id="other-tips">Other Tips</h2>
-<hr>
 <ul>
 <li>
 <p><strong>只使用时钟的单个边沿</strong></p>
@@ -339,7 +335,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>使用 DCM/MMCM 的 <code>locked</code> 输出，在使用时钟前先检查时钟是否锁定。</p>
 </li>
 </ul>
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://book.douban.com/subject/10593491/">Xilinx FPGA 高级设计及应用</a></p>
 <p><a href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00FW1RTZG">FPGA 高手设计实战真经 100 则</a></p>

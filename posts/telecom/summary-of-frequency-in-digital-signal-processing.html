@@ -199,7 +199,6 @@ rel="me"           href="mailto:guqian110@163.com"
   <div>
     <p>最近实习的时候，发现自己的 DSP 基本功还是不够扎实，关于模拟 / 数字角频率，频率，采样速率等一些概念理解的都不太深刻，愧对老师和这么多年的学习，Google 到一些讲解的比较清楚的 blog，备忘（抄袭）过来，温故而知新。</p>
 <h2 id="unit-circle-sincos">unit circle &amp; sin(cos)</h2>
-<hr>
 <p>首先从最基本的三角函数的定义开始：</p>
 <p>三角函数的定义方式有很多种，我觉得基于单位圆的定义是最形象，对之后理解各种角频率的物理 / 数学含义最有帮助。</p>
 <p>我们应该是在初中的时候第一次接触到三角函数，那时候三角函数的定义是直接给个三角形，然后直接定义 sin(cos) 为哪条边比哪条边的值，然后给出 sin(cos)  的波形如下图所示：</p>
@@ -215,11 +214,8 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>"Circle cos sin" by LucasVB - Own work. Licensed under Public Domain via Commons - https://commons.wikimedia.org/wiki/File:Circle-cos-sin.gif#/media/File:Circle-cos-sin.gif</p>
 <p><strong>P.S.</strong> 关于投影，wiki 上有个解释欧拉公式的图特别好：</p>
 <p>"Sine and Cosine fundamental relationship to Circle (and Helix)" by Tdadamemd - Own work by uploader (.gif frames created in Powerpoint). Licensed under CC BY-SA 3.0 via Commons - https://commons.wikimedia.org/wiki/File:Sine-and-Cosine-fundamental-relationship-to-Circle-(and-Helix).gif#/media/File:Sine-and-Cosine-fundamental-relationship-to-Circle-(and-Helix).gif</p>
-<p><br></p>
 <p><em>有了上面简单的背景，就可以开始逐个讨论信号处理中的概念了。</em></p>
-<p><br></p>
 <h2 id="_1">Ω</h2>
-<hr>
 <p>我们已经知道小球在圆周上做匀速率的圆周运动时，它在两个坐标轴上的投影就分别是 sin(cos)，如果我们想进一步描述小球的运动速率的快慢呢？</p>
 <p>假设小球完整转一圈所花费的时间为 T，转动的角度为 2π，则我们可以定义</p>
 <p><strong>模拟角频率</strong> <code>Ω = 2π/T</code>，单位是 rad / s</p>
@@ -245,9 +241,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 <p>结果如下图：</p>
 <p><img alt="OMEGA" src="/images/summary-of-frequency-in-digital-signal-processing/OMEGA.jpg"></p>
-<p><br></p>
 <h2 id="f">f</h2>
-<hr>
 <p>小球在二维平面上的圆周运动投影到一维的坐标轴 x(y) 轴上看，则是左右（上下）振动。和 Ω 类似，我们也可以定义一个物理量来描述这种振动的快慢：</p>
 <p>小球完成一次完整的圆周运动所花费的时间为 T，也就是完成一次振动花费了 T 时间，我们定义</p>
 <p><strong>频率</strong> <code>f = 1 / T</code>，单位是 Hz</p>
@@ -273,9 +267,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 <p>结果如下图：</p>
 <p><img alt="f" src="/images/summary-of-frequency-in-digital-signal-processing/f.jpg"></p>
-<p><br></p>
 <h2 id="w">w</h2>
-<hr>
 <p>计算机的世界是离散的，所以当连续信号经过采样、量化得到离散信号后：</p>
 <p>y = sin(Ω<em>t) = sin(Ω</em>n<em>Ts) = sin(Ω</em>Ts<em>n) = sin(w</em>n)</p>
 <p>从数学上我们就可以得到：</p>
@@ -352,7 +344,6 @@ rel="me"           href="mailto:guqian110@163.com"
 </tr>
 </tbody>
 </table>
-<p><br></p>
 <h2 id="ref">Ref</h2>
 <p><a href="https://en.wikipedia.org/wiki/Trigonometric-functions">Trigonometric functions</a></p>
 <p><a href="http://anony3721.blog.163.com/blog/static/51197420111129503233/">阿英讲频率 f，角频率 Ω 和数字频率 w 的物理含义 -- 附 MATLAB 仿真</a></p>

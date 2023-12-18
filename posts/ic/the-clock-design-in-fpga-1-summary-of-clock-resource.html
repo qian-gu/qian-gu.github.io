@@ -207,9 +207,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </li>
 </ul>
 <p>实验室有的芯片是 Xilinx 的 Virtex-5 系列，Virtex-5 的 User Guide 是 <a href="http://www.xilinx.com/support/documentation/user-guides/ug190.pdf">UG190</a>，以下内容都是从中摘抄的笔记。</p>
-<p><br></p>
 <h2 id="three-types-of-clock-resource">Three Types of clock resource</h2>
-<hr>
 <h3 id="global-clocks">Global Clocks</h3>
 <ul>
 <li>
@@ -252,11 +250,9 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <h3 id="io-clocks">I/O clocks</h3>
 <ul>
-<li>第三种时钟资源是 I/O clocks，可以达到非常高的速度，用于局部的 I/O 串行器 / 解串器。
-<br></li>
+<li>第三种时钟资源是 I/O clocks，可以达到非常高的速度，用于局部的 I/O 串行器 / 解串器。</li>
 </ul>
 <h2 id="global-clocking-resources">Global Clocking Resources</h2>
-<hr>
 <ul>
 <li>
 <p>全局时钟（global clocks）是个专用网络，是专为覆盖对 FPGA 中各种资源的所有时钟输入设计的。</p>
@@ -471,9 +467,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 </li>
 </ul>
-<p><br></p>
 <h2 id="regional-clocking-resources">Regional Clocking Resources</h2>
-<hr>
 <ul>
 <li>
 <p>区域时钟网络是一组独立于全局时钟网络的时钟网络。</p>
@@ -592,9 +586,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>一个 BUFR 最多可以驱动两个相邻时钟区域中的区域时钟。</p>
 </li>
 </ul>
-<p><br></p>
 <h2 id="clock-management-technology">Clock Management Technology</h2>
-<hr>
 <ul>
 <li>
 <p>Virtex-5 系列的芯片内部含有的时钟管理模块（Clock Management Tiles，CMTs）可以提供灵活的、高性能的时钟信号。</p>
@@ -693,9 +685,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>不同系列的芯片内部的时钟管理模块是不同的，比如在 Virtex-5 系列后的芯片就含有了 混合模式时钟管理器 MMCM 。</p>
 <p>具体实现时该如何选择 DCM、DLL、PLL、MMCM ？找到一篇介绍 Xilinx 时钟资源的文章：</p>
 <p><a href="http://www.ednchina.com/ART-8800512846-18-20010-TA-25f01c24.HTM">如何正确使用 FPGA 的时钟资源</a></p>
-<p><br></p>
 <h2 id="other-tips">Other Tips</h2>
-<hr>
 <ol>
 <li>
 <p>一般来说，外部提供的时钟信号都需要进行倍频 / 分频才可以使用，这时候需要组合各种时钟缓冲器和 DCM、PLL 等模块，我们有两种方法：</p>
@@ -713,12 +703,9 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>对 FPGA 设计而言，全局时钟是最简单最可预测的时钟，最好的时钟方案是：由专用的全局时钟输入引脚驱动单个全局时钟，并用后者去控制设计中的每个触发器。全局时钟资源是专用布线资源，存在与全铜布线层上，使用全局时钟资源不影响芯片的其他布线资源，因此在可以使用全局时钟的时候尽可能使用。</p>
 </li>
 </ol>
-<p><br></p>
 <h2 id="summary">Summary</h2>
-<hr>
 <p>虽然各个芯片都不尽相同，但是了解相关的基本知识有利于我们快速掌握芯片的时钟资源、快速上手。</p>
 <p>Xilinx 的所有器件上的时钟资源可以分为前面说的 3 类：全局时钟（global clock）、局部时钟（regional clock）、I/O 时钟（I/O clock），但是不同的器件内部含有的时钟管理模块是不同的，具体到每一款芯片，应该以对应的 User Guide 为准。</p>
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://www.xilinx.com/support/documentation/user-guides/ug190.pdf">Virtex 5 User Guide</a></p>
 <p><a href="http://book.douban.com/subject/11523088/">Xilinx FPGA 开发使用教程</a></p>

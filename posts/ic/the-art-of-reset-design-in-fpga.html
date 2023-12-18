@@ -511,7 +511,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <span class="w">    </span><span class="kt">reg</span><span class="w">         </span><span class="n">rst_r</span><span class="p">;</span>
 
 <span class="w">    </span><span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="k">posedge</span><span class="w"> </span><span class="n">rst_pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst</span><span class="o">-</span><span class="n">pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rst_pb</span><span class="p">)</span><span class="w"> </span><span class="k">begin</span>
 <span class="w">            </span><span class="c1">// reset</span>
 <span class="w">            </span><span class="n">rst_r</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
 <span class="w">        </span><span class="k">end</span>
@@ -781,13 +781,13 @@ rel="me"           href="mailto:guqian110@163.com"
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">input</span><span class="w">    </span><span class="n">reset</span><span class="o">-</span><span class="n">raw</span><span class="p">;</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">input</span><span class="w">    </span><span class="n">reset_raw</span><span class="p">;</span>
 
 <span class="c1">// synposys sync-set-reset &quot;reset&quot;</span>
-<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="n">reset</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">reset</span><span class="o">-</span><span class="n">raw</span><span class="p">;</span>
+<span class="k">always</span><span class="w"> </span><span class="p">@(</span><span class="k">posedge</span><span class="w"> </span><span class="n">clk</span><span class="p">)</span><span class="w"> </span><span class="n">reset</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">reset_raw</span><span class="p">;</span>
 </code></pre></div></td></tr></table></div>
 
-<p>reset-raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地（local）复位信号，同时也连接子模块 reset-raw 的输入。</p>
+<p>reset_raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地（local）复位信号，同时也连接子模块 reset_raw 的输入。</p>
 <p><strong>Advantage</strong></p>
 <ol>
 <li>

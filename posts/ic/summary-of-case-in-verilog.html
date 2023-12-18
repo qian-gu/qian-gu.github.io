@@ -198,7 +198,6 @@ rel="me"           href="mailto:guqian110@163.com"
     <p>学习了 Cummings 大神 的 paper：<a href="http://www.sunburst-design.com/papers/CummingsSNUG1999Boston-FullParallelCase.pdf">"full-case parallel-case", the Evil Twins of Verilog Synthesis</a> 和 <a href="http://www.phei.com.cn/module/goods/wssd-content.jsp?bookid=38848">Verilog 编程艺术</a></p>
 <p>总结一下笔记。</p>
 <h2 id="def">Def</h2>
-<hr>
 <h3 id="syntax">Syntax:</h3>
 <div class="highlight"><pre><span></span><code>case (case-expression)
  case-item1 : case-item-statement1;
@@ -263,7 +262,6 @@ and use "?" characters instead of "z" characters in the case items to indicate "
 <h3 id="reverse-case">reverse case</h3>
 <p>reverse case 是 case 的一个变形，也叫做 <code>case if true</code>。这种风格中 case expression 是一个常量，而 case items 是由变量构成的表达式。这种风格通常用在 One-hot FSM 中，并且采用 parallel 方式。</p>
 <p>见另外一篇博客：<a href="http://guqian110.github.io/pages/2014/06/05/fsm-design.html">有限状态机设计</a></p>
-<p><br></p>
 <p>下面讨论 full-case 和 parallel-case 的相关问题。很多人都会使用这两个综合指令，他们的理由是：</p>
 <blockquote>
 <ul>
@@ -282,9 +280,7 @@ and use "?" characters instead of "z" characters in the case items to indicate "
 <blockquote>
 <p>An alternate title for this paper could be: "How to add $200,000 to the cost and 3-6 months to the schedule of your ASIC design without trying!"</p>
 </blockquote>
-<p><br></p>
 <h2 id="full-case-statement">"full" case statement</h2>
-<hr>
 <p>"full" 的意思就是 expression 的任何取值都有一个 item/default 分支与其对应，否者就不是 "full case"。</p>
 <p><strong>example1: Non-"full" case</strong></p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
@@ -495,9 +491,7 @@ behavior of the case statement.</p>
 <p>我们使用 full case 指令的目的就是为了避免生成意外的 latch，但是这种方法有以上的各种弊端。其实还有一种更加简单的方法来避免 latch，就是前面说的，<strong>在 case 前，给所有的输出赋一个默认值。</strong></p>
 </li>
 </ol>
-<p><br></p>
 <h2 id="parallel-case-statement">"parallel" case statement</h2>
-<hr>
 <p>"parallel" 的意思就是 expression 的取值每次有且只有一个 item 与其对应，否则就不是 "parallel" case，而匹配的 items 称为 "overlapping" case items。</p>
 <h3 id="non-parallel-case-statements">Non-parallel case statements</h3>
 <div class="highlight"><pre><span></span><code><span class="n">always</span><span class="w"> </span><span class="nv">@sel</span><span class="w"> </span><span class="k">begin</span>
@@ -531,9 +525,7 @@ behavior of the case statement.</p>
 <p><strong>Guideline:</strong> Examine all synthesis tool case-statement reports </p>
 <p><strong>Guideline:</strong> Change the case statement code, as outlined in the above coding guidelines, whenever the synthesis tool reports that the case statement is not parallel (whenever the synthesis tool reports "no" for "parallel-case")</p>
 </blockquote>
-<p><br></p>
 <h2 id="synthesis-coding-styles">Synthesis coding styles</h2>
-<hr>
 <p>在总结了 full-parallel-case 之后，Cummings 大神给出了建议：</p>
 <blockquote>
 <p>Sunburst Design Assumption: it is generally a bad coding practice to give the synthesis tool
@@ -549,9 +541,7 @@ devices!</p>
 <p>Guideline: only use full-case parallel-case to optimize onehot FSM designs.</p>
 </blockquote>
 <p>甚至建议要开除写 full-parallel-case 的员工 ...</p>
-<p><br></p>
 <h2 id="summary">Summary</h2>
-<hr>
 <p>总结一下所有的 guidelines：</p>
 <blockquote>
 <p><strong>Guideline:</strong> Exercise caution when coding synthesizable models using the Verilog casez statement</p>
@@ -568,7 +558,6 @@ statements.</p>
 <p><strong>Guideline:</strong> Educate (or fire) any employee or consultant that routinely adds "full-case parallel-case" to all case statements in their Verilog code.</p>
 <p><strong>Conclusion:</strong> "full-case" and "parallel-case" directives are most dangerous when they work! It is better to code a full and parallel case statement than it is to use directives to make up for poor coding practices.</p>
 </blockquote>
-<p><br></p>
 <h2 id="ref">Ref</h2>
 <p><a href="http://www.sunburst-design.com/papers/CummingsSNUG1999Boston-FullParallelCase.pdf">"full-case parallel-case", the Evil Twins of Verilog Synthesis</a></p>
 <p><a href="http://www.phei.com.cn/module/goods/wssd-content.jsp?bookid=38848">Verilog 编程艺术</a></p>

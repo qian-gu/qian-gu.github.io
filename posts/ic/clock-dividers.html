@@ -211,14 +211,10 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>对于这些情况，首先检查是否可以用 <code>CE</code> (clock enable) 来代替分频时钟，如果不行，则使用下面讨论的分频方法。</p>
 </li>
 </ol>
-<p><br></p>
 <h2 id="counter">Counter</h2>
-<hr>
 <p>时钟分频一般都是通过计数器 counter 来实现的，计数器是分频的基础。</p>
 <p>计数器可以分为很多种，<a href="http://en.wikipedia.org/wiki/Counter">Counter on wiki</a>，这里不再跑题展开了，关于计数器的讨论见：<a href="http://guqian110.github.io/pages/2014/11/04/counter-design-summary.html">Counter in FPGAs</a></p>
-<p><br></p>
 <h2 id="clock-divider">Clock divider</h2>
-<hr>
 <h3 id="even-clock-divider">even clock divider</h3>
 <p>偶数分频是最简单的情况，使用计数器就可以完成。比如，产生一个分频系数为 N（偶数）的 50% 占空比的分频器一般有两种方法：</p>
 <ol>
@@ -330,11 +326,8 @@ rel="me"           href="mailto:guqian110@163.com"
 
 <p>所以可以用 3 次 8 分频 + 7 次 9 分频得到 8.7 分频。因为 <code>10 -7 = 3</code>，前 3 次累积之和都小于 10，所以前 3 次进行 9 分频，第四次累积值为 12，去除进位后余 2，待下次继续累积，第四次结果 12 &gt; 10，所以进行 8 分频。分频方案如下图所示：</p>
 <p><img alt="example" src="/images/clock-dividers/example.png"></p>
-<p><br></p>
 <h2 id="summary">Summary</h2>
-<hr>
 <p>本文总结了一些常用的时钟分频技术，虽然不推荐使用逻辑来对时钟信号进行分频，但是在一些要求比较的的情况下，使用逻辑分频不仅可以满足要求，还能降低资源消耗，不失为一种好方法。而且时钟分频也可以训练我们的设计能力。</p>
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://www.amazon.com/The-Art-Hardware-Architecture-Techniques/dp/1461403960">The Art of Hardware Architecture</a></p>
 <p><a href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00FW1RTZG">FPGA 高手设计实战真经 100 则</a></p>

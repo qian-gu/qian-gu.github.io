@@ -194,11 +194,9 @@ rel="me"           href="mailto:guqian110@163.com"
 
   <div>
     <h2 id="introduction">Introduction</h2>
-<hr>
 <p>计数器 在数字电路设计 和 计算机程序设计 中都应用非常广泛，其功能顾名思义，就是用来计数。这里只讨论数字电路设计中的计数器。</p>
 <p>通常，将包含触发器 flip-flop 的电路（即使含有组合电路部分）认为是时序电路。时序电路通常不以电路命名，而是以功能进行分类，分别是 <strong>寄存器</strong> 和 <strong>计数器</strong>。</p>
 <p>计数器 <a href="http://en.wikipedia.org/wiki/Counter">counter</a> 从本质上来说也是寄存器，不过它是在预先设定好的状态序列中转移，尽管计数器是寄存器的一种特殊形式，通常还是以不同的名称来加以区分。</p>
-<p><br></p>
 <h2 id="type">Type</h2>
 <p>按照不同的标准来划分，计数器可以有不同的划分方法：</p>
 <ol>
@@ -233,7 +231,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>计数器在数字电路中的用途非常广，可以作为定时器、实用计数器、状态机等。在具体实现时，有前面总结的不同的计数器类型可供选择，每种计数器由其特点决定了适用场合，我们要做到就是在不同计数器类型和配置之间进行权衡，选择正确的设计，以节省大量逻辑资源，并提高性能。</p>
 <p>下面分别讨论各种计数器的特点和 HDL 实现。</p>
 <h2 id="implement">Implement</h2>
-<hr>
 <h3 id="binary-counter">Binary Counter</h3>
 <p>最简单、最基本的计数器就是 二进制计数器 Binary Counter。它的计数方式就是从 0 开始每个脉冲进行 “+1” 操作，直到最大值，然后重新从 0 开始。</p>
 <p><a href="http://www.amazon.com/FPGA-Prototyping-Verilog-Examples-Spartan-3/dp/0470185325">FPGA Prototyping By Verilog Examples: Xilinx Spartan-3 Version</a> 里面有个例子，这里稍作修改就可以当作通用模块，供其他模块调用了。</p>
@@ -563,7 +560,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>中有详细介绍如何设计一个 Gray Code Counter 的过程，其基本思想就是利用一个 binary counter 来实现目的，计数器的计数功能由内部的 binary counter 实现，将 binary 的计数结果通过一个 binary2gray 的转换电路转化为 gray code 后再输出；输出的 gray code 反馈回计数器之前，再通过一个 gray2bianry 的电路转化回 binary 形式，以供内部的 binary counter 使用。模块示意图如下：</p>
 <p><img alt="gray code counter" src="/images/counter-design-summary/gray-code-counter.png"></p>
 <p>代码略 ...</p>
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://www.amazon.com/FPGA-Prototyping-Verilog-Examples-Spartan-3/dp/0470185325">FPGA Prototyping By Verilog Examples: Xilinx Spartan-3 Version</a></p>
 <p><a href="http://www.amazon.com/Hdl-Chip-Design-Synthesizing-Simulating/dp/0965193438">Hdl Chip Design: A Practical Guide for Designing, Synthesizing &amp; Simulating Asics &amp; Fpgas Using Vhdl or Verilog</a></p>

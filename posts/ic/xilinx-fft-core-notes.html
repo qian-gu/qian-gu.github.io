@@ -200,9 +200,7 @@ rel="me"           href="mailto:guqian110@163.com"
     <p>关于 FFT 的背景介绍就不再赘述，通原书和网上的教程、课件很多；关于这个 IP 核的介绍也就不再粘贴复制了，原版的 datasheet 必然是最全面的，仅记录我的使用时遇到的问题和需要注意到细节。</p>
 <p>IP 核的接口示意图：</p>
 <p><img alt="schematic symbol" src="/images/xilinx-fft-core-notes/symbol.png"></p>
-<p><br></p>
 <h2 id="timing">Timing</h2>
-<hr>
 <h3 id="start-rfd-port"><code>START / RFD</code> port</h3>
 <p>datasheet 中没有专门描述 <code>start</code> 信号和其他信号的时序关系，只是简单介绍：</p>
 <blockquote>
@@ -268,9 +266,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>从理论上分析，采用 Burst I/O with Natural Order Output 方案，总共需要 3N 个时钟周期，load 阶段需要 N 个周期载入数据，processing 阶段需要 N 个时钟变换，unload 阶段需要 N 个周期来输出数据。</p>
 <p>从仿真结果来看，unload 阶段和下一帧的 load 阶段有部分是重叠的，这样实际上的周期是少于 3N 个时钟的。</p>
 <p><strong>虽然功能上是不影响下一帧的数据的，毕竟和预期的时序不同，不知道是否会影响时序设计，有待继续观察。</strong></p>
-<p><br></p>
 <h2 id="port">Port</h2>
-<hr>
 <h3 id="nfft-port"><code>NFFT</code> port</h3>
 <p>这个 FFT core 是可以设置为 动态重配置的，可以在运行时改变做运算的点数，非常方便，不过有一点需要注意到是重配置的点数是有范围限制的，比如我测试时设置的最大点数为 4096 点，那么运行重配置时，最小的点数为 64。可以选择 64 ~ 4096 之间的任何一个 2 的指数。</p>
 <p>由于我一开始忽略了这一点，重配置为 16 点，迷糊了半天，重新打开 IP core 设置时才发现是自己看文档不够仔细 =.=</p>
@@ -316,9 +312,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </blockquote>
 <p>但是却没有提到这个额外的 1/N 需要用户自己手动设置，应该算是 Xilinx 的坑。修正这个倍数关系以后，结果就与预期相符了～</p>
 <p>（其实如果仔细分析对比 FPGA 和 Matlab 的结果，就能发现两者的差别就是这个 1/N 的倍数关系，只是自己对数字不敏感，又懒得仔细观察 =.=）</p>
-<p><br></p>
 <h2 id="ps-test-program">P.S. Test program</h2>
-<hr>
 <h3 id="fft-ip-core">FFT IP core</h3>
 <p><strong>设置</strong></p>
 <p>page1: </p>

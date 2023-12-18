@@ -206,13 +206,11 @@ rel="me"           href="mailto:guqian110@163.com"
   </div>
 
   <div>
-    <hr>
-<p>写在前面的话：</p>
+    <p>写在前面的话：</p>
 <ul>
 <li><a href="https://www.amazon.com/Computer-Organization-Design-RISC-V-Architecture/dp/0128122757">Computer Organization and Design</a> 俗称 Patterson and Hennessy</li>
 <li><a href="https://www.amazon.com/Computer-Architecture-Quantitative-Approach-Kaufmann/dp/0128119055/">Computer Architecture: A Quantitative Approach</a> 俗称 Hennessy and Patterson</li>
 </ul>
-<p>这个系列是整理自以前的读书笔记，更新了一些 RISC-V 的相关内容，温故而知新。</p>
 <p>这两本书有共同内容但是因为定位不同，所以内容也相互补充。<a href="https://www.amazon.com/Computer-Architecture-Quantitative-Approach-Kaufmann/dp/0128119055/">Computer Architecture: A Quantitative Approach</a> 这本书是针对专业人士的，</p>
 <ul>
 <li>用坚实的工程基础和量化的 cost/performance 折中分析方法来描述计算机体系结构中的主要原则</li>
@@ -225,7 +223,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>几乎没有汇编 / 逻辑设计基础，但是需要理解基本的计算机组成原理</li>
 <li>有汇编 / 逻辑设计基础，但是想了解如何设计一个计算机，或者想理解一个系统是如何工作以及为何性能如此</li>
 </ul>
-<p>下面是第一章笔记的内容。</p>
 <hr>
 <blockquote>
 <p>Civilization advances by extending the number of important operations which we can perform without thinking about them.</p>
@@ -288,9 +285,8 @@ rel="me"           href="mailto:guqian110@163.com"
 </li>
 <li>
 <p><strong>Use Abstraction to Simplify Desing</strong></p>
-<p>不管是硅农还是码农都要发明一些技术来提高自己的效率，否则由于摩尔定义，资源动不动翻倍会导致设计时间变得非常长。其中一个非常重要的技术就是在不同层次进行抽象，把底层的实现细节通过抽象隐藏起来，只提供一个高层的简单接口。</p>
-<p>通过抽象，顶层可以不关心底层的实现细节，只专注于自己的功能，抽象带来的 “ 模块化设计 ” 可以大幅提高效率。</p>
-<p>这个思想应用非常广泛，典型代表是 OSI 的参考模型。</p>
+<p>不管是硅农还是码农都要发明一些技术来提高自己的效率，否则由于摩尔定律，资源动不动翻倍会导致设计时间变得非常长。其中一个非常重要的技术就是在不同层次进行抽象，把底层的实现细节通过抽象隐藏起来，只提供一个高层的简单接口。</p>
+<p>通过抽象，顶层可以不关心底层的实现细节，只专注于自己的功能，抽象带来的 “ 模块化设计 ” 可以大幅提高效率。这个思想应用非常广泛，典型代表是 OSI 的参考模型。</p>
 </li>
 <li>
 <p><strong>Make the Common Case Fast</strong></p>
@@ -344,9 +340,9 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <p>所以很多时候我们要根据类型来区分不同的计算机，对每个类型采用不同的 {performance matrics, applications} 的组合作为 benchmark。</p>
 <p>在接下来的前几章中我们主要关心的是 response time，对于这个指标，性能最大意味着 response time 最小，所以可以这么定义计算机的性能：</p>
-<div class="math">$$Performance-X = \frac{1}{Execution\ time-X}$$</div>
+<div class="math">$$Performance_X = \frac{1}{Execution\ time_X}$$</div>
 <p>在比较两个不同的计算机时，“X 比 Y 快 n 倍 ” = “X 的速度是 Y 的 n 倍 ” 指的是同一个意思，即</p>
-<div class="math">$$\frac{Performance-X}{Performance-Y} = n$$</div>
+<div class="math">$$\frac{Performance_X}{Performance_Y} = n$$</div>
 <p>为了简单起见，统一使用 “X 的速度是 Y 的 n 倍 ”（<code>as fast as</code>）这种方式。因为 performance 和 execution time 是倒数关系，为了避免歧义，约定下面的描述</p>
 <ul>
 <li>improve performance = increase performance</li>
@@ -421,8 +417,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </tbody>
 </table>
 <h2 id="the-power-wall">The Power Wall</h2>
-<p>功耗分为两部分：动态功耗、静态功耗。</p>
-<p>动态功耗可以通过公式算出来，</p>
+<p>功耗分为两部分：动态功耗、静态功耗，动态功耗可以通过公式算出来：</p>
 <div class="math">$$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched\tag{6}$$</div>
 <p>其中 <code>Frequency switched</code> 是时钟频率的函数，<code>Capacitive load</code> 是晶体管的 fanout 和工艺的函数。</p>
 <p>从 Intel X86 架构芯片 30 年间 8 代 CPU 的时钟频率和 power 关系图中可以看到，随着时间发展，时钟频率提高了近 1000 倍，但是 power 只提高了大概 30 倍，原因就在于电压的不断降低。</p>
@@ -449,7 +444,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p><code>common case fast</code> 思想对整体性能的提升效果取决于 common case 到底有多 common，典型例子就是 <a href="https://en.wikipedia.org/wiki/Amdahl%27s-law">Amdahl's Law</a>。</p>
 <p>假设一个程序运行时间是 100s，其中 80s 是乘法运算，那么应该把乘法运算的性能提高到原来的多少倍才能使总计算时间减小到 20s 呢？</p>
 <p>根据 Amdahl 定律，</p>
-<div class="math">$$T^* = \frac{T-{improved}}{Amout\ of\ improve} + T-{unaffected}\tag{7}$$</div>
+<div class="math">$$T^* = \frac{T_{improved}}{Amout\ of\ improve} + T_{unaffected}\tag{7}$$</div>
 <p>在这个例子里，有</p>
 <div class="math">$$20 = \frac{80}{n} + 20$$</div>
 <p>可以知道实际上不可能达到 20s 的。</p>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Qian's Blog - Book</title><link href="https://qian-gu.github.io/" rel="alternate"></link><link href="https://qian-gu.github.io/feeds/book.atom.xml" rel="self"></link><id>https://qian-gu.github.io/</id><updated>2015-03-27T21:45:00+08:00</updated><subtitle>Read &gt;&gt; Think &gt;&gt; Write</subtitle><entry><title>不想当司机的厨子不是好码农 —— 读《浪潮之巅》</title><link href="https://qian-gu.github.io/posts/book/on-top-of-tides-review.html" rel="alternate"></link><published>2015-03-27T21:45:00+08:00</published><updated>2015-03-27T21:45:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2015-03-27:/posts/book/on-top-of-tides-review.html</id><summary type="html">&lt;p&gt;以前在 CSDN 上面写下的胡言乱语，现在看来最大的感触当时怎么那么天真，或者说 幼稚...&lt;/p&gt;</summary><content type="html">&lt;p&gt;暑假加上开学的一段时间看完了《浪潮之巅》，感触颇大 ... 好不容易等到期末放假回家了，记录下一点笔记，希望几年之后毕业的时候还可以坚持这份近乎无知的单纯，老子当年也是一腔热血，准备创业的人 -.-&lt;/p&gt;
 &lt;h2 id="_1"&gt;关于作者&lt;/h2&gt;
-&lt;hr&gt;
 &lt;blockquote&gt;
 &lt;p&gt;作者吴军，男，清华大学计算机系（本科）和电子工程系（硕士），并于 1993-1996 年在清华任讲师。他于 1996 年起在美国约翰霍普金斯大学攻读博士，并于 2002 年获得计算机科学博士学位。在清华和约翰霍普金斯大学期间，吴军博士致力于语音识别、自然语言处理，特别是统计语言模型的研究。他曾获得 1995 年的全国人机语音智能接口会议的最佳论文奖和 2000 年 Eurospeech 的最佳论文奖。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -9,9 +8,7 @@
 &lt;p&gt;人生就是不停在分岔路口进行选择，而且，根据前面的选择，后来可以面对的选择也是不同的（不知道是否满足马尔科夫性 ...），只是，有的人越走越 nb，而有的人则走偏了，成为了逗 b。大家都是从小学开始，有的人从小就是乖孩子，用现在流行的话说就是 “ 别人家的孩子 ”，学习好，嘴巴甜。什么老师、家长、叔叔、阿姨都喜欢的要死；而有的人打架，跷课，是个 “ 问题王 ”。不过，我觉得小时候还是调皮一点比较好，人生苦短，抓紧时间玩耍才好。借用吴军博士在个人主页上的一句话&lt;strong&gt;“ 我不喜欢做什么，由于生命有限，很多不重要的事只好不做了。”&lt;/strong&gt; 只是，他把节省下来的时间学习，钻研，而我却用来玩，甚至现在还在玩，自责 ing...&lt;/p&gt;
 &lt;p&gt;貌似扯的越来越远，严重跑题了。对不起我的语文老师啊&lt;/p&gt;
 &lt;p&gt;总之，一句话，NB 的人各有各的 NB，而逗 B 们大体都有相似的硬伤，比如 IQ or EQ。已经走错 N 次路口的我们还有救，能做的就是学习 NB 的人为何这么牛，然后尽量变得和他们一样牛，至少不再那么逗 B。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="_2"&gt;浪潮之巅&lt;/h2&gt;
-&lt;hr&gt;
 &lt;blockquote&gt;
 &lt;p&gt;近一百多年来，总有些公司很幸运地、有意识或无意识地站在技术革命的浪尖之上。一旦处在了那个位置，即使不做任何事情，也可以集随波浪顺顺当当地向前漂十几年，甚至更长的时间。在这十几年到几十年间，它们代表着科技的浪巅，直到下一波浪巅的来临。从一百多年前算起，AT&amp;amp;T、IBM 公司、苹果（Apple）公司、英特尔（Intel）公司、微软（Microsoft）公司、思科（Cisco）公司、雅虎（Yahoo!）公司和 Google 公司，或许还有接下来的 Facebook 公司，都先后被幸运地推倒了浪尖。&lt;br&gt;
 ......&lt;br&gt;
@@ -44,18 +41,15 @@
 &lt;p&gt;关于创业，书里面有一个很重要的概念就是 “ 商业模式 ”。比如你准备去找红杉资本，对方首先就问你的商业模式是什么，如果在 5 分钟之内还是解释不清，估计也就没有机会了。商业模式一定要简单，不能太复杂。喝多公司的成功其实是商业模式的成功，比如 Dell 的 “ 直销模式 ” 和 Google 的广告商业模式等等。可以说，一个好的商业模式就是一台印钞机。&lt;/p&gt;
 &lt;p&gt;还有就是 “ 公司基因 ”，这个很大程度上由创始人和他们的业务决定的。有的公司基因中就存在着创新，比如 3M 公司，Google 等，他们可以很快的转型，做出更多的产品，保持公司的业绩；而有的公司则天生没有这种基因，比如 “ 蓝色巨人 ” IBM，他们以大型机、系统和服务为核心，很难在 PC 市场获得成功。&lt;/p&gt;
 &lt;p&gt;作为金融小白，只知道红杉资本，KPCB 等有名的 VC，而国内的则不是很了解了，只知道李开复、薛蛮子、雷军、王啸等人。我们学校毕业没有找工作而去创业的人不是没有，但是也不多。考虑到大环境，我觉得应该还是不错的。作为一个 211，连 985 都不是的学校，而且学校的状况真的是每况愈下，真的替学校捉鸡，毕竟，母校就是一个自己可以随意嫌弃，但是别人不能说一句不好的地方。&lt;/p&gt;
-&lt;hr&gt;
 &lt;p&gt;因为不想写报告，闲的无聊才写的，没想到我竟然这么能扯。此刻还有大干一番事业的雄心壮志，所谓出生牛犊不怕虎，估计到毕业的时候了解的多了，也就没有那个胆量去创业了，找一份自认为还不错的工作，这辈子就奉献给郭嘉了 ...&lt;/p&gt;
 &lt;p&gt;想想真的是 &lt;strong&gt;“ 我不喜欢做什么，由于生命有限，很多不重要的事只好不做了。”&lt;/strong&gt;，以后不能再这么浑浑噩噩下去了，找一些自己感兴趣的、重要的事，坚持做下去，每天进步一小点的感觉其实要比打游戏好的多。&lt;/p&gt;</content><category term="Book"></category><category term="review"></category><category term="On Top of Tides"></category></entry><entry><title>番茄工作法 总结 + 实践</title><link href="https://qian-gu.github.io/posts/book/the-pomodoro-technique-practices.html" rel="alternate"></link><published>2014-11-02T21:46:00+08:00</published><updated>2014-11-02T21:46:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2014-11-02:/posts/book/the-pomodoro-technique-practices.html</id><summary type="html">&lt;p&gt;总结 番茄工作法 的方法和实践。&lt;/p&gt;</summary><content type="html">&lt;p&gt;忙里偷闲，学习一下大名鼎鼎的 &lt;strong&gt;番茄工作法&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id="intro"&gt;Intro&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;番茄工作法 (&lt;a href="http://en.wikipedia.org/wiki/Pomodoro-Technique"&gt;Pomodoro Technique&lt;/a&gt;) 是由 Francesco Cirillo 创建的一种时间管理方法。他自己上大学时为了克服无法集中精力认真学习这个问题而发明了这种方法，后来他整理完成了一本书来介绍这种方法：&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://pomodorotechnique.com/book/"&gt;The Pomodoro Technique&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;"Pomodoro Technique" 这个名字起源于一种厨房用的、番茄形状的计时器，其中 &lt;code&gt;Pomodoro&lt;/code&gt; 是意大利语，意思是番茄。&lt;/p&gt;
 &lt;p&gt;至于为什么是番茄工作法，而不是白菜工作法呢？这是因为 Francesco Cirillo 当时在厨房找到的那个计时器是番茄形状的 :P&lt;/p&gt;
 &lt;p&gt;还有另外一本书，是另外一个人自己实践番茄工作法总结出来的经验，而且自己画了一些生动的插图和脑图在里面，很有帮助：&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.pomodoro-book.com/"&gt;Pomodoro Technique Illustrated&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
 &lt;p&gt;首先，网上贴张别人总结好的 Mind Map ( 出处见水印 )：&lt;/p&gt;
 &lt;p&gt;&lt;img alt="mm" src="/images/the-pomodoro-technique-practices/mind-map.jpg"&gt;&lt;/p&gt;
@@ -67,9 +61,7 @@
 &lt;p&gt;也可以用一张图总结出什么是番茄工作法：&lt;/p&gt;
 &lt;p&gt;&lt;img alt="flow" src="/images/the-pomodoro-technique-practices/workflow.png"&gt;&lt;/p&gt;
 &lt;p&gt;综上，找一只笔和几张纸，列出要完成的工作，然后设定计时器，开始工作！就这么简单。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="my-practice"&gt;My Practice&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;GTD 和 pomodoro 可以相互补充，达到最好的效果：&lt;/p&gt;
 &lt;p&gt;GTD 侧重项目之间的管理，通过收集、处理、组织，使我们胸有成竹，做到 mind like water；Pomodoro 则侧重时间管理，每天到底应该如何提高效率，通过和自己约定的倒计时，把一个个行动落实，把握生命中的每一分钟，全力以赴我们心中的梦，不经历风雨怎么能见彩虹（不对 ...）&lt;/p&gt;
 &lt;h3 id="tools"&gt;Tools&lt;/h3&gt;
@@ -151,7 +143,6 @@
 &lt;/li&gt;
 &lt;/ul&gt;</content><category term="Book"></category></entry><entry><title>GTD 书评 + 总结</title><link href="https://qian-gu.github.io/posts/book/getting-things-done-review.html" rel="alternate"></link><published>2014-10-30T12:51:00+08:00</published><updated>2014-10-30T12:51:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2014-10-30:/posts/book/getting-things-done-review.html</id><summary type="html">&lt;p&gt;总结 GTD 方法。&lt;/p&gt;</summary><content type="html">&lt;p&gt;最近了解学习了 GTD，总结一下。&lt;/p&gt;
 &lt;h2 id="intro"&gt;Intro&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;所谓 GTD 就是 &lt;a href="http://en.wikipedia.org/wiki/Getting-Things-Done"&gt;Getting Things Done&lt;/a&gt; 的缩写。最早有一个叫做 David Allen 的美国人写的一本书，名字就是 :&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.amazon.cn/Getting-Things-Done-The-Art-of-Stress-Free-Productivity-%E6%88%B4%E7%BB%B4%C2%B7%E8%89%BE%E4%BC%A6/dp/0142000280/ref=sr-1-2?ie=UTF8&amp;amp;qid=1414465590&amp;amp;sr=8-2&amp;amp;keywords=getting+things+done"&gt;Getting Things Done: The Art of Stress-Free Productivity&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;他是 GTD 系统的发明人，主要介绍了时间和任务管理的相关方法，后来这套系统越来越流行，于是大家就把相关的方法、工具统称为 GTD。&lt;/p&gt;
@@ -173,9 +164,7 @@
 &lt;p&gt;总结（形式随意，如写 blog、画 mind map），实践应用！&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="gtd"&gt;GTD&lt;/h2&gt;
-&lt;hr&gt;
 &lt;h3 id="reason"&gt;Reason&lt;/h3&gt;
 &lt;p&gt;现在的人的生活、工作压力都很大，如果没有一个有效的方法来组织管理自己的事物，会越忙越乱。&lt;/p&gt;
 &lt;p&gt;比如作为一个学生，一想到自己的论文还没有头绪，项目也看不到希望，还有码农的编程技能没有完全 get，眼看就要毕业了，找工作的压力也逐渐越来越大，着急却越忙越乱，总有一些事盘旋在脑袋里，不经意间提醒你 “ 还有没有做好的事！”&lt;/p&gt;
@@ -296,13 +285,10 @@
 &lt;/ol&gt;
 &lt;p&gt;这两个条件就好。&lt;/p&gt;
 &lt;p&gt;简单的功能可以帮助我们集中注意力，Google 的很多产品都遵循这个原则，比如 Calendar、Task、Keep、Translate 等，而 Evernote 虽然功能强大，但是有时候让我无从下手，不想打开；当然关键功能必须要有，比如最近很火的一款应用 Todist，作为一款 todo list 类型的软件，免费版本却没有提醒功能，他们是有多想挣钱啊 =.=&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="review"&gt;Review&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;这年头不可避免地看了一些成功学的书，喝了不少鸡汤，这本久负盛名，最近越来越火的书，从我的体验来说，比其他同类的书要好很多，还是有干货的。虽然没有给我非常的大的质的改变，但是也解决了不少我的疑惑。书里没有提出多么惊天动地的方法，很多都是我们日常生活中在使用的技巧，这本书把这些总结整理成一套系统方法，也算是一大成就吧。&lt;/p&gt;
 &lt;p&gt;毕竟，实践才是检验真理的唯一标准，等过段时间再评价吧。&lt;/p&gt;
 &lt;h2 id="my-gtd"&gt;My GTD&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;作为学生党的 GTD 实践：&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -340,11 +326,9 @@
 &lt;/table&gt;
 &lt;p&gt;说明一下选择 EN 的最大的理由：它的跨平台性，Windows + *nix + Andriod，基本涵盖了我校园（宿舍 + 实验室）的生活，至于 Google 就不用说了，Gmail + Calendar + Keep + Drive 的组合别说有多舒服了～&lt;/p&gt;
 &lt;p&gt;关于 “Next Action List”，我个人觉得并不是特别适合我，就平时的事（学习 + 项目 + 杂事）而言，学习和项目很难用 Next Action 来做计划，而杂事都是一些鸡毛蒜皮的小事，用不着分步骤来完成。我每天都活动基本上是固定的，哪个时间段干什么早就形成了一种模式，所以我将 “Next Action List” 改为 “Daily Plan”。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="mind-map"&gt;Mind Map&lt;/h2&gt;
 &lt;p&gt;最后贴上一张我总结的 MM：&lt;/p&gt;
 &lt;p&gt;&lt;img alt="gtd mm" src="/images/getting-things-done-review/gtd-mm.jpg"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://snownow.cn/?p=1838"&gt;GTD | snow&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://picasaweb.google.com/gudaost/MindMapper#5073109143800914274"&gt;MindMapper&lt;/a&gt;&lt;/p&gt;</content><category term="Book"></category><category term="GTD"></category><category term="review"></category></entry><entry><title>Code 书评</title><link href="https://qian-gu.github.io/posts/book/code-review.html" rel="alternate"></link><published>2014-03-21T16:33:00+08:00</published><updated>2014-03-21T16:33:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2014-03-21:/posts/book/code-review.html</id><summary type="html">&lt;p&gt;最近花了一个星期的时间，终于把 Code 看完了，感慨颇深。&lt;/p&gt;</summary><content type="html">&lt;p&gt;最近花了一个星期的时间，终于把 &lt;a href="http://book.douban.com/subject/1494026/"&gt;&lt;em&gt;Code&lt;/em&gt;&lt;/a&gt; 看完了，看完全书，观后感总结出来就一个字 —— 爽～&lt;/p&gt;

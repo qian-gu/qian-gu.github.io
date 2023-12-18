@@ -252,7 +252,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </tr>
 <tr>
 <td>缺失率 <code>miss rate</code></td>
-<td>1 - <code>hit rate</code></td>
+<td>1 - hit rate</td>
 </tr>
 <tr>
 <td>命中时间 <code>hit time</code></td>
@@ -434,17 +434,17 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>也可以采用另外一种测量方式对 Cache 性能进行建模：每次访存的平均时间 <code>AMAT</code>(Average memory aceess time)。显然，Cache 系统设计越合理，对 Core 表现出来的性能越好，AMAT 就越小。根据定义可以知道 AMAT 的计算公式如下：</p>
 <p><span class="math">\(AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty\)</span></p>
 <p>对于多级 Cache 系统，AMAT 公式如下（以两级 Cache 为例）：</p>
-<p><span class="math">\(T-{avg}=H-1*C-1 + (1-H-1)*(H-2*(C-1 + C-2) + (1-H-2)*(C-1 + C-2 + M)\)</span></p>
+<p><span class="math">\(T_{avg}=H_1*C_1 + (1-H_1)*(H_2*(C_1 + C_2) + (1-H_2)*(C_1 + C_2 + M)\)</span></p>
 <p>每个符号的含义：</p>
 <ul>
-<li><span class="math">\(H-1\)</span> 表示 L1 cache 的命中率</li>
-<li><span class="math">\(H-2\)</span> 表示 L2 cache 的命中率</li>
-<li><span class="math">\(C-1\)</span> 表示 L1 cache 命中访问时间</li>
-<li><span class="math">\(C-2\)</span> 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）</li>
+<li><span class="math">\(H_1\)</span> 表示 L1 cache 的命中率</li>
+<li><span class="math">\(H_2\)</span> 表示 L2 cache 的命中率</li>
+<li><span class="math">\(C_1\)</span> 表示 L1 cache 命中访问时间</li>
+<li><span class="math">\(C_2\)</span> 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）</li>
 <li><span class="math">\(M\)</span> 表示 DDR 的访问时间（即 L2 miss 的 penalty）</li>
 </ul>
 <p>也可以换一种算法：</p>
-<p><span class="math">\(T-{avg}= C-1 + (1-H-1)*C-2 + (1-H-1)*(1-H-2)*M\)</span></p>
+<p><span class="math">\(T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M\)</span></p>
 <p>可以证明两种方式是等价的。</p>
 <h3 id="the-three-cs">The Three Cs</h3>
 <p>所有的 miss 可以被分为 3 类（<code>3C</code> 模型）：</p>

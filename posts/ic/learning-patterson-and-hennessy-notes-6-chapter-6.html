@@ -256,10 +256,10 @@ rel="me"           href="mailto:guqian110@163.com"
 <li><code>Amdahl</code> 定律</li>
 </ul>
 <p>Amdahl 定律：</p>
-<div class="math">$$T-{after} = \frac{T-{affected}}{Amout\ of\ improve} + T-{unaffected}$$</div>
+<div class="math">$$T_{after} = \frac{T_{affected}}{Amout\ of\ improve} + T_{unaffected}$$</div>
 <p>也可以改写成：</p>
-<div class="math">$$speed\-up = \frac{T-{before}}{(T-{before}-T-{affected})+\frac{T-{affected}}{n}}$$</div>
-<div class="math">$$speed\-up = \frac{1}{(1-Frac-{affected}) + \frac{Frac-{affected}}{n}}$$</div>
+<div class="math">$$speed\_up = \frac{T_{before}}{(T_{before}-T_{affected})+\frac{T_{affected}}{n}}$$</div>
+<div class="math">$$speed\_up = \frac{1}{(1-Frac_{affected}) + \frac{Frac_{affected}}{n}}$$</div>
 <p>从书里面的两个例子可以看到，有时候必须增加问题的规模才能保持高加速比，而且负载不均衡对加速效果影响很大。</p>
 <p>1960 年代提出的一种基于指令流和数据流的数量进行分类的方法：</p>
 <table>
@@ -327,7 +327,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </tr>
 <tr>
 <td><code>SMT</code> Simultaneous multithreading</td>
-<td>利用多发射、动态调度使用资源，从而降低 thread 切换 cost 的技术</td>
+<td>利用多发射、动态调度使用资源，从而降低 thread 切换成本的技术</td>
 </tr>
 </tbody>
 </table>

@@ -198,7 +198,6 @@ rel="me"           href="mailto:guqian110@163.com"
 
   <div>
     <h2 id="code-structure">Code Structure</h2>
-<hr>
 <ul>
 <li>
 <p>一段独立的 VHDL 代码一般至少由 3 部分组成：<code>LIBRARY declarations</code>、<code>ENTITY</code>、<code>ARCHITECTURE</code></p>
@@ -264,9 +263,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>VHDL 不区分大小写</p>
 </li>
 </ul>
-<p><br></p>
 <h2 id="data-types">Data Types</h2>
-<hr>
 <p>前面的 Entity 中的端口定义：</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">port</span><span class="o">-</span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="k">signal</span><span class="o">-</span><span class="n">mode</span><span class="w"> </span><span class="k">signal</span><span class="o">-</span><span class="k">type</span><span class="p">;</span>
 </code></pre></div></td></tr></table></div>
@@ -489,9 +486,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p><code>std-logic-arith</code> 中包含了很多数据类型转换函数，可以实现不同数据之间的转换。</p>
 </li>
 </ul>
-<p><br></p>
 <h2 id="operators-and-attributes">Operators and Attributes</h2>
-<hr>
 <p>VHDL 语法虽然枯燥无味，但是只有对数据类型、运算操作符及其属性有了深刻认识，才能写出高质量和高效率的代码。</p>
 <h3 id="opreators">Opreators</h3>
 <ul>
@@ -626,9 +621,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <span class="k">END</span><span class="w"> </span><span class="nc">my</span><span class="err">-</span><span class="k">entity</span><span class="p">;</span>
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <h2 id="concurrent-code">Concurrent Code</h2>
-<hr>
 <p>从本质上讲，HDL 是 描述 (Description) 语言，对应的是硬件电路，而硬件电路是时刻工作的，所以，它的代码是并发执行的。只有 <code>process</code>，<code>function</code>，<code>procedure</code> 中的代码是顺序执行的，而且当这些模块作为一个共同的整体时，它们之间也是并行的。</p>
 <p>在并发代码中可以使用下列各项：</p>
 <ul>
@@ -699,9 +692,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <span class="k">END</span><span class="w"> </span><span class="k">BLOCK</span><span class="w"> </span><span class="k">label</span><span class="p">;</span>
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <h2 id="sequential-code">Sequential Code</h2>
-<hr>
 <p>VHDL 本质是并发执行的代码，但是在 <code>process</code>, <code>function</code>, <code>procedure</code> 内部的代码是顺序执行的，当它们作为一个整体时，相互之间也是并发执行的。</p>
 <p>顺序代码并非只能与时序逻辑 (<code>sequential logic</code>) 对应，同样也可以用它们来实现组合逻辑 (<code>combinational logic</code>)。</p>
 <p>顺序代码也称为描述代码 (<code>behavioral code</code>)。</p>
@@ -786,9 +777,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">[</span><span class="k">label</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">NEXT</span><span class="w"> </span><span class="p">[</span><span class="k">loop</span><span class="o">-</span><span class="k">label</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="k">WHEN</span><span class="w"> </span><span class="n">condition</span><span class="p">];</span>
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <h2 id="signals-variables">Signals &amp; Variables</h2>
-<hr>
 <p>VHDL 提供了 <code>signal</code> 和 <code>variable</code> 两种对象来处理非静态数据；提供了 <code>constant</code> 和 <code>generic</code> 来处理静态数据。</p>
 <p><code>constant</code> 和 <code>signal</code> 是全局的，可以在顺序执行的代码中，也可以在并发执行的代码中；<code>variable</code> 是局部的，只能值顺序代码中，并且它们的值是不能向外传递的 ( 如果想传递出去，必须先把这个变量值传递给一个信号，再由这个信号传递出去 )。</p>
 <h3 id="constant"><code>constant</code></h3>
@@ -828,7 +817,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">VARIABLE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">type</span><span class="w"> </span><span class="p">[</span><span class="k">range</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="o">:=</span><span class="w"> </span><span class="n">initial</span><span class="o">-</span><span class="n">value</span><span class="p">];</span>
 </code></pre></div></td></tr></table></div>
 
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://www.amazon.com/Circuit-Design-VHDL-Volnei-Pedroni/dp/0262162245">Circuit Design with VHDL</a></p>
   </div>

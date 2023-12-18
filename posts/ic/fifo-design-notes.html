@@ -215,15 +215,12 @@ rel="me"           href="mailto:guqian110@163.com"
 </li>
 </ol>
 <h2 id="sync-fifo">Sync FIFO</h2>
-<hr>
 <p>Sync FIFO 的框图如下所示：</p>
 <p><img alt="sync fifo" src="/images/fifo-design-notes/sync-fifo.png"></p>
 <p>因为同步 FIFO 的读写速率是相同的，所以 FIFO 的大小设置不必考虑读写速率差这个因素，要简单很多。</p>
 <p>在 FIFO 内部，一般使用 dual port RAM 存储数据。双端口 RAM 有两套独立的读写地址，读地址和写地址分别由读指针和写指针来产生：写指针指向下一个数据被写入的地址，读指针指向下一个被读出的数据的地址，通过判断读写指针的相对大小，就可以得到 FIFO 的状态（full / empty）。</p>
 <p>还有另外一种方法来产生 full / empty 信号：FIFO 内部维护一个计数器，每次写入一个数据 cnt++，每次读出一个数据 cnt--。这种方法产生 full / empty 很简单：当 cnt == 0，表示 FIFO empty；当 cnt == max，表示 FIFO full。虽然这种方法产生 full / empty 很简单，但是需要额外的计数器，而且计数器的位宽随着 FIFO 的深度增加，不仅占用的资源更多，而且会降低 FIFO 最终可以达到的速度。</p>
-<p><br></p>
 <h2 id="async-fifo">Async FIFO</h2>
-<hr>
 <p>一般异步 FIFO 的读写速率不同，如果写速度 &gt; 读速度，则当数据量超过一定长度时，会出现溢出的情况，为了防止这种情况，可以采用两种措施：</p>
 <ol>
 <li>
@@ -304,11 +301,8 @@ rel="me"           href="mailto:guqian110@163.com"
 </ol>
 </li>
 </ol>
-<p><br></p>
 <h2 id="summary">Summary</h2>
-<hr>
 <p>总结 FIFO 的设计，只要注意 FIFO 通过 wr-ptr 和 rd-ptr 得到 full / empty，而且使用 gray code 来跨时钟域，基本上就没问题了 :-D</p>
-<p><br></p>
 <h2 id="ref">Ref</h2>
 <p><a href="http://www.amazon.com/The-Art-Hardware-Architecture-Techniques/dp/1461403960">The Art of Hardware Architecture: Design Methods and Techniques for Digital Circuits</a></p>
 <p><a href="http://www.amazon.com/Advanced-FPGA-Design-Architecture-Implementation/dp/0470054379/ref=sr-1-1?s=books&amp;ie=UTF8&amp;qid=1432020884&amp;sr=1-1&amp;keywords=advanced+fpga+design">Advanced FPGA Design: Architecture, Implementation, and Optimization</a></p>

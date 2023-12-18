@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Qian's Blog - Misc</title><link href="https://qian-gu.github.io/" rel="alternate"></link><link href="https://qian-gu.github.io/feeds/misc.atom.xml" rel="self"></link><id>https://qian-gu.github.io/</id><updated>2014-05-06T15:57:00+08:00</updated><subtitle>Read &gt;&gt; Think &gt;&gt; Write</subtitle><entry><title>我的 PKM</title><link href="https://qian-gu.github.io/posts/misc/my-pkm.html" rel="alternate"></link><published>2014-05-06T15:57:00+08:00</published><updated>2014-05-06T15:57:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2014-05-06:/posts/misc/my-pkm.html</id><summary type="html">&lt;p&gt;总结学习习惯和 PKM 工具。&lt;/p&gt;</summary><content type="html">&lt;h2 id="pkm"&gt;PKM&lt;/h2&gt;
-&lt;hr&gt;
 &lt;h3 id="pkm_1"&gt;什么是 PKM&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;个人知识管理 (Personal Knowledge Management) 是一种新的知识管理的理念和方法，能将个人拥有的各种资料、随手可得的信息变成更具价值的知识，最终利于自己的工作、生活。通过对个人知识的管理，人们可以养成良好的学习习惯 , 增强信息素养，完善自己的专业知识体系 , 提高自己的能力和竞争力，为实现个人价值和可持续发展打下坚实基础。&lt;/p&gt;
@@ -12,9 +11,7 @@
 &lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/Personal-knowledge-management"&gt;Personal knowledge management on wikipedia&lt;/a&gt; &lt;/p&gt;
 &lt;h3 id="blog"&gt;为什么写这篇 blog&lt;/h3&gt;
 &lt;p&gt;从小到大，上了这么多年的学，每个人都有自己的学习习惯和知识管理方法。这篇 blog 是在我 Google、知乎问答、参考相关博客内容的基础上，总结出的学习习惯和使用各种工具的经验，写这篇博客的目的不是秀逼格有多高（估计很多人都看不上），也不是所谓的教程（根本不够资格），而是&lt;strong&gt;为了分享和讨论&lt;/strong&gt; :-D&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="_1"&gt;获取知识&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;总结我的知识来源，大致可以分为 3 类：纸质书籍、网络资源、其他 。分别总结如下&lt;/p&gt;
 &lt;h3 id="_2"&gt;书籍&lt;/h3&gt;
 &lt;p&gt;书籍上的知识占到了我总来源的 50% 。相比于电子读物，我更喜欢阅读纸质书籍。&lt;/p&gt;
@@ -97,9 +94,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;归根到底，&lt;strong&gt;keep 是一个轻量级 GTD 系统，它要解决的问题和 evernote 是不同的。那些认为 keep 可以取代 evernote 的用户，他们本身就不需要 evernote&lt;/strong&gt; —— 对他们而言，evernote 的强大反而太过繁冗，已是多余。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="_5"&gt;整理知识&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;获取到知识，下一步就是整理和吸收它们了。&lt;/p&gt;
 &lt;h3 id="evernote"&gt;Evernote&lt;/h3&gt;
 &lt;p&gt;说道 PKM，就不得不提 Evernote 。这么一款大名鼎鼎的笔记软件，有很多人在使用，分享使用技巧 。搜集到一个很全的资源帖：&lt;/p&gt;
@@ -140,9 +135,7 @@
 &lt;p&gt;漫长的跑题终于结束了，总之就是，&lt;strong&gt;把 EN 当作收集小知识的笔记本即可，个人知识管理选择其他软件 / 写博客是更优的选择。给它做做减法，使用你需要的功能，不要成为工具的奴隶。&lt;/strong&gt;&lt;/p&gt;
 &lt;h3 id="xmind"&gt;XMind&lt;/h3&gt;
 &lt;p&gt;目前还处于用笔和纸的阶段，大概了解了一些 XMind 的用途，感觉很好很强大。尤其是用它建立的结构化的提纲，对于整理文章、知识体系结构有巨大的帮助。还在探索中，更加进阶的功能和使用心得以后再总结。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="_6"&gt;使用 / 分享知识&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;月光博客中的一段话：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;知识共享和传播，是为了让别人知道你知道的知识，并得到信息的反馈，为什么要分享，不在于你认识什么人，而在于什么人认识你，不在于什么人影响了你，而在于你影响了什么人。&lt;/p&gt;
@@ -184,15 +177,12 @@
 &lt;p&gt;对于码农，这算是优点么？反正没有坏处 :-P&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="_7"&gt;写在最后&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;总结一下总的流程就是：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;获取知识&lt;/strong&gt;：书籍 + feedly + pocket + Google Keep&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;整理知识&lt;/strong&gt;：Evernote + XMind&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;使用 / 分享知识&lt;/strong&gt;：Blog&lt;/p&gt;
 &lt;p&gt;总结出来并且在实际行动中加以利用才是王道。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="_8"&gt;参考&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://www.sand-ox.com/2011/02/pkm-tools/"&gt;我，和我的知识工具们 (2011-02-15 更新 )&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.williamlong.info/archives/3388.html"&gt;我的知识管理工具列表&lt;/a&gt;&lt;/p&gt;

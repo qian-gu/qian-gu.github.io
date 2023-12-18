@@ -3639,17 +3639,13 @@ end&lt;span class="w"&gt; &lt;/span&gt;of&lt;span class="w"&gt; &lt;/span&gt;inn
 &lt;p&gt;&lt;a href="http://book.douban.com/subject/3443904/"&gt;Regular Expressions Cookbook&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://book.douban.com/subject/2363803/"&gt;Regular Expression Pocket Reference&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;看完这本书，基本上已经满足项目中简单的 RE 需求，以后需要深入的话，再补这几本书。&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="what-is-a-re"&gt;What Is a RE?&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;引用 Ken Thompson 的话：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;A regular expression is a pattern which specifies a set of strings of characters; it is said
 to match certain strings.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="basic"&gt;Basic&lt;/h2&gt;
-&lt;hr&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;metacharacters&lt;/p&gt;
@@ -3686,7 +3682,6 @@ $   // 行结束
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="simple-match-patterns"&gt;Simple Match Patterns&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;几个常见的模式匹配：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -3740,9 +3735,7 @@ $   // 行结束
 
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="boundaries"&gt;Boundaries&lt;/h2&gt;
-&lt;hr&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;行首、行尾&lt;/p&gt;
@@ -3766,9 +3759,7 @@ $       // 行尾
 
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="alternation-groups-and-backreferences"&gt;Alternation, Groups, and Backreferences&lt;/h2&gt;
-&lt;hr&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Alternation&lt;/p&gt;
@@ -3802,9 +3793,7 @@ $       // 行尾
 
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="character-classes"&gt;Character Classes&lt;/h2&gt;
-&lt;hr&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Character Classes&lt;/p&gt;
@@ -3853,9 +3842,7 @@ $       // 行尾
 &lt;p&gt;一般不常用 POSIX 格式。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="matching-unicode-and-other-characters"&gt;Matching Unicode and Other Characters&lt;/h2&gt;
-&lt;hr&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Matching a Unicode Character&lt;/p&gt;
@@ -3882,9 +3869,7 @@ $       // 行尾
 
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="quantifiers"&gt;Quantifiers&lt;/h2&gt;
-&lt;hr&gt;
 &lt;h3 id="greedy-lazy-and-possessive"&gt;Greedy, Lazy, and Possessive&lt;/h3&gt;
 &lt;p&gt;量词的属性有 贪婪，懒惰，占有。&lt;/p&gt;
 &lt;ul&gt;
@@ -3953,9 +3938,7 @@ $       // 行尾
 &lt;li&gt;{m,n}+&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;这些量词后面加了 + 的 RE 表示占有匹配，也就是只检查第一次尝试。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="lookarounds"&gt;Lookarounds&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;环视 是一种非捕获分组，它的作用是检查模式的前 / 后的内容来匹配，也成为 零宽度断言 &lt;code&gt;zero-width
 assertions&lt;/code&gt;。&lt;/p&gt;
 &lt;ul&gt;
@@ -4011,9 +3994,7 @@ assertions&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;如果条件是 lookarounds 不存在，就是 负&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;了解了这些基础知识，基本上就可以读懂、书写 RE 了，还需要的就是平时多加思考练习，然后看更加高阶的书了。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="ref"&gt;Ref&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://book.douban.com/subject/6959486/"&gt;Introducing Regular Expressions&lt;/a&gt;&lt;/p&gt;</content><category term="CS"></category><category term="regular expression"></category></entry><entry><title>学习 Linux 软件包依赖管理</title><link href="https://qian-gu.github.io/posts/cs/learning-linux-package-management.html" rel="alternate"></link><published>2014-04-21T13:43:00+08:00</published><updated>2014-04-21T13:43:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2014-04-21:/posts/cs/learning-linux-package-management.html</id><summary type="html">&lt;p&gt;安装软件时遇到依赖库版本过高的问题，学习总结 Linux 软件包管理 。&lt;/p&gt;</summary><content type="html">&lt;h2 id="linux"&gt;Linux 软件包依赖问题&lt;/h2&gt;
 &lt;p&gt;早期的 Linux 系统上的软件是通过源码方式发布的，大家下载下来，在自己的机器上编译，得到可执行程序 。&lt;/p&gt;
@@ -4024,38 +4005,44 @@ assertions&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;知乎上的问题：&lt;a href="http://www.zhihu.com/question/20443067"&gt;Unix 的包依赖是如何形成的？&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;有个回答：&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;GNU/Linux：通常这个系统大多数软件是自由软件，换句话说，他们通常依赖的库也是自由的，所以软件开发者认为你可以自由的获取这些依赖库，自然就不需要自己再提供了。由系统 “ 发行版 ” 负责维护属于这个系统的所有依赖库，并且安装软件时确定依赖
-&lt;br&gt;
-这个体系的特点是：
-&lt;br&gt;
-1. 系统依赖通常是统一的，如果有多个程序依赖同一个库，在这个系统中通常是同一份
-&lt;br&gt;
-2. 具有庞大的资源。例如 Debian 系现成的可依赖软件多达 30G，所以通常不可能预先把所有依赖都安装全，但庞大的依赖库给编程人员提供了很多方便
-&lt;br&gt;
-3. 你安装的软件越多，共同依赖所体现出的价值越高，解决依赖问题就越简单（因为当你安装足够多软件时，主流的依赖已经全部在你系统了）
-&lt;br&gt;
-4. 由于巨大的共同依赖库存在，软件本身可以很小
-&lt;br&gt;
-&lt;br&gt;
-Windows：通常而言，这个系统的软件是商业软件，因此，他们依赖的库也很有可能是商业软件，所以，不可能要求用户自行获取这些依赖，这些依赖通常在发布软件的时候提供。如果你安装的软件少，这个体系很方便 。
-&lt;br&gt;
-不过这造成了一些缺点：
-&lt;br&gt;
-1. 没有一个庞大的公共库，很多功能以及基础库都是每个公司自己实现一套，浪费很多劳动力，编程人员到每个公司得学习一套不同的库，给编程人员带来不便
-&lt;br&gt;
-2. 所有应用程序都自己带依赖，因此很可能有许多程序同时附带了相同的依赖，并且这些相同依赖还有可能是不同的版本，这会造成许多混乱
-&lt;br&gt;
-3. 由于所有应用程序都自己提供所有依赖，每个软件体积都很庞大
-&lt;br&gt;
-4. 系统中安装的软件越多，越容易出问题。&lt;/p&gt;
+&lt;p&gt;GNU/Linux：通常这个系统大多数软件是自由软件，换句话说，他们通常依赖的库也是自由的，所以软件开发者认为你可以自由的获取这些依赖库，自然就不需要自己再提供了。由系统 “ 发行版 ” 负责维护属于这个系统的所有依赖库，并且安装软件时确定依赖&lt;/p&gt;
+&lt;p&gt;这个体系的特点是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;系统依赖通常是统一的，如果有多个程序依赖同一个库，在这个系统中通常是同一份&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;具有庞大的资源。例如 Debian 系现成的可依赖软件多达 30G，所以通常不可能预先把所有依赖都安装全，但庞大的依赖库给编程人员提供了很多方便&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;你安装的软件越多，共同依赖所体现出的价值越高，解决依赖问题就越简单（因为当你安装足够多软件时，主流的依赖已经全部在你系统了）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;由于巨大的共同依赖库存在，软件本身可以很小&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Windows：通常而言，这个系统的软件是商业软件，因此，他们依赖的库也很有可能是商业软件，所以，不可能要求用户自行获取这些依赖，这些依赖通常在发布软件的时候提供。如果你安装的软件少，这个体系很方便 。&lt;/p&gt;
+&lt;p&gt;不过这造成了一些缺点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;没有一个庞大的公共库，很多功能以及基础库都是每个公司自己实现一套，浪费很多劳动力，编程人员到每个公司得学习一套不同的库，给编程人员带来不便&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;所有应用程序都自己带依赖，因此很可能有许多程序同时附带了相同的依赖，并且这些相同依赖还有可能是不同的版本，这会造成许多混乱&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;由于所有应用程序都自己提供所有依赖，每个软件体积都很庞大&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;系统中安装的软件越多，越容易出问题。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
 &lt;/blockquote&gt;
 &lt;h2 id="linux_1"&gt;Linux 包管理系统&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/Package-management-system"&gt;Package management system on wikipedia&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;A &lt;strong&gt;package management system&lt;/strong&gt;, also called &lt;strong&gt;package manager&lt;/strong&gt;, is a collection of software tools to automate the process of installing, upgrading, configuring, and removing software packages for a computer's operating system in a consistent manner. It typically maintains a database of software dependencies and version information to prevent software mismatches and missing prerequisites.
-&lt;br&gt;
-&lt;br&gt;
-Package management systems are designed to save organizations time and money through remote administration and software distribution technology that eliminate the need for manual installs and updates. This can be particularly useful for large enterprises whose operating systems are based on Linux and other Unix-like systems, typically consisting of hundreds or even thousands of distinct software packages; in the former case, a package management system is a convenience, in the latter case it becomes essential.&lt;/p&gt;
+&lt;p&gt;A &lt;strong&gt;package management system&lt;/strong&gt;, also called &lt;strong&gt;package manager&lt;/strong&gt;, is a collection of software tools to automate the process of installing, upgrading, configuring, and removing software packages for a computer's operating system in a consistent manner. It typically maintains a database of software dependencies and version information to prevent software mismatches and missing prerequisites.&lt;/p&gt;
+&lt;p&gt;Package management systems are designed to save organizations time and money through remote administration and software distribution technology that eliminate the need for manual installs and updates. This can be particularly useful for large enterprises whose operating systems are based on Linux and other Unix-like systems, typically consisting of hundreds or even thousands of distinct software packages; in the former case, a package management system is a convenience, in the latter case it becomes essential.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在 Linux 发行版中，几乎每一个发行版都有自己的软件包管理系统 。&lt;/p&gt;
 &lt;h3 id="dpkg"&gt;Dpkg&lt;/h3&gt;
@@ -4181,28 +4168,17 @@ aptitude&lt;span class="w"&gt; &lt;/span&gt;-vvvvvv&lt;span class="w"&gt; &lt;/s
 
 &lt;p&gt;结果 apt-get 提示有不满足依赖关系的包&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Reading package lists... Done
-&lt;br&gt;
-Building dependency tree
-&lt;br&gt;
-Reading state information... Done
-&lt;br&gt;
-Some packages could not be installed. This may mean that you have
-&lt;br&gt;
-requested an impossible situation or if you are using the unstable
-&lt;br&gt;
-distribution that some required packages have not yet been created
-&lt;br&gt;
-or been moved out of Incoming.
-&lt;br&gt;
-The following information may help to resolve the situation:
-&lt;br&gt;
-&lt;br&gt;
-The following packages have unmet dependencies:
-&lt;br&gt;
-&lt;strong&gt;build-essential : Depends: dpkg-dev (&amp;gt;= 1.13.5) but it is not going to be installed&lt;/strong&gt;
-&lt;br&gt;
-E: Unable to correct problems, you have held broken packages.&lt;/p&gt;
+&lt;p&gt;Reading package lists... Done&lt;/p&gt;
+&lt;p&gt;Building dependency tree&lt;/p&gt;
+&lt;p&gt;Reading state information... Done&lt;/p&gt;
+&lt;p&gt;Some packages could not be installed. This may mean that you have&lt;/p&gt;
+&lt;p&gt;requested an impossible situation or if you are using the unstable&lt;/p&gt;
+&lt;p&gt;distribution that some required packages have not yet been created&lt;/p&gt;
+&lt;p&gt;or been moved out of Incoming.&lt;/p&gt;
+&lt;p&gt;The following information may help to resolve the situation:&lt;/p&gt;
+&lt;p&gt;The following packages have unmet dependencies:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;build-essential : Depends: dpkg-dev (&amp;gt;= 1.13.5) but it is not going to be installed&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;E: Unable to correct problems, you have held broken packages.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;于是我们手动安装特定的库&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;dpkg-dev
@@ -4210,34 +4186,23 @@ E: Unable to correct problems, you have held broken packages.&lt;/p&gt;
 
 &lt;p&gt;结果提示我们库版本过高&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Reading package lists... Done
-&lt;br&gt;
-Building dependency tree
-&lt;br&gt;
-Reading state information... Done
-&lt;br&gt;
-Some packages could not be installed. This may mean that you have
-&lt;br&gt;
-requested an impossible situation or if you are using the unstable
-&lt;br&gt;
-distribution that some required packages have not yet been created
-&lt;br&gt;
-or been moved out of Incoming.
-&lt;br&gt;
-The following information may help to resolve the situation:
-&lt;br&gt;
-&lt;br&gt;
-The following packages have unmet dependencies:
-&lt;br&gt;
- &lt;strong&gt;dpkg-dev : Depends: libdpkg-perl (= 1.16.10ubuntu1) but 1.16.12ubuntu1 is to be installed&lt;/strong&gt;
-&lt;br&gt;
-Recommends: build-essential but it is not going to be installed
-&lt;br&gt;
-           Recommends: fakeroot but it is not going to be installed
-&lt;br&gt;
-           Recommends: libalgorithm-merge-perl but it is not going to be installed
-&lt;br&gt;
-E: Unable to correct problems, you have held broken packages.&lt;/p&gt;
+&lt;p&gt;Reading package lists... Done&lt;/p&gt;
+&lt;p&gt;Building dependency tree&lt;/p&gt;
+&lt;p&gt;Reading state information... Done&lt;/p&gt;
+&lt;p&gt;Some packages could not be installed. This may mean that you have&lt;/p&gt;
+&lt;p&gt;requested an impossible situation or if you are using the unstable&lt;/p&gt;
+&lt;p&gt;distribution that some required packages have not yet been created&lt;/p&gt;
+&lt;p&gt;or been moved out of Incoming.&lt;/p&gt;
+&lt;p&gt;The following information may help to resolve the situation:&lt;/p&gt;
+&lt;p&gt;The following packages have unmet dependencies:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;dpkg-dev : Depends: libdpkg-perl (= 1.16.10ubuntu1) but 1.16.12ubuntu1 is to be installed&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Recommends: build-essential but it is not going to be installed&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;       Recommends: fakeroot but it is not going to be installed
+
+       Recommends: libalgorithm-merge-perl but it is not going to be installed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;E: Unable to correct problems, you have held broken packages.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id="aptitude_1"&gt;解决问题 —— 使用 &lt;code&gt;aptitude&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;解决方法就是降级&lt;/strong&gt; 。&lt;/p&gt;
@@ -4264,65 +4229,38 @@ E: Unable to correct problems, you have held broken packages.&lt;/p&gt;
 
 &lt;p&gt;结果如下&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;The following NEW packages will be installed:
-&lt;br&gt;
- build-essential dpkg-dev{ab} 
-&lt;br&gt;
-The following packages are RECOMMENDED but will NOT be installed:
-&lt;br&gt;
-fakeroot libalgorithm-merge-perl 
-&lt;br&gt;
-0 packages upgraded, 2 newly installed, 0 to remove and 18 not upgraded.
-&lt;br&gt;
-Need to get 718 kB of archives. After unpacking 1,636 kB will be used.
-&lt;br&gt;
-The following packages have unmet dependencies:
-&lt;br&gt;
- dpkg-dev : Depends: libdpkg-perl (= 1.16.10ubuntu1) but 1.16.12ubuntu1 is installed.
-&lt;br&gt;
-The following actions will resolve these dependencies:
-&lt;br&gt;
-&lt;br&gt;
-Keep the following packages at their current version:
-&lt;br&gt;
-1)     build-essential [Not Installed]
-&lt;br&gt;
-2)     dpkg-dev [Not Installed]
-&lt;br&gt;
-&lt;br&gt;
-Accept this solution? [Y/n/q/?]&lt;/p&gt;
+&lt;p&gt;The following NEW packages will be installed:&lt;/p&gt;
+&lt;p&gt;build-essential dpkg-dev{ab} &lt;/p&gt;
+&lt;p&gt;The following packages are RECOMMENDED but will NOT be installed:&lt;/p&gt;
+&lt;p&gt;fakeroot libalgorithm-merge-perl &lt;/p&gt;
+&lt;p&gt;0 packages upgraded, 2 newly installed, 0 to remove and 18 not upgraded.&lt;/p&gt;
+&lt;p&gt;Need to get 718 kB of archives. After unpacking 1,636 kB will be used.&lt;/p&gt;
+&lt;p&gt;The following packages have unmet dependencies:&lt;/p&gt;
+&lt;p&gt;dpkg-dev : Depends: libdpkg-perl (= 1.16.10ubuntu1) but 1.16.12ubuntu1 is installed.&lt;/p&gt;
+&lt;p&gt;The following actions will resolve these dependencies:&lt;/p&gt;
+&lt;p&gt;Keep the following packages at their current version:&lt;/p&gt;
+&lt;p&gt;1)     build-essential [Not Installed]&lt;/p&gt;
+&lt;p&gt;2)     dpkg-dev [Not Installed]&lt;/p&gt;
+&lt;p&gt;Accept this solution? [Y/n/q/?]&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;当然不是中止安装，选择 &lt;code&gt;n&lt;/code&gt;， aptitude 给出另外一个解决方案：&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;The following actions will resolve these dependencies:
-&lt;br&gt;
- Downgrade the following packages:
-&lt;br&gt;
-&lt;br&gt;
-1)     libdpkg-perl [1.16.12ubuntu1 (now) -&amp;gt; 1.16.10ubuntu1 (raring)]
-&lt;br&gt;
-&lt;br&gt;
-Accept this solution? [Y/n/q/?]&lt;/p&gt;
+&lt;p&gt;The following actions will resolve these dependencies:&lt;/p&gt;
+&lt;p&gt;Downgrade the following packages:&lt;/p&gt;
+&lt;p&gt;1)     libdpkg-perl [1.16.12ubuntu1 (now) -&amp;gt; 1.16.10ubuntu1 (raring)]&lt;/p&gt;
+&lt;p&gt;Accept this solution? [Y/n/q/?]&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;这正是我们需要解决的版本过高的问题，将库软件版本降级&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;The following packages will be DOWNGRADED:
-&lt;br&gt;
-libdpkg-perl 
-&lt;br&gt;
-The following NEW packages will be installed:
-&lt;br&gt;
- build-essential dpkg-dev{a} 
-&lt;br&gt;
-The following packages are RECOMMENDED but will NOT be installed:
-&lt;br&gt;
-fakeroot libalgorithm-merge-perl 
-&lt;br&gt;
-0 packages upgraded, 2 newly installed, 1 downgraded, 0 to remove and 18 not upgraded.
-&lt;br&gt;
-Need to get 904 kB of archives. After unpacking 1,632 kB will be used.
-&lt;br&gt;
-Do you want to continue? [Y/n/?] &lt;/p&gt;
+&lt;p&gt;The following packages will be DOWNGRADED:&lt;/p&gt;
+&lt;p&gt;libdpkg-perl &lt;/p&gt;
+&lt;p&gt;The following NEW packages will be installed:&lt;/p&gt;
+&lt;p&gt;build-essential dpkg-dev{a} &lt;/p&gt;
+&lt;p&gt;The following packages are RECOMMENDED but will NOT be installed:&lt;/p&gt;
+&lt;p&gt;fakeroot libalgorithm-merge-perl &lt;/p&gt;
+&lt;p&gt;0 packages upgraded, 2 newly installed, 1 downgraded, 0 to remove and 18 not upgraded.&lt;/p&gt;
+&lt;p&gt;Need to get 904 kB of archives. After unpacking 1,632 kB will be used.&lt;/p&gt;
+&lt;p&gt;Do you want to continue? [Y/n/?] &lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;选择 &lt;code&gt;y&lt;/code&gt;。然后 aptitude 会完成剩余的工作 。&lt;/p&gt;
 &lt;p&gt;问题解决啦！&lt;/p&gt;
@@ -4596,7 +4534,6 @@ because it doesn’t know the value.&lt;/p&gt;
 &lt;h3 id="void"&gt;void&lt;/h3&gt;
 &lt;p&gt;void 类型没有对应的值，仅用在有限的一些情况下，通常用作无返回值函数的返回类型。&lt;/p&gt;
 &lt;h2 id="initialize"&gt;初始化 Initialize&lt;/h2&gt;
-&lt;hr&gt;
 &lt;h3 id="_3"&gt;初始化 &amp;amp; 赋值&lt;/h3&gt;
 &lt;p&gt;首先是初始化的必要性：&lt;/p&gt;
 &lt;p&gt;在 C++ 中，初始化是一个非常重要的概念，给变量一个初始值几乎总是正确的，但不要求必须这么做。定义变量时，应该给变量赋初始值，除非确定将变量用于其他意图之前会覆盖这个初值。如果不能保证读取变量前重置变量，就应该初始化变量。变量没有初始化是很常见的导致程序崩溃 / 结果错误的原因，而且有时候很难像 Debug 一样找到这个错误（bug 导致程序一定不对，但是没有初始化的变量的结果是随机的）。所以，良好的习惯是对每个变量都进行初始化 。&lt;/p&gt;

@@ -222,7 +222,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <p>从第二章可知对于一个特定程序，由编译器和 ISA 共同决定了第一个因素：指令总数。而一个 processor 的实现决定了另外两个因素，所以这章介绍 RISC-V 处理器 <code>control path</code> 和 <code>data path</code> 的两种不同实现方案。</p>
 <h2 id="a-simple-implementation-scheme">A Simple Implementation Scheme</h2>
-<p>从 RISC-V ISA 中挑选出三种具有代表性的指令组成一个小子集，</p>
+<p>从 RISC-V ISA 中挑选出三种具有代表性的指令组成一个小子集：</p>
 <ul>
 <li>代表和 memory 交互的 <code>ld</code>, <code>st</code> 指令</li>
 <li>代表算术 - 逻辑运算的 <code>add</code>, <code>sub</code>, <code>and</code>, <code>or</code> 指令</li>
@@ -243,10 +243,10 @@ rel="me"           href="mailto:guqian110@163.com"
 <h2 id="an-overview-of-pipeling">An Overview of Pipeling</h2>
 <p>Pipeline 的基本概念，是在一个很长的组合逻辑路径中插入寄存器，切分成多个小段，这样时钟周期只需要 cover 住 latency 最长的小段即可，因此 Pipeline 可以提高时钟频率。需要注意的是插入寄存器后，处理单条指令的总时间（<code>latency</code>）实际上变长了，因为寄存器翻转也需要时间，但是由于指令可以重叠在一起并行处理，所以 Pipeline 提高系统的吞吐率（<code>throughput</code>），提高了整体性能（所有指令的总处理时间变小）。</p>
 <p>假设整个组合逻辑被切分成 n 个 latency 相似的 stage，每个 stage 的 latency 为 T₀，则单周期方案需要的总时间为</p>
-<div class="math">$$T-{nopipe} = n * T-0$$</div>
+<div class="math">$$T_{nopipe} = n * T_0$$</div>
 <p>而 pipeline 方案，假设指令之间没有冒险，则所有之间直接可以完美重叠，则每条指令的执行时间为</p>
-<div class="math">$$T-{pipe} = T-0$$</div>
-<p>显然在理想情况下，pipeline 版本的性能近似可以提高 n 倍，流水线切分地越细，每条指令的执行时间 T₀ 就越小，性能越高。一般低端 MCU 大概 2～3 个 stage，而高端 CPU 高达 10 个 stage。</p>
+<div class="math">$$T_{pipe} = T_0$$</div>
+<p>显然在理想情况下，pipeline 版本的性能近似可以提高 n 倍，流水线切分地越细，每条指令的执行时间 T 就越小，性能越高。一般低端 MCU 大概 2～3 个 stage，而高端 CPU 高达 10 个 stage。</p>
 <p>性能提升 n 倍是非常理想的理论数据，实际上有很多因素导致最终效果稍差：</p>
 <ul>
 <li>stage 并不是均匀切分</li>
@@ -280,7 +280,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </tr>
 </tbody>
 </table>
-<p>基本上每个 stage 都有对应的核心问题需要解决，各种各样的解决方案实现复杂度、消耗的资源和达到的性能都不相同，这些解决方案按照不同的方式组合在一起，就形成了高中低等不同系列的 CPU。关于每个 stage 的问题及解决方案可以扩展出很多内容，更详细的内容略。</p>
+<p>基本上每个 stage 都有对应的核心问题需要解决，各种各样的解决方案实现复杂度、消耗的资源和达到的性能都不相同，这些解决方案按照不同的方式组合在一起，就形成了高中低等不同系列的 CPU。关于每个 stage 的问题及解决方案可以扩展出很多内容。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>除了存储系统外，pipeline 的有效运作是决定一个处理器 CPI 的最重要因素。不管实现方案是否简单、性能高低，结构冒险、数据冒险、控制冒险这三种冒险是 pipeline 中非常重要的问题。一般来说，</p>
@@ -415,7 +415,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </li>
 <li>
 <p>处理 <code>data hazard</code> 和 <code>control hazard</code></p>
-<p>在静态处理器中由斌啊一起完成所有的数据冒险和控制冒险，而绝大多数动态发射处理器在运行时通过硬件技术消除冒险。</p>
+<p>在静态处理器中由编译器处理所有的数据冒险和控制冒险，而绝大多数动态发射处理器在运行时通过硬件技术消除冒险。</p>
 </li>
 </ol>
 <p>虽然分成了静态和动态两类，实际上这些方法之间都是相互借鉴的，没有任何一种方法是纯粹独立的。</p>
@@ -446,12 +446,11 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <p>显然双发射最高可以将性能提高 2 倍，但是实际上因为各种开销和限制因素，很难达到理论效果，而且为了有效地挖掘多发射的潜在性能，对编译器和硬件调度技术要求很高。对于循环来说，有一种非常重要的优化技术就是 loop unrolling，即循环展开，通过循环展开把不同迭代次数的指令重叠在一起，从而挖掘出更高的 ILP。</p>
 <p>书里面有个例子，对下面这段程序重排序，使得其在上述双发射处理器上的性能达到尽可能高。</p>
-<div class="highlight"><pre><span></span><code>#<span class="o">!</span><span class="nv">text</span>
-<span class="k">Loop</span>:<span class="w"> </span><span class="nv">ld</span><span class="w">   </span><span class="nv">x31</span>,<span class="w"> </span><span class="mi">0</span><span class="ss">(</span><span class="nv">x20</span><span class="ss">)</span><span class="w">      </span><span class="o">//</span><span class="w"> </span><span class="nv">x31</span><span class="o">=</span><span class="nv">array</span><span class="w"> </span><span class="nv">element</span>
-<span class="w">      </span><span class="nv">add</span><span class="w">  </span><span class="nv">x31</span>,<span class="w"> </span><span class="nv">x21</span><span class="w">         </span><span class="o">//</span><span class="w"> </span><span class="nv">add</span><span class="w"> </span><span class="nv">scalar</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">x21</span>
-<span class="w">      </span><span class="nv">sd</span><span class="w">   </span><span class="nv">x31</span>,<span class="w"> </span><span class="mi">0</span><span class="ss">(</span><span class="nv">x20</span><span class="ss">)</span><span class="w">      </span><span class="o">//</span><span class="w"> </span><span class="nv">store</span><span class="w"> </span><span class="nb">result</span>
-<span class="w">      </span><span class="nv">addi</span><span class="w"> </span><span class="nv">x20</span>,<span class="w"> </span><span class="nv">x20</span>,<span class="w"> </span><span class="o">-</span><span class="mi">8</span><span class="w">     </span><span class="o">//</span><span class="w"> </span><span class="nv">decrement</span><span class="w"> </span><span class="nv">pointer</span>
-<span class="w">      </span><span class="nv">blt</span><span class="w">  </span><span class="nv">x22</span>,<span class="w"> </span><span class="nv">x20</span>,<span class="w"> </span><span class="k">Loop</span><span class="w">   </span><span class="o">//</span><span class="w"> </span><span class="nv">branch</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">x20</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">x22</span>
+<div class="highlight"><pre><span></span><code><span class="nl">Loop:</span><span class="w"> </span><span class="nf">ld</span><span class="w">   </span><span class="no">x31</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">(</span><span class="no">x20</span><span class="p">)</span><span class="w">      </span><span class="c1">// x31=array element</span>
+<span class="w">      </span><span class="nf">add</span><span class="w">  </span><span class="no">x31</span><span class="p">,</span><span class="w"> </span><span class="no">x21</span><span class="w">         </span><span class="c1">// add scalar in x21</span>
+<span class="w">      </span><span class="nf">sd</span><span class="w">   </span><span class="no">x31</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">(</span><span class="no">x20</span><span class="p">)</span><span class="w">      </span><span class="c1">// store result</span>
+<span class="w">      </span><span class="nf">addi</span><span class="w"> </span><span class="no">x20</span><span class="p">,</span><span class="w"> </span><span class="no">x20</span><span class="p">,</span><span class="w"> </span><span class="mi">-8</span><span class="w">     </span><span class="c1">// decrement pointer</span>
+<span class="w">      </span><span class="nf">blt</span><span class="w">  </span><span class="no">x22</span><span class="p">,</span><span class="w"> </span><span class="no">x20</span><span class="p">,</span><span class="w"> </span><span class="no">Loop</span><span class="w">   </span><span class="c1">// branch if x20 &gt; x22</span>
 </code></pre></div>
 
 <p>仔细分析代码，就可以知道前 3 条指令之间有依赖，最后两条指之间也有依赖，只有一对指令可以打包到一起，所以需要用 4 个 cycle 完成 5 条指令，IPC = 5/4 = 1.25，离理论最大值 2 差距很大。</p>
@@ -562,7 +561,10 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>VLIW 必须要有编译器调度，而且在不同平台上运行时通常都要重新编译才能正确运行，即使有些处理器正确性可以保证，但是往往因为性能仍然需要重新编译</li>
 </ul>
 <p>许多 superscalar 把动态发射算法扩展成一整套体系：<code>dynamic pipeline scheduling</code>，即动态调度算法。最经典的动态调度算法就是 Tomasolu 算法，涉及到的术语有 <code>reservation station</code>, <code>commit</code>, <code>reorder buffer</code>, <code>out-of-order execution</code>, <code>in-order commit</code> 等，这里不展开描述。</p>
-<p>注意：目前所有动态调度算法都使用 in-order commit。</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>目前所有动态调度算法都使用 in-order commit。</p>
+</div>
 <p>既然编译器也可以做调度，为什么 superscalar 还需要用动态调度算法呢？原因大概有 3 个：</p>
 <ul>
 <li>编译器无法预测所有的 stall，特别是 cache miss 等，动态调度可以让处理器隐藏某些 stall</li>
@@ -571,7 +573,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>现代高性能处理器都可以在每个 cycle 发射多条指令，但是很不幸的是要维持高 issue rate 非常困难。比如，虽然现在处理器都可以达到 4～6 发射的并行读，但几乎没有什么应用可以保持在 2 以上的发射速率，主要原因有两个：</p>
+<p>现代高性能处理器都可以在每个 cycle 发射多条指令，但是很不幸的是要维持高 issue rate 非常困难。比如，虽然现在处理器都可以达到 4～6 发射的并行度，但几乎没有什么应用可以保持在 2 以上的发射速率，主要原因有两个：</p>
 <ul>
 <li>主要性能瓶颈来自于无法避免的 data hazard，虽然基本无法优化真数据依赖 RAW，但是编译器和硬件通常连是否存在依赖都不确定，所以只能保守地认为存在依赖。一般来说，ILP 总是有优化空间的，但是因为太分散（可能存在于上千条指令之间），编译器和硬件往往力不从心。</li>
 <li>memory hierarchy 的损失会导致 pipeline 无法保持满负荷运行，虽然有些 stall 可以掩盖起来，但是有限的 ILP 无法掩盖所有 stall。</li>

@@ -200,9 +200,7 @@ rel="me"           href="mailto:guqian110@163.com"
     <p>总结 <code>packege</code>, <code>component</code>, <code>function</code>, <code>procedure</code> 的相关知识。</p>
 <p>这些组成部分添加到代码主体部分，目的是为了实现常用代码共享。通常这些代码被放在 <code>library</code> 中，我们可以将自己设计的一些常用代码添加到 <code>library</code> 中，这有利于使一个复杂设计具有更清晰的结构。</p>
 <p>总之，经常使用的代码可以以 <code>component</code>, <code>function</code>, <code>procedure</code> 的形式放到 <code>package</code> 中，然后被编译到目标 <code>library</code> 中。</p>
-<p><br></p>
 <h2 id="packages-and-components">Packages and Components</h2>
-<hr>
 <h3 id="package">Package</h3>
 <p>除了 <code>component</code>, <code>function</code>, <code>procedure</code> 之外，package 中还可以包含 <code>TYPE</code>, <code>CONSTANT</code> 的定义。</p>
 <p><strong>syntax</strong></p>
@@ -353,9 +351,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div></td></tr></table></div>
 
 <p>也就是说，在例化时，添加一段 <code>GENERIC MAP (param.list)</code> 就可以了。</p>
-<p><br></p>
 <h2 id="functions-and-procedure">Functions and Procedure</h2>
-<hr>
 <p>function 和 procedure 统称为 子程序，它们和 process 相似，内部包含的都是顺序描述的代码，通常使用相同的顺序描述语句。但是，function 和 procedure 的存在主要是为了建库，以达到代码重用和共享的目的，当然它们也可以直接建立在主代码中。</p>
 <h3 id="function">Function</h3>
 <p>一个 function 就是一段顺序描述的代码。</p>
@@ -453,7 +449,6 @@ function 中可以使用 <code>if</code>, <code>case</code>, <code>loop</code> �
 <p>function 和 procedure 的存放位置相同，经常位于 package 中，也可以在主代码中</p>
 </li>
 </ul>
-<p><br></p>
 <h2 id="reference">Reference</h2>
 <p><a href="http://www.amazon.com/Circuit-Design-VHDL-Volnei-Pedroni/dp/0262162245">Circuit Design with VHDL</a></p>
   </div>

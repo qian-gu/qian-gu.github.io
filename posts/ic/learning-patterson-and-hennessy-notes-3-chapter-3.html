@@ -222,7 +222,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p><strong>实现方案</strong></p>
 <p>加法器的设计是一个非常经典的 IC 话题，它的速度取决于进位链的速度，有很多技术会预测进位 bit，其最坏的结果就是进位时间是 log2(W) 的函数（其中 W 是加法器的位宽）。这些预测信号的逻辑门更少所以速度更快，付出的代价就是消耗了更多的硬件资源来预测进位信号的正确值，最流行的结构就是超前进位加法器 <code>CLA</code>(carry lookahead adder)。</p>
 <h3 id="multiplication">Multiplication</h3>
-<p><span class="math">\(1010 * 1011 = 0110\-1110\)</span>，动手算一下就知道将 1010 和 1011 解释成 10 进制数或者是 2 进制等式都是成立的，因为他们的原理都一样：移位相加。</p>
+<p><span class="math">\(1010 * 1011 = 0110\_1110\)</span>，动手算一下就知道将 1010 和 1011 解释成 10 进制数或者是 2 进制等式都是成立的，因为他们的原理都一样：移位相加。</p>
 <p><strong>实现方案</strong></p>
 <ol>
 <li>
@@ -283,14 +283,14 @@ rel="me"           href="mailto:guqian110@163.com"
 <li><code>normalized number</code>：没有 leading 0s</li>
 </ul>
 <p>对于二进制浮点数，标准格式是：</p>
-<div class="math">$$1.xxxxx\ast2^{yyyy}$$</div>
+<div class="math">$$1.xyz\ast2^{abc}$$</div>
 <p>因为 word 的位宽是固定的，所以浮点数必须在 fraction 和 exponent 之间做折中，也就是精度和范围之间的取舍，</p>
 <ul>
 <li>增加 fraction 的 bit 位数可以提高精度但是会减小表示的范围</li>
 <li>增加 exponent 的 bit 位数可以扩大表示范围，但是会降低表示精度</li>
 </ul>
 <p>如 chapter 2 所述，<strong>一个好的设计需要有合理的折中。</strong></p>
-<p>float 数的表示方法实际上就是 sign-and-magnitude 方式，1bit 符号 + E bit 指数 + F bit 尾数，表示的数据大小为，</p>
+<p>float 数的表示方法实际上就是 sign-and-magnitude 方式，1bit 符号 + E bit 指数 + F bit 尾数，表示的数据大小为：</p>
 <div class="math">$$(-1)^S * F * 2^E$$</div>
 <p><strong>处理 overflow</strong></p>
 <p>float 同理也会有 overflow 和 underflow，</p>

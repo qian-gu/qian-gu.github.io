@@ -2724,9 +2724,7 @@ you to efficiently browse through source code files for different programming la
 &lt;p&gt;&lt;a href="http://blog.sina.com.cn/s/blog-6294abe701012pee.html"&gt;Doxygen C++ 注释规范及生成帮助文档配置步骤&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://ticktick.blog.51cto.com/823160/188674"&gt;Doxygen 详细介绍（三）（Doxygen 注释风格）&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;重新整理排版了一下。写本文的主要目的是备忘，当作快速参考来查。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="doxygen"&gt;Doxygen&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;若想用 Doxygen 生成漂亮的文档，我们必须在以下几个地方添加 Doxygen 风格的注释：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
@@ -2750,9 +2748,7 @@ you to efficiently browse through source code files for different programming la
 &lt;p&gt;对函数的功能、参数、返回值、需要注意的问题、相关说明等进行 detailed description。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="c-comment-style"&gt;C++ Comment Style&lt;/h2&gt;
-&lt;hr&gt;
 &lt;p&gt;Doxygen 支持多种注释风格，比如 JavaDoc-like 风格，Qt 风格等。在写 C++ 代码时，我们应该遵守 C++ 的行注释风格，所谓行注释风格，是指一般 C++ 程序员避免使用 C 风格的注释符号 &lt;code&gt;/* */&lt;/code&gt;，而是使用 3 个连续的 &lt;code&gt;/&lt;/code&gt; 作为注释的开头。除了这个区别之外，其他部分和 JavaDoc 风格类似：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -2778,7 +2774,6 @@ you to efficiently browse through source code files for different programming la
 &lt;h3 id="license"&gt;License&lt;/h3&gt;
 &lt;p&gt;使用 DoxygenToolKit 自动生成的 Lisence 即可。&lt;/p&gt;
 &lt;h2 id="file-header"&gt;File header&lt;/h2&gt;
-&lt;hr&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
 &lt;span class="normal"&gt;2&lt;/span&gt;
 &lt;span class="normal"&gt;3&lt;/span&gt;
@@ -2971,7 +2966,6 @@ you to efficiently browse through source code files for different programming la
 &lt;span class="c1"&gt;/// \bug Bug2 to be fixed&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;P.S.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;从网上找到一个 Doxygen for C 的示例：&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://fnch.users.sourceforge.net/doxygen-c.html"&gt;Doxygen usage example (for C)&lt;/a&gt;&lt;/p&gt;
@@ -2979,7 +2973,6 @@ you to efficiently browse through source code files for different programming la
 &lt;p&gt;&lt;strong&gt;P.P.S&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;又找到一份注释规范的文档，写的挺好，值得一看。&lt;/p&gt;
 &lt;p&gt;&lt;a href="/file/cpp-comment-standard.doc"&gt;C++ 注释规范&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="ref"&gt;Ref&lt;/h2&gt;</content><category term="Tools"></category><category term="C++"></category><category term="comment style"></category></entry><entry><title>学习 Vim 插件 DoxygenToolKit.vim</title><link href="https://qian-gu.github.io/posts/tools/learning-vim-doxygentoolkit.html" rel="alternate"></link><published>2015-01-12T15:21:00+08:00</published><updated>2015-01-12T15:21:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2015-01-12:/posts/tools/learning-vim-doxygentoolkit.html</id><summary type="html">&lt;p&gt;学习 Vim 插件 DoxygenToolKit。&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://qian-gu.github.io/posts/tools/how-to-analyse-code-elegantly.html"&gt;前面一篇博客&lt;/a&gt;已经介绍过 Doxygen 了，Doxygen 的确是一个非常给力的工具，但是为了生成文档，我们必须在注释上花费很大的时间和精力。那么问题又来了：如何才能既享受 Doxygen 的强大功能，同时又避免注释中大量的重复性的输入？&lt;/p&gt;
 &lt;p&gt;解决思路是让编辑器来替我们写那些格式和内容固定的部分，我们只负责写真正的有效内容。所以答案就是：&lt;strong&gt;Vim + DoxygenToolKit.vim 插件&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id="doxygentoolkit"&gt;DoxygenToolKit&lt;/h2&gt;
@@ -3104,9 +3097,7 @@ in all the file will be treated and placed in a new block DOX-SKIP-BLOCK (or any
 &lt;p&gt;这个功能在自动生成文档、代码分析时非常强大，下面分别简单介绍一下。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;P.S.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;在 Linux 环境下，Vim 有插件 &lt;strong&gt;DoxygenToolKIt.vim&lt;/strong&gt; 可以帮助我们很方便地写出 Doxygen 风格的代码。这里只介绍 Doxygen + Graphviz，DoxygenToolKit.vim 在另外一篇中介绍。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="graphviz"&gt;Graphviz&lt;/h2&gt;
-&lt;hr&gt;
 &lt;h3 id="what-is-graphviz"&gt;What is Graphviz?&lt;/h3&gt;
 &lt;p&gt;&lt;a href="http://www.graphviz.org/"&gt;Graphviz official website&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -3119,9 +3110,7 @@ in all the file will be treated and placed in a new block DOX-SKIP-BLOCK (or any
 
 &lt;h3 id="more"&gt;More&lt;/h3&gt;
 &lt;p&gt;更多详细的介绍见官网的 About、Documentation、Wiki、FAQ。&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="doxygen"&gt;Doxygen&lt;/h2&gt;
-&lt;hr&gt;
 &lt;h3 id="what-is-doxygen"&gt;What is Doxygen&lt;/h3&gt;
 &lt;p&gt;&lt;a href="http://www.stack.nl/~dimitri/doxygen/index.html"&gt;Doxygen Official website&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -3758,10 +3747,8 @@ make install
 &lt;p&gt;(Markdown 源自邮件的文本格式，语法非常简洁，并且功能很强大，这篇文章本书就是用 Markdown 语法写的，语法细节见官网，这里不再赘述。)&lt;/p&gt;
 &lt;p&gt;P.S.&lt;/p&gt;
 &lt;p&gt;找到一篇博客，详细介绍了基于 Doxygen 的 C++ 注释风格：&lt;a href="http://blog.csdn.net/czyt1988/article/details/8901191"&gt;C++ 标准注释原则 - 基于 doxygen 的 C++ 注释&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;最后展示一张我的效果图：&lt;/p&gt;
 &lt;p&gt;&lt;img alt="image" src="/images/how-to-analyse-code-elegantly/result.png"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h2 id="ref"&gt;Ref.&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://blog.csdn.net/blood008/article/details/6567169"&gt;linux doxygen 的安装和使用&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.stack.nl/~dimitri/doxygen/index.html"&gt;Doxygen&lt;/a&gt;&lt;/p&gt;

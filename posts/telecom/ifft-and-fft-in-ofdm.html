@@ -212,7 +212,6 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>OFDM 中 <strong>功率归一化因子</strong> 为 1/sqr(N)，而标准的 IFFT 中的系数为 1/N，所以在调用标准 IFFT 函数之后，需要额外乘以一个 sqr(N) ：</p>
 <p><code>1/N × sqr(N) = 1/sqr(N)</code></p>
 <p>而在接收端，也要先除以一个 sqr(N)，然后再进行 FFT 。</p>
-<p><br></p>
 <h2 id="ref">Ref</h2>
 <p><a href="http://book.douban.com/subject/1446684/">通信原理</a></p>
 <p><a href="http://book.douban.com/subject/1140934/">宽带无线通信 OFDM 技术</a></p>

@@ -198,7 +198,6 @@ rel="me"           href="mailto:guqian110@163.com"
 
   <div>
     <h2 id="graphviz">Graphviz</h2>
-<hr>
 <p>Graphviz 是一个由 AT&amp;T 实验室启动的开源工具包，用于绘制 DOT 语言脚本描述的图形。</p>
 <p><a href="http://en.wikipedia.org/wiki/Graphviz">wiki</a>:</p>
 <blockquote>
@@ -224,9 +223,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <p>Graphviz 可以帮助我们画数据结构图、模块图、流程图等，是程序猿的画图利器。这里我们只用它来画简单的 流程图 / 状态图 ，所以只要有基本的图论知识，不涉及高级主题，所以学习起来是很轻松的。</p>
 <p>因为在<a href="http://guqian110.github.io/pages/2015/01/11/how-to-analyse-code-elegantly.html">前面一篇博客</a>中我们已经简单介绍了 <a href="http://www.graphviz.org/">Graphviz</a> 这个工具软件的安装方法，所以下面直接进入正题：<strong>如何使用 Graphviz 画 FSM 的状态转移图。</strong></p>
-<p><br></p>
 <h2 id="usage">Usage</h2>
-<hr>
 <p>下面的内容是我精简出来了的最小学习方法，使用方法的详细攻略请看 Graphviz 官网上的 <a href="http://www.graphviz.org/Documentation.php">Documentation</a>。</p>
 <h3 id="dot">DOT</h3>
 <p>DOT 语法在 <a href="http://www.graphviz.org/Documentation.php">Documentation</a> 里面有介绍，它的定义方法和 C/C++ 中的 <code>struct</code> 类似。由图论的基本知识，我们知道描述一个图，只要用节点（<code>node</code>)、边（<code>edge</code>） 这两个要素就能描述清楚，而 DOT 语言也就是利用这两个信息来描述一个图的。下面用几个基本的例子来说明。</p>
@@ -305,9 +302,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </code></pre></div>
 
 <p>example2，example3，exampl4 同理。</p>
-<p><br></p>
 <h2 id="example">Example</h2>
-<hr>
 <p>下面是实际程序中的一个例子：</p>
 <p>dot 脚本：</p>
 <div class="highlight"><pre><span></span><code><span class="n">digraph</span><span class="w"> </span><span class="n">fsm</span><span class="w"> </span><span class="p">{</span><span class="w">                                                               </span>
