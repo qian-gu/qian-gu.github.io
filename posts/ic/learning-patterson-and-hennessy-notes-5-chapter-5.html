@@ -711,14 +711,13 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>因为写回的代价太高了，所以只能用 write-back 的方式把一整块 page 都写回。</p>
 <p>程序的每次 memory 访问都需要完成两个步骤：首先查询 page table 得到 physical address，然后根据查询到的地址获取数据。提高访问性能的关键就在于 page table 的访问也有局部性：如果查询了某个 page number，那么很可能会再次查询它，因为它指向的数据具有局部性。</p>
 <p>所以处理器会包含一个特殊的叫作 <code>TLB</code>(Translation-Lookaside Buffer) 的 cache 用来追踪最近使用过的地址变换。所以 TLB 的读写操作也遵守前面 cache 的讨论，简单的一次读操作的流程如下。</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#!text</span>
-<span class="w">                </span><span class="n">lookup</span><span class="w"> </span><span class="n">TLB</span>
-<span class="n">read</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">-----------&gt;</span><span class="w"> </span><span class="n">hit</span><span class="w"> </span><span class="o">---------------------------&gt;</span><span class="w"> </span><span class="n">translate</span>
-<span class="w">                    </span><span class="o">|</span><span class="w">                                            </span><span class="o">^</span>
-<span class="w">                    </span><span class="o">|</span><span class="w">            </span><span class="n">lookup</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="n">table</span><span class="w">               </span><span class="o">|</span>
-<span class="w">                    </span><span class="o">|-----&gt;</span><span class="w"> </span><span class="n">miss</span><span class="w"> </span><span class="o">-----------------&gt;</span><span class="w"> </span><span class="n">hit</span><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">loading</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="n">TLB</span>
-<span class="w">                                             </span><span class="o">|</span>
-<span class="w">                                             </span><span class="o">|----&gt;</span><span class="w"> </span><span class="n">miss</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="n">OS</span><span class="o">.</span><span class="n">exception</span><span class="w"> </span><span class="n">handle</span>
+<div class="highlight"><pre><span></span><code>                lookup TLB
+read reference -----------&gt; hit ---------------------------&gt; translate
+                    |                                            ^
+                    |            lookup page table               |
+                    |-----&gt; miss -----------------&gt; hit ---&gt; loading into TLB
+                                             |
+                                             |----&gt; miss --&gt; OS.exception handle
 </code></pre></div>
 
 <p>因为 TLB 是一个小 cache，所以它的设计考虑因素和规格都符合前面 cache 部分的讨论。下面是一个典型配置：</p>

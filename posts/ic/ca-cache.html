@@ -587,17 +587,17 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>Cache 最常用的性能指标是： <code>AMAT</code>(Average memory aceess time) ，显然 Cache 系统设计越合理，对 core 表现出来的性能越好，AMAT 就越小。根据定义可以知道 AMAT 的计算公式如下：</p>
 <p><span class="math">\(AMAT = Time\ for\ a\ hit + Miss\ rate * Miss\ penalty\)</span></p>
 <p>对于多级 Cache 系统，AMAT 公式如下（以两级 Cache 为例）：</p>
-<p><span class="math">\(T-{avg}=H-1*C-1 + (1-H-1)*(H-2*(C-1 + C-2) + (1-H-2)*(C-1 + C-2 + M)\)</span></p>
+<p><span class="math">\(T_{avg}=H_1*C_1 + (1-H_1)*(H_2*(C_1 + C_2) + (1-H_2)*(C_1 + C_2 + M)\)</span></p>
 <p>每个符号的含义：</p>
 <ul>
-<li><span class="math">\(H-1\)</span> 表示 L1 cache 的命中率</li>
-<li><span class="math">\(H-2\)</span> 表示 L2 cache 的命中率</li>
-<li><span class="math">\(C-1\)</span> 表示 L1 cache 命中访问时间</li>
-<li><span class="math">\(C-2\)</span> 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）</li>
+<li><span class="math">\(H_1\)</span> 表示 L1 cache 的命中率</li>
+<li><span class="math">\(H_2\)</span> 表示 L2 cache 的命中率</li>
+<li><span class="math">\(C_1\)</span> 表示 L1 cache 命中访问时间</li>
+<li><span class="math">\(C_2\)</span> 表示 L2 cache 命中访问时间（即 L1 miss 但是 L2 hit 的 penalty）</li>
 <li><span class="math">\(M\)</span> 表示 DDR 的访问时间（即 L2 miss 的 penalty）</li>
 </ul>
 <p>也可以换一种算法：</p>
-<p><span class="math">\(T-{avg}= C-1 + (1-H-1)*C-2 + (1-H-1)*(1-H-2)*M\)</span></p>
+<p><span class="math">\(T_{avg}= C_1 + (1-H_1)*C_2 + (1-H_1)*(1-H_2)*M\)</span></p>
 <p>可以证明两种方式是等价的。</p>
 <h3 id="_7">其他指标</h3>
 <p>AMAT 是 dcache 对外表现出来的综合性指标，如果想评估深入评估 dcache 微架构，那么应该用更多的细分指标来衡量。</p>
@@ -868,7 +868,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <p>面临的问题：miss 会阻塞 core 的流水线，效率低。</p>
 <p>解决思路：思路 4（提高 throughput），cache 在处理当前 miss 的同时处理后续的请求。</p>
 <p>付出的代价：增加硬件复杂度，消耗更多资源（MSHR）。</p>
-<p><code>in-cacche MSHR</code>：给 tag array 新增额外的 1bit transient 信号，如果某 entry 处于 transient mode，tag array 保存 base address，data array 保存所有的 MSHR 信息，具体形式既可以是 implicit 也可以是 explicit。</p>
+<p><code>in-cache MSHR</code>：给 tag array 新增额外的 1bit transient 信号，如果某 entry 处于 transient mode，tag array 保存 base address，data array 保存所有的 MSHR 信息，具体形式既可以是 implicit 也可以是 explicit。</p>
 <table>
 <thead>
 <tr>
