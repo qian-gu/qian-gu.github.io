@@ -7,7 +7,6 @@ Author: Qian Gu
 Summary: 学习使用 Graphviz 画 FSM 的状态转移图
 
 ## Graphviz
-* * *
 
 Graphviz 是一个由AT&T实验室启动的开源工具包，用于绘制DOT语言脚本描述的图形。
 
@@ -35,10 +34,7 @@ Graphviz 可以帮助我们画数据结构图、模块图、流程图等，是�
 [graphviz]: http://www.graphviz.org/
 [wiki]: http://en.wikipedia.org/wiki/Graphviz
 
-<br>
-
 ## Usage
-* * *
 
 下面的内容是我精简出来了的最小学习方法，使用方法的详细攻略请看 Graphviz 官网上的 [Documentation][documentation]。
 
@@ -136,10 +132,7 @@ example2，example3，exampl4 同理。
 [documentation]: http://www.graphviz.org/Documentation.php
 [article2]: http://www.openfoundry.org/en/foss-programs/8820-graphviz-
 
-<br>
-
 ## Example
-* * *
 
 下面是实际程序中的一个例子：
 

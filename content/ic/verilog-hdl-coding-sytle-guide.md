@@ -19,31 +19,21 @@ Summary: 参考网上的资料和书籍，总结一份自己的 Coding Style Gui
 
 [book1]: http://www.amazon.cn/EDA%E7%B2%BE%E5%93%81%E6%99%BA%E6%B1%87%E9%A6%86-Verilog%E7%BC%96%E7%A8%8B%E8%89%BA%E6%9C%AF-%E9%AD%8F%E5%AE%B6%E6%98%8E/dp/B00HNVY3SY/ref=sr-1-1?ie=UTF8&qid=1429188978&sr=8-1&keywords=verilog%E7%BC%96%E7%A8%8B%E8%89%BA%E6%9C%AF
 
-<br>
-
 **Version** : 2.0
 
 **Date** : 2015-04-21
 
 **Author** : Qian Gu (guqian110@gmail.com)
 
-<br>
-
 ## Goal
-* * *
 
 干干净净的代码：
 
 **代码整洁、结构合理、层次清晰、注释明了、没有烂代码、没有冗余代码，合理地建立目录，合理地分配到不同文件中。**
 
-<br>
-
 *下面分几个方面来总结，如何达到这样的目的。*
 
-<br>
-
 ## Module Partition
-* * *
 
 把代码划分为 模块、函数、任务，形成合理的层次结构。
 
@@ -65,10 +55,7 @@ Summary: 参考网上的资料和书籍，总结一份自己的 Coding Style Gui
 
 8. 为了减少修改内容、避免出错、移植方便、创建可重用模块，在编写代码的时候使用 define、parameter、localparam 定义可重定义的参数（如 SIZE、WIDTH、DEPTH 等）。如果可能，把所有 define 放在一个 definition.vh 中，编译时首先读取这个文件
 
-<br>
-
 ## Coding Style
-* * *
 
 灵活合理地运用，才能设计出强壮的、简洁的代码，目标是可以清晰地表达出设计意图。
 
@@ -210,10 +197,7 @@ by poorly spaced and formatted RTL code and silly comments that state the obviou
 
 [page1]: http://www.sunburst-design.com/papers/Wheres-Waldo-Coding.pdf
 
-<br>
-
 ## Naming
-* * *
 
 1. 建立一套命名约定和缩略语清单，以文档的形式记录下来，严格遵守
 
@@ -309,10 +293,7 @@ by poorly spaced and formatted RTL code and silly comments that state the obviou
 |delay|dly||read|rd||write enable  |wr-en|
 |disable|dis||read enbale  |rd-en||write|wr|
 
-<br>
-
 ## Format
-* * *
 
 ### Poart Declaration
 
@@ -424,10 +405,7 @@ by poorly spaced and formatted RTL code and silly comments that state the obviou
 
 4. 检测 always 敏感列表是否完全
 
-<br>
-
 ## Appdidx
-* * *
 
 FSM 的模板[另外一篇博客][blog1]中已经总结过了。下面是一个简单的模块模板格式。
 

@@ -1,29 +1,19 @@
 Title: 学习 Vim 保存项目设置 
 Date: 2014-04-20 14:32
 Category: Tools
-Tags: Vim
+Tags: vim
 Slug: learning-vim-save-project-configuration
 Author: Qian Gu
-Summary: 总结将 Vim 配置为 IDE 的过程之一，保存项目设置 。
+Series: Learning Vim
+Summary: 总结 Vim 保存项目设置 。
 
-> + 关于 Vim 和 IDE 的争论，这是程序猿的圣战，不再浪费时间 :-D
+!!!note
+    + 关于 Vim 和 IDE 的争论，这是程序猿的圣战，不再浪费时间 :-D
+    + 在参考了很多人分享的博客和教程之后，终于把 Vim 搭建成为一个自己定制的 IDE（这种说法严格意义上说，是不对的，应该是 “组合一组工具成为一个 IDE ”），总结一下～
 
-> + 在参考了很多人分享的博客和教程之后，终于把 Vim 搭建成为一个自己定制的 IDE（这种说法严格意义上说，是不对的，应该是 “组合一组工具成为一个 IDE ”），总结一下～
-
-> + 本系列的内容很多都是参考别人的博客写的，也包含部分自己摸索的结果 。虽然部分内容和参考文章相同，但是总结一下自己的学习过程还是一件有必要的事 :-P
-
-<br>
-
-很多编辑器都有一个功能是以前打开过的文档会有记忆，再次打开时会直接跳转到上次编辑的地方，比如  [`Sublime Text 2`][sb2]，强大的 Vim 当然也有这个功能，**我们的目标就是让 Vim 和其他 IDE 一样，可以记住上次的编辑状态 。**
-
-Vim 要实现这个功能，涉及到两个地方的配置：`session` & `viminfo` 。
-
-[sb2]: http://www.sublimetext.com/2
-
-<br>
+很多编辑器都有一个功能是以前打开过的文档会有记忆，再次打开时会直接跳转到上次编辑的地方，比如 `Sublime Text 2`，强大的 Vim 当然也有这个功能，**我们的目标就是让 Vim 和其他 IDE 一样，可以记住上次的编辑状态**。Vim 要实现这个功能，涉及到两个地方的配置：`session` 和 `viminfo`。
 
 ## Session
-* * *
 
 ### Intro
 
@@ -94,9 +84,7 @@ Session 保存的信息由 `sessionoptions` 确定，详细用法可以查看 he
     
 这时候可以看到，已经恢复了之前的状态 。
 
-<br>
-
-*只使用 session 就可以恢复一些上次编辑的信息，但是这还不够，我们还可以配合使用 `viminfo` 来恢复更多的信息 。在 Vim 的 `:help 21.4` 中有介绍两者的关系*
+只使用 session 就可以恢复一些上次编辑的信息，但是这还不够，我们还可以配合使用 `viminfo` 来恢复更多的信息 。在 Vim 的 `:help 21.4` 中有介绍两者的关系：
 
 > + **Sessions store many things, but not the position of marks, contents of registers and the command line history.**  You need to use the viminfo feature for these things.
 > + In most situations you will want to use sessions separately from viminfo. This can be used to switch to another session, but keep the command line history.  And yank text into registers in one session, and paste it back in another session.
@@ -104,10 +92,7 @@ Session 保存的信息由 `sessionoptions` 确定，详细用法可以查看 he
 > + You could also use a Session file.  **The difference is that the viminfo file does not depend on what you are working on.**  There normally is only one viminfo file.  Session files are used to save the state of a specific editing Session.  You could have several Session files, one for each project you are working on.  Viminfo and Session files together can be used to effectively
 enter Vim and directly start working in your desired setup.
 
-<br>
-
 ## Viminfo
-* * *
 
 ### Intro
 
@@ -152,7 +137,7 @@ viminfo 文件可以保存的内容有：
     #!Shell
     :wviminfo project.viminfo
 
-### 载入 viminfo 文件
+### Load
 
 载入命令 `rviminfo` 帮助
 
@@ -163,8 +148,6 @@ viminfo 文件可以保存的内容有：
 
     #!Shell
     :rviminfo path/to/project.viminfo
-
-<br>
 
 ## 总结
 
@@ -186,8 +169,6 @@ viminfo 文件可以保存的内容有：
     :source projetc.vim
     :rviminfo projetc.viminfo
     
-<br>
-
 ## 参考
 
 [vi/vim使用进阶: 使用会话和viminfo](http://easwy.com/blog/archives/advanced-vim-skills-session-file-and-viminfo/)

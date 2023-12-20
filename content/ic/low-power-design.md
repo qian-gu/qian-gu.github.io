@@ -10,10 +10,7 @@ Summary:
 
 [the art]: http://www.amazon.com/The-Art-Hardware-Architecture-Techniques/dp/1461403960
 
-<br>
-
 ## Sources of Power Consumption
-* * *
 
 首先，分析功耗的来源。
 
@@ -37,10 +34,7 @@ Summary:
 
 其中，动态功耗占了主要部分，典型应用中，动态功耗占到总功耗的 80% 。
 
-<br>
-
 ## Power Reduction Power Reduction
-* * *
 
 可以从系统的不同层次来降低功耗，下图展示了不同级别的不同技术，虽然可以在各个级别进行，但是在抽象层次越高的级别，得到的效果越有效，即在系统层（system level）和体系结构层（architecture level）进行。
 
@@ -50,14 +44,9 @@ Summary:
 
 ![opportunities](/images/low-power-design/opportunities.png)
 
-<br>
-
 *下面分别从不同层次总结。*
 
-<br>
-
 ## System Level 
-* * *
 
 ### SoC Approach
 
@@ -120,10 +109,7 @@ Summary:
 
 选择处理器会对整体功耗产生明显影响。（高级话题，以后再补）
 
-<br>
-
 ## Architecture Level Power Reduction
-* * *
 
 ### Advanced Clock Gating
 
@@ -171,10 +157,7 @@ Summary:
 
 ...
 
-<br>
-
 ## Register Transfer Level (RTL) Power Reduction
-* * *
 
 在大规模 ASIC 中，在 RTL 级完成时，至少 80% 的功耗已经确定了，后端流程无法解决所有的功耗问题，后端无法解决微架构、RTL 代码风格对动态和静态功耗的影响，所以在 RTL 阶段就要将功耗相关的问题一起解决。
 
@@ -277,13 +260,9 @@ Mux 的编码方案也可以采用独热码的方式，从而减少开关切换�
 
 ![bus](/images/low-power-design/bus-trans.png)
 
-<br>
-
 ## Transistor Level Power Reduction
 
 寄存器级别的技术基本属于后端 & 微电子科学了，就不再总结了。
-
-<br>
 
 ## Ref
 

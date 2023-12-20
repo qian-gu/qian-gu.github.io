@@ -6,16 +6,9 @@ Slug: fsm-design
 Author: Qian Gu
 summary: 博客搬家，温故而知新。
 
-有限状态机是数字电路中经常出现、非常重要的电路，设计一个安全、高效的状态机有一套程序化的方法，我们在数字电路课中就学习过了。搬运以前写的博客，总结一下相关知识，温故而知新～
-
-**写在前面的废话：**
-
-这篇博客是在我以前在 CSDN 上写的两篇博客的基础上，参考了其他各位大神、博主的文章，写的总结。欢迎批评、讨论，毕竟写博客的意义就在于给自己一个总结知识的机会、并且在和别人讨论的过程中进步 :-D
-
-<br>
+有限状态机是数字电路中经常出现、非常重要的电路，设计一个安全、高效的状态机有一套程序化的方法，我们在数字电路课中就学习过了。总结一下相关知识，温故而知新～
 
 ## What is FSM
-* * *
 
 [FSM on wiki][fsm on wiki]
 
@@ -50,10 +43,8 @@ summary: 博客搬家，温故而知新。
 [fsm on wiki]: http://en.wikipedia.org/wiki/Finite-state-machine
 [moore]: http://en.wikipedia.org/wiki/Moore-machine
 [mealy]: http://en.wikipedia.org/wiki/Mealy-machine
-<br>
 
 ## How to Design a FSM
-* * * 
 
 关于如何设计一个状态机，这在数字电路和逻辑设计的书里有详细介绍。简单地总结一下步骤：
 
@@ -62,10 +53,7 @@ summary: 博客搬家，温故而知新。
 3. 状态分配，选择编码方案(Binary、Gray、One-Hot)
 4. 画逻辑图，检查能否自启动，得到了最终的状态机模型
 
-<br>
-
 ## How to implement a FSM 
-* * *
 
 当设计好之后，就要使用 HDL 语言来实现这个 FSM 了。
 
@@ -274,30 +262,28 @@ Binary、Gray 编码使用最少的触发器，较多的组合逻辑。而 One-H
 
 (XST 的选项 `FSM encoding algorithm` 值默认为 `auto`，编写程序测试发现，它会根据代码中状态的多少，FSM 的复杂度，自动选择合适的编码方式对状态进行编码。)
 
-**P.S.**
-one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（如模板所示的 index one-hot），这种方式和传统的 one-hot 相比，它不再是对比整个状态向量的值，而是逐 bit 对比，从而简化了状态译码电路。
+!!!note
+    one-hot 和 reverse case 相结合，可以得到一种更加简洁的电路（如模板所示的 index one-hot），这种方式和传统的 one-hot 相比，它不再是对比整个状态向量的值，而是逐 bit 对比，从而简化了状态译码电路。
 
-利用前面的模板和结尾附录的模板，对参考文章 [Steve Golson State machine design techniques for Verilog and VHDL](http://www.trilobyte.com/pdf/golson-snug94.pdf) 中的状态机例子进行综合测试，实际结果证实了 index 方式要更加节省资源（如果状态机更加复杂一些的话，两者的差别应该更大）：
+利用前面的模板和结尾附录的模板，对参考文章 [Steve Golson State machine design techniques for Verilog and VHDL](http://www.trilobyte.com/pdf/golson-snug94.pdf) 中的状态机例子进行综合测试，实际结果证实了 index 方式要更加节省资源（如果状态机更加复杂一些的话，两者的差别应该更大）。
 
 index one-hot style:
 
-[index.v](https://github.com/guqian110/guqian110.github.io/blob/master/files/fsm-index.v)
+[index.v](/files/fsm_index.v)
 
-![indx style](/images/fsm-design/index-summary.png)
+![indx style](/images/fsm-design/index_summary.png)
 
 non-index one-hot style:
 
-[non-index.v](https://github.com/guqian110/guqian110.github.io/blob/master/files/fsm-non-index.v)
+[non-index.v](/files/fsm_non_index.v)
 
-![non-index](/images/fsm-design/non-index-summary.png)
-
-========================分割线=============================
+![non-index](/images/fsm-design/non_index_summary.png)
 
 使用 XST 综合上面的 index one-hot + reverse case 风格的 FSM，结果 XST 并没有识别出 FSM，而 Synplify 我没有破解版本，只能作罢 =.=
 
 虽然 XST 没有识别出 non-index 的 FSM，但是 Modelsim 是可以识别出来的，可以在 Modelsim 中查看最终综合出来的 FSM 如下：
 
-![diagram](/images/fsm-design/state-diagram.png)
+![diagram](/images/fsm-design/state_diagram.png)
 
 补上普通的 one-hot + case 的模板，这个模板是可以被 XST 识别出来的：
 
@@ -376,8 +362,6 @@ non-index one-hot style:
         end
     end
 
-========================分割线=============================
-
 ### Safe FSM
 
 所谓 “安全” 的状态机，就是说即使因为某些意外原因，状态机跑飞了，仍然可以自动回复到正常状态。
@@ -419,6 +403,7 @@ non-index one-hot style:
 
     比如一个 FSM，有 4 个状态，分别是 IDLE、S1、S2、S3，那么额外定义一个 ERROR 状态机的框图如下：
 
+        #!verilog
         parameter   [4:0]   IDLE  = 5'd0,
                             S1    = 5'd1,
                             S2    = 5'd2,
@@ -427,6 +412,7 @@ non-index one-hot style:
 
     在每个 case item 中，最后添加一个 else 分支且 `NS[ERROR] = 1'b1`，并且多加一个 case item
 
+        #!verilog
         CS[ERROR]: begin
             if (restart) NS[IDLE] = 1'b1;
         end
@@ -435,6 +421,7 @@ non-index one-hot style:
 
     在状态定义时，不用显式地定义一个 ERROR 状态，而是用全 0 状态表示 ERROR 状态：
 
+        #!verilog
         parameter   [4:1]   IDLE  = 5'd1,
                             S1    = 5'd2,
                             S2    = 5'd3,
@@ -442,6 +429,7 @@ non-index one-hot style:
 
     多加一个 case item：
 
+        #!verilog
         ~|CS: begin
             if(restart) NS[IDLE] = 1'b1;
         end
@@ -456,6 +444,7 @@ non-index one-hot style:
 
 1. 如果使用 “非 index one-hot + 非 reverse case” 的方法，那么在第二个 always block 中，在 case 前给 NS 一个默认值（如下）
 
+        #!verilog
         NS = 8'bx;
     
     这是个很有用的小技巧，它可以帮助我们在综合前发现状态是否完备：如果状态完备，则在下面的 `case` 中会给 `NS` 合适的值；如果状态不完备，则状态机会进入错误状态，输出不定，仿真时可以很快的发现。而且，综合工具对于 `x` 采取的态度是 `don't care`，综合时会自动将其忽略，生成的电路最简洁。
@@ -464,18 +453,21 @@ non-index one-hot style:
 
     + NS 必须赋值为全 0：
 
+            #!verilog
             NS = 8'b0;
 
     + 使用 synopsys 综合指令
 
         一般的原则是尽量不要使用综合指令，这里是个特殊情况。
 
+            #!verilog
             // synopsys full-case parallel-case
 
     + default 分支
 
         使用了综合指令，则 default 分支在综合时就没有必要，但是仿真器并不能识别综合指令，所以在行为仿真的时候仍然需要 default 分支，所以可以用下面的方法：
 
+            #!verilog
             // synopsys translate-off
             default: $display("FSM is dead!");
             // synopsys translate-on
@@ -539,19 +531,17 @@ FSM 设计：一共有 4 个状态(IDLE、S1、S2、S3)，只有一个输入(`ju
 
 程序：
 
-[状态机源文件 fsm.v](https://github.com/guqian110/guqian110.github.io/blob/master/files/fsm.v)
+[状态机源文件 fsm.v](/files/fsm.v)
 
-[测试平台 testbench tb-fsm.v](https://github.com/guqian110/guqian110.github.io/blob/master/files/tb-fsm.v)
+[测试平台 testbench tb-fsm.v](/files/tb_fsm.v)
 
 仿真结果：使用 `NS` 判断，结果如下图，可以看到，当 `CS` 发生变化时，输出同时改变。
 
-![case ns](/images/fsm-design/case-ns.png)
+![case ns](/images/fsm-design/case_ns.png)
 
 使用 `CS` 判断，结果如下图，可以看到，当 `CS` 发生变化时，输出变化相对于状态变化延时一个时钟周期。
 
-![case ns](/images/fsm-design/case-cs.png)
-
-<br>
+![case ns](/images/fsm-design/case_cs.png)
 
 ## Ref
 

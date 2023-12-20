@@ -31,7 +31,6 @@ Summary: 学习 Doxverilog。
 [v2html]: http://www.burbleland.com/v2html/v2html.html
 
 ## Doxverilog
-* * *
 
 > Doxverilog  is a nativ verilog parser (Verilog 2001) for Doxygen. After installing this patch you can documentate your verilog project  similar to VHDL in Doxygen.
 > Patch against the doxygen-1.7.0 version. 
@@ -161,9 +160,6 @@ Doxverilog基于 Doxygen ，只是额外添加了对 Verilog 语言的支持。�
     end
     
     endmodule
-
-
-<br>
 
 ## Ref
 

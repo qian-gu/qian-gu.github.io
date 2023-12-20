@@ -7,8 +7,8 @@ Author: Qian Gu
 Summary: 总结 FPGA 的学习经历，温故而知新。
 
 ## FPGA 是什么
-* * *
-FPGA 是 PLD 家族中的一员，要说清楚什么是 FPGA，就不得不说一说 PLD 。（**以下内容来自wikipedia**）
+
+FPGA 是 PLD 家族中的一员，要说清楚什么是 FPGA，就不得不说一说 PLD。（**以下内容来自wikipedia**）
 
 ### PLD & ASIC
 
@@ -30,7 +30,7 @@ FPGA 是 PLD 家族中的一员，要说清楚什么是 FPGA，就不得不说�
 
 #### ROM as PLD
 
-在 PLD 器件被发明之前，就已经有人 *将 [ROM][ROM] 以 PLD 的概念来运用*，用 ROM 芯片来充当一些输入性的组合逻辑（combinatorial logic）的函数发生器。ROM 有 m 个地址线，则有 `n = 2^m` 个输出结果，这和布尔逻辑是一一对应的，所以如果把 ROM 的地址线当作相互之间没有关系的输入，则相应的输出就可以实现不同的函数。
+在 PLD 器件被发明之前，就已经有人将 [ROM][ROM] 以 PLD 的概念来运用，用 ROM 芯片来充当一些输入性的组合逻辑（combinatorial logic）的函数发生器。ROM 有 m 个地址线，则有 `n = 2^m` 个输出结果，这和布尔逻辑是一一对应的，所以如果把 ROM 的地址线当作相互之间没有关系的输入，则相应的输出就可以实现不同的函数。
 
 早期的 Mask ROM 存储数据的方式是使用内部的硬件电路，所以只能在出厂时就写入数据，而且以后不能更改。这就导致了一系列缺点：
 
@@ -153,24 +153,21 @@ Xilinx 公司的共同创世人 [Ross Freeman][Freeman] 和 [Bernard Vonderschmi
 [Freeman]: http://en.wikipedia.org/wiki/Ross-Freeman
 [Vonderschmitt]: http://en.wikipedia.org/wiki/Bernard-Vonderschmitt
 
-<br>
-
 ## 为什么选择 FPGA
-* * *
 
 ### FPGA vs ASIC
 
-ASIC 的优点：
+**ASIC 的优点：**
 
 ASIC 在批量生产时与通用集成电路相比具有体积更小、功耗更低、可靠性提高、性能提高、保密性增强、成本降低 。
 
-ASIC 的缺点：
+**ASIC 的缺点：**
 
 设计周期最长，设计成本贵，设计费用最高，适合于批量很大或者对产品成本不计较的场合。
 
 至于 FPGA 的优点和缺点完全就是 ASIC 的取反 。FPGA 一般来说比专用集成电路（ASIC）的速度要慢，无法完成更复杂的设计，并且会消耗更多的电能。但是，FPGA 具有很多优点，比如可以快速成品，而且其内部逻辑可以被设计者反复修改，从而改正程序中的错误，此外，使用 FPGA 进行除错的成本较低 。在一些技术更新比较快的行业，FPGA几乎是电子系统中的必要部件，因为在大批量供货前，必须迅速抢占市场，这时FPGA方便灵活的优势就显得很重要。这也是 FPGA 能够发展起来的原因，市场是不会允许一个毫无优势的技术发展到今天这种地步的 。
 
-个人认为两者不是对立的，由于各自的特点，它们有各自适用的环境，不能一棒子打死，否定其中一个 。事实上更多的情况是：设计的开发是在普通的FPGA上完成的，然后将设计转移到一个类似于专用集成电路的芯片上 。
+两者不是对立的，由于各自的特点它们有各自适用的环境，不能一棒子打死，否定其中一个。事实上更多的情况是：设计开发是在普通的 FPGA 上完成的，然后将设计转移到一个类似于 ASIC 的芯片上 。
 
 ### FPGA vs CPLD
 
@@ -183,10 +180,7 @@ CPLD 和 FPGA 另外一个区别是大多数的 FPGA 含有高层次的内置模
 
 CPLD 与 FPGA 之间结构、原理上的差别导致两者应用上的差别 。考虑成本、性能要求等因素，应该根据实际情况选择 。
 
-<br>
-
 ## Xilinx & Altera
-* * * 
 
 FPGA 的制造商主要是 Xilinx 和 Altera 两家，他们合起来市场占有率达到了 80% 之多 。两家是 FPGA 技术的领导者也是长期竞争对手 。
 
@@ -200,10 +194,8 @@ FPGA 的制造商主要是 Xilinx 和 Altera 两家，他们合起来市场占�
 
 [Xilinx]: http://en.wikipedia.org/wiki/Xilinx
 [Altera]: http://en.wikipedia.org/wiki/Altera
-<br>
 
 ## Xilinx FPGA Architecture（架构）
-* * *
 
 FPGA 需要反复烧写，所以不能像 ASIC 一样通过固定的与非门来完成，只能采用一种易于反复配置的结构，查找表就可以很好的满足这一要求。目前主流 FPGA 都是采用了基于 SRAM 工艺的查找表结构（军品和宇航级 FPGA 采用 Flash或者熔丝/反熔丝工艺），通过烧写文件改变查找表内容的方法来实现对 FPGA 的重复配置。
 
@@ -241,10 +233,7 @@ CLB（Configurable Logic Block）是 FPGA 内的基本逻辑单元，Xilinx FPGA
 
 Xilinx 主流的 FPGA 主要有A系列、K系列、V系列、Spartan系列，如今还有最新的 Zynq 系列，官网上有详细介绍 。
 
-<br>
-
 ## 开发流程
-* * *
 
 FPGA 的开发流程如下图所示：
 
@@ -279,8 +268,6 @@ FPGA 的开发流程如下图所示：
 7. 下载，在线调试
 
     将设计下载到芯片中调试。
-
-<br>
 
 ## 参考
 

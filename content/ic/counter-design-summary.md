@@ -7,7 +7,6 @@ Author: Qian Gu
 Summary: 总结 FPGA 中的计数器设计
 
 ## Introduction
-* * *
 
 计数器 在数字电路设计 和 计算机程序设计 中都应用非常广泛，其功能顾名思义，就是用来计数。这里只讨论数字电路设计中的计数器。
 
@@ -16,8 +15,6 @@ Summary: 总结 FPGA 中的计数器设计
 计数器 [counter][wiki] 从本质上来说也是寄存器，不过它是在预先设定好的状态序列中转移，尽管计数器是寄存器的一种特殊形式，通常还是以不同的名称来加以区分。
 
 [wiki]: http://en.wikipedia.org/wiki/Counter
-
-<br>
 
 ## Type
 
@@ -50,7 +47,6 @@ Summary: 总结 FPGA 中的计数器设计
 下面分别讨论各种计数器的特点和 HDL 实现。
 
 ## Implement
-* * *
 
 ### Binary Counter
 
@@ -311,8 +307,6 @@ Gray 码和普通的二进制编码相比，优势就是它相邻数字之间只
 
 [gray code]: http://en.wikipedia.org/wiki/Gray-code
 [paper1]: http://www.sunburst-design.com/papers/CummingsSNUG2001SJ-AsyncClk.pdf
-
-<br>
 
 ## Reference
 

@@ -8,7 +8,6 @@ Summary: 总结 FPGA 中跨时钟域的设计
 
 
 ## Problem
-* * *
 
 在前面一篇总结 [Latch V.S. Flip-flop][blog1] 的博文中，已经解释了 flip-flop 的一些参数：建立时间 `setup time`、保持时间 `hold time`、恢复时间 `recovery time`、撤销时间 `removal time`。
 
@@ -40,10 +39,7 @@ Summary: 总结 FPGA 中跨时钟域的设计
 [wp-01082]: http://www.altera.com.hk/literature/wp/wp-01082-quartus-ii-metastability.pdf
 [paper1]: http://www.sunburst-design.com/papers/CummingsSNUG2001SJ-AsyncClk.pdf
 
-<br>
-
 ## Synchronous Design
-* * *
 
 多时钟域导致的亚稳态的问题的根本原因就是：信号和时钟是异步的，也就是设计不是同步设计 `Synchronous Design`。
 
@@ -75,10 +71,7 @@ Summary: 总结 FPGA 中跨时钟域的设计
 
 下面提到的所有方法，就是同步化思想的应用，其核心目的就是将本时钟域外的 **异步信号同步化**。
 
-<br>
-
 ## Solution
-* * *
 
 ### Solution 1: Daul Rank Synchronizer
 
@@ -341,11 +334,7 @@ synchronizer 需要花费 1～2 个时钟周期来完成同步，所以粗略的
 
 虽然还有其他类型的 synchronizer，但是这 3 种基本上就可以解决设计中遇到的多数问题了。
 
-<br>
-
 *synchronizer 仅适用于简单的数据跨时钟域传输的同步，除了简单的信号之外，还有数据、地址、控制总线信号等也要跨时钟域。对于这些需求，可以使用其他的工具，比如握手协议、FIFO 等。*
-
-<br>
 
 ### Solution 2: Handshaking
 
@@ -414,11 +403,7 @@ synchronizer 需要花费 1～2 个时钟周期来完成同步，所以粗略的
 
 + partial 和 full 的本质区别不在于synchronizer 的类型和握手信号的多少，而在于握手的方式。 partial 不用再等待对方的回答，就继续进行自己的下一步操作，而 full 必须等到对方的回复才进行下一步的操作，所以从某种意义上，full 方式才是真正的“握手”，而 partial 并不符合 “握手” 的意思，毕竟根本不管对方的反应，自顾自地挥手叫哪门子的握手 =.=
 
-<br>
-
 *在许多应用中，跨时钟域传送的不只是简单的信号，数据总线、地址总线、控制总线都会同时跨域传输。因为 synchronizer 需要花费的时间是不确定的（1 or 2 个时钟周期），所以对于这些多 bit 的数据，synchronizer 无法完成同步功能，通常采用其他的方法，比如使用 FIFO。*
-
-<br>
 
 ### Solution 3: Datapath Design
 
@@ -480,13 +465,9 @@ enable signal in order to load a data value into the register. If both the load 
 
 ![datapath timing](/images/the-clock-design-in-fpga-3-multiasynchronous-clock-design/datapath-timing.png)
 
-<br>
-
 *如果发送端的数据速率很快/无法控制发送端发送数据的速度，那么就有可能无法满足握手机制中要求数据保持稳定这一要求，这时候这种方法就不再适用，而应该采用其他的方法，比如 FIFO。*
 
 [art]: http://www.amazon.com/The-Art-Hardware-Architecture-Techniques/dp/1461403960
-
-<br>
 
 ### Solution 4: Advanced Datapath Design
 
@@ -518,8 +499,6 @@ FIFO 的目的在于解决数据跨时钟域传输的问题，但是在实现FIF
 
 *关于跨时钟域 [papaer1][paper1] 中还有一些其他方面的技巧，可以帮助我们更好的实现设计。*
 
-<br>
-
 ### Design Partitioning
 
 **Guideline:**
@@ -544,8 +523,6 @@ FIFO 的目的在于解决数据跨时钟域传输的问题，但是在实现FIF
 
 ![partitioning](/images/the-clock-design-in-fpga-3-multiasynchronous-clock-design/partitioning.png)
 
-<br>
-
 ### Clock Name Conventions
 
 **Guideline:**
@@ -560,10 +537,7 @@ FIFO 的目的在于解决数据跨时钟域传输的问题，但是在实现FIF
 
 使用了这样的策略后，整个设计团队的攻城狮们都可以很方便地确定某个信号是否为异步信号，如何处理。当时有个攻城狮没有按照这种策略，使用了自己的命名方式，在一次会议之后，大家墙裂建议他修改命名，结果也证明修改之后遇到的问题、出错的概率都小了很多。
 
-<br>
-
 ## Gated Clock
-* * *
 
 虽然 FPGA 可以用来为 ASIC 搭建原型，但是一些 ASIC 中的技术并不适用于 FPGA，比如 gated clock。一般也没有必要在 FPGA 中模拟 ASIC 的低功耗优化。事实上，由于 FPGA 时钟资源的的粗颗粒度性，并不是总能模拟成功。
 
@@ -632,10 +606,7 @@ FIFO 的目的在于解决数据跨时钟域传输的问题，但是在实现FIF
     
     + 如果器件没有提供这种端口，那么使用这种技术虽然可以消除 gated clock，但是付出的代价是增加了 data path 的 delay。
 
-<br>
-
 ## Summary
-* * *
 
 以上，就是一些在多时钟域设计中处理异步数据的常用方法，总结如下：
 
@@ -652,8 +623,6 @@ FIFO 的目的在于解决数据跨时钟域传输的问题，但是在实现FIF
 6. 采用良好的命名习惯，如前缀的方式，可以帮助设计
 
 7. 注意 ASIC 和 FPGA 中对时钟信号的不同处理方法
-
-<br>
 
 ## Reference
 

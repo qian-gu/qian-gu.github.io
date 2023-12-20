@@ -21,12 +21,9 @@ Summary: 总结 Latch 和 Flip-Flop
 
 [wiki]: http://en.wikipedia.org/wiki/Flip-flop-(electronics
 
-<br>
-
 [TOC]
 
 ## History
-* * *
 
 *翻译自 [wiki][wiki]:*
 
@@ -36,10 +33,7 @@ Summary: 总结 Latch 和 Flip-Flop
 
 根据一个 JPL 的工程师，P. L. Lindley介绍，Montgomery Phister 于 1954 年在 UCLA 的 computer design 的课程上第一次对触发器进行了分类的讨论（RS、D、T、JK），然后在他的书 Logical Design of Digital Computers 中也进行了讨论。Lindley 当时在 Hughes Aircraft 的 Eldred Nelson 手下工作，而Nelson 命名了 JK 触发器。其他的名字则是 Phister 命名的。Lindley 解释说他是从 Nelson 口中得知 JK 触发器的故事的，当时 Hughes Aircraft 使用的触发器都是 JK 触发器。在设计逻辑系统时，Nelson 给触发器的输入命名为 A&B、C&D、E&F、G&H、J&K。在 1953 年 Nelson 申请专利时，采用了 J&K 的命名方案。
 
-<br>
-
 ## Implementation
-* * *
 
 > Flip-flops can be either simple (transparent or asynchronous) or clocked (synchronous); the transparent ones are commonly called latches. The word latch is mainly used for storage elements, while clocked devices are described as flip-flops.
 
@@ -166,10 +160,7 @@ JK FF 的特点和 SR latch 类似，可以将 J 看作是 S，K 看作是 R，�
 
 可以看到 TFF 有 1/2 分频的作用，这一特点在很多电路中得到了应用。
 
-<br>
-
 ## Timing considerations
-* * *
 
 ### Metastability
 
@@ -225,10 +216,7 @@ flip-flop 还有一个参数叫做 clock-to-output delay (common symbol in data 
 
 当用同一时钟来驱动级联的 flip-flop (比如移位寄存器 shift register)时，必须保证前一级的 tco 要大于后一级的 th。这是因为必须要保证前一级的数据能够正确移位到后一级中。当有效时钟沿到来时，前后两级的 ff 在同时变化，采样前一级的输出作为本级的输入，然后经过 tco 输出更新的值。当后一级 ff 在 tsu 到 th 段内采样时，必须保证前一级的输出保持不变，也就是说前一级 ff 的响应速度不能太快，至少要等后一级正确采样完成之后才能变化，即 `tco > th`。如果采用物理构造完全相同的 ff，那么通常是可以保证这一条件的。
 
-<br>
-
 ## in FPGA
-* * *
 
 latch 和 flip-flop 的特点决定了它们各自的应用场景
 
@@ -419,8 +407,6 @@ latch 和 flip-flop 的特点决定了它们各自的应用场景
 锁存器 latch 是一种基本电路单元,会影响到电路的时序性能,应该尽量避免使用,但出现锁存器造成设计和原始意图不符的情况,则是由于设计人员代码输入不正确造成的。
 
 [verilog]: http://book.douban.com/subject/3522845/
-
-<br>
 
 ## Reference
 

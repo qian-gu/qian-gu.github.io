@@ -29,12 +29,12 @@ handling of those problems.
 > 
 >  -- Burks, Goldstine, and von Neumann, 1947
 
-`Simplicity of the equipment` 这个设计哲学不仅适用于 1950 年代也适用于现代计算机。本章的内容就是学习一种遵循这个哲学的 ISA —— `RISC-V`，主要内容如下，
+**Simplicity of the equipment** 这个设计哲学不仅适用于 1950 年代也适用于现代计算机。本章的内容就是学习一种遵循这个哲学的 ISA —— `RISC-V`，主要内容如下，
 
 + 硬件中如何体现这一哲学
 + 高层编程语言和底层原语之间如何映射
 
-!!! note
+!!! info
     如原文所说，每个小节围绕一个指令子集，讲清楚设计原理和高层编程语言的关系，这种 top-down, step-by-step 的方式可以做到真正的深入浅出，让你不仅知其然，还知其所以然，所谓圣经不是浪得虚名。很多资料（特别是国内的教科书）不注重知识背后的原理和方法，采用灌输式的方法，很容易打击学习者的兴趣。
 
 ## Three Principles of Hardware Design
@@ -49,7 +49,7 @@ handling of those problems.
 
     高层编程语言中的变量和硬件中的寄存器的一个主要区别就是：寄存器数量是有限的，一般为 32 个。把寄存器限制在 32 个原因就是本条设计原则：越小越快。道理很显然，寄存器越多，mux 就越复杂时钟频率也就越低。
 
-    这个原则并不是绝对的，31 个寄存器也不见得就比 32 个寄存器更快（不要钻牛角尖抬杠），但是这个原则依然非常重要。计算机设计者必须平衡好一组矛盾：程序希望寄存器越多越好，而硬件希望寄存器少一些以提高时钟频率。RISC-V 使用 32 个而不是 31 个寄存器的另一个原因是指令格式中的 bit 数正好可以寻址 32 个寄存器。
+    这个原则并不是绝对的，31 个寄存器也不见得就比 32 个寄存器更快（不要钻牛角尖抬杠），但是这个原则依然非常重要。计算机设计者必须平衡好一组矛盾：程序希望寄存器越多越好，而硬件希望寄存器少一些以提高时钟频率。RISC-V 使用 32 个而不是 31 个寄存器的另一个原因是指令格式中的 bit 数（rs 和 rd 使用 5bit编码）正好可以寻址 32 个寄存器。
 
     !!! note
         因为寄存器的数量远小于程序中的变量数，所以编译器会将常用的变量放在寄存器中，不常用的变量放在 memory 中，有需要时再从 memory 中读到寄存器中使用。把不常用的变量存回到 memory 的过程叫做寄存器溢出 `spilling`。
@@ -75,25 +75,25 @@ handling of those problems.
 
 RISC 采用的是 little-endian 类型。
 
-!!! note
+!!! warning
     很多体系结构中，要求 word 的地址必须是 4Byte 对齐，doubleword 的地址必须是 8Byte 对齐。RISC-V 和 x86 没有对齐约束，但是 MIPS 有约束。
 
 许多程序中都会用到常数，比如地址自增 1 来自动指向数组中的下一个元素。如果每次都从 memory 中用 load 指令来搬运这个常数则显得很低效，解决方法就是把常数放在指令中。常数作为操作数是非常常见的，实际上，`addi` 是 RISC-V 中最常见的指令。而常数 0 更加重要，它可以提供各种用法来简化指令集。比如，想得到一个数的相反数，则用 0 减去它即可。所以 RISC-V 用专用的寄存器 `x0` 来存储常数 0。（**common case fast** 哲学的体现）
 
 ## Signed and Unsigned Numbers
 
-参考以前的一篇总结：[原码、反码、补码](https://qiangu.cool/posts/cs/signed-number-representations.html)
+参考以前的一篇总结：[原码、反码、补码](https://qian-gu.github.io/posts/cs/signed-number-representations.html)
 
 ## Addressing Modes
 
-RISC-V 一共有 4 种寻址模式，
+RISC-V 一共有 4 种寻址模式：
 
 | 寻址类型 | 含义 |
 | ------ | ---- |
-| **Immediate addressing，立即数寻址** | 操作数是常数，保存在指令当中 |
-| **Register addressing，寄存器寻址** | 操作数保存在寄存器中 |
-| **Base/displacement addressing，基址寻址** | 操作数保存在 memory 中，其地址为寄存器和指令中常数相加的结果 |
-| **PC-relative addressing，PC 相对寻址** | 分支指令中，跳转地址为 PC 和指令中的常数相加的结果 |
+| **Immediate addressing 立即数寻址** | 操作数是常数，保存在指令当中 |
+| **Register addressing 寄存器寻址** | 操作数保存在寄存器中 |
+| **Base/displacement addressing 基址寻址** | 操作数保存在 memory 中，其地址为寄存器和指令中常数相加的结果 |
+| **PC-relative addressing PC 相对寻址** | 分支指令中，跳转地址为 PC 和指令中的常数相加的结果 |
 
 ## Fallacies and Pitfalls
 
@@ -132,14 +132,14 @@ x86 指令的演变用事实说明，在保持向后兼容神圣不可侵犯的�
 > 
 >   -- Robert Browning, Andrea del Sarto, 1855
 
-stored-program 计算机的两大准则，
+stored-program 计算机的两大准则：
 
 1. 指令和数据都是数字
 2. 使用可以修改的存储器
 
 基于这两个概念，一台计算机上就可以运行不同的程序，应用在各个领域。
 
-为机器选择指令集需要在指令数量、单条指令的运行 cycle 数、时钟频率等因素之间做精妙的平衡。本章提供了 3 条准则来指导指令集的设计者如何做一些 tricky 的折中，
+为机器选择指令集需要在指令数量、单条指令的运行 cycle 数、时钟频率等因素之间做精妙的平衡。本章提供了 3 条准则来指导指令集的设计者如何做一些 tricky 的折中：
 
 1. Simplicity favors regularity.
 2. Smaller is faster.
@@ -156,4 +156,4 @@ RISC-V 中每个类型的指令都有对应的编程语言中的元素，
 | 条件分支指令 | if/for 等语句 |
 | 无条件分支指令 | 函数调用/返回，case/switch 语句 |
 
-这些指令并不是平等的，有一小部分指令出现的频率非常高。指令出现概率的不同在 datapath, control, pipeline 中扮演着非常重要的角色。
+这些指令并不是平等的，有一小部分指令出现的频率非常高。指令出现概率的不同在 datapath，control，pipeline 中扮演着非常重要的角色。

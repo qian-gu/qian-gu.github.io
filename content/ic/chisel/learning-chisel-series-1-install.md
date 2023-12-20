@@ -137,8 +137,6 @@ sudo apt-get install gtkwave
 
 至此，chisel 的环境就算全部 ok 了。
 
-<br>
-
 ## Ref
 
 [Installing sbt on Linux][sbt-install]

@@ -14,10 +14,7 @@ PC 世界永恒不变的信条就是提高性能，其中一个方法就是提�
 
 [sta1]: http://guqian110.github.io/pages/2015/03/18/static-timing-analysis-1-basic.html
 
-<br>
-
 ## Pipeline Intro
-* * *
 
 所谓流水线（pipeline）设计，应该是从汽车工业中的 流水生产线 借鉴过来的说法吧。
 
@@ -31,10 +28,7 @@ PC 世界永恒不变的信条就是提高性能，其中一个方法就是提�
 
 + 如果采用流水设计，那么前后级组合逻辑可以同时工作，就像新的生产线一样
 
-<br>
-
 ## A Simple Example
-* * *
 
 采用流水设计的方法就是：**在较长的组合逻辑路径中插入 DFF，将其分割为几个小的组合逻辑，新的 Tcomb 显然小于原来的 Tcomb，所以系统的时钟频率就可以提高了。**
 
@@ -60,10 +54,7 @@ PC 世界永恒不变的信条就是提高性能，其中一个方法就是提�
 
 显然，采用流水后 Tff 更小，系统能够达到的工作时钟频率也就更高。
 
-<br>
-
 ## Performance Increase from Pipelining
-* * *
 
 下面更加详细地分析一下流水带来的速度性能的提升。
 
@@ -140,10 +131,7 @@ PC 世界永恒不变的信条就是提高性能，其中一个方法就是提�
 
 综上，可以看到，虽然流水可以提高系统的工作频率和吞吐率，但是它付出的代价是面积和功耗的增加，这也是**速度和面积之间相互转化**的体现。
 
-<br>
-
 ## DXL Instruction
-* * *
 
 [THE ART OF HARDWARE ARCHITECTURE][book1] 中还介绍了 DXL 指令集的实现，简单记录一下笔记，详细过程还是看书吧。
 
@@ -181,10 +169,7 @@ DXL 指令是 32 位的 RISC 微处理器，每条指令最多由 5 个部分组
 
 [book1]: http://www.amazon.com/The-Art-Hardware-Architecture-Techniques/dp/1461403960
 
-<br>
-
 ## Pipelining Principles
-* * *
 
 [THE ART OF HARDWARE ARCHITECTURE][book1] 还总结了流水需要注意的问题：
 
@@ -204,10 +189,7 @@ DXL 指令是 32 位的 RISC 微处理器，每条指令最多由 5 个部分组
 
     解决以上问题的方法就是停止流水线直至风险解除，在流水线中插入多个 “气泡”（缺口）。
 
-<br>
-
 ## Another Example
-* * *
 
 将前面总结的 “在组合逻辑路径中插入 DFF，形成流水” 的思路进一步扩展，可以得到更加上层的流水思想。[Advanced FPGA Design: Architecture, Implementation, and Optimization][book2] 中介绍了一个算法中使用流水的例子，其关键在于 “拆开环路”：
 
@@ -255,8 +237,6 @@ DXL 指令是 32 位的 RISC 微处理器，每条指令最多由 5 个部分组
 可以看到，throughout 的提升是以面积为代价的。
 
 [book2]: http://www.amazon.com/Advanced-FPGA-Design-Architecture-Implementation/dp/0470054379/ref=sr-1-1?s=books&ie=UTF8&qid=1432020884&sr=1-1&keywords=advanced+fpga+design
-
-<br>
 
 ## Ref
 

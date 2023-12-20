@@ -14,7 +14,6 @@ Summary: 总结 case 的用法和需要注意的细节
 [book1]: http://www.phei.com.cn/module/goods/wssd-content.jsp?bookid=38848
 
 ## Def
-* * *
 
 ### Syntax:
 
@@ -95,8 +94,6 @@ reverse case 是 case 的一个变形，也叫做 `case if true`。这种风格�
 
 [blog1]: http://guqian110.github.io/pages/2014/06/05/fsm-design.html
 
-<br>
-
 下面讨论 full-case 和 parallel-case 的相关问题。很多人都会使用这两个综合指令，他们的理由是：
 
 > + "full-case parallel-case" makes my designs smaller and faster.
@@ -109,10 +106,7 @@ reverse case 是 case 的一个变形，也叫做 `case if true`。这种风格�
 
 > An alternate title for this paper could be: "How to add $200,000 to the cost and 3-6 months to the schedule of your ASIC design without trying!"
 
-<br>
-
 ## "full" case statement
-* * *
 
 "full" 的意思就是 expression 的任何取值都有一个 item/default 分支与其对应，否者就不是 "full case"。
 
@@ -295,10 +289,7 @@ behavior of the case statement.
 
     我们使用 full case 指令的目的就是为了避免生成意外的 latch，但是这种方法有以上的各种弊端。其实还有一种更加简单的方法来避免 latch，就是前面说的，**在 case 前，给所有的输出赋一个默认值。**
 
-<br>
-
 ## "parallel" case statement
-* * *
 
 "parallel" 的意思就是 expression 的取值每次有且只有一个 item 与其对应，否则就不是 "parallel" case，而匹配的 items 称为 "overlapping" case items。
 
@@ -342,10 +333,7 @@ behavior of the case statement.
 >
 > **Guideline:** Change the case statement code, as outlined in the above coding guidelines, whenever the synthesis tool reports that the case statement is not parallel (whenever the synthesis tool reports "no" for "parallel-case")
 
-<br>
-
 ## Synthesis coding styles
-* * *
 
 在总结了 full-parallel-case 之后，Cummings 大神给出了建议：
 
@@ -367,10 +355,7 @@ devices!
 
 甚至建议要开除写 full-parallel-case 的员工...
 
-<br>
-
 ## Summary
-* * *
 
 总结一下所有的 guidelines：
 
@@ -398,8 +383,6 @@ devices!
 > **Guideline:** Educate (or fire) any employee or consultant that routinely adds "full-case parallel-case" to all case statements in their Verilog code.
 > 
 > **Conclusion:** "full-case" and "parallel-case" directives are most dangerous when they work! It is better to code a full and parallel case statement than it is to use directives to make up for poor coding practices.
-
-<br>
 
 ## Ref
 

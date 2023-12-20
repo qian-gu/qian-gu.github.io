@@ -8,7 +8,6 @@ Series: Learn Arduino
 Summary: 学习 Arduino，#3 通过 Ethernet & Serial Port 登录到 Galileo 上的 Linux 系统
 
 ## Linux on Galileo Board
-* * *
 
 Galileo 不是简单的 Arduino 板子，实际上它运行着一个 Linux 操作系统。把它看作是 “兼容 Arduibo 接口的板子” 或许更合适一些。
 
@@ -16,14 +15,9 @@ Galileo 板子上容量为 8 MB 的 SPI Flash 中已经烧写了一个精简版�
 
 Galileo 也支持从 SD 卡启动系统，并且 Intel 提供了一个基于 Yocto 项目，已经制作好的完整版 Linux 系统。当精简版系统不能满足我们的要求时（添加外设等），我们可以下载这个完整版系统镜像，烧录到 SD 卡中，并从 SD 卡中启动即可。（也可以自己基于 Yocto 项目按照自己的需求制作系统镜像）
 
-<br>
-
 *我们并不仅仅满足于通过 Arduino IDE 对 Galileo 进行操作，放着一个操作系统，为什么不去使用呢：-P 那么怎么才能登录到这个 Linux 系统中呢？*
 
-<br>
-
 ## Using Ethernet
-* * *
 
 Intel 论坛的一个帖子列举了几种登录到 Galileo Linux 的方法
 
@@ -93,7 +87,7 @@ Galileo 默认是不开启 `Lan` 的，也不开启 `Telnet` 服务，所以我�
 
 1. 网线直连 PC 和 Galileo，设置 PC 的 IP 地址为 `link-local only`
 
-    ![pc-ethernet-config](/images/learning-arduino-series-3-intel-galileo-linux/pc-ethernet-config.png) 
+    ![pc-ethernet-config](/images/learning-arduino-series-3-intel-galileo-linux/pc_ethernet_config.png) 
 
 2. 给 Galileo 供电
 
@@ -105,7 +99,7 @@ Galileo 默认是不开启 `Lan` 的，也不开启 `Telnet` 服务，所以我�
 
 1. 打开 IDE 的 serial monitor，可以看到 Galileo 的 ethernet 配置信息
 
-    ![galileo-ethernet-quary](/images/learning-arduino-series-3-intel-galileo-linux/galileo-ethernet-quary.png)
+    ![galileo-ethernet-quary](/images/learning-arduino-series-3-intel-galileo-linux/galileo_ethernet_quary.png)
     
 2. 查看 PC 的网络配置
 
@@ -114,7 +108,7 @@ Galileo 默认是不开启 `Lan` 的，也不开启 `Telnet` 服务，所以我�
     
     查询结果
     
-    ![pc-ethernet-quary](/images/learning-arduino-series-3-intel-galileo-linux/pc-ethernet-quary.png)
+    ![pc-ethernet-quary](/images/learning-arduino-series-3-intel-galileo-linux/pc_ethernet_quary.png)
 
 3. 打开 PC 的终端 Terminal，使用 telnet 登录
 
@@ -123,16 +117,13 @@ Galileo 默认是不开启 `Lan` 的，也不开启 `Telnet` 服务，所以我�
         
     登录结果，如图
         
-    ![pc-ethernet-login](/images/learning-arduino-series-3-intel-galileo-linux/pc-telnet-login.png)
+    ![pc-ethernet-login](/images/learning-arduino-series-3-intel-galileo-linux/pc_telnet_login.png)
     
     可以看到，这个精简版的 Linux 系统是不支持 Python 的。
         
 [Connecting to Galileo via Linux Console]: https://communities.intel.com/thread/46335
 
-<br>
-
 ## Using UART
-* * *
 
 ### About serial port
 
@@ -179,21 +170,21 @@ Galileo 默认是不开启 `Lan` 的，也不开启 `Telnet` 服务，所以我�
 
     上电后，`grub` 引导启动哪个系统
 
-    ![gtkterm boot information](/images/learning-arduino-series-3-intel-galileo-linux/gtkterm-boot-information.png)
+    ![gtkterm boot information](/images/learning-arduino-series-3-intel-galileo-linux/gtkterm_boot_information.png)
 
-    ![gtkterm grub](/images/learning-arduino-series-3-intel-galileo-linux/gtkterm-grub.png)
+    ![gtkterm grub](/images/learning-arduino-series-3-intel-galileo-linux/gtkterm_grub.png)
     
 2. 登录到 SPI Flash 中的 Linux 中
 
     如图，这个精简版的系统不支持 `python`
     
-    ![gtkterm login spi](/images/learning-arduino-series-3-intel-galileo-linux/gtkterm-login-spi.png)
+    ![gtkterm login spi](/images/learning-arduino-series-3-intel-galileo-linux/gtkterm_login_spi.png)
 
 3. 登录到 mirco-SD card 中的 Linux 中
 
     如图，SD 卡中的系统是支持 `python` 的
     
-    ![gtkterm login spi](/images/learning-arduino-series-3-intel-galileo-linux/gtkterm-login-sd-card.png)
+    ![gtkterm login spi](/images/learning-arduino-series-3-intel-galileo-linux/gtkterm_login_sd_card.png)
 
 ### Windows Platform
 
@@ -219,26 +210,23 @@ Galileo 默认是不开启 `Lan` 的，也不开启 `Telnet` 服务，所以我�
 
     上电后，`grub` 引导启动哪个系统
 
-    ![gtkterm boot information](/images/learning-arduino-series-3-intel-galileo-linux/putty-boot-information.png)
+    ![gtkterm boot information](/images/learning-arduino-series-3-intel-galileo-linux/putty_boot_information.png)
 
-    ![gtkterm grub](/images/learning-arduino-series-3-intel-galileo-linux/putty-grub.png)
+    ![gtkterm grub](/images/learning-arduino-series-3-intel-galileo-linux/putty_grub.png)
     
 2. 登录到 SPI Flash 中的 Linux 中
 
     如图，这个精简版的系统不支持 `python`
     
-    ![gtkterm login spi](/images/learning-arduino-series-3-intel-galileo-linux/putty-login-spi.png)
+    ![gtkterm login spi](/images/learning-arduino-series-3-intel-galileo-linux/putty_login_spi.png)
 
 3. 登录到 mirco-SD card 中的 Linux 中
 
     如图，SD 卡中的系统是支持 `python` 的
     
-    ![gtkterm login spi](/images/learning-arduino-series-3-intel-galileo-linux/putty-login-sd-card.png)
-
-<br>
+    ![gtkterm login spi](/images/learning-arduino-series-3-intel-galileo-linux/putty_login_sd_card.png)
 
 ## Another method
-* * *
 
 如果你觉得插网线、配置 IP 地址太麻烦，甚至懒得自己 DIY 串口线，也没有钱去买一个，别担心，因为 “天空飘来五个字，这都不是事～” 因为你可以借鉴下面这位大神的方法，只需要像下载普通 sketch 一样，将他提供的 sketch 下载到 Galileo 中就可以了，然后通过 IDE 的 serial monitor 就可以登录到 Linux 系统中：
 
@@ -262,9 +250,6 @@ Galileo 默认是不开启 `Lan` 的，也不开启 `Telnet` 服务，所以我�
     // result is home directory
 
 [poor man]: (https://communities.intel.com/message/222211)
-
-<br>
-
 
 ## Reference
 

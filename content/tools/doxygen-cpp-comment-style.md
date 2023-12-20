@@ -16,10 +16,7 @@ Summary: 总结基于 Doxygen 的 C++ 注释规则
 
 重新整理排版了一下。写本文的主要目的是备忘，当作快速参考来查。
 
-<br>
-
 ## Doxygen
-* * *
 
 若想用 Doxygen 生成漂亮的文档，我们必须在以下几个地方添加 Doxygen 风格的注释：
 
@@ -43,10 +40,7 @@ Summary: 总结基于 Doxygen 的 C++ 注释规则
 
     对函数的功能、参数、返回值、需要注意的问题、相关说明等进行 detailed description。
 
-<br>
-
 ## C++ Comment Style
-* * *
 
 Doxygen 支持多种注释风格，比如 JavaDoc-like 风格，Qt 风格等。在写 C++ 代码时，我们应该遵守 C++ 的行注释风格，所谓行注释风格，是指一般 C++ 程序员避免使用 C 风格的注释符号 `/* */`，而是使用 3 个连续的 `/` 作为注释的开头。除了这个区别之外，其他部分和 JavaDoc 风格类似：
 
@@ -69,7 +63,6 @@ Doxygen 支持多种注释风格，比如 JavaDoc-like 风格，Qt 风格等。�
 使用 DoxygenToolKit 自动生成的 Lisence 即可。
 
 ## File header
-* * *
 
     #!c++
     /// \file file-name.h
@@ -225,8 +218,6 @@ BUG 命令：
     /// \bug Bug1 to be fixed
     /// \bug Bug2 to be fixed
 
-<br>
-
 **P.S.**
 
 从网上找到一个Doxygen for C 的示例：
@@ -240,8 +231,6 @@ BUG 命令：
 又找到一份注释规范的文档，写的挺好，值得一看。
 
 [C++注释规范](/file/cpp-comment-standard.doc)
-
-<br>
 
 ## Ref
 

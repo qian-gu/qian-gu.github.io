@@ -7,14 +7,10 @@ Author: Qian Gu
 Series: Patterson & Hennessy Notes
 Summary: Patterson and Hennessy 读书笔记，前言 + 第一章
 
-------
-
 写在前面的话：
 
 + [Computer Organization and Design][ph] 俗称 Patterson and Hennessy
 + [Computer Architecture: A Quantitative Approach][hp] 俗称 Hennessy and Patterson
-
-这个系列是整理自以前的读书笔记，更新了一些 RISC-V 的相关内容，温故而知新。
 
 [ph]: https://www.amazon.com/Computer-Organization-Design-RISC-V-Architecture/dp/0128122757
 [hp]: https://www.amazon.com/Computer-Architecture-Quantitative-Approach-Kaufmann/dp/0128119055/
@@ -30,8 +26,6 @@ Summary: Patterson and Hennessy 读书笔记，前言 + 第一章
 
 + 几乎没有汇编/逻辑设计基础，但是需要理解基本的计算机组成原理
 + 有汇编/逻辑设计基础，但是想了解如何设计一个计算机，或者想理解一个系统是如何工作以及为何性能如此
-
-下面是第一章笔记的内容。
 
 ------------
 
@@ -77,11 +71,9 @@ Summary: Patterson and Hennessy 读书笔记，前言 + 第一章
 
 2.  **Use Abstraction to Simplify Desing**
 
-    不管是硅农还是码农都要发明一些技术来提高自己的效率，否则由于摩尔定义，资源动不动翻倍会导致设计时间变得非常长。其中一个非常重要的技术就是在不同层次进行抽象，把底层的实现细节通过抽象隐藏起来，只提供一个高层的简单接口。
+    不管是硅农还是码农都要发明一些技术来提高自己的效率，否则由于摩尔定律，资源动不动翻倍会导致设计时间变得非常长。其中一个非常重要的技术就是在不同层次进行抽象，把底层的实现细节通过抽象隐藏起来，只提供一个高层的简单接口。
 
-    通过抽象，顶层可以不关心底层的实现细节，只专注于自己的功能，抽象带来的“模块化设计”可以大幅提高效率。
-
-    这个思想应用非常广泛，典型代表是 OSI 的参考模型。
+    通过抽象，顶层可以不关心底层的实现细节，只专注于自己的功能，抽象带来的“模块化设计”可以大幅提高效率。这个思想应用非常广泛，典型代表是 OSI 的参考模型。
 
 3.  **Make the Common Case Fast**
 
@@ -143,11 +135,11 @@ Q：计算机的性能是什么？
 
 在接下来的前几章中我们主要关心的是 response time，对于这个指标，性能最大意味着 response time 最小，所以可以这么定义计算机的性能：
 
-$$Performance-X = \frac{1}{Execution\ time-X}$$
+$$Performance_X = \frac{1}{Execution\ time_X}$$
 
 在比较两个不同的计算机时，“X 比 Y 快 n 倍” = “X 的速度是 Y 的 n 倍” 指的是同一个意思，即
 
-$$\frac{Performance-X}{Performance-Y} = n$$
+$$\frac{Performance_X}{Performance_Y} = n$$
 
 为了简单起见，统一使用“X 的速度是 Y 的 n 倍”（`as fast as`）这种方式。因为 performance 和 execution time 是倒数关系，为了避免歧义，约定下面的描述
 
@@ -212,9 +204,7 @@ $$Time = \frac{Seconds}{Program} = \frac{Instructions}{Program} * \frac{Clock\ c
 
 ## The Power Wall
 
-功耗分为两部分：动态功耗、静态功耗。
-
-动态功耗可以通过公式算出来，
+功耗分为两部分：动态功耗、静态功耗，动态功耗可以通过公式算出来：
 
 $$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched\tag{6}$$
 
@@ -253,7 +243,7 @@ $$Power \propto \frac{1}{2} * Capacitive\ load * Voltage^2 * Frequency\ switched
 
 根据 Amdahl 定律，
 
-$$T^* = \frac{T-{improved}}{Amout\ of\ improve} + T-{unaffected}\tag{7}$$
+$$T^* = \frac{T_{improved}}{Amout\ of\ improve} + T_{unaffected}\tag{7}$$
 
 在这个例子里，有
 

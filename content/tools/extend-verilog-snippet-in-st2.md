@@ -127,7 +127,7 @@ ST 2 的 Package 都存放在 `/home/.config/sublime-text-2/Packages` 目录下�
     
 修改后的结果如下图：
 
-![if-else](/images/extend-verilog-snippet-in-st2/if-else.gif)
+![if-else](/images/extend-verilog-snippet-in-st2/if_else.gif)
 
 ## parameter
 

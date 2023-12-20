@@ -12,10 +12,7 @@ Summary: 总结 FPGA 中的时钟设计方案
 
 总结一下 FPGA 中的时钟设计原则。
 
-<br>
-
 ## Clock Design
-* * *
 
 > 在 FPGA/CPLD 中通常采用几种时钟类型：
 >
@@ -135,10 +132,7 @@ PLD/FPGA 都具有专门的全局时钟引脚，它直接连接到器件中的�
 
 [dividers]: http://guqian110.github.io/pages/2014/10/13/clock-dividers.html
 
-<br>
-
 ## Other Tips
-* * *
 
 + **只使用时钟的单个边沿**
 
@@ -152,8 +146,6 @@ PLD/FPGA 都具有专门的全局时钟引脚，它直接连接到器件中的�
 
     使用 DCM/MMCM 的 `locked` 输出，在使用时钟前先检查时钟是否锁定。
     
-<br>
-
 ## Reference
 
 [Xilinx FPGA 高级设计及应用](http://book.douban.com/subject/10593491/)

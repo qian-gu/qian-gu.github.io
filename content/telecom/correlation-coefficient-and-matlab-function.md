@@ -7,7 +7,6 @@ Author: Qian Gu
 Summary: 总结相关系数的知识及其 Matlab 实现
 
 ## Correlation
-* * *
 
 首先总结一下基础背景知识：
 
@@ -124,10 +123,7 @@ Pearson 相关系数使用两个变量的协方差（`covariance`）和标准差
 [cross-correlation]: http://en.wikipedia.org/wiki/Cross-correlation
 [Wiener–Khinchin theorem]: http://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin-theorem
 
-<br>
-
 ## Matlab function
-* * *
 
 ### xcorr
 
@@ -191,8 +187,6 @@ xcorr 默认的返回结果是没有经过归一化的，而通常的应用中�
     -1   1
 
 因为 z 是 x 的线性函数，且系数为 -1，所以非对角线上的值为 -1。
-
-<br>
 
 ## Ref
 

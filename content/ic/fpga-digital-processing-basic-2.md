@@ -9,7 +9,6 @@ Summary: 总结 FPGA 处理数字信号的基础知识 (2)
 讨论 FPGA 中无符号数 unsigned 和有符号数 signed 的问题。
 
 ## Basic Knowledge
-* * *
 
 **整数的分类：** 无符号数 `unsigned` 和 有符号数 `signed`。
 
@@ -23,21 +22,14 @@ Summary: 总结 FPGA 处理数字信号的基础知识 (2)
 
 **计算机系统：** 采用二进制、补码系统。
 
-<br>
-
 *FPGA 中是如何表示数字的呢？*
 
-以前写过一篇总结，[FPGA 数字处理基础 (1)][article2]
+以前写过一篇总结，[FPGA 数字处理基础 (1)][article2]，本文算是续。
 
-本文算是上面文章的续吧。
-
-[article1]: http://guqian110.github.io/pages/2014/03/19/signed-number-representations.html
-[article2]: http://guqian110.github.io/pages/2014/05/14/fpga-digital-processing-basic-1.html
-
-<br>
+[article1]: http://qian-gu.github.io/posts/cs/signed-number-representations.html
+[article2]: http://qian-gu.github.io/posts/ic/fpga-digital-processing-basic-1.html
 
 ## (un)signed in Verilog
-* * *
 
 ### Integer
 
@@ -81,8 +73,6 @@ Verilog 中数据的基本类型： `wire`、`reg`、`integer`
     reg             [8:0]   a;  // unsigned
     reg     signed  [8:0]   b;  // signed
 
-<br>
-
 **Problem**
 
 > 数据可以是 signed 和 unsigned，寄存器也可以是 signed 和 unsigned，那么综合时，是以哪个为准呢？
@@ -97,15 +87,13 @@ Verilog 中数据的基本类型： `wire`、`reg`、`integer`
 >
 > 2. 如果参与运算的变量混合有 signed 和 unsigned 类型，那么会将 signed 转换为 unsigned 类型。(应该避免这种情况)
 
-<br>
-
-=========================================以下为详细的分类讨论==================================
+以下为详细的分类讨论。
 
 编写一个简单的测试程序，查看综合结果和仿真波形，就可以知道综合时的策略。
 
-**module: [test-signed.v][test-signed]**
+**module: [test-signed.v](/files/test-signed.v)**
 
-**testbench: [tb-test-signed.v][tb-test-signed]**
+**testbench: [tb_test_signed.v](/files/tb-test-signed.v)**
 
 #### 1. unsigned reg & unsigned value
 
@@ -184,9 +172,8 @@ Verilog 中数据的基本类型： `wire`、`reg`、`integer`
     
 综合出来的比较器为 unsigned 类型。
 
-**P.S.** 变量 integer 也是也可综合的。在上例中，如果将 flag 的类型改为 integer 也是可综合的，但是，因为只用到了低 8 位，所以在综合时会提示高 24 位是未连接 unconnected，但是因为 integer 是一个整体，所以即使未连接也不能优化掉，这就是在 Verilog-1995 中 integer 不够灵活的体现，好在 Verilog-2001 中已经添加了支持 reg/wire 为 signed 的类型，而且综合工具(XST)也是支持的。
-
-=======================================分割线结束==========================================
+!!!note
+    变量 integer 也是也可综合的。在上例中，如果将 flag 的类型改为 integer 也是可综合的，但是，因为只用到了低 8 位，所以在综合时会提示高 24 位是未连接 unconnected，但是因为 integer 是一个整体，所以即使未连接也不能优化掉，这就是在 Verilog-1995 中 integer 不够灵活的体现，好在 Verilog-2001 中已经添加了支持 reg/wire 为 signed 的类型，而且综合工具(XST)也是支持的。
 
 以前只知道硬件上最基本的一些运算单元，比如加法器(adder)、减法器(subtractor)、比较器(comparator) 等，完成的功能是固定的，电路是不会检查输入数据的类型的。涉及到 signed 和 unsigned 类型，就出现一个问题：对于基本运算单元(比如加法器)，运算单元并不知道输入的数据是哪种数据，对于 unsigned 和 signed 类型，必然出现适合一种时不适合另外一种的问题。
 
@@ -200,26 +187,21 @@ Verilog 中数据的基本类型： `wire`、`reg`、`integer`
 
 Chapter 3: Signed and Unsigned Support in XST
 
-> When using Verilog or VHDL in XST, some macros, such as adders or counters, can be
-implemented for signed and unsigned values.
-> To enable support for signed and unsigned values in Verilog, enable Verilog-2001
-as follows:
+> When using Verilog or VHDL in XST, some macros, such as adders or counters, can be implemented for signed and unsigned values.
+>
+> To enable support for signed and unsigned values in Verilog, enable Verilog-2001 as follows:
+>
 > + ISE® Design Suite
->   Select Verilog 2001 as instructed in the Synthesis Options topic of ISE Design Suite
-Help
+>   Select Verilog 2001 as instructed in the Synthesis Options topic of ISE Design Suite Help
+>
 > + XST Command Line
 >   Set -verilog2001 to yes.
 
 花费了大量时间上网找资料，在论坛里问别人无果，最后自己动手写程序测试，最后才发现原来官方资料里面早就写的清清楚楚 =.=
 
-[test-signed]: http://guqian110.github.io/files/test-signed.v
-[tb-test-signed]: http://guqian110.github.io/files/tb-test-signed.v
 [ug627]: http://www.xilinx.com/support/documentation/sw-manuals/xilinx14-7/xst.pdf
 
-<br>
-
 ## Conclusion
-* * *
 
 说了这么多，总结下来就是下面这几句话：
 

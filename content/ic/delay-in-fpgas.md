@@ -54,8 +54,6 @@ interval is the fact that the switches in the output stage of a digital componen
 [book1]: http://www.amazon.cn/Digital-Design-An-Embedded-Systems-Approach-Using-Verilog-Ashenden-Peter-J/dp/0123695279
 [book2]: http://www.amazon.com/FPGA-Based-System-paperback-Prentice-Semiconductor/dp/0137033486
 
-<br>
-
 ## Models in Verilog HDL
 
 为了对电路中的时延现象进行建模，Verilog HDL 定义了延时语法。
@@ -86,8 +84,6 @@ interval is the fact that the switches in the output stage of a digital componen
 这个叫做 `net delay`，它是和 wireA 绑定的，对 wireA 进行的任何赋值必须延迟 10 个时间单位之后才有效。当在连续赋值语句中，延时是属于连续赋值语句的一部分，而不属于 net，所以只在这一句中有效，对其他赋值语句没有影响。
 
 **一般来说，assign 语句中的延时特性会被综合工具忽略。**因为综合工具需要完成的功能就是将代码描述映射为逻辑电路，而逻辑电路中的延时是由最基本的单元库和走线延时决定的，用户是无法对逻辑单元指定延时长度的，只能在综合、实现时添加时序约束条件，使工具尽量满足要求。
-
-<br>
 
 ## Implement
 
@@ -154,12 +150,9 @@ chains can cause various design problems, including an increase in a design’s 
 [book4]: http://www.amazon.cn/Xilinx-FPGA%E9%AB%98%E7%BA%A7%E8%AE%BE%E8%AE%A1%E5%8F%8A%E5%BA%94%E7%94%A8-%E6%B1%A4%E7%90%A6/dp/B007TLVUT8
 [link1]: http://bbs.eccn.com/viewthread.php?tid=181856
 
-<br>
-
 ====================== Update 01/31/2015 ========================
 
 ## Simulation
-* * *
 
 我们知道，仿真器使用 “ 事件” (`event`) 来模拟实际的电路行为，但是毕竟软件和硬件还是不同的，而 Verilog 语言又是很灵活的，如果不加注意，很可能不能对电路进行正确的建模。Clifford E. Cummings 大神写了一篇 paper 介绍了 Verilog HDL 中应该如何正确使用延时，才能保证建模的正确性：
 

@@ -1,10 +1,11 @@
-Title: 学习 Vim 之 BufExplorer、NERDTree、WinManager、Powerline 插件
+Title: 学习 Vim 之 BufExplorer、NERDTree、WinManager、Airline 插件
 Date: 2015-03-04 22:40
 Category: Tools
-Tags: vim, BufExplorer, NERDTree, WinManager, Powerline
-Slug: learning-vim-bufexplorer-nerdtree-winmanager-powerline
+Tags: vim, BufExplorer, NERDTree, WinManager, Airline
+Slug: learning-vim-bufexplorer-nerdtree-winmanager-airline
 Author: Qian Gu
-Summary: 学习 BufExplorer、NERDTree、WinManager、Powerline 插件
+Series: Learning Vim
+Summary: 学习 BufExplorer、NERDTree、WinManager、Airline 插件。
 
 ## BufExplorer
 
@@ -15,17 +16,9 @@ Summary: 学习 BufExplorer、NERDTree、WinManager、Powerline 插件
 
 其中 `n` 是 buffer 的标号。
 
-这种内置的方法效率比较低，尤其是当我们打开很多个 Buffer 之后，问题更加明显。所以就有了各种 buf 类的插件，最有名的就是：
-
-[BufExplorer][bufexplorer] 和 [MiniBufferExplorer][mini]
-
-不同的人使用习惯不同，在 stackoverflow 上有专门讨论两者的优劣的问题：
+这种内置的方法效率比较低，尤其是当我们打开很多个 Buffer 之后，问题更加明显。所以就有了各种 buf 类的插件，最有名的就是 [BufExplorer][bufexplorer] 和 [MiniBufferExplorer][mini]。不同的人使用习惯不同，在 stackoverflow 上有专门讨论两者的优劣的问题：
 
 [ViM: minibufexpl versus bufexplorer plugins][question1]
-
-我个人觉得 BufExplorer 更好一些，主要原因在于 Mini 在打开很多 buffer时（>8个），切换 buffer 效率很低，而且 Mini 会占用几行宝贵的屏幕资源。
-
-下面就主要说 BufExlplorer。
 
 ### Install
 
@@ -34,28 +27,26 @@ Summary: 学习 BufExplorer、NERDTree、WinManager、Powerline 插件
 1. 在 .vimrc 中添加
 
         #!vim
-        Bundle 'bufexplorer.zip'
+        Plugin 'bufexplorer.zip'
 
-2. 打开 vim，输入
+2. 安装
 
-        #!vim
-        :BundleInstall
+        #!sh
+        vim +PluginInstall
 
 ### Config
 
-查看 help 文档，自定义配置，我的简单配置如下：
+查看 help 文档，简单配置如下：
 
 
     #!vim
-    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
-    " Config BufExplorer
-    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
-    let g:bufExplorerDefaultHelp=0       " Do not show default help.
-    let g:bufExplorerShowRelativePath=1  " Show relative paths.
-    let g:bufExplorerSortBy='mru'        " Sort by most recently used.
+    let g:bufExplorerDetailedHelp     = 0      " Don't show detailed help.
+    let g:bufExplorerShowRelativePath = 1      " Show relative paths.
+    let g:bufExplorerSortBy           = 'mru'  " Sort by most recently used.
+    let g:bufExplorerShowUnlisted     = 1      " Show unlisted buffers.
 
-[bufexplorer]: http://www.vim.org/scripts/script.php?script-id=42
-[mini]: http://www.vim.org/scripts/script.php?script-id=159
+[bufexplorer]: http://www.vim.org/scripts/script.php?script_id=42
+[mini]: http://www.vim.org/scripts/script.php?script_id=159
 [question1]: http://stackoverflow.com/questions/1649187/vim-minibufexpl-versus-bufexplorer-plugins
 
 ## NERDTree
@@ -69,12 +60,12 @@ NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以
 1. 在 .vimrc 中添加
 
         #!vim
-        Bundle 'The-NERD-tree'
+        Plugin 'The-NERD-tree'
 
-2. 打开 vim，输入
+2. 安装
 
-        #!vim
-        :BundleInstall
+        #!sh
+        vim +PluginInstall
 
 ### Usage
 
@@ -94,14 +85,14 @@ NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以
 
 + q 关闭 NERDTree 窗口
 
-## Powerline
+## Airline
 
 状态栏也是一个非常重要的窗口，可以为我们提供一些文档的基本信息，我们可以自己 DIY，在 .vimrc 文件中添加相关的设置
 
     #!vim
     set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
 
-也可以使用 [Powerline][powerline] 插件，一款可以提供非常漂亮的状态栏的插件。它会覆盖掉 .vimrc 中对状态的配置，删除插件后配置信息可以重新起作用。
+也可以使用 [Airline][airline] 插件，一款可以提供非常漂亮的状态栏的插件。它会覆盖掉 .vimrc 中对状态的配置，删除插件后配置信息可以重新起作用。
 
 ### Install
 
@@ -110,30 +101,36 @@ NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以
 1. 在 .vimrc 中添加
 
         #!vim
-        Bundle 'Lokaltog/vim-powerline'
+        Pulgin 'vim-airline/vim-airline'
 
-2. 打开 vim，输入
+2. 安装
 
-        #!vim
-        :BundleInstall
+        #!sh
+        vim +PluginInstall
 
 ### Config
 
 为了保证状态栏始终显示，在 .vimrc 中添加
 
     #!vim
-    set laststatus=2
+    let g:airline_powerline_fonts             = 1
+    let g:airline#extensions#tabline#enabled  = 1
+    let g:airline#extensions#tabline#fnamemod = ':t'
+    let g:airline#extensions#tabline#buffer_idx_mode = 1
+    nmap <leader>1 <Plug>AirlineSelectTab1
+    nmap <leader>2 <Plug>AirlineSelectTab2
+    nmap <leader>3 <Plug>AirlineSelectTab3
+    nmap <leader>4 <Plug>AirlineSelectTab4
+    nmap <leader>5 <Plug>AirlineSelectTab5
+    nmap <leader>6 <Plug>AirlineSelectTab6
+    nmap <leader>7 <Plug>AirlineSelectTab7
+    nmap <leader>8 <Plug>AirlineSelectTab8
+    nmap <leader>9 <Plug>AirlineSelectTab9
+    nmap <leader>0 <Plug>AirlineSelectTab0
+    nmap <leader>- <Plug>AirlineSelectPrevTab
+    nmap <leader>+ <Plug>AirlineSelectNextTab
 
-设置之后，应该就可以看到漂亮的状态栏了。
-
-查看 help：
-
-    #!vim
-    :help powerline
-
-我们还可以自定义一些选项，比如颜色主题等。
-
-[powerline]: https://github.com/Lokaltog/vim-powerline
+[airline]: https://github.com/vim-ariline/vim-airline
 
 ## WinManager
 
@@ -146,19 +143,18 @@ NERDTree 是一款可以提供树形目录的 vim 插件，使用它我们可以
 1. 在 .vimrc 中添加
 
         #!vim
-        Bundle 'winmanager'
+        Plugin 'winmanager'
 
-2. 打开 vim，输入
+2. 安装
 
-        #!vim
-        :BundleInstall
+        #!sh
+        vim +PluginInstall
 
 ### bugfix
 
 修改 `~/.vim/bundle/winmanager/plugin/winmanager.vim` 中的 `ToggleWindowsManager` 函数，给 else 分支新增一行(下段代码第 7 行)：
 
-```
-#!vim
+```vim
 " toggle showing the explorer plugins.
 function! <SID>ToggleWindowsManager()
 	if IsWinManagerVisible()
@@ -194,10 +190,6 @@ endfunction
 这时候我们按下组合键 Ctrl-m 即可切换是否显示 winmanager 窗口布局。
 
 [winmanager]: http://www.vim.org/scripts/script.php?script-id=95
-
-最后附上效果图一张：
-
-![image](/images/learning-vim-bufexplorer-nerdtree-winmanager-powerline/screenshot.png)
 
 ## Ref
 

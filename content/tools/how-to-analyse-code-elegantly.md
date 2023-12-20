@@ -18,10 +18,7 @@ Summary: 学习 Doxygen + Graphviz 的使用方法
 
 在 Linux 环境下，Vim 有插件 **DoxygenToolKIt.vim** 可以帮助我们很方便地写出 Doxygen 风格的代码。这里只介绍 Doxygen + Graphviz，DoxygenToolKit.vim 在另外一篇中介绍。
 
-<br>
-
 ## Graphviz
-* * *
 
 ### What is Graphviz?
 
@@ -41,10 +38,7 @@ Summary: 学习 Doxygen + Graphviz 的使用方法
 
 [graphviz]: http://www.graphviz.org/
 
-<br>
-
 ## Doxygen
-* * *
 
 ### What is Doxygen
 
@@ -515,13 +509,9 @@ P.S.
 [ms]: http://www.stack.nl/~dimitri/doxygen/manual/markdown.html
 [blog1]: http://blog.csdn.net/czyt1988/article/details/8901191
 
-<br>
-
 最后展示一张我的效果图：
 
 ![image](/images/how-to-analyse-code-elegantly/result.png)
-
-<br>
 
 ## Ref.
 

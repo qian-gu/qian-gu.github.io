@@ -13,7 +13,6 @@ P.S. 找到一篇 Xilinx 的文章，也很简洁实用：[赛灵思 FPGA 设计
 [article1]: http://china.xilinx.com/china/xcell/xl37/e10-14.pdf
 
 ## Xilinx STA
-* * *
 
 按照路径所覆盖的范围，可以将时序路径要求分为 4 大类：
 
@@ -30,8 +29,6 @@ P.S. 找到一篇 Xilinx 的文章，也很简洁实用：[赛灵思 FPGA 设计
 FPGA器件执行工具都是由指定的时序要求驱动的。如果时序约束过头的话，就会导致内存使用增加，工具运行时间增加。更重要的是，过约束还会导致性能下降。因此，推荐使用实际设计要求的约束值。
 
 下面分别讨论每种路径上的约束。
-
-<br>
 
 ## Input paths
 
@@ -159,8 +156,6 @@ source synchronous DDR 应用示例如下图：
     TIMESPEC TS-CLK = PERIOD CLK 5.0 ns HIGH 50%; 
     OFFSET = IN 1 ns VALID 2 ns BEFORE clock RISING; 
     OFFSET = IN 1 ns VALID 2 ns BEFORE clock FALLING;
-
-<br>
 
 ## Register-to-register paths
 
@@ -298,8 +293,6 @@ Xilinx 约束系统允许不考虑源和目的时钟之间的频率、相位关�
     NET "CLKB" TNM-NET = FFS "GRP-B";
     TIMESPEC TS-Example = FROM "GRP-A" TO "GRP-B" 5 ns DATAPATHONLY
 
-<br>
-
 ## Output paths
 
 这部分讨论如何为输出路径添加约束。输出约束覆盖了从 “内部同步单元/寄存器 ---> FPGA 输出管脚” 之间的所有路径。如下图所示：
@@ -385,8 +378,6 @@ OFFET OUT 定义了输出数据和将该数据发送到输出管脚的时钟之�
     OFFSET = OUT AFTER "ClkIn" REFERENCE-PIN "ClkOut" RISING;
     OFFSET = OUT AFTER "ClkIn" REFERENCE-PIN "ClkOut" FALLING
 
-<br>
-
 ## Path specific exceptions
 
 通过前面的 3 节的讨论，对输入、寄存器-寄存器、输出路径进行约束，大部分时序路径都得到了正确约束，然后在一些情况中，存在少数不适应于全局约束的少数路径，这些例外最常见的就是：
@@ -470,10 +461,7 @@ OFFET OUT 定义了输出数据和将该数据发送到输出管脚的时钟之�
 
 [ug612]: http://www.xilinx.com/support/documentation/sw-manuals/xilinx14-2/ug612.pdf
 
-<br>
-
 ## Summary
-* * *
 
 通过对这四种类型的 timing path 进行约束，基本上系统内所有路径都得到了合理约束。
 

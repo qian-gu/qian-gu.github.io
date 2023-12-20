@@ -12,10 +12,7 @@ Summary: VHDL 笔记，系统设计
 
 总之，经常使用的代码可以以 `component`, `function`, `procedure` 的形式放到 `package` 中，然后被编译到目标 `library` 中。
 
-<br>
-
 ## Packages and Components
-* * *
 
 ### Package
 
@@ -137,10 +134,7 @@ generic 功能类似于 Veriog HDL 中的 parameter，所以在例化时 compone
     
 也就是说，在例化时，添加一段 `GENERIC MAP (param.list)` 就可以了。
 
-<br>
-
 ## Functions and Procedure
-* * *
 
 function 和 procedure 统称为 子程序，它们和 process 相似，内部包含的都是顺序描述的代码，通常使用相同的顺序描述语句。但是，function 和 procedure 的存在主要是为了建库，以达到代码重用和共享的目的，当然它们也可以直接建立在主代码中。
 
@@ -236,8 +230,6 @@ procedure 的存放和 function 类似，通常放在 package 中，当然也可
 + function 和 procedure 内部，wait 和 component 都不可综合
 
 + function 和 procedure 的存放位置相同，经常位于 package 中，也可以在主代码中
-
-<br>
 
 ## Reference
 

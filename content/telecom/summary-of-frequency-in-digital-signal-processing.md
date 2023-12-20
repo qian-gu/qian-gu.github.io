@@ -9,7 +9,6 @@ Summary: 总结信号处理中的各种角频率
 最近实习的时候，发现自己的 DSP 基本功还是不够扎实，关于模拟/数字角频率，频率，采样速率等一些概念理解的都不太深刻，愧对老师和这么多年的学习，Google 到一些讲解的比较清楚的 blog，备忘（抄袭）过来，温故而知新。
 
 ## unit circle & sin(cos)
-* * *
 
 首先从最基本的三角函数的定义开始：
 
@@ -40,14 +39,9 @@ Summary: 总结信号处理中的各种角频率
 
 "Sine and Cosine fundamental relationship to Circle (and Helix)" by Tdadamemd - Own work by uploader (.gif frames created in Powerpoint). Licensed under CC BY-SA 3.0 via Commons - https://commons.wikimedia.org/wiki/File:Sine-and-Cosine-fundamental-relationship-to-Circle-(and-Helix).gif#/media/File:Sine-and-Cosine-fundamental-relationship-to-Circle-(and-Helix).gif
 
-<br>
-
 *有了上面简单的背景，就可以开始逐个讨论信号处理中的概念了。*
 
-<br>
-
 ## Ω
-* * *
 
 我们已经知道小球在圆周上做匀速率的圆周运动时，它在两个坐标轴上的投影就分别是 sin(cos)，如果我们想进一步描述小球的运动速率的快慢呢？
 
@@ -75,10 +69,7 @@ Summary: 总结信号处理中的各种角频率
 
 ![OMEGA](/images/summary-of-frequency-in-digital-signal-processing/OMEGA.jpg)
 
-<br>
-
 ## f
-* * *
 
 小球在二维平面上的圆周运动投影到一维的坐标轴 x(y) 轴上看，则是左右（上下）振动。和 Ω 类似，我们也可以定义一个物理量来描述这种振动的快慢：
 
@@ -106,10 +97,7 @@ Summary: 总结信号处理中的各种角频率
 
 ![f](/images/summary-of-frequency-in-digital-signal-processing/f.jpg)
 
-<br>
-
 ## w
-* * *
 
 计算机的世界是离散的，所以当连续信号经过采样、量化得到离散信号后：
 
@@ -143,8 +131,6 @@ y = sin(Ω*t) = sin(Ω*n*Ts) = sin(Ω*Ts*n) = sin(w*n)
 | Ω | -Ωs/2 | 0 | Ωs/2 |
 | f  | -Fs/2 | 0 | Fs/2 |
 | w  | -π | 0 | π |
-
-<br>
 
 ## Ref
 

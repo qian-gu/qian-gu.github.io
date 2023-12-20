@@ -8,7 +8,6 @@ Series: Learn Arduino
 Summary: 学习 Arduino，#1 Arduino 入门
 
 ## What is Arduino
-* * *
 
 ![logo](/images/learning-arduino-series-1-getting-started/logo.png)
 
@@ -40,10 +39,7 @@ Arduino 是一个开放源代码的单片机，它使用了 Atmel AVR 单片机�
 [ide]: http://arduino.cc/en/Main/Software
 [arduino on wiki]: http://en.wikipedia.org/wiki/Arduino
 
-<br>
-
 ## Story of Arduino
-* * *
 
 wikipedia 上的[小故事][story]：
 
@@ -53,10 +49,7 @@ wikipedia 上的[小故事][story]：
 
 [story]: http://zh.wikipedia.org/wiki/Arduino
 
-<br>
-
 ## Why is Arduino
-* * *
 
 [官网介绍][introduction]：
 
@@ -68,10 +61,7 @@ wikipedia 上的[小故事][story]：
 > + Open source and extensible software
 > + Open source and extensible hardware
 
-<br>
-
 ## How-to Develope
-* * *
 
 ### IDE installation
 
@@ -190,8 +180,6 @@ Arduino 使用 [GNU toolchain][gun toolchain] 和 AVR Libc 来编译程序的，
 [reference en]: http://arduino.cc/en/Reference/HomePage
 [reference zh]: http://www.arduino.cn/reference/
 [function libraries]: http://arduino.cc/en/Tutorial/HomePage
-
-<br>
 
 ## 参考
 

@@ -7,7 +7,6 @@ Author: Qian Gu
 Summary: 基于 FPGA 实现 OFDM 系统。第一篇，OFDM 基础。
 
 ## Why OFDM
-* * *
 
 ### Background
 
@@ -42,10 +41,7 @@ Summary: 基于 FPGA 实现 OFDM 系统。第一篇，OFDM 基础。
 
 既要对抗码间干扰，又要满足低复杂度且高效的手段传输高速数据业务，我们可以采用另外一种技术 —— **OFDM** 。
 
-<br>
-
 ## OFDM History
-* * *
 
 多载波调制技术早在 20 世纪 50年代末至 60 年代初就已经应用于军事高频无线通信中，由于实现复杂，没有被广泛应用 。OFDM 就是一种多载波调制，其子载波间隔是子载波符号间隔的倒数，各子载波的频谱是重叠的，这种重叠可以使频谱效率显著提高 。
 
@@ -57,10 +53,7 @@ DFT 和 IDFT 的快速计算方法：FFT 和 IFFT 使 OFDM 能够以低成本的
 
 大约从 20 世纪 90 年代起，OFDM 技术开始应用于各种有线及无线通信中，包括：DSL、DAB、DVB、WLAN等。OFDM 已经成为下一代蜂窝移动通信空中接口的候选技术 。
 
-<br>
-
 ## OFDM Theory
-* * *
 
 Orthogonal frequency-division multiplexing (OFDM) 的基本原理是将高速的数据流分解为多路并行的低速数据流，在多个载波上同时进行传输。
 
@@ -116,7 +109,7 @@ OFDM 每个子载波的调制方式可以相互不同，比如 BPSK、QPSK、QAM
 
 OFDM 系统框图如下：
 
-![ofdm-system](/images/learning-ofdm-basic/ofdm-system.jpg)
+![ofdm-system](/images/learning-ofdm-basic/ofdm_system.jpg)
 
 其中，**交织** 是为了克服深衰落发生突发差错的影响，如果交织器的长度足够大，解交织后可将突发差错改造为独立差错，再通过纠错译码来纠正 。
 
@@ -128,8 +121,6 @@ OFDM 系统框图如下：
 **在接收端：**
 
 接收端于发送端进行相反的变换，恢复出原数据 .
-
-<br>
 
 ## 参考
 

@@ -22,7 +22,6 @@ FIFO 可以分为两类：
 2. FIFO 空满的判断
 
 ## Sync FIFO
-* * *
 
 Sync FIFO 的框图如下所示：
 
@@ -34,11 +33,7 @@ Sync FIFO 的框图如下所示：
 
 还有另外一种方法来产生 full / empty 信号：FIFO 内部维护一个计数器，每次写入一个数据 cnt++，每次读出一个数据 cnt--。这种方法产生 full / empty 很简单：当 cnt == 0，表示 FIFO empty；当 cnt == max，表示 FIFO full。虽然这种方法产生 full / empty 很简单，但是需要额外的计数器，而且计数器的位宽随着 FIFO 的深度增加，不仅占用的资源更多，而且会降低 FIFO 最终可以达到的速度。
 
-
-<br>
-
 ## Async FIFO
-* * *
 
 一般异步 FIFO 的读写速率不同，如果写速度 > 读速度，则当数据量超过一定长度时，会出现溢出的情况，为了防止这种情况，可以采用两种措施：
 
@@ -137,14 +132,9 @@ gray code 与 binary code 的相互想换见另[外一篇 blog]()。
 
     3. 剩余 bits 全部相等
 
-<br>
-
 ## Summary
-* * *
 
 总结 FIFO 的设计，只要注意 FIFO 通过 wr-ptr 和 rd-ptr 得到 full / empty，而且使用 gray code 来跨时钟域，基本上就没问题了 :-D
-
-<br>
 
 ## Ref
 

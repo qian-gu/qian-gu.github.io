@@ -7,7 +7,6 @@ Author: Qian Gu
 Summary: 总结学习习惯和 PKM 工具。
 
 ## PKM
-* * *
 
 ### 什么是 PKM
 
@@ -26,10 +25,7 @@ Summary: 总结学习习惯和 PKM 工具。
 
 从小到大，上了这么多年的学，每个人都有自己的学习习惯和知识管理方法。这篇 blog 是在我 Google、知乎问答、参考相关博客内容的基础上，总结出的学习习惯和使用各种工具的经验，写这篇博客的目的不是秀逼格有多高（估计很多人都看不上），也不是所谓的教程（根本不够资格），而是**为了分享和讨论** :-D
 
-<br>
-
 ## 获取知识
-* * *
 
 总结我的知识来源，大致可以分为 3 类：纸质书籍、网络资源、其他 。分别总结如下
 
@@ -130,10 +126,8 @@ Summary: 总结学习习惯和 PKM 工具。
 [evernote]: https://evernote.com
 [question1]: http://www.zhihu.com/question/20869752
 [question2]: http://www.zhihu.com/question/20859926
-<br>
 
 ## 整理知识
-* * *
 
 获取到知识，下一步就是整理和吸收它们了。
 
@@ -193,10 +187,7 @@ EN 的 logo 是一只大象，寓意来自美国谚语 “An elephant never forg
 
 目前还处于用笔和纸的阶段，大概了解了一些 XMind 的用途，感觉很好很强大。尤其是用它建立的结构化的提纲，对于整理文章、知识体系结构有巨大的帮助。还在探索中，更加进阶的功能和使用心得以后再总结。
 
-<br>
-
 ## 使用/分享知识
-* * *
 
 月光博客中的一段话：
 
@@ -249,10 +240,8 @@ EN 的 logo 是一只大象，寓意来自美国谚语 “An elephant never forg
 [blog2]: http://mindhacks.cn/2009/02/15/why-you-should-start-blogging-now/
 
 
-<br>
-
 ## 写在最后
-* * *
+
 总结一下总的流程就是：
 
 **获取知识**：书籍 + feedly + pocket + Google Keep
@@ -263,7 +252,6 @@ EN 的 logo 是一只大象，寓意来自美国谚语 “An elephant never forg
 
 总结出来并且在实际行动中加以利用才是王道。
 
-<br>
 ## 参考
 
 [我，和我的知识工具们 (2011-02-15 更新)](http://www.sand-ox.com/2011/02/pkm-tools/)

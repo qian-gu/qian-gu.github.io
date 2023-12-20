@@ -17,10 +17,7 @@ Summary: 学习 SSH、SCP 命令，建立两台电脑相互访问 。
 
 考虑到校园网的环境，明显方案 2 更加好 。
 
-<br>
-
 ## 什么是 SSH
-* * *
 
 最早的时候，互联网通信都是明文通信，一旦被截获，内容就暴露无疑 。[SSH][SSH] 协议，将登录信息全部加密，成为互联网安全的一个基本解决方案，迅速在全世界获得推广，目前已经成为 Linux 系统的标准配置 。
 
@@ -39,10 +36,7 @@ Summary: 学习 SSH、SCP 命令，建立两台电脑相互访问 。
 [blog1]: http://www.ruanyifeng.com/blog/2011/12/ssh-remote-login.html
 [blog2]: http://www.ruanyifeng.com/blog/2011/12/ssh-port-forwarding.html
 
-<br>
-
 ## SSH 的用法
-* * *
 
 最简单明了的教程就是 man page 了
 
@@ -62,8 +56,6 @@ Summary: 学习 SSH、SCP 命令，建立两台电脑相互访问 。
          [-l login-name] [-m mac-spec] [-O ctl-cmd] [-o option] [-p port]
          [-R [bind-address:]port:host:hostport] [-S ctl-path] [-W host:port]
          [-w local-tun[:remote-tun]] [user@]hostname [command]
-
-
 
 进阶的书籍有：[SSH, The Secure Shell: The Definitive Guide][book1], O'reilly
 
@@ -222,10 +214,7 @@ Ubuntu 默认安装了 `ssh-keygen`，可以生成公钥和私钥
 [blog3]: http://www.ruanyifeng.com/blog/2011/08/what-is-a-digital-signature.html
 [blog4]: http://www.youdzone.com/signature.html
 
-<br>
-
 ## 使用 SCP 传输文件
-* * *
 
 SSH 提供了一些命令和 shell 用来登录远程服务器 。在默认情况下它不允许你拷贝文件,但是还是提供了一个 "scp" 命令 。scp 命令是 SSH 中最方便有用的命令了，试想，在两台服务器之间直接传送文件。仅仅用 scp 一个命令就完全解决了 。
 
@@ -262,11 +251,7 @@ scp 可以实现把 [[user@]host1:]file1 复制到 [[user@]host2:]file2 的功�
     #!shell
     scp -r ~/test chien@lab:~/
 
-<br>
-
 至此，就实现了两台电脑的之间相互远程访问的功能 。
-
-<br>
 
 ## Reference
 

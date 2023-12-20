@@ -32,8 +32,6 @@ OFDM 中 **功率归一化因子** 为 1/sqr(N)，而标准的 IFFT 中的系数
 
 而在接收端，也要先除以一个 sqr(N)，然后再进行 FFT 。
 
-<br>
-
 [book1]: http://book.douban.com/subject/1446684/
 [book2]: http://book.douban.com/subject/1140934/
 

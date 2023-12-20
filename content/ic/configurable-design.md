@@ -10,7 +10,6 @@ Summary: 总结可配置设计
 
 [book1]: https://book.douban.com/subject/26612391/
 ## Configurable design
-* * *
 
 > 我们做设计的时候，就要考虑做成可以灵活配置的设计，不管是小模块，还是大模块，这样便于以后维护和移植。可配置模块的设计方法如下：
 >

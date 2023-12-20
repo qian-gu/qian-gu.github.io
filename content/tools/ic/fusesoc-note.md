@@ -17,29 +17,28 @@ Summary: 记录 fusesoc 用法
 
 [Fusesoc][fusesoc] 是一个用 python 写的 HDL 管理工具，用一句话解释就是：**HDL 版的 pip + make**，它主要解决 IP core 重用时复杂繁琐的常规性工作，更轻松地实现下面目标：
 
-- 重用已有的 IP core
-- 为 compile-time 和 run-time 生成配置文件
-- 在多个 simulator 上跑回归
-- 在不同平台间移植设计
-- 让别人复用你的设计
-- 配置 CI
++ 重用已有的 IP core
++ 为 compile-time 和 run-time 生成配置文件
++ 在多个 simulator 上跑回归
++ 在不同平台间移植设计
++ 让别人复用你的设计
++ 配置 CI
 
 一个设计中包含多个 core，而且可能会有不同的 target，比如仿真、lint、综合等，而且每个 target 也会有多种工具可用，fusesoc 的目标就是把这些 dirty job 管理起来，使得支持 fusesoc 的 IP 相互之间可以轻松地复用。
 
 Fusesoc 还有以下特点：
 
-- **非入侵**：因为 fusesoc 本质上是用特定的描述文件来描述 IP core，这个描述文件不会影响到 IP 本身
-- **模块化**：可以为你的工程创建一个 end-to-end 的 flow
-- **可扩展**：想支持任何一种新的 EDA 工具时，只需要增加 100 行左右的内容来描述它的用法即可（命令 + 参数）
-- **兼容标准**：兼容其他工具的标准格式
-- **资源丰富**：标准库目前包含 100 多个 IP（包括 CPU，peripheral, interconnect, SoC 和 util），还可以添加自定义库
-- **开源免费**：既可以管理开源项目，也可以用到公司内部项目
-- **实战验证**：许多开源项目实际使用验证过
++ **非入侵**：因为 fusesoc 本质上是用特定的描述文件来描述 IP core，这个描述文件不会影响到 IP 本身
++ **模块化**：可以为你的工程创建一个 end-to-end 的 flow
++ **可扩展**：想支持任何一种新的 EDA 工具时，只需要增加 100 行左右的内容来描述它的用法即可（命令 + 参数）
++ **兼容标准**：兼容其他工具的标准格式
++ **资源丰富**：标准库目前包含 100 多个 IP（包括 CPU，peripheral, interconnect, SoC 和 util），还可以添加自定义库
++ **开源免费**：既可以管理开源项目，也可以用到公司内部项目
++ **实战验证**：许多开源项目实际使用验证过
 
 因为 fusesoc 本身是一个 python package，所以我们可以直接用 pip 来安装：
 
-```
-#!bash
+```bash
 pip3 install fusesoc
 fusesoc --version
 ```
@@ -69,8 +68,7 @@ fusesoc standard library 就是按照第二种方式管理的，标准库只是 
 
 当我们指定顶层 core 后，它依赖的底层 core 代码甚至是底层 .core 文件都不在本地，fusesoc 是如何解决依赖的呢？答案就是 `core library`。与软件类似，fusesoc 根据配置文件 `fusesoc.conf` 中的 core library 信息来查找所有的 core，所以我们使用某个 core 的第一步就是“安装”包含这个 core 的 library。以 fusesoc 标准库为例：
 
-```
-#!shell
+```shell
 fusesoc library add fusesoc-cores https://github.com/fusesoc/fusesoc-cores
 # show all libraries
 fusesoc library list
@@ -91,7 +89,7 @@ fusesoc core list
 fusesoc 查找 fusesoc.conf 文件的顺序：
 
 1. 首先在当前目录找
-2. 然后在 `$XDG-CONFIG-HOME/fusesoc` 下找
+2. 然后在 `$XDG_CONFIG_HOME/fusesoc` 下找
 3. 最后在 `/etc/fusesoc` 下找
 
 也可以直接通过命令行选项 `--config` 指定使用某个 fusesoc.conf 文件。
@@ -110,13 +108,13 @@ fusesoc 查找 core 的顺序：
 fusesoc 内部的 `build system` 从顶层 core 文件开始分析，解决所有依赖后整理出完整的 filelist，然后将后续工作交给真正的 EDA 工具来完成。毕竟，fusesoc 只是一个工程管理工具。显然不同的 EDA 工具用法是不一样的，如何将整理好的 filelist 根据目标调用不同的 EDA 工具，传递该工具的特定参数，这个过程是和 EDA 工具强绑定的。比如：
 
 - 如果想调用 verilator 跑仿真：build system 会创建一个 makefile，然后调用 verilator
-- 如果想为 Xilinx 生成 bit：build system 会创建一个 vivado 工程文件，然后调用 vivado 完成综合-布局布线-生成 bit
+- 如果想生成基于 Xilinx FPGA 的 bit：build system 会创建一个 vivado 工程文件，然后调用 vivado 完成综合-布局布线-生成 bit
 
 这些 dirty job 都由 fusesoc 帮我们做了，而且 fusesoc 本身是可扩展的，可以轻松支持新的 EDA 工具。`build system` 包含 3 个概念：`tool flow`， `target`，`build stage`。
 
 ### `tool flow`
 
-`tool flow` 就是某个特定的 EDA 工具分析运行的过程。verilator 和 vcs，vivado 都是一种 tool。显然不同 tool 需要不同的命令来调用，fusesoc 的目标就是对用户隐藏这些工具之间的差异，尽量简化调用过程。
+`tool flow` 就是某个特定的 EDA 工具分析运行的过程。verilator、vcs 和 vivado 都是一种 tool，显然不同 tool 需要不同的命令来调用，fusesoc 的目标就是对用户隐藏这些工具之间的差异，尽量简化调用过程。
 
 !!! note
 
@@ -153,34 +151,32 @@ Build 过程就是 fusesoc 调用 tool flow 产生一些输出，然后执行这
 
 首先新建一个目录 `~/workspace/mycores/counter`，在下面完成 counter 的 rtl 和 tb，以及 `.core` 文件，目录结构如下
 
-```
-#!text
+```txt
 ~/workspace/mycores/counter
 ├── counter.core
 ├── rtl
 │   └── counter.sv
 └── tb
-    └── tb-counter.sv
+    └── tb_counter.sv
 
 2 directories, 3 files
 ```
 
-其中 counter.sv 和 tb-counter.sv 内容很简单
+其中 counter.sv 和 tb_counter.sv 内容很简单
 
-```
-#!systemverilog
+```systemverilog
 // counter.sv
 module counter #(
   parameter DW = 8
 ) (
   input  logic            clk,
-  input  logic            rst-n,
+  input  logic            rst_n,
   input  logic            en,
   output logic [DW-1 : 0] cnt
 );
 
-  always-ff @(posedge clk or negedge rst-n) begin
-    if (!rst-n) begin
+  always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
         cnt <= '0;
     end else if (en) begin
         cnt <= cnt + 1'b1;
@@ -190,42 +186,41 @@ module counter #(
 endmodule
 ```
 
-```
-#!systemverilog
-// tb-counter.sv
+```systemverilog
+// tb_counter.sv
 `timescale 1ns / 1ns
 
-module tb-counter;
+module tb_counter;
 
   parameter DW = 8;
-  parameter FREQ = 1-000-000;
+  parameter FREQ = 1_000_000;
 
-  localparam PERIOD = 1-000-000-000 / FREQ;
-  localparam HALF-PERIOD = PERIOD / 2;
+  localparam PERIOD = 1_000_000_000 / FREQ;
+  localparam HALF_PERIOD = PERIOD / 2;
 
   logic            clk = 1'b1;
-  logic            rst-n = 1'b1;
+  logic            rst_n = 1'b1;
   logic            en = 1'b0;
   logic [DW-1 : 0] cnt;
 
   counter #(
     .DW(DW)
-  ) U-COUNTER (
+  ) U_COUNTER (
     .clk,
-    .rst-n,
+    .rst_n,
     .en,
     .cnt
   );
 
-  always #(HALF-PERIOD) clk = ~clk;
+  always #(HALF_PERIOD) clk = ~clk;
 
   initial begin
     $dumpfile("sim.vcd");
     $dumpvars;
     clk = 1;
-    rst-n = 1'b0;
+    rst_n = 1'b0;
     #(2*PERIOD);
-    rst-n = 1'b1;
+    rst_n = 1'b1;
 
     #(3*PERIOD);
 
@@ -247,8 +242,7 @@ endmodule
 
 counter.core 文件：
 
-```
-#!yaml
+```yaml
 CAPI=2:
 
 name: qian:examples:counter:1.0.0
@@ -258,12 +252,12 @@ filesets:
   rtl:
     files:
       - rtl/counter.sv
-    file-type: systemVerilogSource
+    file_type: systemVerilogSource
 
   tb:
     files:
-      - tb/tb-counter.sv
-    file-type: systemVerilogSource
+      - tb/tb_counter.sv
+    file_type: systemVerilogSource
 
 targets:
   default: &default
@@ -276,13 +270,13 @@ targets:
   sim:
     <<: *default
     description: Simulate the design
-    default-tool: icarus
-    filesets-append:
+    default_tool: icarus
+    filesets_append:
       - tb
-    toplevel: tb-counter
+    toplevel: tb_counter
     tools:
       icarus:
-        iverilog-options:
+        iverilog_options:
           - -g2012
 
 parameters:
@@ -299,8 +293,7 @@ parameters:
 
 在 `~/workspace` 目录下面使用执行：
 
-```
-#!bash
+```bash
 fusesoc --cores-root=mycores run --target=sim --setup --build --run qian:examples:counter
 ```
 
@@ -315,12 +308,11 @@ fusesoc 执行完成后会产生一个 build 目录，在 `build/qian-examples-c
 
 # Example 2
 
-一种更常见的场景是我们想复用别人的设计，比如说我们想设计一个 counter-blinky 的 core，它依赖于我们刚才写 counter 和 fusesoc 官方 library 中的 blinky 模块。
+一种更常见的场景是我们想复用别人的设计，比如说我们想设计一个 counter_blinky 的 core，它依赖于我们刚才写 counter 和 fusesoc 官方 library 中的 blinky 模块。
 
 要使用 fusesoc 的官方 library，所以第一步就是添加这个 library：
 
-```
-#!shell
+```shell
 fusesoc library add fusesoc-cores https://github.com/fusesoc/fusesoc-cores
 ```
 
@@ -331,31 +323,29 @@ fusesoc library add fusesoc-cores https://github.com/fusesoc/fusesoc-cores
 fusesoc fetch fusesoc:utils:blinky:0
 ```
 
-下载好要用的 blinky core 后我们就可以开始写自己的 counter-blinky 了，在 counter 平级新建一个 counter-blinky 的目录如下：
+下载好要用的 blinky core 后我们就可以开始写自己的 counter_blinky 了，在 counter 平级新建一个 counter_blinky 的目录如下：
 
-```
-#!text
-~/workspace/mycores/counter-blinky
-├── counter-blinky.core
+```txt
+~/workspace/mycores/counter_blinky
+├── counter_blinky.core
 ├── rtl
-│   └── counter-blinky.sv
+│   └── counter_blinky.sv
 └── tb
-    └── tb-counter-blinky.sv
+    └── tb_counter_blinky.sv
 
 2 directories, 3 files
 ```
 
-其中 counter-blinky.sv 和 tb-counter-blinky.sv 的内容：
+其中 counter_blinky.sv 和 tb_counter_blinky.sv 的内容：
 
-```
-#!systemverilog
-// counter-blinky.sv
-counter-blinky #(
+```systemverilog
+// counter_blinky.sv
+counter_blinky #(
   parameter DW = 8,
-  parameter clk-freq-hz = 1-0000-000
+  parameter clk_freq_hz = 1_0000_000
 ) (
   input  logic            clk,
-  input  logic            rst-n,
+  input  logic            rst_n,
   input  logic            en,
   output logic [DW-1 : 0] cnt,
   output logic            q
@@ -363,16 +353,16 @@ counter-blinky #(
 
   counter #(
     .DW(DW)
-  ) U-COUNTER (
+  ) U_COUNTER (
     .clk,
-    .rst-n,
+    .rst_n,
     .en,
     .cnt
   );
 
   blinky #(
-    .clk-freq-hz(clk-freq-hz)
-  ) U-BLINKY (
+    .clk_freq_hz(clk_freq_hz)
+  ) U_BLINKY (
       .clk,
       .q
   );
@@ -380,45 +370,44 @@ counter-blinky #(
 endmodule
 ```
 
-```
-#!systemverilog
-// tb-counter-blinky.sv
+```systemverilog
+// tb_counter_blinky.sv
 `timescale 1ns / 1ns
 
-module tb-counter-blinky;
+module tb_counter_blinky;
 
   parameter DW = 8;
-  parameter FREQ = 1-000-000;
+  parameter FREQ = 1_000_000;
 
-  localparam PERIOD = 1-000-000-000 / FREQ;
-  localparam HALF-PERIOD = PERIOD / 2;
+  localparam PERIOD = 1_000_000_000 / FREQ;
+  localparam HALF_PERIOD = PERIOD / 2;
 
   logic            clk = 1'b1;
-  logic            rst-n = 1'b1;
+  logic            rst_n = 1'b1;
   logic            en = 1'b0;
   logic [DW-1 : 0] cnt;
   logic            q;
 
-  counter-blinky #(
+  counter_blinky #(
     .DW(DW),
-    .clk-freq-hz(10)
-  ) U-COUNTER-BLINKY (
+    .clk_freq_hz(10)
+  ) U_COUNTER_BLINKY (
     .clk,
-    .rst-n,
+    .rst_n,
     .en,
     .cnt,
     .q
   );
 
-  always #(HALF-PERIOD) clk = ~clk;
+  always #(HALF_PERIOD) clk = ~clk;
 
   initial begin
     $dumpfile("sim.vcd");
     $dumpvars;
     clk = 1;
-    rst-n = 1'b0;
+    rst_n = 1'b0;
     #(2*PERIOD);
-    rst-n = 1'b1;
+    rst_n = 1'b1;
 
     #(3*PERIOD);
 
@@ -438,48 +427,47 @@ module tb-counter-blinky;
 endmodule
 ```
 
-counter-blinky.core 文件：
+counter_blinky.core 文件：
 
-```
-#!yaml
+```yaml
 CAPI=2:
 
-name: qian:examples:counter-blinky:1.0.0
-description: Counter-blinky, a example core with dependencies
+name: qian:examples:counter_blinky:1.0.0
+description: Counter_blinky, a example core with dependencies
 
 filesets:
   rtl:
     files:
-      - rtl/counter-blinky.sv
-    file-type: systemVerilogSource
+      - rtl/counter_blinky.sv
+    file_type: systemVerilogSource
     depend:
       - qian:examples:counter
       - fusesoc:utils:blinky:0
 
   tb:
     files:
-      - tb/tb-counter-blinky.sv
-    file-type: systemVerilogSource
+      - tb/tb_counter_blinky.sv
+    file_type: systemVerilogSource
 
 targets:
   default: &default
     filesets:
       - rtl
-    toplevel: counter-blinky
+    toplevel: counter_blinky
     parameters:
       - DW
-      - clk-freq-hz
+      - clk_freq_hz
 
   sim:
     <<: *default
     description: Simulate the design
-    default-tool: icarus
-    filesets-append:
+    default_tool: icarus
+    filesets_append:
       - tb
-    toplevel: tb-counter-blinky
+    toplevel: tb_counter_blinky
     tools:
       icarus:
-        iverilog-options:
+        iverilog_options:
           - -g2012
 
 parameters:
@@ -487,7 +475,7 @@ parameters:
     datatype    : int
     description : counter width
     paramtype   : vlogparam
-  clk-freq-hz:
+  clk_freq_hz:
     datatype    : int
     description : frequency in hz
     paramtype   : vlogparam
@@ -495,9 +483,8 @@ parameters:
 
 用下面的命令进行 build：
 
-```
-#!bash
-fusesoc --cores-root=mycores run --target=sim --setup --build --run qian:examples:counter-blinky
+```bash
+fusesoc --cores-root=mycores run --target=sim --setup --build --run qian:examples:counter_blinky
 ```
 
 然后就可以到 build 下查看波形，进行 debug 了。
@@ -517,15 +504,14 @@ conf 文件里面加入这些配置后，因为 `cores-root` 已经包含了本�
 
 ```
 #!bash
-fusesoc --config fusesoc.conf run --target=sim --setup --build --run qian:examples:counter-blinky
+fusesoc --config fusesoc.conf run --target=sim --setup --build --run qian:examples:counter_blinky
 ```
 
 同时，build 完成后可以看到自动下载的 blinky 保存到了我们指定的 `cache-root` 目录下面。
 
 运行时提示 cores-root 这个选项已经被弃用了，应该使用添加 library 的方式，查看 `fusesoc library add -h` 后再实验一下：
 
-```
-#!bash
+```bash
 fusesoc library add mycores ~/workspace/mycores
 fusesoc library list
 ```
@@ -534,4 +520,4 @@ fusesoc library list
 
 # More
 
-Fusesoc 的这个想法显然是从 `pip`， `npm` 借鉴过来的，现在硬件开源领域越来越多地借鉴软件领域的成功经验，比如 RISC-V、 fusesoc、硬件敏捷开发、chisel/spanil HDL、chipalliance 等等，如果将来硬件开发能像软件一样蓬勃发展，想想都是一件激动人心的事情。
+Fusesoc 的这个想法显然是从 `pip`， `npm` 借鉴过来的，现在硬件开源领域越来越多地借鉴软件领域的成功经验，比如 RISC-V、 fusesoc、硬件敏捷开发、chisel/spinal HDL、CHIPS Alliance 等等，如果将来硬件开发能像软件一样蓬勃发展，想想都是一件激动人心的事情。

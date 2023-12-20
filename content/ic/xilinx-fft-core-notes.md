@@ -12,10 +12,7 @@ IP 核的接口示意图：
 
 ![schematic symbol](/images/xilinx-fft-core-notes/symbol.png)
 
-<br>
-
 ## Timing
-* * *
 
 ### `START / RFD` port
 
@@ -77,10 +74,7 @@ datasheet 中没有专门描述 `start` 信号和其他信号的时序关系，�
 
 **虽然功能上是不影响下一帧的数据的，毕竟和预期的时序不同，不知道是否会影响时序设计，有待继续观察。**
 
-<br>
-
 ## Port
-* * *
 
 ### `NFFT` port
 
@@ -145,10 +139,7 @@ datasheet 中介绍，控制正反变换的信号一共有两个：`fwd-inv` 和
 
 （其实如果仔细分析对比 FPGA 和 Matlab 的结果，就能发现两者的差别就是这个 1/N 的倍数关系，只是自己对数字不敏感，又懒得仔细观察 =.=）
 
-<br>
-
 ## P.S. Test program
-* * *
 
 ### FFT IP core
 

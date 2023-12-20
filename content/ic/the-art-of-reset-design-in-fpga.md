@@ -9,11 +9,8 @@ Summary: 总结 FPGA 中的复位设计
 复位信号在系统中的地位和时钟信号几乎同等重要，我们想尽量把系统设计为可控，那么最基本的控制信号就是复位信号了。
 
 复位信号的设计需要考虑的因素，各种书刊、论文、白皮书、网上论坛都有相关讨论，但是至今对于给定 FPGA 设计中使用哪种复位方案仍然没有明确答案。本文总结了一些大神的经典论文和网上的许多博客，尽可能用简单的图说明选择某种设计方案及其理由，涉及的更深入的原理请自行 Google :-P
- 
-<br>
 
 ## Understanding the flip-flop reset behavior
-* * *
 
 在开始详细讨论之前，首先得理解 FPGA 的基本单元 Slice 中的 FF 的复位方式。Xilinx 的 Virtex 5 系列的芯片中的 FF 的类型都是 DFF (D-type flip flop)，这些 DFF 的控制端口包括一个时钟 CLK，一个高有效的使能 CE，一个高有效的置位/复位 SR。这个 SR 端口可以配置为同步的置位/复位，也可以配置为异步方式的置位/复位。如下图所示
 
@@ -29,10 +26,7 @@ Summary: 总结 FPGA 中的复位设计
 
 另外，基于 SRAM 的 FPGA 可以设定上电初始化的值：如果我们在定义 reg 变量时给它一个初始值，那么 FPGA 在上电配置(GSR 变高)时，载入这个值。
 
-<br>
-
 ## Active low  V.S.  Active high
-* * *
 
 大多数书籍和博客都推荐使用 “低电平有效” 的复位方案，却没有明确说明为什么使用 “低电平有效”。
 
@@ -61,10 +55,7 @@ Summary: 总结 FPGA 中的复位设计
 [book1]: http://book.douban.com/subject/3919870/
 [article1]: http://www.eetimes.com/document.asp?doc-id=1278998
 
-<br>
-
 ## Synchronous V.S. Asynchronous
-* * *
 
 因为 DFF 有两种复位端口，所以对应的有两种复位方式：同步复位 和 异步复位。两种复位方式各有特点，适用于不同的应用场景。下面先分别总结两种方案的优劣，最后总结当前流行的的主流复位方案。
 
@@ -90,7 +81,7 @@ Summary: 总结 FPGA 中的复位设计
 
 对应的 RTL Schematic 如下：
 
-![sync reset](/images/the-art-of-reset-design-in-fpga/sync-reset.png)
+![sync reset](/images/the-art-of-reset-design-in-fpga/sync_reset.png)
 
 其中 `fdr` 是 Xilinx 的原语，表示 `Singal Data Rate D Flip-Flop with Synchronous Reset and Clock Enable (posedge clk)`
 
@@ -134,19 +125,19 @@ Summary: 总结 FPGA 中的复位设计
 
 synposys 提供了综合指令 `sync-set-reset`
 
+    #!verilog
     // synposys sync-set-reset "rst"
 
 这个指令的作用是告诉综合工具指定的信号是同步 set/reset，那么综合工具就会尽量把这个信号放在靠近寄存器的位置，以防前面说仿真问题。
 
-**P.S.**
+!!!note
+    **通常，只有在综合指令是不许的而且是紧要的时候，我们才使用它们。**我们应该遵守这一原则，因为综合指令的使用可能导致前后仿真的不一致。
 
-**通常，只有在综合指令是不许的而且是紧要的时候，我们才使用它们。**我们应该遵守这一原则，因为综合指令的使用可能导致前后仿真的不一致。
+    但是 `sync-set-reset` 是个例外情况，因为它不会影响逻辑行为，只影响设计的功能实现。
 
-但是 `sync-set-reset` 是个例外情况，因为它不会影响逻辑行为，只影响设计的功能实现。
+    所以明智的设计者在项目开始的时候就把 `sync-set-reset` 添加到 RTL 代码中，以避免以后的多次综合。由于每个模块对这条指令只要求使用一次（模块只有一个复位信号），所以推荐为每个模块添加这条指令。
 
-所以明智的设计者在项目开始的时候就把 `sync-set-reset` 添加到 RTL 代码中，以避免以后的多次综合。由于每个模块对这条指令只要求使用一次（模块只有一个复位信号），所以推荐为每个模块添加这条指令。
-
-如果觉得每个模块都添加这种方式太繁琐，还有另外一种方法：在读取 RTL 代码前，设置综合变量 `hdlin-ff-always-sync-set-reset` 为 `true`，可以达到同样的效果。
+    如果觉得每个模块都添加这种方式太繁琐，还有另外一种方法：在读取 RTL 代码前，设置综合变量 `hdlin-ff-always-sync-set-reset` 为 `true`，可以达到同样的效果。
 
 #### Advantage
 
@@ -172,7 +163,7 @@ synposys 提供了综合指令 `sync-set-reset`
 
     有很多教材和博客都直接说 “同步复位会产生额外的逻辑资源”，可能他们是基于 Altera 的 FPGA 这么做的，如下图所示：
     
-    ![extra logic](/images/the-art-of-reset-design-in-fpga/extra-logic.png)
+    ![extra logic](/images/the-art-of-reset-design-in-fpga/extra_logic.png)
     
     但是根据我实际的测试结果，对于 Virtex 5 系列的芯片，它的原语里面已经含有各种带同步、异步复位端口的 FF，ISE 自带的 XST 也已经很智能了，它会根据代码分析，自动选择合适的 FF。所以上面同步复位综合出来的 RTL Schematic 中没有所谓的 “多余的逻辑资源”。
     
@@ -196,7 +187,7 @@ synposys 提供了综合指令 `sync-set-reset`
 
 对应的 RTL Schematic 如下：
 
-![aync reset](/images/the-art-of-reset-design-in-fpga/async-reset.png)
+![aync reset](/images/the-art-of-reset-design-in-fpga/async_reset.png)
 
 其中 `fdc` 是 Xilinx 的原语，表示 `Single Data Rate D Flip-Flop with Asynchronous Clear and Clock Enable (posedge clk)`
 
@@ -230,7 +221,8 @@ synposys 提供了综合指令 `sync-set-reset`
 
     由于复位信号和时钟在传输延迟的轻微差别，导致有的寄存器的复位信号早于时钟信号，在时钟沿之前寄存器就被先复位；有些复位信号晚于时钟信号，在时钟沿之后寄存器才复位，从而有些寄存器先于其他寄存器退出复位状态。
 
-*异步复位和同步复位是互补，一个的优点（缺点）即使另外一个的缺点（优点）：*
+!!!note
+    异步复位和同步复位是互补关系，一个的优点（缺点）即使另外一个的缺点（优点）。
 
 #### Advantage
 
@@ -256,11 +248,11 @@ synposys 提供了综合指令 `sync-set-reset`
 
 它的原理如下图所示
 
-![reset synchronizer](/images/the-art-of-reset-design-in-fpga/reset-synchronizer.png)
+![reset synchronizer](/images/the-art-of-reset-design-in-fpga/reset_synchronizer.png)
 
 需要注意到是，上图的复位是传统的低电平有效方式，对于 Xilinx 器件，原理图稍有不同，其复位按钮接到了 FF 的置位端，第一级 FF 的输入也由 `Vcc` 变为 `GND`。 [How do I reset my FPGA][article1] 介绍了对应的 RTL Schematic ：
 
-![reset-synchronizer-xilinx](/images/the-art-of-reset-design-in-fpga/reset-synchronizer-xilinx.jpg)
+![reset-synchronizer-xilinx](/images/the-art-of-reset-design-in-fpga/reset_synchronizer_xilinx.jpg)
 
 对于 Xilinx 器件，用代码具体实现
 
@@ -268,34 +260,34 @@ synposys 提供了综合指令 `sync-set-reset`
 
     #!verilog
     module SYSRST(
-        clk, rst-pb, sys-rst
+        clk, rst_pb, sys_rst
         );
 
         input       clk;
-        input       rst-pb;
+        input       rst_pb;
 
-        output      sys-rst;
-        reg         sys-rst;
+        output      sys_rst;
+        reg         sys_rst;
 
-        reg         rst-r;
+        reg         rst_r;
 
-        always @(posedge clk or posedge rst-pb) begin
-            if (rst-pb) begin
+        always @(posedge clk or posedge rst_pb) begin
+            if (rst_pb) begin
                 // reset
-                rst-r <= 1'b1;
+                rst_r <= 1'b1;
             end
             else begin
-                rst-r <= 1'b0;
+                rst_r <= 1'b0;
             end
         end
 
-        always @(posedge clk or posedge rst-pb) begin
-            if (rst-pb) begin
+        always @(posedge clk or posedge rst_pb) begin
+            if (rst_pb) begin
                 // reset
-                sys-rst <= 1'b1;
+                sys_rst <= 1'b1;
             end
             else begin
-                sys-rst <= rst-r;
+                sys_rst <= rst_r;
             end
         end
 
@@ -303,17 +295,17 @@ synposys 提供了综合指令 `sync-set-reset`
 
 对应的 RTL Schematic 如下：
 
-![reset synchronizer](/images/the-art-of-reset-design-in-fpga/reset-synchronizer-rtl.png)
+![reset synchronizer](/images/the-art-of-reset-design-in-fpga/reset_synchronizer_rtl.png)
 
-其中，`rst-pb` 是系统的复位按钮，`sys-rst` 是同步化的结果。可以看到综合结果和上图是一致的。
+其中，`rst_pb` 是系统的复位按钮，`sys_rst` 是同步化的结果。可以看到综合结果和上图是一致的。
 
 **Simulation:**
 
-![simulation](/images/the-art-of-reset-design-in-fpga/reset-synchronizer-simulation.png)
+![simulation](/images/the-art-of-reset-design-in-fpga/reset_synchronizer_simulation.png)
 
-所谓 “异步复位”，如上图(由于连接到了置位端，叫 “异步置位” 更合适)，一旦复位信号 `rst-pb` 有效，那么输出端口 `sys-rst` 立即被置为 `1`，否则输出为 `0`。
+所谓 “异步复位”，如上图(由于连接到了置位端，叫 “异步置位” 更合适)，一旦复位信号 `rst_pb` 有效，那么输出端口 `sys_rst` 立即被置为 `1`，否则输出为 `0`。
 
-所谓 “同步释放”。如上图，当复位信号 `rst-pb` 释放时(从有效变为无效)，输出端口 `sys-rst` 不是立即变化，而是被 FF 延迟了一个时钟输出，从而使其和时钟同步化。
+所谓 “同步释放”。如上图，当复位信号 `rst_pb` 释放时(从有效变为无效)，输出端口 `sys_rst` 不是立即变化，而是被 FF 延迟了一个时钟输出，从而使其和时钟同步化。
 
 **是否存在亚稳态？**
 
@@ -323,7 +315,7 @@ synposys 提供了综合指令 `sync-set-reset`
 
 可以看到，这种 “异步复位，同步释放” 的方法既解决了同步复位对脉冲宽度的要求，又解决了异步复位可能导致的亚稳态问题。
 
-> **Guidelien:** Every ASIC using an asynchronous reset should include a reset synchronizer circuit!!
+> **Guideline:** Every ASIC using an asynchronous reset should include a reset synchronizer circuit!!
 
 ### Conclusion
 
@@ -335,14 +327,9 @@ synposys 提供了综合指令 `sync-set-reset`
 
 3. 如果不带有同步复位端口，那么就需要异步复位时，必须包含同步器
 
-<br>
-
 *在详细讨论了复位的有效电平、复位方式之后，我们开始讨论稍微复杂一点的复位设计：包括系统的复位方案、多时钟域的复位方案、复位信号的去除毛刺等。*
 
-<br>
-
 ## Think Local V.S. Think Global
-* * *
 
 我们使用复位信号的一个目的就是为了使电路可控，当上电时或者系统出错时，可以通过复位的方式回到正常状态。为了达到完全可控，传统的做法是对系统内的每个 FF 都连接复位信号，这样就造成了复位信号的高扇出，而高扇出会导致一系列的问题。
 
@@ -377,7 +364,7 @@ Xilinx 有个 White Paper，[Get Smart About Reset: Think Local, Not Global][wp2
 
 使用 GSR 的好处是 **可以解决复位信号高扇出的问题**，因为 GSR 是预布线的资源，它不占用每个 FF 和 Latch 的 set/reset 端口，如下图所示。很多资料都推荐将设计中的 reset 按钮连接到 GSR，以利用它比较低的 skew。
 
-![gsr rset](/images/the-art-of-reset-design-in-fpga/gsr-reset.gif)
+![gsr rset](/images/the-art-of-reset-design-in-fpga/gsr_reset.gif)
 
 既然 GSR 这么好，那么是不是只使用 GSR 就可以了，不必再用 FF 和 Latch 的 set/reset 端口了呢？
 
@@ -417,8 +404,6 @@ P.S. 事实上没有一个通用的、适合所有器件的复位方案，我们
 [ug626]: http://www.xilinx.com/support/documentation/sw-manuals/xilinx14-7/sim.pdf
 [question1]: http://forums.xilinx.com/t5/Virtex-Family-FPGAs/What-does-GSR-signal-really-mean-and-how-should-I-handle-the/td-p/35610
 [question2]: http://forums.xilinx.com/t5/Archived-ISE-issues/FPGA-Power-On-Reset/m-p/7027?query.id=134602#M2035
-
-<br>
 
 ### Shift Register Reset
 
@@ -472,7 +457,7 @@ P.S. 事实上没有一个通用的、适合所有器件的复位方案，我们
 
 如下图，复位信号 `rst` 对于第二个 ff 来说，是一个片选信号 `ce`，这样的设计产生额外的逻辑，是不好的。
 
-![bad style](/images/the-art-of-reset-design-in-fpga/bad-style.png)
+![bad style](/images/the-art-of-reset-design-in-fpga/bad_style.png)
 
 **Good Style:**
 
@@ -509,18 +494,15 @@ P.S. 事实上没有一个通用的、适合所有器件的复位方案，我们
 
 如下图，复位信号 `rst` 对于两个 ff 来说，都是复位信号，不需要额外的逻辑，这样的设计是比较好的。
 
-![good style](/images/the-art-of-reset-design-in-fpga/good-style.png)
-
-<br>
+![good style](/images/the-art-of-reset-design-in-fpga/good_style.png)
 
 ## Reset Distribution Tree
-* * *
 
 复位信号的 `reset distribution tree` 和 时钟信号的 `clock distribution tree` 差不多同等重要，因为在设计中，几乎每个器件都有时钟端口和复位端口(同步/异步)。
 
 reset distribution tree 和 clock distribution tree 如下图所示：
 
-![reset tree](/images/the-art-of-reset-design-in-fpga/reset-tree.png)
+![reset tree](/images/the-art-of-reset-design-in-fpga/reset_tree.png)
 
 系统中的主复位信号经过 reset distribution tree 达到每个元件，实现复位。`reset distribution tree` 和 `clock distribution tree` 最大的区别就是它们对 `skew` 的要求不同。由上面的讨论可知，复位信号和时钟的关系最好是“同步释放”，不像时钟信号的要求那么严格，复位信号之间的 skew 不需要那么严格，只要复位信号的延迟足够小，满足能在一个时钟周期内到达所有的复位负载端，并且满足各个 reg 和 flip-flop 的 `recovery time` 即可。
 
@@ -532,7 +514,7 @@ reset distribution tree 和 clock distribution tree 如下图所示：
 
 驱动 reset tree 最安全的方法就是使用 clock tree 的叶子节点的时钟信号来驱动，如下图所示。如果采用这种方法且时序分析是满足的，那么就没有问题。
 
-![reset tree driven delayed clock](/images/the-art-of-reset-design-in-fpga/reset-tree-delayed-clock.png)
+![reset tree driven delayed clock](/images/the-art-of-reset-design-in-fpga/reset_tree_delayed_clock.png)
 
 分析以下情况：clock tree 中的一路叶子时钟信号驱动 `reset synchroinzer`，得到的复位信号 masterrst-n 穿过 reset tree，输入到 DFF 的复位端口；clock tree 的另外一路叶子时钟信号直接连接 DFF 的时钟端。
 
@@ -550,7 +532,7 @@ reset distribution tree 和 clock distribution tree 如下图所示：
 
 一般来说，只有最后完成布局布线之后，才能根据具体情况进行分析调整 clock tree 和 reset tree。
 
-![reset tree driven delayed clock](/images/the-art-of-reset-design-in-fpga/reset-tree-parallel-clock.png)
+![reset tree driven delayed clock](/images/the-art-of-reset-design-in-fpga/reset_tree_parallel_clock.png)
 
 *对于 synchronou/asynchronous 两种 tree，可以用两种技术来进行优化：*
 
@@ -558,7 +540,7 @@ reset distribution tree 和 clock distribution tree 如下图所示：
 
 如下图所示，在 reset tree 中嵌入 DFF，在每个模块中，输入的 reset 信号首先经过一个 DFF，然后把经过 DFF 延迟输出的复位信号用作复位信号来复位逻辑、驱动子模块。这样 reset 信号就不必在一个时钟周期内到达每一个 DFF 的复位端口，从而可以把 reset 信号的时序要求降得很低。
 
-![synchronous reset](/images/the-art-of-reset-design-in-fpga/synchronous-reset-distribution.png)
+![synchronous reset](/images/the-art-of-reset-design-in-fpga/synchronous_reset_distribution.png)
 
 通过这种技巧，复位信号就被当作了普通的数据信号，而且时序分析要简单的多（因为 reset tree 的每一部分 stage 都有合理的扇出）。
 
@@ -567,12 +549,12 @@ reset distribution tree 和 clock distribution tree 如下图所示：
 **code**
 
     #!verilog
-    input    reset-raw;
+    input    reset_raw;
 
     // synposys sync-set-reset "reset"
-    always @(posedge clk) reset <= reset-raw;
+    always @(posedge clk) reset <= reset_raw;
 
-reset-raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地（local）复位信号，同时也连接子模块 reset-raw 的输入。
+reset_raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地（local）复位信号，同时也连接子模块 reset_raw 的输入。
 
 **Advantage**
 
@@ -590,7 +572,7 @@ reset-raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地�
 
 和同步复位类似，异步复位也可以采用相同的策略，如下图所示：
 
-![asynchronous reset](/images/the-art-of-reset-design-in-fpga/asynchronous-reset-distribution.png)
+![asynchronous reset](/images/the-art-of-reset-design-in-fpga/asynchronous_reset_distribution.png)
 
 利用前面讨论过的 reset synchronizer 将异步复位信号同步到每个子模块当中。
 
@@ -610,10 +592,7 @@ reset-raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地�
 
 对于 FPGA，因为系统的 clock tree 是预先布线好的，而全局主复位信号一般也使用时钟布线资源，所以不存在两棵 tree 之间关系的调整问题，所以只需要采用上面的 synchronou/asynchronous reset distribution tree 即可。
 
-<br>
-
 ## Multi-clock Reset
-* * *
 
 在一个系统中，往往有多个时钟，每个时钟域都应该有独立的 synchronizer 和 reset tree，这么做的目的是为了保证每个时钟域的每个寄存器都能满足 removal time。
 
@@ -625,28 +604,25 @@ reset-raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地�
 
 对于多时钟域的设计，很多时候不同时钟域之间复位信号的先后顺序没有要求，尤其是在有 `request-acknowledge` 这样握手信号的系统中，不会引起硬件上的错误操作，这时候下图所示的方法就足够了。
 
-![non coordinated reset](/images/the-art-of-reset-design-in-fpga/non-coordination.png)
+![non coordinated reset](/images/the-art-of-reset-design-in-fpga/non_coordination.png)
 
 **Sequenced coordination of reset removal**
 
 对于一些设计，要求复位信号的释放顺序有一定顺序，这时候应该使用下图所示的方法
 
-![sequenced rcoordination](/images/the-art-of-reset-design-in-fpga/sequenced-coordination.png)
+![sequenced rcoordination](/images/the-art-of-reset-design-in-fpga/sequenced_coordination.png)
 
 [How do I reset my FPGA][article1] 在文中提供了一张图来说明典型的系统复位方案，图中 `MMCM` 的 `lock` 和外部输入的复位信号相与，目的是为了保证提供给后面的同步器的时钟信号是稳定的；每个时钟域都有一个同步器来同步复位信号。
 
-![typical reset implementation in FPGA](/images/the-art-of-reset-design-in-fpga/typical-reset.jpg)
-
-<br>
+![typical reset implementation in FPGA](/images/the-art-of-reset-design-in-fpga/typical_reset.jpg)
 
 ## Reset Glitch Filtering
-* * *
 
 最后讨论一下复位信号毛刺的问题。
 
 使用异步复位信号时，考虑到异步复位信号对毛次比较敏感，所以在一些系统中需要处理毛次，下图显示了一种简单但是比较丑陋的方法(时延不是固定的，会随温度、电压变化)
 
-![reset glitch filtering](/images/the-art-of-reset-design-in-fpga/reset-glitch-filtering.png)
+![reset glitch filtering](/images/the-art-of-reset-design-in-fpga/reset_glitch_filtering.png)
 
 需要注意的是
 
@@ -654,10 +630,7 @@ reset-raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地�
 
 2. 不是所有的系统都需要过滤毛刺，设计者要先研究需求，再觉得是否使用延时来过滤毛次
 
-<br>
-
 ## Summary
-* * *
 
 本文是读书笔记，总结了参考资料中的复位信号的设计方法和需要注意的问题，包含了底层的 DFF 复位方式、高/低电平有效、同步/异步复位、和系统级的复位方案选择、设计。
 
@@ -677,9 +650,7 @@ reset-raw 是本模块的输入复位信号，reset 为经过 DFF 后的本地�
 
 8. 每个时钟域都应该有一个同步器来同步复位信号。
 
-总而言之，一句话：我们想象中的，简单的，统一的复位方案是...不存在的 =.=
-
-<br>
+总而言之，一句话：我们想象中的，简单、统一的复位方案是...不存在的 =.=
 
 ## Reference
 

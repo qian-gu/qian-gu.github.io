@@ -7,7 +7,6 @@ Slug: summary-of-hazard-and-glitch
 Summary: 总结电路设计中的冒险现象和毛刺，及解决方法。
 
 ## Hazards & Glitch
-* * *
 
 所谓 “冒险” `Hazard`，是指一种数字电路中由于设计或者是外部因素，造成的数字信号错误的现象，而这个错误的信号就叫做毛刺 `Glitch`。
 
@@ -48,10 +47,7 @@ Summary: 总结电路设计中的冒险现象和毛刺，及解决方法。
 [wiki]: http://en.wikipedia.org/wiki/Hazard-(logic)
 [book1]: http://book.douban.com/subject/3575520/
 
-<br>
-
 ## Solution
-* * * 
 
 首先我们应该尽可能避免存在冒险的设计，这样就不存在解决毛刺的问题。
 
@@ -118,10 +114,7 @@ Summary: 总结电路设计中的冒险现象和毛刺，及解决方法。
 
 动态的解决相对比较复杂，但是 **只要消除了静态冒险，那么就不会存在动态冒险。**
 
-<br>
-
 ## in FPGA Design
-* * *
 
 本部分来自：[关于毛刺问题的探讨][page1] 和 [Verilog HDL程序设计与实践][book2]
 
@@ -152,8 +145,6 @@ Summary: 总结电路设计中的冒险现象和毛刺，及解决方法。
 [book2]: http://book.douban.com/subject/3522845/
 [blog1]: http://guqian110.github.io/tag/clock-design.html
 [bolg2]: http://guqian110.github.io/pages/2014/10/09/the-clock-design-in-fpga-3-multiasynchronous-clock-design.html
-
-<br>
 
 ## Ref
 

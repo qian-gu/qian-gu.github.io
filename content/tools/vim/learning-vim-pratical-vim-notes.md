@@ -4,7 +4,8 @@ Date: 2020-08-20 20:45
 Category: Tools
 Tags: vim
 Author: Qian Gu
-Summary: 记录《Pratical Vim》读书笔记
+Series: Learning Vim
+Summary: 《Pratical Vim》读书笔记。
 
 ## Vim 解决问题的方式
 

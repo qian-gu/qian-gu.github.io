@@ -24,10 +24,7 @@ Summary: 总结常用的时钟分频方法
 
 [clock design]: http://guqian110.github.io/pages/2014/09/12/the-clock-design-in-fpga-2-clock-design.html
 
-<br>
-
 ## Counter
-* * *
 
 时钟分频一般都是通过计数器 counter 来实现的，计数器是分频的基础。
 
@@ -36,10 +33,7 @@ Summary: 总结常用的时钟分频方法
 [wiki]: http://en.wikipedia.org/wiki/Counter
 [blog1]: http://guqian110.github.io/pages/2014/11/04/counter-design-summary.html
 
-<br>
-
 ## Clock divider
-* * *
 
 ### even clock divider
 
@@ -179,14 +173,9 @@ Timing:
 
 [blog2]: http://blog.sina.com.cn/s/blog-6840802c0100izey.html
 
-<br>
-
 ## Summary
-* * *
 
 本文总结了一些常用的时钟分频技术，虽然不推荐使用逻辑来对时钟信号进行分频，但是在一些要求比较的的情况下，使用逻辑分频不仅可以满足要求，还能降低资源消耗，不失为一种好方法。而且时钟分频也可以训练我们的设计能力。
-
-<br>
 
 ## Reference
 

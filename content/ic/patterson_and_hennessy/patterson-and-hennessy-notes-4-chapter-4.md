@@ -23,7 +23,7 @@ Summary: Patterson and Hennessy 读书笔记，第四章
 
 ## A Simple Implementation Scheme
 
-从 RISC-V ISA 中挑选出三种具有代表性的指令组成一个小子集，
+从 RISC-V ISA 中挑选出三种具有代表性的指令组成一个小子集：
 
 + 代表和 memory 交互的 `ld`, `st` 指令
 + 代表算术-逻辑运算的 `add`, `sub`, `and`, `or` 指令
@@ -50,13 +50,13 @@ Pipeline 的基本概念，是在一个很长的组合逻辑路径中插入寄�
 
 假设整个组合逻辑被切分成 n 个 latency 相似的 stage，每个 stage 的 latency 为 T₀，则单周期方案需要的总时间为
 
-$$T-{nopipe} = n * T-0$$
+$$T_{nopipe} = n * T_0$$
 
 而 pipeline 方案，假设指令之间没有冒险，则所有之间直接可以完美重叠，则每条指令的执行时间为
 
-$$T-{pipe} = T-0$$
+$$T_{pipe} = T_0$$
 
-显然在理想情况下，pipeline 版本的性能近似可以提高 n 倍，流水线切分地越细，每条指令的执行时间 T₀ 就越小，性能越高。一般低端 MCU 大概 2～3 个 stage，而高端 CPU 高达 10 个 stage。
+显然在理想情况下，pipeline 版本的性能近似可以提高 n 倍，流水线切分地越细，每条指令的执行时间 T 就越小，性能越高。一般低端 MCU 大概 2～3 个 stage，而高端 CPU 高达 10 个 stage。
 
 性能提升 n 倍是非常理想的理论数据，实际上有很多因素导致最终效果稍差：
 
@@ -72,7 +72,7 @@ $$T-{pipe} = T-0$$
 | 数据冒险 `data hazard` | 数据依赖 RAW 等 | `forward` / `rename` |
 | 控制冒险 `contrl hazard`/ 分支冒险 `branch hazard` | 取指不正确导致指令不能在预定时钟周期内执行 | `prediction`(`BTB`/`BTH`) / delay slot |
 
-基本上每个 stage 都有对应的核心问题需要解决，各种各样的解决方案实现复杂度、消耗的资源和达到的性能都不相同，这些解决方案按照不同的方式组合在一起，就形成了高中低等不同系列的 CPU。关于每个 stage 的问题及解决方案可以扩展出很多内容，更详细的内容略。
+基本上每个 stage 都有对应的核心问题需要解决，各种各样的解决方案实现复杂度、消耗的资源和达到的性能都不相同，这些解决方案按照不同的方式组合在一起，就形成了高中低等不同系列的 CPU。关于每个 stage 的问题及解决方案可以扩展出很多内容。
 
 !!! note
     除了存储系统外，pipeline 的有效运作是决定一个处理器 CPI 的最重要因素。不管实现方案是否简单、性能高低，结构冒险、数据冒险、控制冒险这三种冒险是 pipeline 中非常重要的问题。一般来说，
@@ -171,7 +171,7 @@ Exception 处理中，要把 pipeline 中每一个 Exception 和相对应的指�
 
 2. 处理 `data hazard` 和 `control hazard`
 
-    在静态处理器中由斌啊一起完成所有的数据冒险和控制冒险，而绝大多数动态发射处理器在运行时通过硬件技术消除冒险。
+    在静态处理器中由编译器处理所有的数据冒险和控制冒险，而绝大多数动态发射处理器在运行时通过硬件技术消除冒险。
 
 虽然分成了静态和动态两类，实际上这些方法之间都是相互借鉴的，没有任何一种方法是纯粹独立的。
 
@@ -211,8 +211,7 @@ Exception 处理中，要把 pipeline 中每一个 Exception 和相对应的指�
 
 书里面有个例子，对下面这段程序重排序，使得其在上述双发射处理器上的性能达到尽可能高。
 
-```
-#!text
+```asm
 Loop: ld   x31, 0(x20)      // x31=array element
       add  x31, x21         // add scalar in x21
       sd   x31, 0(x20)      // store result
@@ -257,7 +256,8 @@ Loop: ld   x31, 0(x20)      // x31=array element
 
 许多 superscalar 把动态发射算法扩展成一整套体系：`dynamic pipeline scheduling`，即动态调度算法。最经典的动态调度算法就是 Tomasolu 算法，涉及到的术语有 `reservation station`, `commit`, `reorder buffer`, `out-of-order execution`, `in-order commit` 等，这里不展开描述。
 
-注意：目前所有动态调度算法都使用 in-order commit。
+!!! Important
+    目前所有动态调度算法都使用 in-order commit。
 
 既然编译器也可以做调度，为什么 superscalar 还需要用动态调度算法呢？原因大概有 3 个：
 
@@ -266,7 +266,7 @@ Loop: ld   x31, 0(x20)      // x31=array element
 + 静态调度无法适应硬件平台切换，必须重新编译，而动态调度不需要重新编译，对软件不可见，代码复用高
 
 !!! note
-    现代高性能处理器都可以在每个 cycle 发射多条指令，但是很不幸的是要维持高 issue rate 非常困难。比如，虽然现在处理器都可以达到 4～6 发射的并行读，但几乎没有什么应用可以保持在 2 以上的发射速率，主要原因有两个：
+    现代高性能处理器都可以在每个 cycle 发射多条指令，但是很不幸的是要维持高 issue rate 非常困难。比如，虽然现在处理器都可以达到 4～6 发射的并行度，但几乎没有什么应用可以保持在 2 以上的发射速率，主要原因有两个：
 
     + 主要性能瓶颈来自于无法避免的 data hazard，虽然基本无法优化真数据依赖 RAW，但是编译器和硬件通常连是否存在依赖都不确定，所以只能保守地认为存在依赖。一般来说，ILP 总是有优化空间的，但是因为太分散（可能存在于上千条指令之间），编译器和硬件往往力不从心。
     + memory hierarchy 的损失会导致 pipeline 无法保持满负荷运行，虽然有些 stall 可以掩盖起来，但是有限的 ILP 无法掩盖所有 stall。

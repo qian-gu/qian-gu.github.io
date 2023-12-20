@@ -37,13 +37,13 @@ Summary: Patterson and Hennessy 读书笔记，第六章
 
 Amdahl 定律：
 
-$$T-{after} = \frac{T-{affected}}{Amout\ of\ improve} + T-{unaffected}$$
+$$T_{after} = \frac{T_{affected}}{Amout\ of\ improve} + T_{unaffected}$$
 
 也可以改写成：
 
-$$speed\-up = \frac{T-{before}}{(T-{before}-T-{affected})+\frac{T-{affected}}{n}}$$
+$$speed\_up = \frac{T_{before}}{(T_{before}-T_{affected})+\frac{T_{affected}}{n}}$$
 
-$$speed\-up = \frac{1}{(1-Frac-{affected}) + \frac{Frac-{affected}}{n}}$$
+$$speed\_up = \frac{1}{(1-Frac_{affected}) + \frac{Frac_{affected}}{n}}$$
 
 从书里面的两个例子可以看到，有时候必须增加问题的规模才能保持高加速比，而且负载不均衡对加速效果影响很大。
 
@@ -83,7 +83,7 @@ vector 和 MMX 的对比：
 | `hardware multithreading`         | 在一个 thread 发生 stall 时硬件可以切换到另外一个 thread               |
 | `thread`                          | 包含了 PC + register file + stack，共享同一片虚拟地址空间，切换不涉及 OS |
 | `process`                         | 包含了 1 个或多个 thread、虚拟地址空间、OS 状态，切换涉及到 OS            |
-| `SMT` Simultaneous multithreading | 利用多发射、动态调度使用资源，从而降低 thread 切换 cost 的技术            |
+| `SMT` Simultaneous multithreading | 利用多发射、动态调度使用资源，从而降低 thread 切换成本的技术            |
 
 MIMD 是通过 process 和 thread 使得多个 core 一直保持 busy，从而提高性能和利用率，而 `hardware multithreading` 则可以让多个 thread 共享单一 core 的功能单元 FU (functional unit)，从而提高硬件的利用率。举个例子：比如某个 thread 发生了 stall，如果没有硬件多线程，那么 FU 就会处于 IDLE 状态，利用率下降；而如果有硬件多线程，那么可以切换执行另外一个线程，让 FU 一直保持 busy 状态，利用率不会下降。
 

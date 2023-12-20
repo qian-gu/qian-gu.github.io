@@ -1,23 +1,17 @@
 Title: 学习 Vim 插件 DoxygenToolKit.vim
 Date: 2015-01-12 15:21
 Category: Tools
-Tags: Linux, Vim, DoxygenToolKit
+Tags: vim, DoxygenToolKit
 Slug: learning-vim-doxygentoolkit
 Author: Qian Gu
-Summary: 学习 Vim 插件 DoxygenToolKit
+Series: Learning Vim
+Summary: 学习 Vim 插件 DoxygenToolKit。
 
-[前面一篇博客][blog1]已经介绍过 Doxygen 了，Doxygen 的确是一个非常给力的工具，但是为了生成文档，我们必须在注释上花费很大的时间和精力。
+[前面一篇博客][blog1]已经介绍过 Doxygen 了，Doxygen 的确是一个非常给力的工具，但是为了生成文档，我们必须在注释上花费很大的时间和精力。那么问题又来了：如何才能既享受 Doxygen 的强大功能，同时又避免注释中大量的重复性的输入？
 
-那么问题又来了：**如何才能既享受 Doxygen 的强大功能，同时又避免大量的重复性的注释内容？**
-
-解决思路： 让编辑器来替我们写那些格式和内容固定的部分，我们只负责写真正的有效内容。
-
-所以，答案就是：**Vim + DoxygenToolKit.vim 插件**
-
-<br>
+解决思路是让编辑器来替我们写那些格式和内容固定的部分，我们只负责写真正的有效内容。所以答案就是：**Vim + DoxygenToolKit.vim 插件**。
 
 ## DoxygenToolKit
-* * *
 
 DoxygenToolKit 是 Vim 的一款插件，用它可以很方便地添加 Doxygen 风格的注释，可以节省大量时间和精力，提高写代码的效率。
 
@@ -40,11 +34,11 @@ in all the file will be treated and placed in a new block DOX-SKIP-BLOCK (or any
 
 1. 在 Vundle 中加入：
 
-        Bundle 'DoxygenToolkit.vim'
+        Plugin 'DoxygenToolkit.vim'
         
 2. 打开 Vim，输入命令：
 
-        :BundleInstall
+        :PluginInstall
         
 Vundle 会自动完成安装 :-D
 
@@ -52,33 +46,12 @@ Vundle 会自动完成安装 :-D
 
 我们有两种方法可以修改设置，方法一是直接在 DoxygenToolKit.vim 脚本文件中修改相关变量；方法二是在 ~/.vimrc 里面修改。显然方法二更加好一点，因为如果用方法一直接改原脚本，可能还得保存备份才能恢复默认值。
 
-因为平时写的 C++ 程序比较多，所以针对[基于 Doxygen 的 C++ 注释风格][blog2]，我们需要进行以下几步：
+    let g:loaded_DoxygenToolkit = 1
+    " set for C++ style
+    let g:DoxygenToolkit_commentType == "C++"
 
-1. 在 .vimrc 中我特别配置了以下命令：
-
-            let g:DoxygenToolkit-briefTag-funcName = "yes"
-
-            " for C++ style, change the '@' to '\'
-            let g:DoxygenToolkit-commentType = "C++"
-            let g:DoxygenToolkit-briefTag-pre = "\\brief "
-            let g:DoxygenToolkit-templateParamTag-pre = "\\tparam "
-            let g:DoxygenToolkit-paramTag-pre = "\\param "
-            let g:DoxygenToolkit-returnTag = "\\return "
-            let g:DoxygenToolkit-throwTag-pre = "\\throw " " @exception is also valid
-            let g:DoxygenToolkit-fileTag = "\\file "
-            let g:DoxygenToolkit-dateTag = "\\date "
-            let g:DoxygenToolkit-authorTag = "\\author "
-            let g:DoxygenToolkit-versionTag = "\\version "
-            let g:DoxygenToolkit-blockTag = "\\name "
-            let g:DoxygenToolkit-classTag = "\\class "
-            let g:DoxygenToolkit-authorName = "Qian Gu, guqian110@gmail.com"
-            let g:doxygen-enhanced-color = 1
-            "let g:load-doxygen-syntax = 1
-
-2. 即使前一步中设置了 C++ 风格，但是生成的 Lisence 仍然是 `//`，而不是我们想要的 `///`，所以我们还需要修改原脚本（line 362~363）为：
-
-        let g:DoxygenToolKit-startCommentBlock = "/// "
-        let g:DoxygenToolKit-interCommentBlock = "/// "
+    let g:DoxygenToolkit_briefTag_funcName = "yes"
+    let g:DoxygenToolkit_authorName = "Qian Gu"
 
 ### Usage
 
@@ -135,14 +108,10 @@ Vundle 会自动完成安装 :-D
     * @return 
     */ 
 
-[official]: http://www.vim.org/scripts/script.php?script-id=987
-
-<br>
+[official]: http://www.vim.org/scripts/script.php?script_id=987
 
 ## Ref
 
 [DoxygenToolKit.vim][official]
 
-[blog1]: http://guqian110.github.io/pages/2015/01/11/how-to-analysize-code-elegantly.html
-
-[blog2]: http://blog.csdn.net/czyt1988/article/details/8901191
+[blog1]: https://qian-gu.github.io/posts/tools/how-to-analyse-code-elegantly.html

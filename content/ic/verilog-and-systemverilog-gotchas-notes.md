@@ -63,20 +63,20 @@ SV 的标准：
 
 | 陷阱 | 如何避免 |
 | ------- | ----- |
-| `always *` 可能推断不出所调用的 function 用到的所有信号 | 使用 `always-comb` |
-| array 如何添加到敏感列表中？ | 使用 `always-comb` |
+| `always *` 可能推断不出所调用的 function 用到的所有信号 | 使用 `always_comb` |
+| array 如何添加到敏感列表中？ | 使用 `always_comb` |
 | vector 和 posedge/negedge 配合时，只会处理 LSB | 避免使用，如果一定要用 vector 必须先转化成 1bit 信号 |
-| posedge/negedge 只被敏感列表中表达式的结果触发，不受操作数的影响 | 使用 `always-comb` |
-| 不恰当的 begin...end 可能导致时序逻辑功能错误 | `always-ff` 不需要 begin...end，只有内部 if...else 需要 |
+| posedge/negedge 只被敏感列表中表达式的结果触发，不受操作数的影响 | 使用 `always_comb` |
+| 不恰当的 begin...end 可能导致时序逻辑功能错误 | `always_ff` 不需要 begin...end，只有内部 if...else 需要 |
 | 有些信号可能在 reset 块中会被不小心漏掉，导致功能错误 | lint、coverage 等工具报错 |
-| 时序逻辑误用阻塞赋值，组合逻辑误用非阻塞赋值 | lint 工具报错 / `always-comb`、`always-ff` |
+| 时序逻辑误用阻塞赋值，组合逻辑误用非阻塞赋值 | lint 工具报错 / `always_comb`、`always_ff` |
 | 组合逻辑块中语句的顺序错误可能导致仿真和实际硬件行为不一致 | 写代码时小心 |
-| `parallel-case` 使用不当导致仿真和硬件行为不一致 | 增加 default 分支 / `unique case`、`priority case` |
+| `parallel_case` 使用不当导致仿真和硬件行为不一致 | 增加 default 分支 / `unique case`、`priority case` |
 | 粘贴复制导致的重复条件分支，只会执行第一个分支，导致与设计意图不符 | lint 工具 / `unique case` |
 | 不恰当使用 `unique` 导致功能不正确 | 关注 warning |
-| 使用 2-state 信号建模可能导致仿真出错 | 避免使用 2-state 信号 / 使用 `always-comb`, `always-ff` |
+| 使用 2-state 信号建模可能导致仿真出错 | 避免使用 2-state 信号 / 使用 `always_comb`, `always_ff` |
 | 内部 X 态可能并不会传播到端口上，导致错误未被发现 | 使用 SVA |
-| Verilog 允许 net 多驱动，可能出现功能错误 | lint 工具 / 使用 SV 的 `always-comb` |
+| Verilog 允许 net 多驱动，可能出现功能错误 | lint 工具 / 使用 SV 的 `always_comb` |
 
 ## 运算符陷阱
 

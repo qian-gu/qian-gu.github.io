@@ -7,7 +7,6 @@ Author: Qian Gu
 Summary: VHDL 笔记, 电路设计
 
 ## Code Structure
-* * *
 
 + 一段独立的 VHDL 代码一般至少由 3 部分组成：`LIBRARY declarations`、`ENTITY`、`ARCHITECTURE`
 
@@ -47,10 +46,7 @@ Summary: VHDL 笔记, 电路设计
 
 + VHDL 不区分大小写
 
-<br>
-
 ## Data Types
-* * *
 
 前面的 Entity 中的端口定义：
 
@@ -223,10 +219,7 @@ IEEE 1164 标准中包含了一些预先定义的数据类型。
 
 + `std-logic-arith` 中包含了很多数据类型转换函数，可以实现不同数据之间的转换。
 
-<br>
-
 ## Operators and Attributes
-* * *
 
 VHDL 语法虽然枯燥无味，但是只有对数据类型、运算操作符及其属性有了深刻认识，才能写出高质量和高效率的代码。
 
@@ -351,10 +344,7 @@ VHDL 中的自定义操作符作用和 C++ 中的操作符重载 方法、目的
         PORT (...);
     END my-entity;
     
-<br>
-
 ## Concurrent Code
-* * *
 
 从本质上讲，HDL 是 描述 (Description) 语言，对应的是硬件电路，而硬件电路是时刻工作的，所以，它的代码是并发执行的。只有 `process`，`function`，`procedure` 中的代码是顺序执行的，而且当这些模块作为一个共同的整体时，它们之间也是并行的。
 
@@ -424,10 +414,7 @@ syntax:
         (concurrent guarded and unguarded statements)
     END BLOCK label;
     
-<br>
-
 ## Sequential Code
-* * *
 
 VHDL 本质是并发执行的代码，但是在 `process`, `function`, `procedure` 内部的代码是顺序执行的，当它们作为一个整体时，相互之间也是并发执行的。
 
@@ -519,10 +506,7 @@ case 和 when 的区别在于，case 允许在每个测试条件下执行多个�
     #!VHDL
     [label:] NEXT [loop-label] [WHEN condition];
 
-<br>
-
 ## Signals & Variables
-* * *
 
 VHDL 提供了 `signal` 和 `variable` 两种对象来处理非静态数据；提供了 `constant` 和 `generic` 来处理静态数据。
 
@@ -564,8 +548,6 @@ VHDL 中的 `signal` 代表的是逻辑电路中的 “硬”连线，既可以�
 
     #!VHDL
     VARIABLE name : type [range] [:= initial-value];
-
-<br>
 
 ## Reference
 

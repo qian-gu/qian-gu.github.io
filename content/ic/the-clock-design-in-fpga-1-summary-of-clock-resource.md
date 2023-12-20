@@ -16,10 +16,7 @@ Summary: 总结 Xilinx FPGA 中的时钟资源
 
 [ug190]: http://www.xilinx.com/support/documentation/user-guides/ug190.pdf
 
-<br>
-
 ## Three Types of clock resource
-* * *
 
 ### Global Clocks
 
@@ -51,10 +48,8 @@ Summary: 总结 Xilinx FPGA 中的时钟资源
 ### I/O clocks
 
 + 第三种时钟资源是 I/O clocks，可以达到非常高的速度，用于局部的 I/O 串行器/解串器。
-<br>
 
 ## Global Clocking Resources
-* * *
 
 + 全局时钟（global clocks）是个专用网络，是专为覆盖对 FPGA 中各种资源的所有时钟输入设计的。
 
@@ -212,10 +207,7 @@ Xilinx 芯片全局时钟资源的使用方法主要有 5 种：
         NET "s2" USELOWSKEWLINES;
         NET "s3" USELOWSKEWLINES;
 
-<br>
-
 ## Regional Clocking Resources
-* * *
 
 + 区域时钟网络是一组独立于全局时钟网络的时钟网络。
 
@@ -293,10 +285,7 @@ Xilinx 芯片全局时钟资源的使用方法主要有 5 种：
 
 + 一个 BUFR 最多可以驱动两个相邻时钟区域中的区域时钟。
 
-<br>
-
 ## Clock Management Technology
-* * *
 
 + Virtex-5 系列的芯片内部含有的时钟管理模块（Clock Management Tiles，CMTs）可以提供灵活的、高性能的时钟信号。
 
@@ -399,10 +388,7 @@ DCM 的输出开始走线到达寄存器，这段路程导致的 skew 是永远�
 
 [article]: http://www.ednchina.com/ART-8800512846-18-20010-TA-25f01c24.HTM
 
-<br>
-
 ## Other Tips
-* * *
 
 1. 一般来说，外部提供的时钟信号都需要进行倍频/分频才可以使用，这时候需要组合各种时钟缓冲器和 DCM、PLL 等模块，我们有两种方法：
 
@@ -414,16 +400,11 @@ DCM 的输出开始走线到达寄存器，这段路程导致的 skew 是永远�
     
 2. 对 FPGA 设计而言，全局时钟是最简单最可预测的时钟，最好的时钟方案是：由专用的全局时钟输入引脚驱动单个全局时钟，并用后者去控制设计中的每个触发器。全局时钟资源是专用布线资源，存在与全铜布线层上，使用全局时钟资源不影响芯片的其他布线资源，因此在可以使用全局时钟的时候尽可能使用。
 
-<br>
-
 ## Summary
-* * *
 
 虽然各个芯片都不尽相同，但是了解相关的基本知识有利于我们快速掌握芯片的时钟资源、快速上手。
 
 Xilinx 的所有器件上的时钟资源可以分为前面说的 3 类：全局时钟（global clock）、局部时钟（regional clock）、I/O 时钟（I/O clock），但是不同的器件内部含有的时钟管理模块是不同的，具体到每一款芯片，应该以对应的 User Guide 为准。
-
-<br>
 
 ## Reference
 

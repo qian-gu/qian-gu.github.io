@@ -1,7 +1,7 @@
 Title: 学习 Vim 初步配置 Vim
 Date: 2014-04-16 12:44
 Category: Tools
-Tags: Vim
+Tags: vim
 Slug: learning-vim-vimrc-preliminary
 Author: Qian Gu
 Series: Learning Vim
@@ -96,15 +96,11 @@ vimrc 文件是配置 Vim 编辑特性比较好的地方，差不多任何 Vim �
 
 ### 配置 Vim 特性
 
-vimrc 配置很简单，网上有很多人都分享了自己的配置方案 。我找到一份注释良好的[配置范例][config-file]，这篇博客的作者总结了自己 8 年的使用经验，给出了两份配置文件，基本版 [Basic][Basic] 和 终极版[Ultimate][Ultimate] 。
-
-作为码农，当然要选择终极版了～不过个人喜欢用 Vundle 管理我的 Vim 插件（计划下篇博客记录我的配置过程），不是很喜欢作者选择的所有插件，想自己定制插件组合，那么目前只需要看 基础版就足够了 。
-
-我自己的配置文件：[.vimrc file](https://github.com/qian-gu/blob/main/dotfiles/.vimrc)
+vimrc 配置很简单，网上有很多人都分享了自己的配置方案 。我找到一份注释良好的[配置范例][config-file]，这篇博客的作者总结了自己 8 年的使用经验，给出了 [Basic][Basic] 和 [Awesome][Awesome] 两份配置文件。一开始只需要看基础版就足够了，后续可以在高级版上定制自己的配置。
 
 [config-file]: https://github.com/amix/vimrc
 [Basic]: https://github.com/amix/vimrc/blob/master/vimrcs/basic.vim
-[Ultimate]: https://github.com/amix/vimrc
+[Awesome]: https://github.com/amix/vimrc
 
 ## 参考
 

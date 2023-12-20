@@ -7,11 +7,10 @@ Author: Qian Gu
 Summary: 总结 const 限定符的用法。
 
 ## 为什么要使用 const 限定符
-* * *
 
 ### 一个需要使用 const 的简单例子
 
-[*C++ Primer*][cpp-primer] 中的例子
+[C++ Primer][cpp-primer] 中的例子
 
     #!C++
     for (int index = 0; index != 512; ++index) {
@@ -31,28 +30,23 @@ Summary: 总结 const 限定符的用法。
 解决这两个问题的方法是定义一个变量，并且初始化为 512
 
     #!C++
-    int buf-size = 512;
-    for (int index =0; index != buf-size; ++index) {
+    int buf_size = 512;
+    for (int index =0; index != buf_size; ++index) {
         //...
     }
 
 通过定义一个好记的变量，就可以增强程序的可读性，而且需要改变这个值时，只需要咋初始化的地方做修改 。这种方法不仅明显减小了工作量，而且大大减小了出错的可能性 。
 
-*看起来问题好像已经解决了，但是，事实上，我们可以进一步*
-
-在上面的代码中，`buf-size` 是可以被修改的，它有可能会被有意或者无意修改 。为了避免这种情况，就需要使用 const 限定符了 。
+看起来问题好像已经解决了，但是，事实上，我们可以进一步。在上面的代码中，`buf_size` 是可以被修改的，它有可能会被有意或者无意修改 。为了避免这种情况，就需要使用 const 限定符了 。
 
     #!C++
-    const buf-size = 512;
+    const buf_size = 512;
 
-定义 `buf-size ` 为 **常量（constant）**，并且初始化为 512 .**变量（variable）** `buf-size` 仍然是一个左值，但是这个左值现在是不能被修改的。（因为 const 把变量转化为常量，所以在定义的时候必须初始化！）
+上面的代码定义 `buf-size` 为常量（constant）并且初始化为 512。变量（variable）`buf_size` 仍然是一个左值，但是这个左值现在是不能被修改的，因为 const 把变量转化为常量，所以在定义的时候必须初始化。
 
 [cpp-primer]: http://book.douban.com/subject/1767741/
 
-<br>
-
 ## 如何使用 const 限定符
-* * *
 
 C++ Primer 中有这么一句话
 
@@ -66,7 +60,7 @@ C++ Primer 中有这么一句话
 
 ### 文件的局部变量
 
-const 限定符修同时也改变了变量的作用范围 。普通非 const 变量的默认是具有 *外部连接（external linkage）*的，在全局作用域内定义非 const 变量时，它在整个程序中都可以被访问 。比如
+const 限定符修同时也改变了变量的作用范围 。普通非 const 变量的默认是具有外部连接（`external linkage`）的，在全局作用域内定义非 const 变量时，它在整个程序中都可以被访问 。比如
 
     #!C++
     // file1.cpp
@@ -76,20 +70,20 @@ const 限定符修同时也改变了变量的作用范围 。普通非 const 变
     extern int counter;
     ++counter;
 
-但是，对于 全局作用域内的 const 类型的对象，其默认是 *内部连接（internal linkage）*，仅在定义该对象的文件内可见，不能被其他文件访问 。要想在整个程序里面访问，就必须在定义的时候显式地声明为 `extern` 类型 。比如
+但是，对于全局作用域内的 const 类型的对象，其默认是内部连接（`internal linkage`），仅在定义该对象的文件内可见，不能被其他文件访问 。要想在整个程序里面访问，就必须在定义的时候显式地声明为 `extern` 类型 。比如
 
     #!C++
     //file1.cpp
-    extern int buf-size = fcn ();
+    extern int buf_size = fcn();
     
     //fiel2.cpp
-    extern const int buf-size;
-    for (int index = 0; index != buf-size; ++index)
+    extern const int buf_size;
+    for (int index = 0; index != buf_size; ++index)
         //...
 
 ### 使用 const 的方法
 
-+ 定义在头文件中 inlcude
++ 在头文件中定义，源文件需要使用时 include
 
     如果 const 变量是用常量表达式初始化的，那么就可以把它的定义放在头文件中，即使多次包含这个头文件也不会产生 ”重定义“  的问题 。
     
@@ -98,20 +92,20 @@ const 限定符修同时也改变了变量的作用范围 。普通非 const 变
         const int bufsize = 512;
         
         // file2.cpp
-        include "file1.h"
+        #include "file1.h"
         int size = bufsize
 
-+ 定义时声明为 extern
++ 在源文件中定义，声明为 extern
 
     如果 const 变量不是用常量表达式初始化的，那么就不能把它当在头文件中 。只能在源文件中定义并初始化 。因为 const 变量是文件局部变量，所以要在其他文件中使用该变量，必须在定义时加上 `extern` 声明 。
-    
-    比如
 
         #!C++
         // file1.cpp
         extern const int bufsize = 512;
 
-    + 在头文件中声明为 extern 类型，以使其他文件共享。
+    其他文件要使用这个变量，有两种方法：
+
+    + 在头文件中声明为 extern 类型，以使其他文件共享
     
             #!C++
             // file1.h
@@ -121,14 +115,15 @@ const 限定符修同时也改变了变量的作用范围 。普通非 const 变
             #include "file1.h"
             int size = bufsize;
 
-    + 不需要在头文件中声明，在其他文件中使用前声明
+    + 不在头文件中声明，其他文件中使用前声明
 
             #!C++
             // file2.cpp
             extern const int bufsize;
             int size = bufsize;
 
-**P.S.** 在 C 中 const 是默认为外部连接的，在 C++ 中是默认为内部连接的 。
+!!! Warning
+    在 C 中 const 是默认为外部连接的，在 C++ 中是默认为内部连接的。
 
 至于为什么要这么规定，[Thinking in C++][Thinking in C++] 中有说明
 
@@ -191,32 +186,27 @@ because it doesn’t know the value.
 
 当对象是 nonconst 类型时，隐含的含义是该对象可以通过引用来修改，此时，const 引用和 nonconst 引用都可以指向该对象 。当使用 nonconst 引用时，可以通过引用修改对象的值；当使用 const 引用时，虽然对象的值是可以改变的，但是不能通过该引用修改，因为引用的类型是 const，定义以后，不能再修改 。 
 
-<br>
-
-##何时应该使用 const
-* * *
+## 何时应该使用 const
 
 Scott Meyers 大神的经典著作 [Effective C++][Effective C++] 里面提到的关于 const 的使用 。
 
 ### Effective C++ 条款 02：尽量以 const、enum、inline 替换 #define（Prefer consts,enums,and inline to #define）
 
-使用const 代替 #define，事实上 `const` 的最初动机就是取代预处理器 `#define` 来进行值替代 。因为 #define 不被视为语言的一部分，这就是它的问题所在 。
+事实上设计 `const` 的最初动机就是取代预处理器 `#define` 来进行值替代 。因为 #define 不被视为语言的一部分，这就是它的问题所在。
 
     #!C++
-    #define ASPECT-RATIO 1.653;
+    #define ASPECT_RATIO 1.653;
 
-记号名 ASPECT-RATIO 也许从未被编译器看见，也许在编译器开始处理代码前就被与处理器移走了，于是记号没有进入记号表，当出现编译错误时，也许会提示是 1.653 而不是 ASPECT-RATIO，这回带来很多困惑 。
+记号名 ASPECT_RATIO 也许从未被编译器看见，也许在编译器开始处理代码前就被与处理器移走了，于是记号没有进入记号表，当出现编译错误时，也许会提示是 1.653 而不是 ASPECT_RATIO，这回带来很多困惑 。
 
 解决之道就是以一个常量代替上述的宏
 
     #!C++
     const double AspectRatio = 1.653;
 
-### Effective C++ 条款 03：尽可能使用 const（Use const whenever possile）
+### Effective C++ 条款 03：尽可能使用 const（Use const whenever possible）
 
 [Effective C++]: http://book.douban.com/subject/1842426/
-
-<br>
 
 ## 参考
 

@@ -41,7 +41,7 @@ USE_FOLDER_AS_CATEGORY = False
 MAIN_MENU = True
 HOME_HIDE_TAGS = False
 PYGMENTS_STYLE = 'monokai'
-# USE_LESS = True
+USE_LESS = True
 DEFAULT_PAGINATION = 10
 
 MENUITEMS = (('Authors', '/authors.html'),
@@ -92,8 +92,7 @@ GOOGLE_ADSENSE = {
 }
 GOOGLE_ANALYTICS = "UA-48826831-1"
 
-# THEME = '../pelican-themes/Flex'
-THEME = 'Flex'
+THEME = 'Flex'  # use local theme
 PLUGIN_PATHS = ['../pelican-plugins']
 PLUGINS = ['i18n_subsites', 'cjk-auto-spacing', 'neighbors', 'search', 'related_posts',
            'sitemap', 'representative_image', 'render_math',
@@ -130,7 +129,7 @@ PYGMENTS_STYLE_DARK = 'monokai'
 MATH_JAX = {'color': 'blue'}
 # cjk-auto-spacing
 CJK_AUTO_SPAING_TITLE = True
-
+# stork
 STORK_INPUT_OPTIONS = {"url_prefix": SITEURL}
 
 MARKDOWN = {
@@ -143,6 +142,3 @@ MARKDOWN = {
     },
     'output_format': 'html5'
 }
-# pelican comment system
-PELICAN_COMMENT_SYSTEM = True
-PELICAN_COMMENT_SYSTEM_IDENTICON_DATA = ('author',)

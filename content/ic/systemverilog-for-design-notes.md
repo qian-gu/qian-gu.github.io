@@ -72,18 +72,17 @@ SV 标识符的搜索策略： 本地声明 > 通配符导入的声明 > $unit �
 
 如果一个标识符没有定义就使用，那么 Verilog 会自动隐式地将其声明为 net 类型（一般来说就是 `wire`），而且编译不会报错，所以可能会导致很微妙的错误：
 
-```
-#!verilog
-module m1();
-    assign sig = ...; // a is a local net
-endmoule
+    #!verilog
+    module m1();
+        assign sig = ...; // a is a local net
+    endmoule
+    
+    reg sig;
+    
+    module m2():
+        assign b = sig; // sig is previous $unit variable
+    endmoule
 
-reg sig;
-
-module m2():
-    assign b = sig; // sig is previous $unit variable
-endmoule
-```
 总之，把 package 导入到 $unit 中会遇到很多问题：
 
 1. 对文件编译顺序有要求
@@ -103,29 +102,25 @@ endmoule
 
 Verilog 中赋值全 1 的方法是不可扩展的（line 8），只能通过一些小技巧来实现（line 9～10）：
 
-```
-#!verilog
-parameter SIZE = 32;
-reg [SIZE-1 : 0] data;
-
-assign data = '0;
-assign data = 'bz;
-assign data = 'bx;
-
-assign data = 32'hFFFF-FFFF;
-assign data = ~0;
-assign data = -1;
-```
+    #!verilog
+    parameter SIZE = 32;
+    reg [SIZE-1 : 0] data;
+    
+    assign data = '0;
+    assign data = 'bz;
+    assign data = 'bx;
+    
+    assign data = 32'hFFFF_FFFF;
+    assign data = ~0;
+    assign data = -1;
 
 SV 新增语法可以实现可扩展的赋值：
 
-```
-#!verilog
-assign data = '0;
-assign data = '1;
-assign data = 'z;
-assign data = 'x;
-```
+    #!verilog
+    assign data = '0;
+    assign data = '1;
+    assign data = 'z;
+    assign data = 'x;
 
 ### variable
 
@@ -155,7 +150,7 @@ SV 中对一个信号的定义包含两部分：
     #!verilog
     var bit [31:0] addr;
 
-基本上 variable 可以替代所有的 reg 和 wire，它可以出现在 `always-comb`, `always-ff`, `assign` 这些地方。但是有一条限制：
+基本上 variable 可以替代所有的 reg 和 wire，它可以出现在 `always_comb`, `always_ff`, `assign` 这些地方。但是有一条限制：
 
 **variable 不能被多个源驱动。**
 
@@ -165,10 +160,9 @@ SV 中对一个信号的定义包含两部分：
 
 SV 中的 `byte`, `shortint`, `int`, `longint` 默认是 signed 类型，可以通过显式的方式声明为 unsigned 类型，需要注意的是声明时 singed/unsigned 关键字只能放在 type 关键字的后面。
 
-```
-#!verilog
-int s-int;  // signed 32-bit varibale
-int unsigned u-int;  // unsigned 32-bit variable
+```verilog
+int s_int;  // signed 32-bit varibale
+int unsigned u_int;  // unsigned 32-bit variable
 ```
 
 ### static and automatic variable
@@ -212,26 +206,22 @@ SV 支持用户自定义数据类型，可以在保持准确性和可综合的�
 
 ### user-defined types
 
-typedef 可以根据需要定义在 module、package、$unit 中，一般来说，为了提高代码可读性，自定义类型的名称以 `-t` 结尾。
+typedef 可以根据需要定义在 module、package、$unit 中，一般来说，为了提高代码可读性，自定义类型的名称以 `_t` 结尾。
 
-```
-#!verilog
-typedef int unsigned unit;
-uint a, b;
-
-typedef logic [3:0] nibble;
-nibble [7:0] data;  // a 32-bit vector made from 8 nibble types
-```
+    #!verilog
+    typedef int unsigned unit;
+    uint a, b;
+    
+    typedef logic [3:0] nibble;
+    nibble [7:0] data;  // a 32-bit vector made from 8 nibble types
 
 ### enumerated types
 
 verilog 中没有枚举类型，设计 FSM 时只能通过 parameter 或者是 define 的形式实现。SV 新增的枚举类型可以实现相同功能，代码可读性更好。
 
-```
-#!systemverilog
-enum {red, green, blue} RGB;  // variable can have the values of red, green, blue
-enum {WAIT, LOAD, STORE} State, NextState;
-```
+    #!verilog
+    enum {red, green, blue} RGB;  // variable can have the values of red, green, blue
+    enum {WAIT, LOAD, STORE} State, NextState;
 
 如果 label 很多，而且都很有规律，一个一个写出来非常繁琐，SV 还提供了两种定义 label 序列的方法：
 
@@ -243,18 +233,18 @@ enum {WAIT, LOAD, STORE} State, NextState;
     #!systemverilog
     // Error
     module FSM (...);
-        enum {GO, STOP} fsm1-state;
-        enum {WAIT, GO, DONE} fsm2-state;
+        enum {GO, STOP} fsm1_state;
+        enum {WAIT, GO, DONE} fsm2_state;
     endmodule
 
     // Ok
     module FSM (...);
         always @(posedge clk) begin: fsm1
-            enum {STOP, Go} fsm1-state;
+            enum {STOP, Go} fsm1_state;
         end
 
         always @(posedge clk) begin: fsm2
-            enum {WAIT, GO, DONE} fsm2-state;
+            enum {WAIT, GO, DONE} fsm2_state;
         end
     endmodule
 
@@ -281,43 +271,43 @@ enumerate 的类型也可以用户自定义，如果给 label 赋值则必须位
 enum 和 typedef 配合使用时，叫做 typed enumerated type，用 import 时只会导入 type name，并不会导入 label，所有 label 必须显式导入，或者通过通配符导入。
 
     #!systemverilog
-    package chip-types;
-        typedef enum {WAIT, LOAD, STORE} states-t;
+    package chip_types;
+        typedef enum {WAIT, LOAD, STORE} states_t;
     endpackage
         
     // Error
     module chip(...);
-        import chip-types::states-t;  // import the typedef name only
+        import chip_types::states_t;  // import the typedef name only
     
-        states-t state, next-state;
-        always-ff @(posedge clk or negedge rst-n)
-            if (!rst-n)
+        states_t state, next_state;
+        always_ff @(posedge clk or negedge rst_n)
+            if (!rst_n)
                 state <= WAIT;  // ERROR: WAIT has not been imported!
             else
-                state <= next-state;
+                state <= next_state;
 
     // Ok
-    import chip-types::WAIT;  // method 1
-    import chip-types::*;  // method 2
+    import chip_types::WAIT;  // method 1
+    import chip_types::*;  // method 2
 
 大部分的 Verilog/SV 的 var 都是宽松类型，基本上任何类型的任何值都可以赋值给一个 var，在赋值时会根据规则自动转换成 var 对定的类型。enum 类型则是个 semi-strong type，只能用对应的 label、同类型的另外一个 enum、通过 cast 转换成对应 enum 类型的变量赋值。
 
     #!systemverilog
-    typedef enum {WAIT, LOAD, READY} states-t;
-    states-t state, next-state;
+    typedef enum {WAIT, LOAD, READY} states_t;
+    states_t state, next_state;
     int foo;
 
-    state = next-state;  // legal
+    state = next_state;  // legal
     foo = state + 1;     // legal, booth is `int` type
     state = foo + 1;     // Error: illegal
     state = state + 1;   // Error: illegal
     state++;             // Error: illegal
-    next-state += state; // Error: illegal
+    next_state += state; // Error: illegal
 
 ### summary
 
 !!! important
-    + typedef 可以提高代码可读性，命名使用 `-t` 结尾
+    + typedef 可以提高代码可读性，命名使用 `_t` 结尾
     + enum 是 semi-strong type，可以提高设计的安全，import 时注意 label 的导入
 
 ## Chapter 5 Systemverilog Arrays, Structures and Unions
@@ -326,17 +316,16 @@ enum 和 typedef 配合使用时，叫做 typed enumerated type，用 import 时
 
 Verilog 中没有机制表示一组相关信号，只能通过信号前缀的方式来表示，SV 新增了类似 C 中的 structure，structure 内可以是任何类型的 variable，包括用户自定义的类型。
 
-```
-#!systemverilog
-struct {
-    int           a, b;      // 32-bit variable
-    opcode-t      opcode;    // user-defined type
-    logic [31:0]  address;   // 24-bit variable
-    bit           error;     // 1-bit 2-state var
-} instruction-word;
+    #!verilog
+    struct {
+        int           a, b;      // 32-bit variable
+        opcode_t      opcode;    // user-defined type
+        logic [31:0]  address;   // 24-bit variable
+        bit           error;     // 1-bit 2-state var
+    } instruction_word;
+    
+    instruction_word.address = 24'hF000001E;
 
-instruction-word.address = 24'hF000001E;
-```
 strcut 可以是一组 var 也可以是一组 net，前面可以加上可选的 `var` 或 `wire`, `bit` 等，因为 net 本身要求是 4-state 类型，所以声明 net struct 时内部的所有成员也都必须是 4-state 的类型。虽然 struct 作为整体是可以声明为 net，但是 net 类型本身并不能作为 struct 内部的成员。可以用 `interface` 来实现同样的效果。
 
     #!systemverilog
@@ -344,13 +333,13 @@ strcut 可以是一组 var 也可以是一组 net，前面可以加上可选的 
         logic [31:0]  a, b;
         logic [ 7:0]  opcode;
         logic [23:0]  address;
-    }  instruction-word-var;
+    }  instruction_word_var;
 
     wire struct {
         logic [31:0]  a, b;
         logic [ 7:0]  opcode;
         logic [23:0]  address;
-    }  instruction-word-net;
+    }  instruction_word_net;
 
 struct 可以和 typedef 配合使用，没有 typedef 的 struct 叫做匿名 struct。struct 可以声明在 module 或 interface 内部使用，也可以定义在 package 中或 $unit 中供多个 module 使用。一般来说 struct 都是和 typedef 一起定义在 package 中，因为大多数情况下我们定一个 struct 的目的是为了在多个地方复用，比如在模块端口之间传递等。
 
@@ -359,9 +348,9 @@ struct 可以和 typedef 配合使用，没有 typedef 的 struct 叫做匿名 s
         logic [31:0]  a, b;
         logic [ 7:0]  opcode;
         logic [23:0]  address;
-    }  instruction-word-t;
+    }  instruction_word_t;
 
-    instruction-word-t IW;  // structure allocation
+    instruction_word_t IW;  // structure allocation
 
 struct 和 array 很类似，它们的不同之处和 C 语言中的类似：
 
@@ -375,9 +364,9 @@ struct 可以用 `.` 给每个成员单独赋值，也可以给整个 struct 赋
         logic [31:0]  a, b;
         logic [ 7:0]  opcode;
         logic [23:0]  address;
-    }  instruction-word-t;
+    }  instruction_word_t;
 
-    instruction-word-t IW;
+    instruction_word_t IW;
 
     assign IW = '{100, 5, 8'hFF, 0};                      // legal
     assign IW = '{address:0, opcode:8'hFF, a:100, b:5};   // legal
@@ -390,20 +379,18 @@ struct 默认是 unpacked 模式，即内部的成员是相互独立的，标准
         logic         valid;
         logic [ 7:0]  tag;
         logic [31:0]  data;
-    } data-word;
+    } data_word;
 
-    data-word.tag = 8'hF0;
-    data-word[39:32] = 8'hF0;
+    data_word.tag = 8'hF0;
+    data_word[39:32] = 8'hF0;
 
-上面定义的 data-word 的存储格式如下：
+上面定义的 data_word 的存储格式如下：
 
-```
-#!text
-+--------------+--------------+
-| valid | tag  | data         |
-+--------------+--------------+
- 40      39  32 31           0
-```
+    #!text
+    +--------------+--------------+
+    | valid | tag  | data         |
+    +--------------+--------------+
+     40      39  32 31           0
 
 packed struct 存储时是按照 vector 处理的，所以对它的操作也和 vector 相同，可以对其进行数学运算、逻辑操作等。
 
@@ -412,11 +399,11 @@ packed struct 存储时是按照 vector 处理的，所以对它的操作也和 
         logic         valid;
         logic [ 7:0]  tag;
         logic [31:0]  data;
-    } data-word-t;
+    } data_word_t;
 
-    data-word-t packet-in, packet-out;
+    data_word_t packet_in, packet_out;
     always @(posedge clk)
-        packet-out <= packet-in << 2;
+        packet_out <= packet_in << 2;
 
 packed struct 还可以声明成 signed/unsigned 类型，主要会影响到其作为一个整体以 vector 类型参与数学运算和比较运算时的行为，但不会影响到内部成员的 signed/unsigned 的类型，每个成员仍然基于成员本身的声明类型。从 packed struct 中截取出的一部分永远是 unsigned 类型，这和 verilog 是一致的。
 
@@ -425,9 +412,9 @@ packed struct 还可以声明成 signed/unsigned 类型，主要会影响到其�
         logic                valid;
         logic        [ 7:0]  tag;
         logic signed [31:0]  data;
-    } data-word-t;
+    } data_word_t;
 
-    data-word-t A, B;
+    data_word_t A, B;
     always @(posedge clk)
         if (A < B)          // signed comparison
             ...
@@ -437,19 +424,19 @@ module、interface、task/function 的端口也可以声明为 struct 类型：�
     #!systemverilog
     package definitions;
 
-        typedef enum {ADD, SUB, MULT, DIV} opcode-t;
+        typedef enum {ADD, SUB, MULT, DIV} opcode_t;
 
         typedef struct {
             logic  [31:0]  a, b;
-            opcode-t       opcode;
+            opcode_t       opcode;
             logic  [23:0]  address;
             logic          error;
-        } instruction-word-t;
+        } instruction_word_t;
 
     endpackage
 
     module alu (
-        input definitions::instruction-word-t  IW,
+        input definitions::instruction_word_t  IW,
         input wire                             clk);
 
             ...
@@ -463,16 +450,15 @@ module、interface、task/function 的端口也可以声明为 struct 类型：�
 
 SV 中也新增了类似 C 语言的 union，其声明方法和赋值方法和 struct 类似。
 
-```
-#!systemverilog
-union {
-    int i;
-    int unsigned u;
-} data;
+    #!verilog
+    union {
+        int i;
+        int unsigned u;
+    } data;
+    
+    data.i = -5;
+    data.u = -5;
 
-data.i = -5;
-data.u = -5;
-```
 union 也可以和 struct 一样用 typedef 声明成用户自定义类型，如果没有 typedef 则是匿名 union。
 
 + **unpacked union 是不可综合的**
@@ -483,14 +469,14 @@ union 也可以和 struct 一样用 typedef 声明成用户自定义类型，如
 
         #!systemverilog
         typedef struct packed {
-            logic [15:0] source-addr;
-            logic [15:0] dst-addr;
+            logic [15:0] source_addr;
+            logic [15:0] dst_addr;
             logic [23:0] data;
             logic [ 7:0] opcode;
-        } data-packet-t;
+        } data_packet_t;
 
         union packed {
-            data-packet-t     packet;  // packed structure
+            data_packet_t     packet;  // packed structure
             logic [7:0][7:0]  bytes;   // packed array
         } dreg;
 
@@ -512,39 +498,39 @@ union 也可以和 struct 一样用 typedef 声明成用户自定义类型，如
     #!systemverilog
     package definitions;
 
-        typedef enum {ADD, SUB, MULT, DIV, SL, SR} opcode-t;
+        typedef enum {ADD, SUB, MULT, DIV, SL, SR} opcode_t;
 
-        typedef enum {UNSIGNED, SIGNED} operand-types-t;
+        typedef enum {UNSIGNED, SIGNED} operand_types_t;
 
         typedef union packed {
-            logic        [31:0] u-data;
-            logic singed [31:0] s-data;
-        } data-t;
+            logic        [31:0] u_data;
+            logic singed [31:0] s_data;
+        } data_t;
 
         typedef struct packed {
-            opcode-t         opc;
-            operand-types-t  op-type;
-            data-t           op-a;
-            data-t           op-b;
-        } instr-t;
+            opcode_t         opc;
+            operand_types_t  op_type;
+            data_t           op_a;
+            data_t           op_b;
+        } instr_t;
 
     endpackage
 
     import definitions::*;
 
     module alu (
-        input instr-t IW,
-        output data-t alu-out);
+        input instr_t IW,
+        output data_t alu_out);
 
         always @(IW)
-            if (IW.op-type == SIGNED)
+            if (IW.op_type == SIGNED)
                 case (IW.opc)
-                    ADD: alu.s-data = IW.op-a.s-data + IW.op-b.s-data;
+                    ADD: alu.s_data = IW.op_a.s_data + IW.op_b.s_data;
                     // ...
                 endcase
             else
                 case (IW.opc)
-                    ADD: alu.u-data = IW.op-a.u-data + IW.op-b.u-data;
+                    ADD: alu.u_data = IW.op_a.u_data + IW.op_b.u_data;
                     // ...
                 endcase
     endmodule
@@ -595,22 +581,18 @@ Verilog 中把位宽范围放在标识符前面的声明叫做 vector，把位�
 + vector = packed array
 + array = unpacked array
 
-```
-#!systemverilog
-wire [3:0] select;      // 4-bit packed array
-reg [63:0] data;        // 64-bit packed array
-logic [3:0][7:0] data;  // 2-D packed array: 4 8-bit sub-arrays
-```
+        #!verilog
+        wire [3:0] select;      // 4-bit packed array
+        reg [63:0] data;        // 64-bit packed array
+        logic [3:0][7:0] data;  // 2-D packed array: 4 8-bit sub-arrays
 
 SV 定义了 packed array 的存储方式：像 vector 一样整个 array 必须连续存储，packed array 内部的每个维度都是 vector 的一个字段。上面例子中二维数组存储方式如下所示，这是协议规定的，和仿真器、编译器、操作系统、平台无关。
 
-```
-#!text
-+--------------+--------------+--------------+--------------+
-| data[3][7:0] | data[2][7:0] | data[1][7:0] | data[0][7:0] |
-+--------------+--------------+--------------+--------------+
- 31          24 23          16 15           8 7            0
-```
+    #!text
+    +--------------+--------------+--------------+--------------+
+    | data[3][7:0] | data[2][7:0] | data[1][7:0] | data[0][7:0] |
+    +--------------+--------------+--------------+--------------+
+     31          24 23          16 15           8 7            0
 
 packed array 只能用下面元素组成，
 
@@ -618,34 +600,30 @@ packed array 只能用下面元素组成，
 + packed array, packed struct, packed union
 + 任何 net 类型：wire
 
-```
-#!systemverilog
-typedef struct packed {
-    logic [ 7:0] crc;
-    logic [63:0] data;
-} data-word;
-
-data-word [7:0] darray; // 1-D packed array of packed structures
-```
+        #!verilog
+        typedef struct packed {
+            logic [ 7:0] crc;
+            logic [63:0] data;
+        } dataword;
+        
+        data_word [7:0] darray; // 1-D packed array of packed structures
 
 packed array 可以按照一个元素、一部分 bit、一个 slice 的粒度访问：
 
-```
-#!systemverilog
-logic [3:0] [7:0] data;  // 2-D packed array
-
-wire [31:] out = data;              // whole array
-
-wire sign = data[3][7];             // bit-select
-
-wire [3:0] nib = data[0][3:0];      // part-select
-
-byte high-byte;
-assign high-byte = data[3];         // 8-bit slice
-
-logic [15:0] word;
-assign word = data[1:0];            // 2 slices
-```
+    #!verilog
+    logic [3:0] [7:0] data;  // 2-D packed array
+    
+    wire [31:] out = data;              // whole array
+    
+    wire sign = data[3][7];             // bit-select
+    
+    wire [3:0] nib = data[0][3:0];      // part-select
+    
+    byte high_byte;
+    assign high_byte = data[3];         // 8-bit slice
+    
+    logic [15:0] word;
+    assign word = data[1:0];            // 2 slices
 
 因为 packed array 是按照 vector 存储的，所以所有 Verilog 中对 vector 的操作对 packed array 也是合法的，包括：
 
@@ -698,81 +676,73 @@ packed 和 unpacked 都很灵活，那么什么时候应该用什么类型的 ar
 
 用户自定义类型也可以用来组成 array，形成复合数据类型。
 
-```
-#!systemverilog
-typedef int unsigned uint;
-unit u-array [0:127];       // array of user types
-
-typedef logic [3:0] nibble;
-nibble [31:0] big-word;     // packed array, is equalitent to
-logic [31:0] [3:0] big-word;
-
-typedef nibble nib-array [0:3];
-nib-array compound-array [0:7];         // is equalitent to
-logic [3:0] compound-array [0:7][0:3];
-```
+    #!verilog
+    typedef int unsigned uint;
+    unit u_array [0:127];       // array of user types
+    
+    typedef logic [3:0] nibble;
+    nibble [31:0] big_word;     // packed array, is equalitent to
+    logic [31:0] [3:0] big_word;
+    
+    typedef nibble nib_array [0:3];
+    nib_array compound_array [0:7];         // is equalitent to
+    logic [3:0] compound_array [0:7][0:3];
 
 Verilog 只允许 1-D 的 packed array 作为模块端口、task/function 参数，而 SV 允许任何类型的任何 array 作为端口。
 
-```
-#!systemverilog
-module CPU (...);
-    ...
-    logic [7:0] lookup-table [0:255];
-
-    lookup i1 (.LUT(lookup-table));
-    ...
-endmodule
-
-module lookup (output logic [7:0] LUT [0:255]);
-    ...
-endmodule
-```
+    #!verilog
+    module CPU (...);
+        ...
+        logic [7:0] lookup_table [0:255];
+    
+        lookup i1 (.LUT(lookup_table));
+        ...
+    endmodule
+    
+    module lookup (output logic [7:0] LUT [0:255]);
+        ...
+    endmodule
 
 struct 和 union 也可以作为 array 的元素，需要注意的是 packed array 的元素也必须是 packed 类型。同理 array 也可以作为 struct/union 的元素，packed struct/union 的元素也必须是 packed 类型。
 
-```
-#!systemverilog
-typedef struct paced {
-    logic [31:0] a;
-    logic [ 7:0] b;
-} packet-t;
-
-packet-t [23:0] packet-array;  // packed array of 24 structures
-
-typedef struct {
-    int a;
-    real b;
-} data-t;
-
-data-t data-array [23:0];  // unpacked array of 24 structures
-
-struct packed {              // packed structure
-    logic parity;
-    logic [3:0][7:0] data;   // packed array
-} data-word;
-
-struct {                     // unpacked structure
-    logic data-ready;
-    logic [7:0] data [0:3];  // unpacked array
-} packet-t;
-```
+    #!verilog
+    typedef struct paced {
+        logic [31:0] a;
+        logic [ 7:0] b;
+    } packet_t;
+    
+    packet_t [23:0] packet_array;  // packed array of 24 structures
+    
+    typedef struct {
+        int a;
+        real b;
+    } data_t;
+    
+    data_t data_array [23:0];  // unpacked array of 24 structures
+    
+    struct packed {              // packed structure
+        logic parity;
+        logic [3:0][7:0] data;   // packed array
+    } data_word;
+    
+    struct {                     // unpacked structure
+        logic data_ready;
+        logic [7:0] data [0:3];  // unpacked array
+    } packet_t;
 
 ### foreach
 
 有时候需要迭代处理 array 中的每个元素，一般都是通过 for 循环来处理，但是如果有很多个 for 循环或者是 array 的维度较多，则需要声明很多个 index，为了避免这一繁琐的声明，SV 新增了一种语法 `foreach` 来自动迭代，设计者不需要再手动声明每个 index 变量了。
 
-```
-#!systemverilog
-int sum [1:8][1:3];
-
-foreach (sum[i, j])
-    sum[i][j] = i + j;
-
-function [15:0] gen-crc (logic [15:0][7:0] d);
-    foreach (gen-crc[i]) gen-crc[i] = ^d[i];
-endfunction
-```
+    #!verilog
+    int sum [1:8][1:3];
+    
+    foreach (sum[i, j])
+        sum[i][j] = i + j;
+    
+    function [15:0] gen_crc (logic [15:0][7:0] d);
+        foreach (gen_crc[i]) gen_crc[i] = ^d[i];
+    endfunction
 
 上面这个例子中：
 
@@ -787,13 +757,13 @@ endfunction
 
 | 函数 | 功能 |
 | ----- | ---- |
-| $dimensions(array-name) | 返回 array 的维度 |
-| $left(array-name, dimension) | 返回 array 特定维度的 msb |
-| $right(array-name, dimension) | 返回 array 特定维度的 lsb |
-| $low(array-name, dimension) | 返回 array 特定维度的最低位索引 |
-| $high(array-name, dimension) | 返回 array 特定维度的最高位索引 |
-| $size(array-name, dimension) | 返回 array 特定维度元素总数 $high - $low + 1 |
-| $increasement(array-name, dimension) | 如果 $left >= $right 返回 1，否则返回 0 |
+| $dimensions(array_name) | 返回 array 的维度 |
+| $left(array_name, dimension) | 返回 array 特定维度的 msb |
+| $right(array_name, dimension) | 返回 array 特定维度的 lsb |
+| $low(array_name, dimension) | 返回 array 特定维度的最低位索引 |
+| $high(array_name, dimension) | 返回 array 特定维度的最高位索引 |
+| $size(array_name, dimension) | 返回 array 特定维度元素总数 $high - $low + 1 |
+| $increasement(array_name, dimension) | 如果 $left >= $right 返回 1，否则返回 0 |
 | $bits(expression) | 返回 expression 的总 bit 数（expression 的位宽是静态不变的，所以可综合）|
 
 ### dynamic arrays, associative arrays, sparse arrays, strings
@@ -819,64 +789,58 @@ endfunction
 
 Verilog 中的 `always` 块的用法很多，既可以对硬件建模写可综合的代码，可以在仿真中建模写不可综合的代码，所以有很多各种各样的规则，这对设计者、工具都提出了很高的要求，SV 通过新增语法解决了这些问题:
 
-+ always-comb
-+ always-ff
-+ always-latch
++ always_comb
++ always_ff
++ always_latch
 
-### awalys-comb
+### awalys_comb
 
 顾名思义，组合逻辑专用。和普通的 always 相比其好处是：
 
 + 不需要再写出敏感列表，不会有漏掉信号的 bug
 + 要求赋值语句的左侧信号不能在其他地方赋值，防止不符合组合逻辑的行为
 + 工具不需要再推测设计意图
-+ `always-comb` 比 `always @*` 更好，因为 `always @*` 在有函数调用时推断出来的敏感列表可能不完整
++ `always_comb` 比 `always @*` 更好，因为 `always @*` 在有函数调用时推断出来的敏感列表可能不完整
 
-```
-#!systemverilog
-always @* begin             // infers @(data)
-    a1 = data << 1;
-    b1 = decode();
-end
+        #!verilog
+        always @* begin             // infers @(data)
+            a1 = data << 1;
+            b1 = decode();
+        end
+        
+        always_comb begin           // infers @(data, sel, c, d, e)
+            a2 = data << 1;
+            b2 = decode();
+        end
+        
+        function decode;        // function with no inputs
+            begin
+                case (sel)
+                    2'b01:   decode = d | e;
+                    2'b10:   decode = d & e;
+                    default: decode = c;
+                endcase
+            end
+        endfunction
 
-always-comb begin           // infers @(data, sel, c, d, e)
-    a2 = data << 1;
-    b2 = decode();
-end
+### always_latch
 
-function decode;        // function with no inputs
-    begin
-        case (sel)
-            2'b01:   decode = d | e;
-            2'b10:   decode = d & e;
-            default: decode = c;
-        endcase
-    end
-endfunction
-```
+和 always_comb 一样也不需要写出敏感列表，只是工具会自动推断出 latch，所以检查规则也略有变化。
 
-### always-latch
+    #!verilog
+    always_latch
+        if (en) q <= d;
 
-和 always-comb 一样也不需要写出敏感列表，只是工具会自动推断出 latch，所以检查规则也略有变化。
+### always_ff
 
-```
-#!systemverilog
-always-latch
-    if (en) q <= d;
-```
+同理，always_ff 用来对触发器进行建模，设计者必须提供敏感列表，而且每个信号前面必须有前缀 posedge 或者是 negedge。
 
-### always-ff
-
-同理，always-ff 用来对触发器进行建模，设计者必须提供敏感列表，而且每个信号前面必须有前缀 posedge 或者是 negedge。
-
-```
-#!systemverilog
-always-ff @(posedge clk, negedge rst-n)
-    if (!rst-n)
-        q <= 0;
-    else
-        q <= d;
-```
+    #!verilog
+    always_ff @(posedge clk, negedge rst_n)
+        if (!rst_n)
+            q <= 0;
+        else
+            q <= d;
 
 ### task/function
 
@@ -885,7 +849,7 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
 + 不再强制要求 `begin ... end`，会自动推断出来
 
         #!systemverilog
-        function states-t NextState (states-t State);
+        function states_t NextState (states_t State);
             NextState = State;
             case (State)
                 WAITE: if (start) NextState = LOAD;
@@ -897,13 +861,13 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
 + Verilog 中的 function 名字本身就是一个变量，返回值就是对同名变量赋值，最后一次给函数名所赋的值就是返回值。SV 新增了 return 语句，而且 return 语句的优先级高于同名变量，即如果有 return 语句，可以把同名变量当成一个临时变量来用
 
         #!systemverilog
-        function int add-and-inc (input int a, b);
+        function int add_and_inc (input int a, b);
             return a + b + 1;
         endfunction
 
-        function int add-and-inc (input int a, b);
-            add-and-inc = a + b;
-            return ++add-and-inc;
+        function int add_and_inc (input int a, b);
+            add_and_inc = a + b;
+            return ++add_and_inc;
         endfunction
 
 + 新增的 void function 可以不必有返回值，可以像普通语句一样调用，就像 task 一样
@@ -913,16 +877,16 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
             logic        valid;
             logic [ 7:0] check;
             logic [63:0] data;
-        } packet-t;
+        } packet_t;
 
-        function void fill-packet (
-            input  logic [63:0] data-in,
-            output packet-t     data-out );
+        function void fill_packet (
+            input  logic [63:0] data_in,
+            output packet_t     data_out );
 
-            data-out.data = data-in;
+            data_out.data = data_in;
             for (int i=0; i<=7; i++)
-                data-out.check[i] = ^data-in[8*i +: 8];
-            data-out.valid = 1;
+                data_out.check[i] = ^data_in[8*i +: 8];
+            data_out.valid = 1;
         endfunction
 
 + Verilog 只运行按位置传参，错误的传参顺序可能导致错误；SV 新增了按名传参，可以减少犯错的机会
@@ -933,7 +897,7 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
 
 + Verilog 中的 function 只能有 input 参数，唯一的 output 参数就是函数名；SV 为 function 新增了 output 参数。为了保证可综合性，带 output 的 function 不能出现在连续赋值语句中
 
-+ Verilog 要求 function 至少有一个参数，即使内部不会用到这个参数；SV 允许 function 不带参数，前面 always-comb 有个实例
++ Verilog 要求 function 至少有一个参数，即使内部不会用到这个参数；SV 允许 function 不带参数，前面 always_comb 有个实例
 
 + Verilog 要求每个参数都必须有 input/output 表明方向；SV 简化了语法，参数默认的方向是 input，除非明确声明了方向，后续的参数都是这个方向。同时 SV 默认参数是 logic 类型
 
@@ -954,14 +918,14 @@ SV 对 task/function 也做了一些增强，主要包括下面几点：
         endfunction
 
         always @(posedge clk)
-            result <= incrementer(data-bus);
+            result <= incrementer(data_bus);
 
 + struct、union、array 都可以作为 function 的参数
 
 ### summary
 
 !!! important
-    + `always-comb`, `always-latch`, `always-ff` 都是可综合的，用它们取代 `always` 增强设计
+    + `always_comb`, `always_latch`, `always_ff` 都是可综合的，用它们取代 `always` 增强设计
     + 用 void function 代替 tasks，提高设计的安全性
 
 ## Chapter 7 Systemverilog Procedural Statements
@@ -977,36 +941,32 @@ SV 新增了一些新语法和新的操作符，可以让设计者写出更加�
 !!! warning
     不要在非阻塞赋值中使用自增/自减操作符。也就是说它们只能用来对组合逻辑进行建模，不能用在时序逻辑中。（例外情况：类似 for 循环下标这种用法，不是真正的信号）
 
-```
-#!systemverilog
-for(i=0; i<=32; i++) begin
-    ...
-end
-
-// post-increment
-while (i++ < LIMIT) begin: loop1
-    ...     // last value of i will be LIMIT
-end
-
-// pre-increment
-while (++j < LIMIT) begin: loop2
-    ...     // last value of j will be LIMIT-1
-end
-
-// act as blocking assignment, following two statements are equivalent
-i++;
-i = i + 1;
-```
+        #!verilog
+        for(i=0; i<=32; i++) begin
+            ...
+        end
+        
+        // post-increment
+        while (i++ < LIMIT) begin: loop1
+            ...     // last value of i will be LIMIT
+        end
+        
+        // pre-increment
+        while (++j < LIMIT) begin: loop2
+            ...     // last value of j will be LIMIT-1
+        end
+        
+        // act as blocking assignment, following two statements are equivalent
+        i++;
+        i = i + 1;
 
 **赋值操作符**
 
 以 `+=` 为例，
 
-```
-#!systemverilog
-out += in;       // is equalitent to
-out = out + in;
-```
+    #!verilog
+    out += in;       // is equalitent to
+    out = out + in;
 
 除了加法，`=` 还可以和其他操作符结合，所有新增赋值操作汇总如下。
 
@@ -1031,18 +991,16 @@ Verilog 中有两种等价操作符 `==` 和 `===`，SV 新增的操作符 `==?`
 
 类似于 Python 中的 `in` 效果。`inside` 是可综合的，但是很多综合工具可能并不支持。
 
-```
-#!systemverilog
-logic [2:0] a;
-if (a inside {3'b001, 3'b010, 3'b100})
-
-// equalitent
-if ( (a == 3'b001) || (a == 3'b010) || (3 == 3'b100))
-
-// the set of values can be an array
-int d-array [0:1023];
-if (13 inside {d-array})    // test if value 13 occurs anywhere in array d-array
-```
+    #!verilog
+    logic [2:0] a;
+    if (a inside {3'b001, 3'b010, 3'b100})
+    
+    // equalitent
+    if ( (a == 3'b001) || (a == 3'b010) || (3 == 3'b100))
+    
+    // the set of values can be an array
+    int d_array [0:1023];
+    if (13 inside {d_array})    // test if value 13 occurs anywhere in array d_array
 
 ### for loops
 
@@ -1053,10 +1011,10 @@ SV 做了一下增强：
 + 可以在 for 循环中定义局部变量，不同 for 循环的局部变量可以重名
 
         #!systemverilog
-        always-ff @(posedge clk)
+        always_ff @(posedge clk)
             for (bit [4:0] i = 0; i <= 15; i++)
 
-        always-ff @(posedge clk)
+        always_ff @(posedge clk)
             for (int i = 0; i <= 1024; i++)
 
     需要注意的是，这种变量是 automatic 类型，而 automatic 类型的变量有以下限制：
@@ -1085,42 +1043,40 @@ SV 做了一下增强：
 
 SV 新增的 `break`, `continue`, `return` 都是可综合的，规则和 `disable` 一样。（一般很少用）
 
-```
-#!systemverilog
-// continue example
-logic [15:0] array [0:255];
-always-comb begin
-    for (int i = 0; i <= 255; i++) begin: loop
-        if (array[i] == 0)
-            continue;   // skip empty elements
-        transform-function(array[i]);
-    end
-end
-
-// break example
-always-comb begin
-    first-bit = 0;
-    for (int i=0; i<=63; i=i+1) begin
-        if (i < start-range) continue;
-        if (i > end-range)   break;
-        if (data[i]) begin
-            first-bit = i;
-            break;
+    #!verilog
+    // continue example
+    logic [15:0] array [0:255];
+    always_comb begin
+        for (int i = 0; i <= 255; i++) begin: loop
+            if (array[i] == 0)
+                continue;   // skip empty elements
+            transform_function(array[i]);
         end
     end
-end
-
-// return example
-task add-up-to-max (input  [ 5:0] max,
-                    output [63:0] result);
-    result = 1;
-    if (max == 0) return;
-    for (int i=1; i<=63; i=i+1) begin
-        result = result + result;
-        if (i == max) return;
+    
+    // break example
+    always_comb begin
+        first_bit = 0;
+        for (int i=0; i<=63; i=i+1) begin
+            if (i < start_range) continue;
+            if (i > end_range)   break;
+            if (data[i]) begin
+                first_bit = i;
+                break;
+            end
+        end
     end
-endtask
-```
+    
+    // return example
+    task add_up_to_max (input  [ 5:0] max,
+                        output [63:0] result);
+        result = 1;
+        if (max == 0) return;
+        for (int i=1; i<=63; i=i+1) begin
+            result = result + result;
+            if (i == max) return;
+        end
+    endtask
 
 ### block names
 
@@ -1129,12 +1085,10 @@ endtask
 !!! warning
     end 后面的名字必须和匹配的 begin 名字相同，否则会报错。
 
-```
-#!systemverilog
-begin: <block-name>
-    ...
-end: <block-name>
-```
+        #!verilog
+        begin: <block_name>
+            ...
+        end: <block_name>
 
 ### statement label
 
@@ -1149,26 +1103,24 @@ begin...end 块也是一个 statement，所以也可以给它加上 label。
 !!! warning
     begin...end 块不能同时使用 label 和 block name。
 
-```
-#!systemverilog
-// <label> : <statement>
-
-always-comb begin
-    decoder: case (opcode)
-        ...
-    endcase
-end
-
-// named block
-begin: block1
-    ...
-end: block1
-
-// labeled block
-block2: begin
-            ...
+        #!verilog
+        // <label> : <statement>
+        
+        always_comb begin
+            decoder: case (opcode)
+                ...
+            endcase
         end
-```
+        
+        // named block
+        begin: block1
+            ...
+        end: block1
+        
+        // labeled block
+        block2: begin
+                    ...
+                end
 
 ### case statement
 
@@ -1176,26 +1128,26 @@ Verilog 标准特意规定了 case 语句的选择必须是按照顺序来评估
 
 SV 为此特意定义了两个描述符来限定 case 语句：
 
-+ `unique case` 表示无优先级的 case，它要求表达式和 case item 之间必须是一一映射的关系，表达式必须能且只能匹配一个 item，否则会报错。unique case 和 always-comb 配合使用，这两个特性带来的额外检查可以提高 RTL 的综合结果符合设计意图。
++ `unique case` 表示无优先级的 case，它要求表达式和 case item 之间必须是一一映射的关系，表达式必须能且只能匹配一个 item，否则会报错。unique case 和 always_comb 配合使用，这两个特性带来的额外检查可以提高 RTL 的综合结果符合设计意图。
 
         #!systemverilog
-        unique case (<case-expression>)
+        unique case (<case_expression>)
             ... // case items
         endcase
 
 + `priority case` 表示有优先级的 case，它要求表达式至少要匹配一项 item，如果有多项匹配时，选择对一个匹配项。使用这个限定符表示设计者是有意这么做的，有多个匹配项也符合设计意图。有时候即使使用了 priority，如果 case item 本身是不可能同时匹配，那么综合工具也会自动把优先逻辑优化掉。
 
         #!systemverilog
-        priority case (<case-expression>)
+        priority case (<case_expression>)
             ... // case items
         endcase
 
 Verilog 中定义了两个 program 来帮助综合工具，
 
-+ `parallel-case`：告诉综合工具去掉优先级逻辑，所有分支是并行同级关系
-+ `full-case`：未使用到的 expression value 是无关紧要的，可优化掉这部分逻辑
++ `parallel_case`：告诉综合工具去掉优先级逻辑，所有分支是并行同级关系
++ `full_case`：未使用到的 expression value 是无关紧要的，可优化掉这部分逻辑
 
-所以 unique case 实际上就相当于同时使能了 full-case 和 parallel-case，而 priority case 相当于只使能了 full-case。但是使用这两个新语法比 program 更健壮，可以减少风险。
+所以 unique case 实际上就相当于同时使能了 full_case 和 parallel_case，而 priority case 相当于只使能了 full_case。但是使用这两个新语法比 program 更健壮，可以减少风险。
 
 ### if...else
 
@@ -1205,10 +1157,10 @@ unique 和 priority 也可以用来限定 if-else 语句。仿真工具会按照
 
         #!systemverilog
         logic [2:0]  sel;
-        always-comb begin
-            unique if (sel == 3'b001) mux-out = a;
-              else if (sel == 3'b010) mux-out = b;
-              else if (sel == 3'b100) mux-out = c;
+        always_comb begin
+            unique if (sel == 3'b001) mux_out = a;
+              else if (sel == 3'b010) mux_out = b;
+              else if (sel == 3'b100) mux_out = c;
         end
 
 + `priority if...else` 表明设计者关心优先级，所以工具要保留优先级逻辑。
@@ -1229,7 +1181,7 @@ unique 和 priority 也可以用来限定 if-else 语句。仿真工具会按照
 使用前面 7 章介绍的新特性，使用 FSM 对一个交通灯控制系统建模的例子。和传统 Verilog 相比，有以下特点：
 
 + 统一使用 `logic` 代替 `reg`/`wire`
-+ 使用 `always-comb` 和 `always-ff` 代替通用 `always`
++ 使用 `always_comb` 和 `always_ff` 代替通用 `always`
 + begin...end 加了 name
 + 使用 enum 类型描述所有状态
     + 明确类型为 `logic`（默认是 `int`，32-bit 2-state）
@@ -1238,48 +1190,46 @@ unique 和 priority 也可以用来限定 if-else 语句。仿真工具会按照
 + 使用 `unique case` 代替普通 case
     + 如果是 one-hot 编码，可以调换 case expression 和 case selection items 的位置，某些综合工具下面积更优
 
-```
-#!systemverilog
-module traffic-light (output logic green-light,
-                                   yellow-light,
-                                   red-light,
-                      input        sensor,
-                      input [15:0] green-downcnt,
-                                   yellow-downcnt,
-                      input        clock, resetN);
-
-    enum {R-BIT = 0,
-          G-BIT = 1,
-          Y-BIT = 2} state-bit;
-
-    enum logic [2:0] {RED    = 3'b001 << R-BIT,   // explicit enum definition
-                      GREEN  = 3'b001 << G-BIT,
-                      YELLOW = 3'b001 << Y-BIT} State, Next;
-
-    always-ff @(posedge clk, negedge resetN)
-        if (!resetN) State <= RED;
-        else         State <= Next;
-
-    always-comb begin: set-next-state
-        Next = State;   // the default for each branch below
-        unique case (1'b1)  // reversed case statement
-            State[R-BIT]: if (sensor)              Next = GREEN;
-            State[G-BIT]: if (green-downcnt  == 0) Next = YELLOW;
-            State[Y-BIT]: if (yellow-downcnt == 0) Next = RED;
-        endcase
-    end: set-next-state
-
-    always-comb begin: set-outputs
-        {red-light, green-light, yellow-light} = 3'b000;
-        unique case (1'b1)  // reversed case statement
-            State[R-BIT]: red-light    = 1'b1;
-            State[G-BIT]: green-light  = 1'b1;
-            Staet[Y-BIT]: yellow-light = 1'b1;
-        endcase
-    end: set-outputs
-
-endmodule
-```
+            #!verilog
+            module traffic_light (output logic green_light,
+                                               yellow_light,
+                                               red_light,
+                                  input        sensor,
+                                  input [15:0] green_downcnt,
+                                               yellow_downcnt,
+                                  input        clock, resetN);
+            
+                enum {R_BIT = 0,
+                      G_BIT = 1,
+                      Y_BIT = 2} state_bit;
+            
+                enum logic [2:0] {RED    = 3'b001 << R_BIT,   // explicit enum definition
+                                  GREEN  = 3'b001 << G_BIT,
+                                  YELLOW = 3'b001 << Y_BIT} State, Next;
+            
+                always_ff @(posedge clk, negedge resetN)
+                    if (!resetN) State <= RED;
+                    else         State <= Next;
+            
+                always_comb begin: set_next_state
+                    Next = State;   // the default for each branch below
+                    unique case (1'b1)  // reversed case statement
+                        State[R_BIT]: if (sensor)              Next = GREEN;
+                        State[G_BIT]: if (green_downcnt  == 0) Next = YELLOW;
+                        State[Y_BIT]: if (yellow_downcnt == 0) Next = RED;
+                    endcase
+                end: set_next_state
+            
+                always_comb begin: set_outputs
+                    {red_light, green_light, yellow_light} = 3'b000;
+                    unique case (1'b1)  // reversed case statement
+                        State[R_BIT]: red_light    = 1'b1;
+                        State[G_BIT]: green_light  = 1'b1;
+                        Staet[Y_BIT]: yellow_light = 1'b1;
+                    endcase
+                end: set_outputs
+            
+            endmodule
 
 ## Chapter 9 Systemverilog Design Hierarchy
 
@@ -1289,19 +1239,17 @@ endmodule
 
 声明方式有两种：
 
-```
-#!systemverilog
-// Verilog-1995 style
-extern module counter (cnt, d, clock, resetN);
-
-// Verilog-2001 style
-extern module counter #(parameter N = 15)
-                       (output logic [N:0] cnt,
-                        input  wire  [N:0] d,
-                        input  wire        clock,
-                                           load,
-                                           resetN);
-```
+    #!verilog
+    // Verilog-1995 style
+    extern module counter (cnt, d, clock, resetN);
+    
+    // Verilog-2001 style
+    extern module counter #(parameter N = 15)
+                           (output logic [N:0] cnt,
+                            input  wire  [N:0] d,
+                            input  wire        clock,
+                                               load,
+                                               resetN);
 
 声明模块原型可以写在任何地方：在 module/interface 之外的声明实际上定义在 $unit 中，这时模块原型声明对于和这个文件一起综合的其他文件来说都是可见的。
 
@@ -1309,24 +1257,22 @@ extern module counter #(parameter N = 15)
 
 如果模块参数、端口非常多，重复写两遍非常麻烦，SV 提供了新语法 `.*` 解决这个问题。
 
-```
-#!systemverilog
-// prototype
-extern module counter #(parameter N = 15)
-                       (output logic [N:0] cnt,
-                        input  wire  [N:0] d,
-                        input  wire        clock,
-                                           load,
-                                           resetN);
-
-// difinition
-module counter ( .* );
-    always-ff @(posedge clk, negedge resetN)
-        if (!resetN)   cnt <= 0;
-        else if (load) cnt <= d;
-        else           cnt <= cnt + 1;
-endmodule
-```
+    #!verilog
+    // prototype
+    extern module counter #(parameter N = 15)
+                           (output logic [N:0] cnt,
+                            input  wire  [N:0] d,
+                            input  wire        clock,
+                                               load,
+                                               resetN);
+    
+    // difinition
+    module counter ( .* );
+        always_ff @(posedge clk, negedge resetN)
+            if (!resetN)   cnt <= 0;
+            else if (load) cnt <= d;
+            else           cnt <= cnt + 1;
+    endmodule
 
 ### named ending statements
 
@@ -1350,23 +1296,22 @@ Verilog 虽然可以通过配置文件的方式解决问题，但是不够优雅
 
 为了可维护性一般都是一个文件放一个模块，且文件名和模块名相同，嵌套模块的方式显然违背了这个原则，所以嵌套模块应该和 \`include 配合使用。
 
-```
-#!systemverilog
-module ip-core (input logic clock);
-    `include sub1.v;    // sub1 is a nested module
-    `include sub2.v;    // sub2 is a nested module
-endmodule
+    #!verilog
+    module ip_core (input logic clock);
+        `include sub1.v;    // sub1 is a nested module
+        `include sub2.v;    // sub2 is a nested module
+    endmodule
+    
+    // stored in file sub1.v
+    module sub1(...)
+        ...
+    endmoudle
+    
+    // stored in file sub2.v
+    module sub2(...)
+        ...
+    endmoudle
 
-// stored in file sub1.v
-module sub1(...)
-    ...
-endmoudle
-
-// stored in file sub2.v
-module sub2(...)
-    ...
-endmoudle
-```
 ### simplified netlists of module instances
 
 Verilog 提供了两种端口连接方式：
@@ -1381,9 +1326,9 @@ SV 提供了三种新的连接方式：
 
         #!systemverilog
         prom prom (
-            .dout (program-data),
+            .dout (program_data),
             .clk,
-            .address (program-address)
+            .address (program_address)
             );
 
     !!! note
@@ -1397,8 +1342,8 @@ SV 提供了三种新的连接方式：
         #!systemverilog
         prom prom (
             .*,
-            .dout (program-data),
-            .address (program-address)
+            .dout (program_data),
+            .address (program_address)
             );
 
 + interface 方式：见下一章
@@ -1407,16 +1352,14 @@ SV 提供了三种新的连接方式：
 
 SV 新增了信号别名的语法，给信号起别名的 assign 语句有点像，但是并不完全相同。因为 assign 是单方向的，等号右边的信号的值可以传递给左边，但是左边的值无法传递给右边，而 `alias` 是双向的，因为本质上多个名字指向的是同一个资源。
 
-```
-#!systemverilog
-wire reset, rst, resetN, rstN;
-
-alias rst = reset;
-alias reset = resetN;
-alias resetN = rstN;
-
-alias rst = reset = resetN = rstN;
-```
+    #!verilog
+    wire reset, rst, resetN, rstN;
+    
+    alias rst = reset;
+    alias reset = resetN;
+    alias resetN = rstN;
+    
+    alias rst = reset = resetN = rstN;
 
 使用别名有几个约束：
 
@@ -1454,24 +1397,22 @@ Verilog-1995 风格的端口声明已经没有人用了，但是 Verilog-2001 �
 + 多个端口一起声明时，如果要改数据类型则必须连带方向一起声明（下例中的 a, b 和 ci）
 + 多个端口一起声明时，如果要改变端口位宽必须连带方向一起声明（下例中的 result 和 co）
 
-```
-#!systemverilog
-// verilog-2001
-module accum (inout  wire [31:0]  data,
-              output reg  [31:0]  result,
-              output reg          co,
-              input       [31:0]  a, b,
-              input  tril         ci     );
-    ...
-endmodule
-
-// SV
-module accm (wire  [31:0]  data,
-             output reg [31:0] result, reg co,
-             input [31:0] a, b, tril ci);
-    ...
-endmodule
-```
+        #!verilog
+        // verilog-2001
+        module accum (inout  wire [31:0]  data,
+                      output reg  [31:0]  result,
+                      output reg          co,
+                      input       [31:0]  a, b,
+                      input  tril         ci     );
+            ...
+        endmodule
+        
+        // SV
+        module accm (wire  [31:0]  data,
+                     output reg [31:0] result, reg co,
+                     input [31:0] a, b, tril ci);
+            ...
+        endmodule
 
 !!! note
     一般为了代码健壮性、减少错误，大部分 coding style 都规定还要一行一个端口地声明，不会用到这个特性。
@@ -1480,32 +1421,30 @@ endmodule
 
 Verilog 中的 parameter 只能参数化端口位宽，SV 新增了一个可综合的新语法 `parameter type`，可以对端口类型进行参数化，进一步提高了模块的多态性。实际上 Verilog 模块端口类型一般只有 wire/reg，而且是固定的，所以也不需要对类型参数化，而 SV 中有很多类型，甚至用户可以自定义类型，所以类型参数化就有必要了。
 
-```
-#!systemverilog
-module adder #(parameter type ADDERTYPE = shortint)
-              (input  ADDERTYPE  a, b,  // redefinable type
-               output ADDERTYPE  sum,   // redefinable type
-               output logic      carry);
-    ADDERTYPE tmp;
-    ...
-endmodule
-
-module big-chip (...);
-    shortint        a, b, r1;
-    int             c, d, r2;
-    int unsigned    e, f, r3;
-    wire            carry1, carry2, carry3;
-
-    // 16-bit unsigned adder
-    adder  i1 (a, b, r1, carry1);
-
-    // 32-bit signed adder
-    adder  #(.ADDERTYPE(int))  i2 (c, d, r2, carry2);
-
-    // 32-bit unsigned adder
-    adder  #(.ADDERTYPE(int unsigned))  i3 (e, f, r3, carry3);
-endmoudle
-```
+    #!verilog
+    module adder #(parameter type ADDERTYPE = shortint)
+                  (input  ADDERTYPE  a, b,  // redefinable type
+                   output ADDERTYPE  sum,   // redefinable type
+                   output logic      carry);
+        ADDERTYPE tmp;
+        ...
+    endmodule
+    
+    module big_chip (...);
+        shortint        a, b, r1;
+        int             c, d, r2;
+        int unsigned    e, f, r3;
+        wire            carry1, carry2, carry3;
+    
+        // 16-bit unsigned adder
+        adder  i1 (a, b, r1, carry1);
+    
+        // 32-bit signed adder
+        adder  #(.ADDERTYPE(int))  i2 (c, d, r2, carry2);
+    
+        // 32-bit unsigned adder
+        adder  #(.ADDERTYPE(int unsigned))  i3 (e, f, r3, carry3);
+    endmoudle
 
 ### summary
 
@@ -1534,28 +1473,26 @@ SV 新增了一个叫 `interface` 的语法，可以把一组端口定义成一�
 + program block
 + assertion
 
-```
-#!systemverilog
-interface main-bus;
-    wire    [15:0] data;
-    wire    [15:0] address;
-    logic   [ 7:0] slave-instruction;
-    logic          slave-request;
-    logic          bus-grant;
-    logic          bus-request;
-    logic          slave-ready;
-    logic          data-ready;
-    logic          mem-read;
-    logic          mem-write;
-endinterface
-
-module processor (
-    main-bus    bus,
-    output logic [15:0] jump-address
-    //...);
-
-endmodule
-```
+        #!verilog
+        interface main_bus;
+            wire    [15:0] data;
+            wire    [15:0] address;
+            logic   [ 7:0] slave_instruction;
+            logic          slave_request;
+            logic          bus_grant;
+            logic          bus_request;
+            logic          slave_ready;
+            logic          data_ready;
+            logic          mem_read;
+            logic          mem_write;
+        endinterface
+        
+        module processor (
+            main_bus    bus,
+            output logic [15:0] jump_address
+            //...);
+        
+        endmodule
 
 ### interface declration
 
@@ -1563,26 +1500,24 @@ endmodule
 
 Interface 可以定义在全局，就和普通 module 一样，其他 module 可以直接使用 interface，编译顺序对工具没有影响，所以 interface 可以先使用后编译。Interface 也可以定义在一个 module 内部，仅限内部使用。
 
-```
-#!systemverilog
-// 上例的 main-bus 可以把 clock 和 reset 也引入到 interface 中
-interface main-bus (input logic clock, resetN, test-mode);
-    // signal definition
-endinterface
-
-module top (input logic clock, resetN, test-mode);
-
-    main-bus bus (.*);  // using .* connections
-
-    // method 1
-    processor proc1 (
-        .bus (bus),
-        .jump-address (jump-address),
-        .instruction (instruction)
-        );
-    // method 2
-    processor proc1 (.*);
-```
+    #!verilog
+    // 上例的 main_bus 可以把 clock 和 reset 也引入到 interface 中
+    interface main_bus (input logic clock, resetN, test_mode);
+        // signal definition
+    endinterface
+    
+    module top (input logic clock, resetN, test_mode);
+    
+        main_bus bus (.*);  // using .* connections
+    
+        // method 1
+        processor proc1 (
+            .bus (bus),
+            .jump_address (jump_address),
+            .instruction (instruction)
+            );
+        // method 2
+        processor proc1 (.*);
 
 ### using interface as module ports
 
@@ -1593,31 +1528,29 @@ Interface 可以作为 module 端口的一部分，而且不需要声明 input/o
 
 这两种写法都是可综合的。
 
-```
-#!systemverilog
-// method 1
-// module <module-name> (<interface-name> <port-name>);
-
-interface chip-bus;
-    ...
-endinterface
-
-module CACHE (chip-bus pins,
-              input    clcok);
-    ...
-endmodule
-
-// method 2
-// module <module-name> (interface <port-name>);
-module RAM (interface pins,
-            input     clock);
-    ...
-endmodule
-```
+    #!verilog
+    // method 1
+    // module <module_name> (<interface_name> <port_name>);
+    
+    interface chip_bus;
+        ...
+    endinterface
+    
+    module CACHE (chip_bus pins,
+                  input    clcok);
+        ...
+    endmodule
+    
+    // method 2
+    // module <module_name> (interface <port_name>);
+    module RAM (interface pins,
+                input     clock);
+        ...
+    endmodule
 
 ### instantiating and connecting interface
 
-interface 和 module 一样都可以例化，然后连接起来，连接的语法也和 module 一样，可以用 .name，.* 等方式（前面 main-bus 的例子）。interface 还可以嵌套，比如 sub-bus 和 main-bus 都可以定义成 interface，且 sub-bus 是 main-bus 的组成部分。
+interface 和 module 一样都可以例化，然后连接起来，连接的语法也和 module 一样，可以用 .name，.* 等方式（前面 main_bus 的例子）。interface 还可以嵌套，比如 sub_bus 和 main_bus 都可以定义成 interface，且 sub_bus 是 main_bus 的组成部分。
 
 !!! warning
     一个 module 的 interface 端口必须连接到其他 interface instance 或者是另外一个 module 的 interface 端口上，不能悬空。
@@ -1626,41 +1559,37 @@ interface 和 module 一样都可以例化，然后连接起来，连接的语�
 
 使用 interface 中的信号必须通过下面的方式：
 
-```
-#!systemverilog
-// <port-name>.<internal-interface-signal-name>
-
-always @(posedge bus.clock, negedge bus.resetN)
-    ...
-```
+    #!verilog
+    // <port_name>.<internal_interface_signal_name>
+    
+    always @(posedge bus.clock, negedge bus.resetN)
+        ...
 
 因为这种方式必须把端口名前缀加上，所以为了减少工作量、提高可读性，建议给 port 起个简短的名字。
 
 ### interface modports
 
-interface 为模块端口连接提供了一种新方式，但是从不同模块的角度看，端口是不一样的。比如一组总线，从 slave 模块看，interrupt-request 很可能是输出端口，而从 master 模块看，它是一个输入端口。SV 提供了一种新语法来解决这个问题：用 module port 的缩写 `modport` 关键字来定义端口。一个 interface 可以有任意多个 modport，每个 modport 描述了每个相关模块角度看到的 interface 端口的方向。
+interface 为模块端口连接提供了一种新方式，但是从不同模块的角度看，端口是不一样的。比如一组总线，从 slave 模块看，interrupt_request 很可能是输出端口，而从 master 模块看，它是一个输入端口。SV 提供了一种新语法来解决这个问题：用 module port 的缩写 `modport` 关键字来定义端口。一个 interface 可以有任意多个 modport，每个 modport 描述了每个相关模块角度看到的 interface 端口的方向。
 
-```
-#!systemverilog
-interface chip-bus (input logic clock, resetN);
-    logic interrupt-request, grant, ready;
-    logic [31:0] address;
-    logic [63:0] data;
-
-    modport master (input  interrupt-request,
-                    input  address,
-                    output grant, ready,
-                    inout  data,
-                    input  clock, resetN);
-
-    modport slave  (output interrupt-request,
-                    output address,
-                    input  grant, ready,
-                    inout  data,
-                    input  clock, resetN);
-
-endinterface
-```
+    #!verilog
+    interface chip_bus (input logic clock, resetN);
+        logic interrupt_request, grant, ready;
+        logic [31:0] address;
+        logic [63:0] data;
+    
+        modport master (input  interrupt_request,
+                        input  address,
+                        output grant, ready,
+                        inout  data,
+                        input  clock, resetN);
+    
+        modport slave  (output interrupt_request,
+                        output address,
+                        input  grant, ready,
+                        inout  data,
+                        input  clock, resetN);
+    
+    endinterface
 
 如上所示，modport 的定义不需要包含 vector 的位宽及数据类型（这些信息在 interface 中已定义好），只需要定义方向即可。
 
@@ -1671,9 +1600,9 @@ endinterface
     同时例化一个 module 和 interface，然后在连接它们时确定 modport。
 
         #!systemverilog
-        // <interface-instance-name>.<modport-name>
+        // <interface_instance_name>.<modport_name>
 
-        interface chip-bus (input logic clock, resetN);
+        interface chip_bus (input logic clock, resetN);
             modport master (...);
             modport slave  (...);
         endinterface
@@ -1682,13 +1611,13 @@ endinterface
             ...
         endmodule
 
-        module secondary (chip-bus pins);   // specific interface port
+        module secondary (chip_bus pins);   // specific interface port
             ...
         endmodule
 
         module chip (input logic clock, resetN);
 
-            chip-bus    bus (clock, resetN);
+            chip_bus    bus (clock, resetN);
 
             primary     i1  (bus.master);
 
@@ -1699,24 +1628,24 @@ endinterface
 + modport 作为模块端口的一部分在模块**定义时**确定（推荐使用）
 
         #!systemverilog
-        // <interface-name>.<modport-name>
+        // <interface_name>.<modport_name>
 
-        interface chip-bus (input logic clock, resetN);
+        interface chip_bus (input logic clock, resetN);
             modport master (...);
             modport slave  (...);
         endinterface
 
-        module primary  (chip-bus.master pins);
+        module primary  (chip_bus.master pins);
             ...
         endmodule
 
-        module secondary (chip-bus.slave pins);
+        module secondary (chip_bus.slave pins);
             ...
         endmodule
 
         module chip (input logic clock, resetN);
 
-            chip-bus    bus (clock, resetN);
+            chip_bus    bus (clock, resetN);
 
             primary     i1  (bus);
 
@@ -1746,10 +1675,10 @@ SV 的 interface 内部可以定义 function/task，从而可以把总线相关�
 + 通过 method 名导入
 
         #!systemverilog
-        // modport (import <task-function-name>);
+        // modport (import <task_function_name>);
 
         modport in (import Read,
-                    import parity-en,
+                    import parity_en,
                     input  clock, resetN);
 
 + 通过 method 原型导入
@@ -1757,12 +1686,12 @@ SV 的 interface 内部可以定义 function/task，从而可以把总线相关�
     这种方式要求 import 后面加上 task/function 关键字，method 名字后面还要有包含参数的圆括号。如果 interface 定义在另外一个 package 文件中时，这种方式可以提高代码可读性。
 
         #!systemverilog
-        // modport (import task <task-name>(<task-formal-arguments));
-        // modport (import function <function-name>(<formal-args));
+        // modport (import task <task_name>(<task_formal_arguments));
+        // modport (import function <function_name>(<formal_args));
 
         modport in (import task Read(input  [63:0] data,
                                      output [31:0] address),
-                    import function parity-gen(input [63:0] data),
+                    import function parity_gen(input [63:0] data),
                     input  clock, resetN);
 
 通过 modport 把 function/task 导入之后，module 就可以使用这些逻辑了，使用方式和使用 interface 内的信号一样，加上 interface 端口名前缀即可。
@@ -1770,37 +1699,35 @@ SV 的 interface 内部可以定义 function/task，从而可以把总线相关�
 !!! warning
     为了保证可综合，导入的 task/function 必须是 automatic 类型，而且内部不能包含 static 声明。
 
-```
-#!systemverilog
-interface math-bus (input logic clock, resetN);
-    int a-int, b-int, result-int;
-    
-    task IntegerRead (output int a-int, b-int);
-        ... // do handshaking to fetch a and b values
-    endtask
-
-    modport int-io (import IntegerRead,
-                    input  clock, resetN,
-                    output result-int);
-endinterface
-
-module top (input logic clock, resetN);
-    math-bus bus (clock, resetN);   // instance of interface
-
-    integer-math-unit i1 (bus.int-io);  // connect to interface
-endmodule
-
-module integer-math-unit (interface io);
-    int a-reg, b-reg;
-
-    always @(posedge io.clock)
-        io.IntegerRead(a-reg, b-reg);   // call method in interface
-endmodule
-```
+        #!verilog
+        interface math_bus (input logic clock, resetN);
+            int a_int, b_int, result_int;
+            
+            task IntegerRead (output int a_int, b_int);
+                ... // do handshaking to fetch a and b values
+            endtask
+        
+            modport int_io (import IntegerRead,
+                            input  clock, resetN,
+                            output result_int);
+        endinterface
+        
+        module top (input logic clock, resetN);
+            math_bus bus (clock, resetN);   // instance of interface
+        
+            integer_math_unit i1 (bus.int_io);  // connect to interface
+        endmodule
+        
+        module integer_math_unit (interface io);
+            int a_reg, b_reg;
+        
+            always @(posedge io.clock)
+                io.IntegerRead(a_reg, b_reg);   // call method in interface
+        endmodule
 
 ### using procedural blocks in interface
 
-interface 内部还可以定义 `always`, `always-comb`, `always-ff`, `always-latch`, `initial`, `final`, `assign` 等语句块，在 Interface 中定义这些语句块的一种应用场景是做验证：在 interface 中定义相关协议的 checker，这样每次通过 interface 传递数据时，内置的 checker 会自动检查是否满足相关约束。
+interface 内部还可以定义 `always`, `always_comb`, `always_ff`, `always_latch`, `initial`, `final`, `assign` 等语句块，在 Interface 中定义这些语句块的一种应用场景是做验证：在 interface 中定义相关协议的 checker，这样每次通过 interface 传递数据时，内置的 checker 会自动检查是否满足相关约束。
 
 ### reconfigurable interface
 
@@ -1846,6 +1773,6 @@ interface 可以像 module 一样使用 parameter，也可以使用 generate 语
 | Coding Style | <ul><li>[lowRISC coding style guide][guide]</li></ul> |
 
 [book1]: https://book.douban.com/subject/1764888/
-[book2]: https://www.sutherland-hdl.com/books-and-guides.html#RTL%20Book
+[book2]: https://www.sutherland-hdl.com/books_and_guides.html
 [book3]: https://book.douban.com/subject/2859647/
 [guide]: https://github.com/lowRISC/style-guides/blob/master/VerilogCodingStyle.md

@@ -10,7 +10,6 @@ Image: /images/the-pomodoro-technique-practices/workflow.png
 忙里偷闲，学习一下大名鼎鼎的 **番茄工作法**。
 
 ## Intro
-* * *
 
 番茄工作法 ([Pomodoro Technique][wiki]) 是由 Francesco Cirillo 创建的一种时间管理方法。他自己上大学时为了克服无法集中精力认真学习这个问题而发明了这种方法，后来他整理完成了一本书来介绍这种方法：
 
@@ -27,8 +26,6 @@ Image: /images/the-pomodoro-technique-practices/workflow.png
 [wiki]: http://en.wikipedia.org/wiki/Pomodoro-Technique
 [book]: http://pomodorotechnique.com/book/
 [book2]: http://www.pomodoro-book.com/
-
-<br>
 
 ## Summary
 
@@ -52,10 +49,7 @@ Image: /images/the-pomodoro-technique-practices/workflow.png
 
 综上，找一只笔和几张纸，列出要完成的工作，然后设定计时器，开始工作！就这么简单。
 
-<br>
-
 ## My Practice
-* * *
 
 GTD 和 pomodoro 可以相互补充，达到最好的效果：
 

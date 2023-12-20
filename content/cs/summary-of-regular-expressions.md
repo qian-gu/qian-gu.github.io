@@ -21,20 +21,15 @@ Summary:  regular expression 学习笔记
 
 *看完这本书，基本上已经满足项目中简单的 RE 需求，以后需要深入的话，再补这几本书。*
 
-<br>
-
 ## What Is a RE?
-* * *
 
 引用 Ken Thompson 的话：
 
 > A regular expression is a pattern which specifies a set of strings of characters; it is said
 to match certain strings.
 
-<br>
-
 ## Basic
-* * *
+
 + metacharacters
 
     元字符，在表达式中有特殊的含义，也是保留字。一共有 14 个：
@@ -67,7 +62,6 @@ to match certain strings.
         \cx     // 控制字符
 
 ## Simple Match Patterns
-* * *
 
 几个常见的模式匹配：
 
@@ -111,10 +105,7 @@ to match certain strings.
 
         .
 
-<br>
-
 ## Boundaries
-* * *
 
 + 行首、行尾
 
@@ -131,10 +122,7 @@ to match certain strings.
 
         \B
 
-<br>
-
 ## Alternation, Groups, and Backreferences
-* * *
 
 + Alternation
 
@@ -166,10 +154,7 @@ to match certain strings.
 
         (?:THE|The|the)
 
-<br>
-
 ## Character Classes
-* * *
 
 + Character Classes
 
@@ -217,10 +202,7 @@ to match certain strings.
 
     一般不常用 POSIX 格式。
 
-<br>
-
 ## Matching Unicode and Other Characters
-* * *
 
 + Matching a Unicode Character
 
@@ -241,10 +223,7 @@ to match certain strings.
         \cG         // 报警字符 BEL
         \cH         // 退格符 Backspcace
 
-<br>
-
 ## Quantifiers
-* * *
 
 ### Greedy, Lazy, and Possessive
 
@@ -321,10 +300,7 @@ to match certain strings.
 
 这些量词后面加了 + 的 RE 表示占有匹配，也就是只检查第一次尝试。
 
-<br>
-
 ## Lookarounds
-* * *
 
 环视 是一种非捕获分组，它的作用是检查模式的前/后的内容来匹配，也成为 零宽度断言 `zero-width
 assertions`。
@@ -375,11 +351,7 @@ assertions`。
 
 + 如果条件是 lookarounds 不存在，就是 负
 
-<br>
-
 了解了这些基础知识，基本上就可以读懂、书写 RE 了，还需要的就是平时多加思考练习，然后看更加高阶的书了。
-
-<br>
 
 ## Ref
 

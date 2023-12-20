@@ -9,7 +9,6 @@ Summary: 总结 GTD 方法。
 最近了解学习了 GTD，总结一下。
 
 ## Intro
-* * *
 
 所谓 GTD 就是 [Getting Things Done][wiki] 的缩写。最早有一个叫做 David Allen 的美国人写的一本书，名字就是:
 
@@ -43,10 +42,7 @@ Summary: 总结 GTD 方法。
 [gtdstudy]: http://www.gtdstudy.com/
 [mifengtd]: http://www.mifengtd.cn/
 
-<br>
-
 ## GTD
-* * *
 
 ### Reason
 
@@ -172,17 +168,13 @@ GTD 的方法其实并不高深，它实际上主要就是解决了两个问题�
 
 简单的功能可以帮助我们集中注意力，Google 的很多产品都遵循这个原则，比如 Calendar、Task、Keep、Translate 等，而 Evernote 虽然功能强大，但是有时候让我无从下手，不想打开；当然关键功能必须要有，比如最近很火的一款应用 Todist，作为一款 todo list 类型的软件，免费版本却没有提醒功能，他们是有多想挣钱啊 =.=
 
-<br>
-
 ## Review
-* * *
 
 这年头不可避免地看了一些成功学的书，喝了不少鸡汤，这本久负盛名，最近越来越火的书，从我的体验来说，比其他同类的书要好很多，还是有干货的。虽然没有给我非常的大的质的改变，但是也解决了不少我的疑惑。书里没有提出多么惊天动地的方法，很多都是我们日常生活中在使用的技巧，这本书把这些总结整理成一套系统方法，也算是一大成就吧。
 
 毕竟，实践才是检验真理的唯一标准，等过段时间再评价吧。
 
 ## My GTD
-* * *
 
 作为学生党的 GTD 实践：
 
@@ -200,15 +192,11 @@ GTD 的方法其实并不高深，它实际上主要就是解决了两个问题�
 
 关于 “Next Action List”，我个人觉得并不是特别适合我，就平时的事（学习 + 项目 + 杂事）而言，学习和项目很难用 Next Action 来做计划，而杂事都是一些鸡毛蒜皮的小事，用不着分步骤来完成。我每天都活动基本上是固定的，哪个时间段干什么早就形成了一种模式，所以我将 “Next Action List” 改为 “Daily Plan”。
 
-<br>
-
 ## Mind Map
 
 最后贴上一张我总结的 MM：
 
 ![gtd mm](/images/getting-things-done-review/gtd-mm.jpg)
-
-<br>
 
 ## Reference
 
