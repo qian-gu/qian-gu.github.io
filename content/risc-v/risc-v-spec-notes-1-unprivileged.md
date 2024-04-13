@@ -6,7 +6,6 @@ Slug: risc-v-spec-notes-1-unprivileged
 Author: Qian Gu
 Series: RISC-V Notes
 Summary: Volume I: Unprivileged ISA 读书笔记
-Status: draft
 
 !!! note
 
@@ -476,8 +475,7 @@ RISC-V 定义了 32 个 64bit 的 Unpriviledge 只读性能计数器和计时器
 
 如果同时需要乘法结果的高低两部分，推荐使用下面的顺序，同时保证 rs1 和 rs2 的值和顺序不变，且 rdh != rs1 or rs2：
 
-```
-#!text
+```asm
 MULH[[S]U]  rdh,  rs1,  rs2
 MUL         rdl,  rs1,  rs2
 ```
@@ -486,8 +484,7 @@ MUL         rdl,  rs1,  rs2
 
 同理，除法也可以按照类似的方法实现，硬件实现时只会进行一次除法：
 
-```
-#!text
+```asm
 DIV[U]  rdq,  rs1,  rs2
 REM[U]  rdr,  rs1,  rs2
 ```

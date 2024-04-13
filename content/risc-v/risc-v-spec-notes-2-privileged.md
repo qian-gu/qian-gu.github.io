@@ -6,7 +6,6 @@ Slug: risc-v-spec-notes-2-privileged
 Author: Qian Gu
 Series: RISC-V Notes
 Summary: Volume II: Privileged ISA 读书笔记
-Status: draft
 
 !!! note
 
