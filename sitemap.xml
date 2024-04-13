@@ -4,43 +4,43 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitem
 xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
-<loc>https://qian-gu.github.io/categories.html</loc>
-<lastmod>2024-04-13T15:32:24-00:00</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.6</priority>
-</url>
-
-<url>
-<loc>https://qian-gu.github.io/authors.html</loc>
-<lastmod>2024-04-13T15:32:24-00:00</lastmod>
+<loc>https://qian-gu.github.io/</loc>
+<lastmod>2024-04-13T15:43:41-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
 
 <url>
 <loc>https://qian-gu.github.io/tags.html</loc>
-<lastmod>2024-04-13T15:32:24-00:00</lastmod>
+<lastmod>2024-04-13T15:43:41-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
 
 <url>
-<loc>https://qian-gu.github.io/</loc>
-<lastmod>2024-04-13T15:32:24-00:00</lastmod>
+<loc>https://qian-gu.github.io/categories.html</loc>
+<lastmod>2024-04-13T15:43:41-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
 
 <url>
 <loc>https://qian-gu.github.io/archives.html</loc>
-<lastmod>2024-04-13T15:32:24-00:00</lastmod>
+<lastmod>2024-04-13T15:43:41-00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.6</priority>
+</url>
+
+<url>
+<loc>https://qian-gu.github.io/authors.html</loc>
+<lastmod>2024-04-13T15:43:41-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
 
 <url>
 <loc>https://qian-gu.github.io/search.html</loc>
-<lastmod>2024-04-13T15:32:24-00:00</lastmod>
+<lastmod>2024-04-13T15:43:41-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.6</priority>
 </url>
@@ -132,6 +132,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://qian-gu.github.io/posts/ic/learning-patterson-and-hennessy-notes-1-chapter-1.html</loc>
 <lastmod>2020-11-22T14:51:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.6</priority>
+</url>
+
+<url>
+<loc>https://qian-gu.github.io/posts/risc-v/risc-v-spec-notes-1-unprivileged.html</loc>
+<lastmod>2020-11-17T21:55:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.6</priority>
 </url>
