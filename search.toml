@@ -9,6 +9,11 @@ url = "/pages/about-me.html"
 title = "About Me"
 
 [[input.files]]
+path = "posts/risc-v/riscv-book-note.html"
+url = "/posts/risc-v/riscv-book-note.html"
+title = "RISC-V Book 阅读笔记"
+
+[[input.files]]
 path = "posts/tools/iverilog-verilator-and-gtkwave.html"
 url = "/posts/tools/iverilog-verilator-and-gtkwave.html"
 title = "开源 IC 工具/库 —— iverilog、verilator 和 gtkwave"
