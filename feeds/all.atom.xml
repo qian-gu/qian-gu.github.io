@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Qian's Blog</title><link href="https://qian-gu.github.io/" rel="alternate"></link><link href="https://qian-gu.github.io/feeds/all.atom.xml" rel="self"></link><id>https://qian-gu.github.io/</id><updated>2024-04-13T14:26:00+08:00</updated><subtitle>Read &gt;&gt; Think &gt;&gt; Write</subtitle><entry><title>RISC-V Book 阅读笔记</title><link href="https://qian-gu.github.io/posts/risc-v/riscv-book-note.html" rel="alternate"></link><published>2024-04-13T14:26:00+08:00</published><updated>2024-04-13T14:26:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2024-04-13:/posts/risc-v/riscv-book-note.html</id><summary type="html">&lt;div class="toc"&gt;&lt;span class="toctitle"&gt;Table of Contents&lt;/span&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href="#risc-v"&gt;为什么要有 RISC-V？&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href="#isa"&gt;ISA 设计导论&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#_1"&gt;结语&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;a href="#rv32irisc-v"&gt;RV32I：RISC-V 基础整数指令集&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href="#rv32i"&gt;RV32I 指令格式&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#rv32i_1"&gt;RV32I 寄存器&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#rv32i_2"&gt;RV32I 整数计算&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#rv32i_3"&gt;RV32I 取数和存数&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#rv32i_4"&gt;RV32I 条件分支 …&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</summary><content type="html">&lt;div class="toc"&gt;&lt;span class="toctitle"&gt;Table of Contents&lt;/span&gt;&lt;ul&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Qian's Blog</title><link href="https://qian-gu.github.io/" rel="alternate"></link><link href="https://qian-gu.github.io/feeds/all.atom.xml" rel="self"></link><id>https://qian-gu.github.io/</id><updated>2024-04-13T14:26:00+08:00</updated><subtitle>Read &gt;&gt; Think &gt;&gt; Write</subtitle><entry><title>RISC-V Book 阅读笔记</title><link href="https://qian-gu.github.io/posts/risc-v/riscv-book-note.html" rel="alternate"></link><published>2024-04-13T14:26:00+08:00</published><updated>2024-04-13T14:26:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2024-04-13:/posts/risc-v/riscv-book-note.html</id><summary type="html">&lt;p&gt;The RISC-V Reader: An Open Architecture Atlas 读书笔记&lt;/p&gt;</summary><content type="html">&lt;div class="toc"&gt;&lt;span class="toctitle"&gt;Table of Contents&lt;/span&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#risc-v"&gt;为什么要有 RISC-V？&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href="#isa"&gt;ISA 设计导论&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#_1"&gt;结语&lt;/a&gt;&lt;/li&gt;
@@ -198,13 +187,15 @@
 &lt;p&gt;—— 伊凡 · 苏泽兰（Ivan Sutherland）&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id="_3"&gt;函数调用过程&lt;/h3&gt;
-&lt;p&gt;通常分为 6 个阶段：
-1. caller 将参数放到 callee 可访问的位置
-2. 调换到 callee 的入口（使用 jal）
-3. 获取函数所需的局部存储资源，按需保存 GPR
-4. 执行函数功能
-5. 将返回值放到 caller 可访问的位置，恢复 GPR，释放局部存储资源
-6. 将控制权返回给 caller（使用 ret）&lt;/p&gt;
+&lt;p&gt;通常分为 6 个阶段：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;caller 将参数放到 callee 可访问的位置&lt;/li&gt;
+&lt;li&gt;调换到 callee 的入口（使用 jal）&lt;/li&gt;
+&lt;li&gt;获取函数所需的局部存储资源，按需保存 GPR&lt;/li&gt;
+&lt;li&gt;执行函数功能&lt;/li&gt;
+&lt;li&gt;将返回值放到 caller 可访问的位置，恢复 GPR，释放局部存储资源&lt;/li&gt;
+&lt;li&gt;将控制权返回给 caller（使用 ret）&lt;/li&gt;
+&lt;/ol&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
 &lt;p&gt;保存寄存器由 callee 负责维护，重新解释上述过程如下：&lt;/p&gt;
@@ -374,14 +365,7 @@ c: bnez a3, 0  # 如果失败，重试
 &lt;/ul&gt;
 &lt;h3 id="_13"&gt;向量取数和存数&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;unistride&lt;/li&gt;
-&lt;li&gt;stride&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;index&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;易于编程 / 编译 / 链接：虽然可以设置 stride = 1 使得 stride 兼容 unistride，但是提供 unistride 指令可以缩小代码体积和指令数。（vlds/vsts 需要 2 个 rs，而 vld/vst 只需要 1 个）&lt;/p&gt;
-&lt;/li&gt;
+&lt;li&gt;易于编程 / 编译 / 链接：虽然可以设置 stride = 1 使得 stride 兼容 unistride，但是提供 unistride 指令可以缩小代码体积和指令数。（vlds/vsts 需要 2 个 rs，而 vld/vst 只需要 1 个）&lt;/li&gt;
 &lt;li&gt;易于编程 / 编译 / 链接：为了支持稀疏数组，提供 index 指令&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="_14"&gt;向量操作的并行度&lt;/h3&gt;
@@ -502,13 +486,15 @@ c: bnez a3, 0  # 如果失败，重试
 &lt;p&gt;CSR 中没有记录当前的 privilege 等级，只有 MPP、SPP、UPP，所以软件无法查询得知当前处于哪个模式，原因是 ISA 认为软件开发人员应该准确地知道每段代码所处的特权等级，无需查询。
 从硬件设计的角度，内部需要有一个寄存器来记录当前状态，否则无法判断当前等级是否有权限执行某些指令。该内部寄存器未开放给软件，所以在 ISA CSR 中也不可见。&lt;/p&gt;
 &lt;/div&gt;
-&lt;p&gt;mscratch 的作用：提供一种快速的保存 - 恢复机制，可以直接把某个 XRF 写入到 mscratch，而不是 stack 中。如果需要保存更多的寄存器，一般 mscratch 指向一片空闲的内存，ISR 可以根据需求把想要的任意个寄存器内容写入到该空间：
-1. 首先用 csrrw 指令交换 mscratch 和 a0 的内容（mscratch 是 csr，普通指令无法直接使用，必须先交换到 XRF 中。因为 ISR 没有参数，所以 a0 是空闲 XRF，可以用来和 mscratch 交换）
-2. 将任意个 XRF 保存到内存中
-3. 中断处理
-4. 处理完后再从内存中恢复数据到 XRF
-5. 用 csrrw 交换 mscratch 和 a0，恢复内容
-6. 用 mret 返回&lt;/p&gt;
+&lt;p&gt;mscratch 的作用：提供一种快速的保存 - 恢复机制，可以直接把某个 XRF 写入到 mscratch，而不是 stack 中。如果需要保存更多的寄存器，一般 mscratch 指向一片空闲的内存，ISR 可以根据需求把想要的任意个寄存器内容写入到该空间：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;首先用 csrrw 指令交换 mscratch 和 a0 的内容（mscratch 是 csr，普通指令无法直接使用，必须先交换到 XRF 中。因为 ISR 没有参数，所以 a0 是空闲 XRF，可以用来和 mscratch 交换）&lt;/li&gt;
+&lt;li&gt;将任意个 XRF 保存到内存中&lt;/li&gt;
+&lt;li&gt;中断处理&lt;/li&gt;
+&lt;li&gt;处理完后再从内存中恢复数据到 XRF&lt;/li&gt;
+&lt;li&gt;用 csrrw 交换 mscratch 和 a0，恢复内容&lt;/li&gt;
+&lt;li&gt;用 mret 返回&lt;/li&gt;
+&lt;/ol&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# example：timer 中断的 ISR。&lt;/span&gt;
 &lt;span class="c1"&gt;# 假设&lt;/span&gt;
 &lt;span class="c1"&gt;# 1. mstatus.MIE=1 已打开全局中断使能&lt;/span&gt;

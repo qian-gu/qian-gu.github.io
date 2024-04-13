@@ -196,7 +196,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 
   <div class="related-posts">
-    <h4>Part <built-in method index of str object at 0x7f2c716466f0> of the  series</h4>
+    <h4>Part <built-in method index of str object at 0x7f5886fd8af0> of the  series</h4>
   </div>
 
   <div>
@@ -747,16 +747,14 @@ bne t3, t4, overflow
 <h2 id="m-extension">M Extension</h2>
 <p>把乘除法指令从 I 子集中分离出来，可以简化低端 core 的实现，或者对于那些乘除法不常出现的应用，用另外一个加速器来实现。</p>
 <p>如果同时需要乘法结果的高低两部分，推荐使用下面的顺序，同时保证 rs1 和 rs2 的值和顺序不变，且 rdh != rs1 or rs2：</p>
-<div class="highlight"><pre><span></span><code><span class="err">#!</span><span class="nc">text</span>
-<span class="n">MULH</span><span class="o">[</span><span class="n">[S</span><span class="o">]</span><span class="n">U</span><span class="err">]</span><span class="w">  </span><span class="n">rdh</span><span class="p">,</span><span class="w">  </span><span class="n">rs1</span><span class="p">,</span><span class="w">  </span><span class="n">rs2</span>
-<span class="n">MUL</span><span class="w">         </span><span class="n">rdl</span><span class="p">,</span><span class="w">  </span><span class="n">rs1</span><span class="p">,</span><span class="w">  </span><span class="n">rs2</span>
+<div class="highlight"><pre><span></span><code><span class="nf">MULH</span><span class="p">[[</span><span class="no">S</span><span class="p">]</span><span class="no">U</span><span class="p">]</span><span class="w">  </span><span class="no">rdh</span><span class="p">,</span><span class="w">  </span><span class="no">rs1</span><span class="p">,</span><span class="w">  </span><span class="no">rs2</span>
+<span class="nf">MUL</span><span class="w">         </span><span class="no">rdl</span><span class="p">,</span><span class="w">  </span><span class="no">rs1</span><span class="p">,</span><span class="w">  </span><span class="no">rs2</span>
 </code></pre></div>
 
 <p>这样硬件实现时会把它们融合成一条指令来执行，只进行一次乘法。</p>
 <p>同理，除法也可以按照类似的方法实现，硬件实现时只会进行一次除法：</p>
-<div class="highlight"><pre><span></span><code><span class="err">#!</span><span class="nc">text</span>
-<span class="n">DIV</span><span class="o">[</span><span class="n">U</span><span class="o">]</span><span class="w">  </span><span class="n">rdq</span><span class="p">,</span><span class="w">  </span><span class="n">rs1</span><span class="p">,</span><span class="w">  </span><span class="n">rs2</span>
-<span class="n">REM</span><span class="o">[</span><span class="n">U</span><span class="o">]</span><span class="w">  </span><span class="n">rdr</span><span class="p">,</span><span class="w">  </span><span class="n">rs1</span><span class="p">,</span><span class="w">  </span><span class="n">rs2</span>
+<div class="highlight"><pre><span></span><code><span class="nf">DIV</span><span class="p">[</span><span class="no">U</span><span class="p">]</span><span class="w">  </span><span class="no">rdq</span><span class="p">,</span><span class="w">  </span><span class="no">rs1</span><span class="p">,</span><span class="w">  </span><span class="no">rs2</span>
+<span class="nf">REM</span><span class="p">[</span><span class="no">U</span><span class="p">]</span><span class="w">  </span><span class="no">rdr</span><span class="p">,</span><span class="w">  </span><span class="no">rs1</span><span class="p">,</span><span class="w">  </span><span class="no">rs2</span>
 </code></pre></div>
 
 <div class="admonition tip">
