@@ -39,6 +39,11 @@ url = "/posts/ic/systemverilog-for-design-notes.html"
 title = "《SystemVerilog for Design》笔记"
 
 [[input.files]]
+path = "posts/risc-v/risc-v-spec-notes-2-privileged.html"
+url = "/posts/risc-v/risc-v-spec-notes-2-privileged.html"
+title = "RISC-V Spec 阅读笔记 #2 —— Privileged ISA"
+
+[[input.files]]
 path = "posts/ic/learning-patterson-and-hennessy-notes-6-chapter-6.html"
 url = "/posts/ic/learning-patterson-and-hennessy-notes-6-chapter-6.html"
 title = "Patterson and Hennessy 学习笔记 #6 —— Chapter 6 Parallel processors from Client to Cloud"
