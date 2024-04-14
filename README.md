@@ -26,6 +26,9 @@ pip install -r requirements.txt
 ## Local Debug
 
 ```bash
+# switch environment
+conda activate blog
+# rebuild
 make clean
 make html
 ```
@@ -35,6 +38,23 @@ Open the generated html pages within a browse.
 ## Publish
 
 ```bash
+# switch environment
+conda activate blog
+# clean dummy and tmp file first
+make clean
 # publish to github
 make github
+```
+
+## Save content
+
+```bash
+# switch environment
+conda activate blog
+# clean output
+rm output -rf
+# commit and push
+git add .
+git cmmint -m "add new post"
+git push
 ```

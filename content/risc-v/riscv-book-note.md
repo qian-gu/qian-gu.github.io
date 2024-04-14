@@ -79,11 +79,11 @@ RISC-V 是一款最新的、清晰的、简约的、开放的 ISA，它以过去
 + 性能：imm 的符号位永远在 inst[31]，符号位扩展可在 dec 前进行
 + 易于编程：全 0 和全 1 为非法指令
 + 成本：精心挑选 op_code，使得 datapath 相同的指令共享 op_code，从而简化控制逻辑
-+ 提升空间：RV32I 占用 33bit 指令编码空间不到 1/8，预留指令编码空间
++ 提升空间：RV32I 占用 32bit 指令编码空间不到 1/8，预留指令编码空间
 
 ### RV32I 寄存器
 
-+ 易于编程：RISC-v = 32 个 GPR + 1 PC；ARM-32 = 16 个 GPR（包含 PC）
++ 易于编程：RISC-V = 32 个 GPR + 1 PC；ARM-32 = 16 个 GPR（包含 PC）
 + 简洁：实现相同功能，设置 x0 为常 0 可以简化操作，额外设置 PC 可以简化分支预测复杂度，且少占用一个 GPR
 
 ### RV32I 整数计算
@@ -100,8 +100,10 @@ RISC-V 是一款最新的、清晰的、简约的、开放的 ISA，它以过去
 
 !!!note
     因为一条 32bit 指令无法容纳 32bit 地址，所以 linker 通常要把每个符号调整成 2 条 RV32I 指令。
+
     + 对于数据地址，需要调整为 lui 和 addi
     + 对于代码地址，需要调整为 auipc 和 jalr
+
     很多时候跳转距离没那么大，此时并不需要两条，linker 会多趟扫描代码，尽可能优化成一条 jal 指令（包含 imm[19:0]，可以寻址前后 1MB），这个过程叫做 linker relaxation。
 
 ### RV32I 条件分支
@@ -112,7 +114,7 @@ RISC-V 是一款最新的、清晰的、简约的、开放的 ISA，它以过去
 
 ### RV32I 无条件跳转
 
-+ 简洁：RV32I 不支持复杂的过程调用指令，如何 x86-32 的 enter/leave，Tensilica 的 register windows
++ 简洁：RV32I 不支持复杂的过程调用指令，如 x86-32 的 enter/leave，Tensilica 的 register windows
 
 !!!info
     register windows：通过远多于 32 个 GPR 来加速函数调用。在函数调用时，为其分配新的一组 32 个寄存器（也称为窗口），为了支持传参，两个函数的窗口会重叠，即有些寄存器同时属于两个相邻的窗口。
@@ -153,10 +155,12 @@ RISC-V 是一款最新的、清晰的、简约的、开放的 ISA，它以过去
     保存寄存器由 callee 负责维护，重新解释上述过程如下：
 
     在 caller 中执行 call 指令跳转进入 callee 后，callee 首先做两件事：
+
     1. 分配 stack frame，为保存现场准备资源
     2. 将 callee 需要维护的保存寄存器存储到 stack 中
 
     当 callee 完成功能后，执行 ret 指令前做两件事情：
+
     1. 从 stack 向保存寄存器恢复现场
     2. 恢复保存寄存器 `sp` == 释放 stack frame（局部资源）
 
@@ -164,18 +168,17 @@ RISC-V 是一款最新的、清晰的、简约的、开放的 ISA，它以过去
 
 典型例子 main 函数调用 prinf：
 
-```sh
-# 编译，将 c 代码转化为 asm 代码，结果如图 3.6
-gcc -o hello.s -S hello.c
-# 编译，将 asm 代码转化为 .o 文件，.o 文件无法直接查看，需要先 dump，结果如图 3.7
-# 其中一些指令的地址字段是 0，需要 linker 填充
-gcc -o hello.o -c hello.s
-objdump -D hello.o >> hello.o.dump
-# 链接，将 .o 文件转化为 elf 文件，elf 文件无法直接查看，需要先 dump，结果如图 3.8
-# 地址字段已替换
-gcc -o hello hello.c
-objdump -D hello >> hello.dump
-```
+    #!sh
+    # 编译，将 c 代码转化为 asm 代码，结果如图 3.6
+    gcc -o hello.s -S hello.c
+    # 编译，将 asm 代码转化为 .o 文件，.o 文件无法直接查看，需要先 dump，结果如图 3.7
+    # 其中一些指令的地址字段是 0，需要 linker 填充
+    gcc -o hello.o -c hello.s
+    objdump -D hello.o >> hello.o.dump
+    # 链接，将 .o 文件转化为 elf 文件，elf 文件无法直接查看，需要先 dump，结果如图 3.8
+    # 地址字段已替换
+    gcc -o hello hello.c
+    objdump -D hello >> hello.dump
 
 ### 结语
 
@@ -236,35 +239,36 @@ objdump -D hello >> hello.dump
 > ——阿尔伯特·爱因斯坦（Albert Einstein），1933
 
 RV32A 用于同步的原子操作有两种：
+
 + 原子内存操作（atomic memory operation，AMO）
 + 预订取数/条件存数（load reserved / store conditional）
 
-为何 RV32A 要提供两种原子操作？答案是有两种区别很大的使用场景。
+为何 RV32A 要提供两种原子操作？答案是对应两种区别很大的使用场景。
 
 场景一：编程语言开发者假定顶层的 ISA 提供原子的 compare-and-swap 操作：比较某寄存器和另一寄存器寻址的内存值，若相等，则将第 3 个寄存器的值与内存值交换。这是一种通用的同步原语，基于它可以实现其他任意 word 同步操作。
 
-```text
-# 用 lr/sc 对内存 M[a0] 进行 compare-and-swap
-# 期望的旧值在 a1 中；期望的新值在 a2 中
-0: lr.w a3, (a0)  # 取出旧值
-4: bne a3, a1, 80  # 旧值是否等于 a1？
-8: sc.w a3, a2, (a0)  # 如果相等，则换入新值
-c: bnez a3, 0  # 如果失败，重试
-... compare-and-swap 成功后的代码...
-...
-80:  # compare-and-swap 失败
-```
+    #!text
+    # 用 lr/sc 对内存 M[a0] 进行 compare-and-swap
+    # 期望的旧值在 a1 中；期望的新值在 a2 中
+    0: lr.w a3, (a0)  # 取出旧值
+    4: bne a3, a1, 80  # 旧值是否等于 a1？
+    8: sc.w a3, a2, (a0)  # 如果相等，则换入新值
+    c: bnez a3, 0  # 如果失败，重试
+    ... compare-and-swap 成功后的代码...
+    ...
+    80:  # compare-and-swap 失败
+    ```
 
 场景二：
 
-```text
-# 用 AMO 实现 test-and-set 自旋锁，用于保护临界区
-0: li t0, 1 # 初始化锁值
-4: amoswap.w.aq t1, t0, (a0) # 尝试获取锁
-8: bnez t1, 4 # 若失败则重试
-...临界区代码..
-20: amoswap.w.rl x0, x0, (a) # 释放锁
-```
+    #!text
+    # 用 AMO 实现 test-and-set 自旋锁，用于保护临界区
+    0: li t0, 1 # 初始化锁值
+    4: amoswap.w.aq t1, t0, (a0) # 尝试获取锁
+    8: bnez t1, 4 # 若失败则重试
+    ...临界区代码..
+    20: amoswap.w.rl x0, x0, (a) # 释放锁
+    ```
 
 ### 结语
 
@@ -281,6 +285,7 @@ RV32A 是可选的，一个不支持它的 RISC-V 处理器会更简单。然而
 + 成本：尽管处理器设计者不能忽略 RV32C 指令，但能通过以下技巧降低实现开销：在执 行指令前通过一个译码器将所有 16 位指令翻译成相应的 32 位指令。
 
 为什么有些架构师会跳过 RV32C：16bit 的 RV32C 和 32bit 的 RV32I 混合在一起会恶化 decoder 的时序，而在高性能处理器中，dec 本身就是时序瓶颈，所以很难处理这种情况。典型例子：
+
 + superscalar 一个 cycle 内 decode 多条指令
 + 宏融合 macrofusion：decoder 把多条指令组合成更复杂的指令来执行
 
@@ -311,11 +316,11 @@ RV32C 让 RISC-V 编译出当今几乎最短的代码。您几乎能将其视为
 
 + 32 个名称以 v 开头的向量寄存器，但每个向量寄存器的元素数量并不固定，取决于操作的位宽和向量寄存器堆大小，后者由处理器设计者决定。
 
-| 术语 | 含义 |
-| ---- | ---- |
-| `VLEN` | 每个 VRF 的位宽，单位为 bit |
-| `mvl` | 单条指令能正确运行的最大向量元素个数 |
-| `vl` | 待处理的向量元素个数 |
+| 术语   | 含义                                 |
+| ------ | ------------------------------------ |
+| `VLEN` | 每个 VRF 的位宽，单位为 bit          |
+| `mvl`  | 单条指令能正确运行的最大向量元素个数 |
+| `vl`   | 待处理的向量元素个数                 |
 
 + 易于编程/编译/链接：RV32V 采取将数据类型和位宽与向量寄存器关联的新方法，而不是与指令操作码关联。程序在执行向量计算指令前，先在向量寄存器中设置数据类型和位宽。使用动态寄存器类型可大幅减少向量指令数量。动态类型向量架构能降低汇编语言程序员的认知负担和编译器中代码生成器的复杂度。
 + 
@@ -380,6 +385,7 @@ RV 的 3 种模式：
 ### 机器模式
 
 机器模式最重要的特性是拦截和处理异常 exception（不寻常的 runtime event）。RISC-V 将 exception 分为两类：
+
 + 同步异常 synchronous exception：指令执行的结果，比如访问非法地址，指令 opcode 无效
 + 中断 interrupt：和指令流异步的外部事件，比如鼠标点击。标准中断源有 3 个
 	+ 软件 software：通过写入一个内存映射寄存器触发，通常用于一个 hart 通知另一个 hart，此机制在其他架构中称为处理器间中断 interprocessor interrupt
@@ -392,16 +398,16 @@ RISC-V 允许不对齐访存，但是仍包含访存地址不对齐异常。原�
 
 异常处理必须的 8 个 csr：
 
-| 名称 | 全拼 | 含义 |
-| ---- | --- | --- |
-| `mstatus` | Machine Status | 维护各种状态，如全局中断使能 |
-| `mip` | Machine Interrupt Pending |记录当前的中断请求 |
-| `mie` | Machine Interrupt Enable | 维护处理器的中断使能状态 |
-| `mcause` | Machine Exception Cause | 指示发生了何种异常 |
-| `mtvec` | Machine Trap Vector | 存放发生异常时处理器跳转的地址 |
-| `mtval` | Machine Trap Value | 存放当前自陷相关的额外信息，如地址异常的故障地址、非法指令异常的指令，发生其他异常时其值为 0 |
-| `mepc` | Machine Exception PC | 指向发生异常的指令 |
-| `mscratch` | Machine Scratch | 向异常处理程序提供一个字的临时存储 |
+| 名称       | 全拼                      | 含义 |
+| ---------- | ------------------------- | -------------------------------------------------------------------------------------------- |
+| `mstatus`  | Machine Status            | 维护各种状态，如全局中断使能                                                                 |
+| `mip`      | Machine Interrupt Pending | 记录当前的中断请求                                                                           |
+| `mie`      | Machine Interrupt Enable  | 维护处理器的中断使能状态                                                                     |
+| `mcause`   | Machine Exception Cause   | 指示发生了何种异常                                                                           |
+| `mtvec`    | Machine Trap Vector       | 存放发生异常时处理器跳转的地址                                                               |
+| `mtval`    | Machine Trap Value        | 存放当前自陷相关的额外信息，如地址异常的故障地址、非法指令异常的指令，发生其他异常时其值为 0 |
+| `mepc`     | Machine Exception PC      | 指向发生异常的指令                                                                           |
+| `mscratch` | Machine Scratch           | 向异常处理程序提供一个字的临时存储                                                           |
 
 M-mode 响应 exception 的例子：
 
@@ -426,52 +432,53 @@ mscratch 的作用：提供一种快速的保存-恢复机制，可以直接把�
 5. 用 csrrw 交换 mscratch 和 a0，恢复内容
 6. 用 mret 返回
 
-```asm
-# example：timer 中断的 ISR。
-# 假设
-# 1. mstatus.MIE=1 已打开全局中断使能
-# 2. timer 中断使能 mie[7]=1 已打开
-# 3. mtvec 设置为本处理程序的地址
-# 4. mscratch 指向一段 16Byte 的临时缓冲区
+示例代码：
 
-# step1. 交换 mscratch 和 a0。a0 保持空闲内存供后续普通指令使用，mscratch 保存 a0 旧值，用于后续恢复
-csrrw a0, mscratch, a0
-
-# step2. 保存 XRF 到空闲内存。因为后续要使用到 a1, a2, a3, a4 这几个 XRF，所以先保存旧值
-sw a1,  0(a0)
-sw a2,  4(a0)
-sw a3,  8(a0)
-sw a4, 12(a0)
-
-# step3. 中断处理
-# 解析中断原因
-csrr a1, mcause        # 读出异常原因
-bgez a1, exception     # 若非中断则跳转，bgez 的 rs 是 signed 类型，中断对应的 MSB = 1 为负数
-andi a1, a1, 0x3f      # 单独取出中断原因
-li   a2, 7             # a2 = 时钟中断号
-bne  a1, a2, otherInt  # 若非 timer 中断则跳转
-# 处理 timer 中断，递增 mtimecmp
-la   a1, mtimecmp      # mtimecmp 是 memory map csr，读出该地址的到 a1
-lw   a2, 0(a1)         # 读出 mtimecmp 的低 32bit 到 a2
-lw   a3, 4(a1)         # 读出 mtimecmp 的高 32bit 到 a3
-addi a4, a2, 1000      # 给 mtimecmp 的低 32bit 加上 1000，求和结果保存到 a4
-sltu a2, a4, a2        # 计算进位，如果和 a4 比加数 a2 小，说明有进位，进位保存在 a2 中
-add  a3, a3, a2        # 把进位加到 mtimecmp 的高位 a3 上
-sw   a3, 4(a1)         # 保存递增后的 mtimecmp 高位
-sw   a4, 0(a1)         # 保存递增后的 mtimecmp 低位
-
-# step4. 恢复 XRF, a1, a2, a3, a4
-lw a4, 12(a0)
-lw a3,  8(a0)
-lw a2,  4(a0)
-lw a1,  0(a0)
-
-# step5. 恢复 a0 和 mscratch 旧值
-csrrw a0, mscratch, a0
-
-# step6. 从 ISR 返回
-mret
-```
+    #!asm
+    # example：timer 中断的 ISR。
+    # 假设
+    # 1. mstatus.MIE=1 已打开全局中断使能
+    # 2. timer 中断使能 mie[7]=1 已打开
+    # 3. mtvec 设置为本处理程序的地址
+    # 4. mscratch 指向一段 16Byte 的临时缓冲区
+    
+    # step1. 交换 mscratch 和 a0。a0 保持空闲内存供后续普通指令使用，mscratch 保存 a0 旧值，用于后续恢复
+    csrrw a0, mscratch, a0
+    
+    # step2. 保存 XRF 到空闲内存。因为后续要使用到 a1, a2, a3, a4 这几个 XRF，所以先保存旧值
+    sw a1,  0(a0)
+    sw a2,  4(a0)
+    sw a3,  8(a0)
+    sw a4, 12(a0)
+    
+    # step3. 中断处理
+    # 解析中断原因
+    csrr a1, mcause        # 读出异常原因
+    bgez a1, exception     # 若非中断则跳转，bgez 的 rs 是 signed 类型，中断对应的 MSB = 1 为负数
+    andi a1, a1, 0x3f      # 单独取出中断原因
+    li   a2, 7             # a2 = 时钟中断号
+    bne  a1, a2, otherInt  # 若非 timer 中断则跳转
+    # 处理 timer 中断，递增 mtimecmp
+    la   a1, mtimecmp      # mtimecmp 是 memory map csr，读出该地址的到 a1
+    lw   a2, 0(a1)         # 读出 mtimecmp 的低 32bit 到 a2
+    lw   a3, 4(a1)         # 读出 mtimecmp 的高 32bit 到 a3
+    addi a4, a2, 1000      # 给 mtimecmp 的低 32bit 加上 1000，求和结果保存到 a4
+    sltu a2, a4, a2        # 计算进位，如果和 a4 比加数 a2 小，说明有进位，进位保存在 a2 中
+    add  a3, a3, a2        # 把进位加到 mtimecmp 的高位 a3 上
+    sw   a3, 4(a1)         # 保存递增后的 mtimecmp 高位
+    sw   a4, 0(a1)         # 保存递增后的 mtimecmp 低位
+    
+    # step4. 恢复 XRF, a1, a2, a3, a4
+    lw a4, 12(a0)
+    lw a3,  8(a0)
+    lw a2,  4(a0)
+    lw a1,  0(a0)
+    
+    # step5. 恢复 a0 和 mscratch 旧值
+    csrrw a0, mscratch, a0
+    
+    # step6. 从 ISR 返回
+    mret
 
 ### 嵌入式系统中的用户模式和进程隔离
 
