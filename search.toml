@@ -9,6 +9,11 @@ url = "/pages/about-me.html"
 title = "About Me"
 
 [[input.files]]
+path = "posts/cs/understanding-and-using-c-pointers-notes.html"
+url = "/posts/cs/understanding-and-using-c-pointers-notes.html"
+title = "深入理解 C 指针读书笔记"
+
+[[input.files]]
 path = "posts/risc-v/riscv-book-note.html"
 url = "/posts/risc-v/riscv-book-note.html"
 title = "RISC-V Book 阅读笔记"

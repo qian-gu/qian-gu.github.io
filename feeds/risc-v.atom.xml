@@ -127,11 +127,11 @@
 &lt;li&gt;性能：imm 的符号位永远在 inst[31]，符号位扩展可在 dec 前进行&lt;/li&gt;
 &lt;li&gt;易于编程：全 0 和全 1 为非法指令&lt;/li&gt;
 &lt;li&gt;成本：精心挑选 op_code，使得 datapath 相同的指令共享 op_code，从而简化控制逻辑&lt;/li&gt;
-&lt;li&gt;提升空间：RV32I 占用 33bit 指令编码空间不到 1/8，预留指令编码空间&lt;/li&gt;
+&lt;li&gt;提升空间：RV32I 占用 32bit 指令编码空间不到 1/8，预留指令编码空间&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="rv32i_1"&gt;RV32I 寄存器&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;易于编程：RISC-v = 32 个 GPR + 1 PC；ARM-32 = 16 个 GPR（包含 PC）&lt;/li&gt;
+&lt;li&gt;易于编程：RISC-V = 32 个 GPR + 1 PC；ARM-32 = 16 个 GPR（包含 PC）&lt;/li&gt;
 &lt;li&gt;简洁：实现相同功能，设置 x0 为常 0 可以简化操作，额外设置 PC 可以简化分支预测复杂度，且少占用一个 GPR&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="rv32i_2"&gt;RV32I 整数计算&lt;/h3&gt;
@@ -148,10 +148,12 @@
 &lt;/ul&gt;
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
-&lt;p&gt;因为一条 32bit 指令无法容纳 32bit 地址，所以 linker 通常要把每个符号调整成 2 条 RV32I 指令。
-+ 对于数据地址，需要调整为 lui 和 addi
-+ 对于代码地址，需要调整为 auipc 和 jalr
-很多时候跳转距离没那么大，此时并不需要两条，linker 会多趟扫描代码，尽可能优化成一条 jal 指令（包含 imm[19:0]，可以寻址前后 1MB），这个过程叫做 linker relaxation。&lt;/p&gt;
+&lt;p&gt;因为一条 32bit 指令无法容纳 32bit 地址，所以 linker 通常要把每个符号调整成 2 条 RV32I 指令。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于数据地址，需要调整为 lui 和 addi&lt;/li&gt;
+&lt;li&gt;对于代码地址，需要调整为 auipc 和 jalr&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;很多时候跳转距离没那么大，此时并不需要两条，linker 会多趟扫描代码，尽可能优化成一条 jal 指令（包含 imm[19:0]，可以寻址前后 1MB），这个过程叫做 linker relaxation。&lt;/p&gt;
 &lt;/div&gt;
 &lt;h3 id="rv32i_4"&gt;RV32I 条件分支&lt;/h3&gt;
 &lt;ul&gt;
@@ -161,7 +163,7 @@
 &lt;/ul&gt;
 &lt;h3 id="rv32i_5"&gt;RV32I 无条件跳转&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;简洁：RV32I 不支持复杂的过程调用指令，如何 x86-32 的 enter/leave，Tensilica 的 register windows&lt;/li&gt;
+&lt;li&gt;简洁：RV32I 不支持复杂的过程调用指令，如 x86-32 的 enter/leave，Tensilica 的 register windows&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="admonition info"&gt;
 &lt;p class="admonition-title"&gt;Info&lt;/p&gt;
@@ -199,16 +201,29 @@
 &lt;div class="admonition note"&gt;
 &lt;p class="admonition-title"&gt;Note&lt;/p&gt;
 &lt;p&gt;保存寄存器由 callee 负责维护，重新解释上述过程如下：&lt;/p&gt;
-&lt;p&gt;在 caller 中执行 call 指令跳转进入 callee 后，callee 首先做两件事：
-1. 分配 stack frame，为保存现场准备资源
-2. 将 callee 需要维护的保存寄存器存储到 stack 中&lt;/p&gt;
-&lt;p&gt;当 callee 完成功能后，执行 ret 指令前做两件事情：
-1. 从 stack 向保存寄存器恢复现场
-2. 恢复保存寄存器 &lt;code&gt;sp&lt;/code&gt; == 释放 stack frame（局部资源）&lt;/p&gt;
+&lt;p&gt;在 caller 中执行 call 指令跳转进入 callee 后，callee 首先做两件事：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;分配 stack frame，为保存现场准备资源&lt;/li&gt;
+&lt;li&gt;将 callee 需要维护的保存寄存器存储到 stack 中&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;当 callee 完成功能后，执行 ret 指令前做两件事情：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;从 stack 向保存寄存器恢复现场&lt;/li&gt;
+&lt;li&gt;恢复保存寄存器 &lt;code&gt;sp&lt;/code&gt; == 释放 stack frame（局部资源）&lt;/li&gt;
+&lt;/ol&gt;
 &lt;/div&gt;
 &lt;p&gt;为了提升性能，应尽量把变量放在 GPR 中而不是内存中，同时要避免因为保存和恢复 GPR 而频繁访问内存。RISC-V 有足够的寄存器兼顾两者：既能把操作数放在 GPR，又能减少保存和恢复它们的次数。关键在于，一些寄存器不保证其值在函数调用前后保持一致，称为临时寄存器；另一些能保证，称为保存寄存器。不再调用其他函数的函数称为叶子函数。当一个叶子函数只有少量参数和局部变量时，可将其分配到寄存器，无需分配到内存。大部分函数调用均如此，此时程序无需将寄存器保存到内存。&lt;/p&gt;
 &lt;p&gt;典型例子 main 函数调用 prinf：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# 编译，将 c 代码转化为 asm 代码，结果如图 3.6&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# 编译，将 c 代码转化为 asm 代码，结果如图 3.6&lt;/span&gt;
 gcc&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;hello.s&lt;span class="w"&gt; &lt;/span&gt;-S&lt;span class="w"&gt; &lt;/span&gt;hello.c
 &lt;span class="c1"&gt;# 编译，将 asm 代码转化为 .o 文件，.o 文件无法直接查看，需要先 dump，结果如图 3.7&lt;/span&gt;
 &lt;span class="c1"&gt;# 其中一些指令的地址字段是 0，需要 linker 填充&lt;/span&gt;
@@ -218,7 +233,7 @@ objdump&lt;span class="w"&gt; &lt;/span&gt;-D&lt;span class="w"&gt; &lt;/span&gt
 &lt;span class="c1"&gt;# 地址字段已替换&lt;/span&gt;
 gcc&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;hello&lt;span class="w"&gt; &lt;/span&gt;hello.c
 objdump&lt;span class="w"&gt; &lt;/span&gt;-D&lt;span class="w"&gt; &lt;/span&gt;hello&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;hello.dump
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
 &lt;h3 id="_4"&gt;结语&lt;/h3&gt;
 &lt;blockquote&gt;
@@ -272,12 +287,23 @@ objdump&lt;span class="w"&gt; &lt;/span&gt;-D&lt;span class="w"&gt; &lt;/span&gt
 &lt;p&gt;一切事物都应该尽量简单，但不能过分简单。&lt;/p&gt;
 &lt;p&gt;—— 阿尔伯特 · 爱因斯坦（Albert Einstein），1933&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;RV32A 用于同步的原子操作有两种：
-+ 原子内存操作（atomic memory operation，AMO）
-+ 预订取数 / 条件存数（load reserved / store conditional）&lt;/p&gt;
-&lt;p&gt;为何 RV32A 要提供两种原子操作？答案是有两种区别很大的使用场景。&lt;/p&gt;
+&lt;p&gt;RV32A 用于同步的原子操作有两种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;原子内存操作（atomic memory operation，AMO）&lt;/li&gt;
+&lt;li&gt;预订取数 / 条件存数（load reserved / store conditional）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为何 RV32A 要提供两种原子操作？答案是对应两种区别很大的使用场景。&lt;/p&gt;
 &lt;p&gt;场景一：编程语言开发者假定顶层的 ISA 提供原子的 compare-and-swap 操作：比较某寄存器和另一寄存器寻址的内存值，若相等，则将第 3 个寄存器的值与内存值交换。这是一种通用的同步原语，基于它可以实现其他任意 word 同步操作。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# 用 lr/sc 对内存 M[a0] 进行 compare-and-swap
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# 用 lr/sc 对内存 M[a0] 进行 compare-and-swap
 # 期望的旧值在 a1 中；期望的新值在 a2 中
 0: lr.w a3, (a0)  # 取出旧值
 4: bne a3, a1, 80  # 旧值是否等于 a1？
@@ -286,16 +312,24 @@ c: bnez a3, 0  # 如果失败，重试
 ... compare-and-swap 成功后的代码 ...
 ...
 80:  # compare-and-swap 失败
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+```
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
 &lt;p&gt;场景二：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# 用 AMO 实现 test-and-set 自旋锁，用于保护临界区
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;
+&lt;span class="normal"&gt;5&lt;/span&gt;
+&lt;span class="normal"&gt;6&lt;/span&gt;
+&lt;span class="normal"&gt;7&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# 用 AMO 实现 test-and-set 自旋锁，用于保护临界区
 0: li t0, 1 # 初始化锁值
 4: amoswap.w.aq t1, t0, (a0) # 尝试获取锁
 8: bnez t1, 4 # 若失败则重试
 ... 临界区代码 ..
 20: amoswap.w.rl x0, x0, (a) # 释放锁
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+```
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
 &lt;h3 id="_9"&gt;结语&lt;/h3&gt;
 &lt;p&gt;RV32A 是可选的，一个不支持它的 RISC-V 处理器会更简单。然而，正如爱因 斯坦所言，一切事物都应该尽量简单，但不能过分简单。RV32A 正是如此，许多场景 都离不开它。&lt;/p&gt;
@@ -309,9 +343,11 @@ c: bnez a3, 0  # 如果失败，重试
 &lt;li&gt;简洁：RV32C 采用一种新方法：每条短指令都必须对应一条标准的 32 位 RISC-V 指 令。此外，16 位指令仅对汇编器和链接器可见，并由它们决定是否将标准指令替换为相应的短指令。编译器开发者和汇编语言程序员无需关心 RV32C 指令及其格式，他 们只需知道最终得到的程序比大部分情况下更小。&lt;/li&gt;
 &lt;li&gt;成本：尽管处理器设计者不能忽略 RV32C 指令，但能通过以下技巧降低实现开销：在执 行指令前通过一个译码器将所有 16 位指令翻译成相应的 32 位指令。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;为什么有些架构师会跳过 RV32C：16bit 的 RV32C 和 32bit 的 RV32I 混合在一起会恶化 decoder 的时序，而在高性能处理器中，dec 本身就是时序瓶颈，所以很难处理这种情况。典型例子：
-+ superscalar 一个 cycle 内 decode 多条指令
-+ 宏融合 macrofusion：decoder 把多条指令组合成更复杂的指令来执行&lt;/p&gt;
+&lt;p&gt;为什么有些架构师会跳过 RV32C：16bit 的 RV32C 和 32bit 的 RV32I 混合在一起会恶化 decoder 的时序，而在高性能处理器中，dec 本身就是时序瓶颈，所以很难处理这种情况。典型例子：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;superscalar 一个 cycle 内 decode 多条指令&lt;/li&gt;
+&lt;li&gt;宏融合 macrofusion：decoder 把多条指令组合成更复杂的指令来执行&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h3 id="_10"&gt;结语&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;我本能写出更短的信，但我没有时间。&lt;/p&gt;
@@ -413,12 +449,16 @@ c: bnez a3, 0  # 如果失败，重试
 &lt;li&gt;简洁：RV32 和 RV64 特权架构，两者的差异仅体现在整数寄存器的位宽。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="_18"&gt;机器模式&lt;/h3&gt;
-&lt;p&gt;机器模式最重要的特性是拦截和处理异常 exception（不寻常的 runtime event）。RISC-V 将 exception 分为两类：
-+ 同步异常 synchronous exception：指令执行的结果，比如访问非法地址，指令 opcode 无效
-+ 中断 interrupt：和指令流异步的外部事件，比如鼠标点击。标准中断源有 3 个
-    + 软件 software：通过写入一个内存映射寄存器触发，通常用于一个 hart 通知另一个 hart，此机制在其他架构中称为处理器间中断 interprocessor interrupt
-    + 时钟 timer：mtime &amp;gt;= mtimecmp（内存映射寄存器）时触发
-    + 外部来源 external：由 PLIC（大部分外设都挂载在它上面）产生，PLIC 因平台而异&lt;/p&gt;
+&lt;p&gt;机器模式最重要的特性是拦截和处理异常 exception（不寻常的 runtime event）。RISC-V 将 exception 分为两类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同步异常 synchronous exception：指令执行的结果，比如访问非法地址，指令 opcode 无效&lt;/li&gt;
+&lt;li&gt;中断 interrupt：和指令流异步的外部事件，比如鼠标点击。标准中断源有 3 个&lt;ul&gt;
+&lt;li&gt;软件 software：通过写入一个内存映射寄存器触发，通常用于一个 hart 通知另一个 hart，此机制在其他架构中称为处理器间中断 interprocessor interrupt&lt;/li&gt;
+&lt;li&gt;时钟 timer：mtime &amp;gt;= mtimecmp（内存映射寄存器）时触发&lt;/li&gt;
+&lt;li&gt;外部来源 external：由 PLIC（大部分外设都挂载在它上面）产生，PLIC 因平台而异&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;RISC-V 允许不对齐访存，但是仍包含访存地址不对齐异常。原因是考虑到不对齐访存的硬件实现较复杂，且出现频率很低，因此一些硬件实现方案选择不支持不对齐的普通访存操作。这类处理器需要陷入异常处理程序，然后通过一系列较小的对齐访存操作，来在软件中模拟不对齐访存。应用程序代码对此一无所知：不对齐访存操作仍然正确执行，虽然执行得慢，但硬件实现却很简单。此外，高性能处理器亦可在硬件中实现不对齐访存。&lt;/p&gt;
 &lt;h3 id="_19"&gt;机器模式的异常处理&lt;/h3&gt;
 &lt;p&gt;异常处理必须的 8 个 csr：&lt;/p&gt;
@@ -499,7 +539,51 @@ c: bnez a3, 0  # 如果失败，重试
 &lt;li&gt;用 csrrw 交换 mscratch 和 a0，恢复内容&lt;/li&gt;
 &lt;li&gt;用 mret 返回&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# example：timer 中断的 ISR。&lt;/span&gt;
+&lt;p&gt;示例代码：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;
+&lt;span class="normal"&gt;24&lt;/span&gt;
+&lt;span class="normal"&gt;25&lt;/span&gt;
+&lt;span class="normal"&gt;26&lt;/span&gt;
+&lt;span class="normal"&gt;27&lt;/span&gt;
+&lt;span class="normal"&gt;28&lt;/span&gt;
+&lt;span class="normal"&gt;29&lt;/span&gt;
+&lt;span class="normal"&gt;30&lt;/span&gt;
+&lt;span class="normal"&gt;31&lt;/span&gt;
+&lt;span class="normal"&gt;32&lt;/span&gt;
+&lt;span class="normal"&gt;33&lt;/span&gt;
+&lt;span class="normal"&gt;34&lt;/span&gt;
+&lt;span class="normal"&gt;35&lt;/span&gt;
+&lt;span class="normal"&gt;36&lt;/span&gt;
+&lt;span class="normal"&gt;37&lt;/span&gt;
+&lt;span class="normal"&gt;38&lt;/span&gt;
+&lt;span class="normal"&gt;39&lt;/span&gt;
+&lt;span class="normal"&gt;40&lt;/span&gt;
+&lt;span class="normal"&gt;41&lt;/span&gt;
+&lt;span class="normal"&gt;42&lt;/span&gt;
+&lt;span class="normal"&gt;43&lt;/span&gt;
+&lt;span class="normal"&gt;44&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# example：timer 中断的 ISR。&lt;/span&gt;
 &lt;span class="c1"&gt;# 假设&lt;/span&gt;
 &lt;span class="c1"&gt;# 1. mstatus.MIE=1 已打开全局中断使能&lt;/span&gt;
 &lt;span class="c1"&gt;# 2. timer 中断使能 mie[7]=1 已打开&lt;/span&gt;
@@ -543,7 +627,7 @@ c: bnez a3, 0  # 如果失败，重试
 
 &lt;span class="c1"&gt;# step6. 从 ISR 返回&lt;/span&gt;
 &lt;span class="nf"&gt;mret&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 
 &lt;h3 id="_20"&gt;嵌入式系统中的用户模式和进程隔离&lt;/h3&gt;
 &lt;p&gt;并非所有代码都是可信任的：底层 OS 代码可行度较高，可以访问所有硬件资源；应用程序代码可行度较低，需要进行限制：&lt;/p&gt;

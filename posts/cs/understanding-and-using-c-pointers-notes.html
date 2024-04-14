@@ -1,0 +1,2737 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet/less" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+          media="(prefers-color-scheme: dark)"
+    href="https://qian-gu.github.io/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: dark)"
+          href="https://qian-gu.github.io/theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+          href="https://qian-gu.github.io/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="https://qian-gu.github.io/theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="/static/custom.css">
+
+  <link rel="shortcut icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+  <link rel="icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+  <link href="https://qian-gu.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Qian's Blog Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48826831-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+ 
+
+<meta name="author" content="Qian Gu" />
+<meta name="description" content="总结 C 指针用法" />
+<meta name="keywords" content="C, pointer">
+
+
+  <meta property="og:site_name" content="Qian's Blog"/>
+  <meta property="og:title" content="深入理解 C 指针读书笔记"/>
+  <meta property="og:description" content="总结 C 指针用法"/>
+  <meta property="og:locale" content="en"/>
+  <meta property="og:url" content="https://qian-gu.github.io/posts/cs/understanding-and-using-c-pointers-notes.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2024-04-14 16:55:00+08:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://qian-gu.github.io/author/qian-gu.html">
+  <meta property="article:section" content="CS"/>
+  <meta property="article:tag" content="C"/>
+  <meta property="article:tag" content="pointer"/>
+  <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
+
+  <title>Qian's Blog &ndash; 深入理解 C 指针读书笔记</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-1821536199377100",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body >
+
+<aside>
+  <div>
+    <a href="https://qian-gu.github.io/">
+      <img src="https://qian-gu.github.io/images/logo.png" alt="Qian Gu" title="Qian Gu">
+    </a>
+
+    <h1>
+      <a href="https://qian-gu.github.io/">Qian Gu</a>
+    </h1>
+
+    <p>Read >> Think >> Write</p>
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..." onclick="loadStorkIndex()"/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_blank"
+                 href="https://qian-gu.github.io/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-envelope"
+rel="me"           href="mailto:guqian110@163.com"
+           target="_blank">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/qian-gu"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-twitter"
+           href="https://twitter.com/qian_gu"
+           target="_blank">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-rss"
+           href="/feeds/all.atom.xml"
+           target="_blank">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="https://qian-gu.github.io/">Home</a>
+
+  <a href="/authors.html">Authors</a>
+  <a href="/archives.html">Archives</a>
+  <a href="/categories.html">Categories</a>
+  <a href="/tags.html">Tags</a>
+
+  <a href="https://qian-gu.github.io/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="understanding-and-using-c-pointers-notes">深入理解 C 指针读书笔记</h1>
+    <p>
+      Posted on 2024-04-14 16:55 in <a href="https://qian-gu.github.io/category/cs.html">CS</a>
+
+    </p>
+    <div class="tag-cloud">
+      <p>
+        <a href="https://qian-gu.github.io/tag/c.html">C</a>
+        <a href="https://qian-gu.github.io/tag/pointer.html">pointer</a>
+      </p>
+    </div>
+  </header>
+
+
+
+  <div>
+    <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#_1">第一章 认识指针</a><ul>
+<li><a href="#_2">指针和内存</a><ul>
+<li><a href="#_3">为什么要精通指针？（指针的用途）</a></li>
+<li><a href="#_4">声明指针</a></li>
+<li><a href="#_5">如何阅读声明</a></li>
+<li><a href="#_6">地址操作符 &amp;</a></li>
+<li><a href="#_7">间接引用操作符 *</a></li>
+<li><a href="#_8">指向函数的指针</a></li>
+<li><a href="#null">null 的概念</a></li>
+<li><a href="#void">void 指针</a></li>
+<li><a href="#_9">全局和静态指针</a></li>
+</ul>
+</li>
+<li><a href="#_10">指针的长度和类型</a><ul>
+<li><a href="#size_t">size_t</a></li>
+<li><a href="#intptr_t-uintptr_t">intptr_t  和 uintptr_t</a></li>
+</ul>
+</li>
+<li><a href="#_11">指针操作符</a><ul>
+<li><a href="#_12">指针算术运算</a></li>
+</ul>
+</li>
+<li><a href="#_13">指针常见用法</a><ul>
+<li><a href="#_14">多层间接引用</a></li>
+<li><a href="#_15">常量与指针</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#c">第二章 C 的动态内存管理</a><ul>
+<li><a href="#_16">动态内存分配</a></li>
+<li><a href="#_17">迷途指针</a></li>
+</ul>
+</li>
+<li><a href="#_18">第三章 指针和函数</a><ul>
+<li><a href="#_19">程序的栈和堆</a></li>
+<li><a href="#_20">通过指针传递和返回数据</a><ul>
+<li><a href="#_21">修改实参</a></li>
+<li><a href="#_22">只读实参</a></li>
+<li><a href="#_23">返回指针</a></li>
+<li><a href="#_24">传递指针的指针</a></li>
+</ul>
+</li>
+<li><a href="#_25">函数指针</a><ul>
+<li><a href="#_26">声明</a></li>
+<li><a href="#_27">使用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_28">第四章 指针和数组</a><ul>
+<li><a href="#_29">数组概述</a></li>
+<li><a href="#_30">指针表示法和数组</a></li>
+<li><a href="#_31">传递一维数组</a></li>
+<li><a href="#_32">指针数组</a></li>
+<li><a href="#_33">指针和多维数组</a></li>
+<li><a href="#_34">传递多维数组</a></li>
+</ul>
+</li>
+<li><a href="#_35">第五章 指针和字符串</a><ul>
+<li><a href="#_36">字符串基础</a><ul>
+<li><a href="#_37">字符串声明</a></li>
+<li><a href="#_38">字符串字面量池</a></li>
+<li><a href="#_39">字符串初始化</a></li>
+</ul>
+</li>
+<li><a href="#_40">标准字符串操作</a></li>
+<li><a href="#_41">传递字符串</a><ul>
+<li><a href="#_42">参数声明</a></li>
+<li><a href="#_43">传递参数</a></li>
+</ul>
+</li>
+<li><a href="#_44">返回字符串</a></li>
+<li><a href="#_45">函数指针和字符串的例子</a></li>
+</ul>
+</li>
+<li><a href="#_46">第六章 指针和结构体</a><ul>
+<li><a href="#_47">声明结构体</a></li>
+<li><a href="#_48">结构体对齐</a></li>
+<li><a href="#_49">释放结构体</a></li>
+<li><a href="#mallocfree">避免 malloc/free 开销</a></li>
+<li><a href="#_50">指针和结构体</a></li>
+</ul>
+</li>
+<li><a href="#_51">第七章 安全问题和指针误用</a><ul>
+<li><a href="#_52">指针的声明和初始化问题</a></li>
+<li><a href="#_53">指针的使用问题</a></li>
+<li><a href="#_54">内存释放问题</a></li>
+<li><a href="#_55">使用静态工具</a></li>
+</ul>
+</li>
+<li><a href="#_56">第八章 其他重要内容</a><ul>
+<li><a href="#_57">指针类型转化</a></li>
+<li><a href="#restrict">别名、强别名和 restrict 关键字</a><ul>
+<li><a href="#_58">别名</a></li>
+</ul>
+</li>
+<li><a href="#_59">强别名</a><ul>
+<li><a href="#restrict_1">restrict 关键字</a></li>
+</ul>
+</li>
+<li><a href="#_60">线程和指针</a></li>
+<li><a href="#_61">面向对象</a><ul>
+<li><a href="#_62">不透明指针实例</a></li>
+</ul>
+</li>
+<li><a href="#c_1">C 中的多态</a></li>
+</ul>
+</li>
+<li><a href="#_63">读书感悟</a></li>
+</ul>
+</div>
+<h2 id="_1">第一章 认识指针</h2>
+<blockquote>
+<p>理解指针的关键在于理解 C 程序如何管理内存。归根结底，指针包含的就是内存地址。不理解组织和管理内存的方式，就很难理解指针的工作方式。</p>
+</blockquote>
+<h3 id="_2">指针和内存</h3>
+<table>
+<thead>
+<tr>
+<th>内存类型</th>
+<th>作用域</th>
+<th>生命周期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全局内存</td>
+<td>整个文件</td>
+<td>应用程序的生命周期</td>
+</tr>
+<tr>
+<td>静态内存</td>
+<td>声明它的函数内部</td>
+<td>应用程序的生命周期</td>
+</tr>
+<tr>
+<td>自动内存（局部内存）</td>
+<td>声明它的函数内部</td>
+<td>函数执行时间内</td>
+</tr>
+<tr>
+<td>动态内存</td>
+<td>由引用该内存的指针决定</td>
+<td>直到内存释放</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>指针变量包含内存中别的变量、对象或函数的地址。对象就是内存分配函数（比如 malloc）分配的内存。指针通常根据所指的数据类型来声明。对象可以是任何 C 数据类型，如整数、字符、字符串或结构体。然而，指针本身并没有包含所引用数据的类型信息，指针只包含地址。</p>
+</blockquote>
+<h4 id="_3">为什么要精通指针？（指针的用途）</h4>
+<blockquote>
+<ul>
+<li>写出快速高效的代码</li>
+<li>为解决很多类问题提供方便的途径</li>
+<li>支持动态内存分配</li>
+<li>使表达式变得紧凑和简洁</li>
+<li>提供用指针传递数据结构的能力而不会带来庞大的开销</li>
+<li>保护作为参数传递给函数的数据</li>
+</ul>
+<p>用指针可以写出快速高效的代码是因为指针更接近硬件。也就是说，编译器可以更容易地把操作翻译成机器码。指针附带的开销一般不像别的操作符那样大。</p>
+<p>紧凑的表达式有很强的表达能力，但也比较晦涩，因为很多程序员并不能完全理解指针表示法。紧凑的表达式应该用来满足特定的需要，而不是为了晦涩而晦涩。</p>
+</blockquote>
+<h4 id="_4">声明指针</h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// 星号两边的空格无关紧要，下面的几个声明是等价的。空白符的使用是个人喜好</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="p">;</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">pi</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pi</span><span class="p">;</span>
+<span class="kt">int</span><span class="o">*</span><span class="n">pi</span><span class="p">;</span>
+</code></pre></div>
+
+<blockquote>
+<p>星号将变量声明为指针。这是一个重载过的符号，因为它也用在乘法和解引指针上。</p>
+<p>指针的实现中没有内部信息表明自己指向的是什么类型的数据或者内容是否合法</p>
+<p>尽管不经过初始化就可以使用指针，但只有初始化后，指针才会正常工作。</p>
+</blockquote>
+<p>任何变量都有两个熟悉：valu 和 address，指针变量的 value = 被指向对象的地址。</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>指针变量的类型是 <strong>指针</strong>，如 <code>int *</code> 和 <code>char *</code> 等。虽然有些系统中，<code>int*</code> 和 <code>int</code> 都是 32bit 数据，但是它们的类型不同，所以不能直接把 <code>int</code> 变量赋值给 <code>int *</code> 指针。但是可以强转后赋值，即 <code>int *pi = (int *)num</code>。</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>为了避免解引用未初始化的指针导致错误，声明指针变量时尽快初始化是一个好习惯。</p>
+</div>
+<h4 id="_5">如何阅读声明</h4>
+<p><strong>倒过来读。</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 1. pci 是一个变量 ;</span>
+<span class="c1">// 2. pci 是一个指针变量</span>
+<span class="c1">// 3. pci 是一个指向整数的指针变量</span>
+<span class="c1">// 4. pci 是一个指向整数常量的指针变量</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pci</span><span class="p">;</span>
+</code></pre></div>
+
+<h4 id="_6">地址操作符 <code>&amp;</code></h4>
+<p>因为指针保存的 value 是地址，所以 可以用地址操作符来给指针赋值：</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span>
+</code></pre></div>
+
+<p>对于 <code>int *pi</code> 来说，</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pi</code></td>
+<td>任何变量，直接引用表示取该变量的 value，即指针变量 pi 指向的变量的地址</td>
+</tr>
+<tr>
+<td><code>&amp;pi</code></td>
+<td>任何变量，地址操作符返回该变量的 address，取指针变量 pi 自身的地址</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_7">间接引用操作符 <code>*</code></h4>
+<p><code>*</code> 返回指针变量指向的对象的 value，这个过程叫做指针解引用。</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="p">);</span><span class="w">  </span><span class="c1">// print 5</span>
+<span class="c1">// 解引用的结果既可以当左值，又可以当右值。</span>
+<span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="p">);</span><span class="w">  </span><span class="c1">// print 200</span>
+</code></pre></div>
+
+<h4 id="_8">指向函数的指针</h4>
+<p>指针指向的对象可以是函数：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 指针变量的名称为 foo</span>
+<span class="c1">// 被指向的对象（函数）没有形参，也没有返回值</span>
+<span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">foo</span><span class="p">)();</span>
+</code></pre></div>
+
+<h4 id="null">null 的概念</h4>
+<p>几个近似但不同的概念：</p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>null 概念</td>
+<td>通过 null 指针常量来支持的一种抽象，这个常量可以是也可以不是 0，C 程序员不需要关心实际的内部表示</td>
+</tr>
+<tr>
+<td>null 指针常量</td>
+<td>null 指针没有指向任何内存区域，两个 null 指针总是相等的。每个类型的指针都有对应的 null 指针类型</td>
+</tr>
+<tr>
+<td>NULL 宏</td>
+<td>把整数常量 0 强转为 void 指针，即 <code>#define NULL ((void *)0)</code></td>
+</tr>
+<tr>
+<td>ASCII 字符 NUL</td>
+<td>全 0 的字节</td>
+</tr>
+<tr>
+<td>null 字符串</td>
+<td>C 语言的字符串是必须以 0 结尾的字符序列，NUL 字符串是空字符串，不包含任何字符</td>
+</tr>
+<tr>
+<td>null 语句</td>
+<td>只有一个分号的语句</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>null 指针和未初始化的指针不是一回事，未初始化的指针可能包含任何值，null 指针则不会指向任何内存地址。任何时候都不能解引用 null 指针，因为它指向的不是合法地址。</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>不能直接把 int 变量赋值给指针，但是一个例外情况是<strong>可以把常数 0 直接赋值给任何指针</strong>，但是不能赋值其他常数。</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="c1">// valid assignment</span>
+<span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="c1">// invalid assignment</span>
+<span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Q：用不用 NULL？</p>
+<p>A：取决于个人喜好，NULL 比 0 的含义更加清晰，提醒正在使用指针</p>
+<h4 id="void">void 指针</h4>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">pv</span><span class="p">;</span>
+</code></pre></div>
+
+<ul>
+<li>void 指针具有和 char* 指针相同的形式和内存对齐方式</li>
+<li>void 指针永远都不会和其他类型的指针相等，但是两个赋值为 NULL 的 void 指针是相等的</li>
+</ul>
+<p>通用指针，用来存放任何数据类型的引用。任何类型的指针都可以转成 void 指针，然后再转回到原来的类型。转回后的结果和原始指针的 value 是相等的。</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Value of pi: %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pi</span><span class="p">);</span><span class="w">  </span><span class="c1">// Value of pi: 100</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">pv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pi</span><span class="p">;</span>
+<span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">pv</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Value of pi: %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pi</span><span class="p">);</span><span class="w">  </span><span class="c1">// Value of pi: 100</span>
+</code></pre></div>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li>void 指针只能用来作为数据指针，不能用作函数指针</li>
+<li>一旦指针被转为 void 指针后，就可以再次被转为其他任意类型的指针，所以要小心使用</li>
+</ul>
+</div>
+<h4 id="_9">全局和静态指针</h4>
+<p>全局 / 静态指针声明时就会被自动初始化为 NULL：</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">globalpi</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">foo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">staticpi</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="_10">指针的长度和类型</h3>
+<ul>
+<li>数据指针的长度通常都是一样的，和指针类型无关</li>
+<li>函数指针长度可能和数据指针长度不同</li>
+</ul>
+<p>使用指针时常用的四种预定义类型：</p>
+<ul>
+<li><code>size_t</code></li>
+<li><code>ptrdiff_t</code></li>
+<li><code>intptr</code></li>
+<li><code>uintptr_t</code></li>
+</ul>
+<h4 id="size_t">size_t</h4>
+<ul>
+<li>含义：C 中任何对象可以达到的最大长度</li>
+<li>用途：用于安全地表示长度。</li>
+<li>用法：是 <code>sizeof</code> 的返回值类型，也是 <code>malloc</code> 和 <code>strlen</code> 函数的参数</li>
+<li>声明：实现相关，一般出现在一个或多个标准头文件中，如 <code>stdio.h</code> 和 <code>stdlib.h</code>。一般 32 位系统上是 32，64 位系统上是 64</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cp">#ifndef __SIZE_T</span>
+<span class="cp">#define __SIZE_T</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="kt">size_t</span><span class="p">;</span>
+<span class="cp">#endif</span>
+</code></pre></div>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code>size_t</code> 可以用来存放指针，但是假定 <code>size_t</code> 和指针一样长不是个好主意。<code>intptr_t</code> 是更好的选择。</p>
+</div>
+<h4 id="intptr_t-uintptr_t">intptr_t  和 uintptr_t</h4>
+<ul>
+<li>用途：存放指针地址</li>
+<li>用法：提供一种可移植且安全的方法声明指针，且和系统中使用的指针长度相同。把指针转化成整数时很有用</li>
+<li>一般来说，<code>intptr_t</code> 比 <code>uintptr_t</code> 更灵活</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li>避免把指针转化成整数。如果指针是 64bit，整数只有 32bit 时会丢失信息</li>
+<li>使用 <code>intptr_t</code> 和 <code>uintptr_t</code> 时，必须先强转才能赋值。</li>
+</ul>
+</div>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">num</span>
+<span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span><span class="w">  </span><span class="c1">// error</span>
+<span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span><span class="w">  </span><span class="c1">// okay</span>
+</code></pre></div>
+
+<h3 id="_11">指针操作符</h3>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>名称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*</code></td>
+<td></td>
+<td>声明指针</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>解引用</td>
+<td>得到指向对象的 value</td>
+</tr>
+<tr>
+<td><code>-&gt;</code></td>
+<td>指向</td>
+<td>得到指针指向结构的字段</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td>加</td>
+<td>指针加法</td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>减</td>
+<td>指针减法</td>
+</tr>
+<tr>
+<td><code>==</code>, <code>!=</code></td>
+<td>相等、不相等</td>
+<td>指针比较</td>
+</tr>
+<tr>
+<td><code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code></td>
+<td>大于、大于等于、小于、小于等于</td>
+<td>指针比较</td>
+</tr>
+<tr>
+<td>( 数据类型 )</td>
+<td>转换</td>
+<td>转化指针类型</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_12">指针算术运算</h4>
+<p>数据指针可以执行以下几种算术运算：</p>
+<table>
+<thead>
+<tr>
+<th>算术运算</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>l_ptr = r_ptr + integer</td>
+<td><p>参与指针算术运算的整数的单位是 <code>sizeof(ptr)</code>，</p>l_ptr 的 value = r_ptr 的 value + integer * sizeof(r_ptr)</td>
+</tr>
+<tr>
+<td>ptr - int</td>
+<td><p>参与指针算术运算的整数的单位是 <code>sizeof(ptr)</code>，</p>l_ptr 的 value = r_ptr 的 value - integer * sizeof(r_ptr)</td>
+</tr>
+<tr>
+<td>ptr - ptr</td>
+<td>它们之间相差的 “ 单位 ” 的数量，<code>ptrdiff_t</code> 是指针差值的可移植方式</td>
+</tr>
+<tr>
+<td>ptr 和 ptr 比较</td>
+<td>一般没有用途，特殊情况：指针和数组元素比较，判断数组元素的相对顺序，和指针差值类似，结果的正负号表示前后顺序</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_13">指针常见用法</h3>
+<ul>
+<li>多层间接引用</li>
+<li>常量指针</li>
+</ul>
+<h4 id="_14">多层间接引用</h4>
+<p>即指针套娃，常见例子：双重指针，如 <code>argv</code> 给 main 函数传参。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">titles</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;A Tale of Two Cities&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Wuthering Heights&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Don Quixote&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Odyssey&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Moby-Dick&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Hamlet&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Gulliver&#39;s Travels&quot;</span><span class="p">};</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">bestBooks</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">englishBooks</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+
+<span class="n">bestBooks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">titles</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="n">bestBooks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">titles</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="n">bestBooks</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">titles</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+
+<span class="n">englishBooks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">titles</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="n">englishBooks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">titles</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="n">englishBooks</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">titles</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+<span class="n">englishBooks</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">titles</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">englishBooks</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="w"> </span><span class="c1">// Wuthering Heights</span>
+</code></pre></div></td></tr></table></div>
+
+<p>间接引用没有层数限制，但是层数过多会让人迷惑，难以维护。</p>
+<h4 id="_15">常量与指针</h4>
+<table>
+<thead>
+<tr>
+<th>指针</th>
+<th>被指向的对象</th>
+<th>示例</th>
+<th>类型</th>
+<th>指针 value 可修改</th>
+<th>被指向对象 value 可修改</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>非 const</td>
+<td>非 const</td>
+<td><code>int *pci</code></td>
+<td>普通指针</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>非 const</td>
+<td>const</td>
+<td><code>const int *pci</code> 或 <code>int const *pci</code></td>
+<td>指向 const 的指针</td>
+<td>Y</td>
+<td>N</td>
+</tr>
+<tr>
+<td>const</td>
+<td>非 const</td>
+<td><code>int *const cpi</code></td>
+<td>const 指针</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>const</td>
+<td>const</td>
+<td><code>const int *const cpci</code></td>
+<td>指向 const 对象的 const 指针，很少用到</td>
+<td>N</td>
+<td>N</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>const 和数据类型关键字的顺序不重要，但是 const 和 * 的顺序非常重要！</p>
+</div>
+<p>示例：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pci</span><span class="p">;</span><span class="w">  </span><span class="c1">// 指向 const 的指针，两者等价</span>
+<span class="kt">int</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">pci</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">cpi</span><span class="p">;</span><span class="w">  </span><span class="c1">// 指针是 const</span>
+
+<span class="cp">#!c</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pci</span><span class="p">;</span><span class="w">  </span><span class="c1">// 从右向左读：pci 是一个普通指针，指向对象的类型为 int 常量</span>
+<span class="w">                 </span><span class="c1">// 1. pci 可以被修改指向其他对象</span>
+<span class="w">                 </span><span class="c1">// 2. 可以解引用 pci 以读取被指向对象的 value</span>
+<span class="w">                 </span><span class="c1">// 3. 不能解引用 pci 来修改被指向对象的 value</span>
+
+<span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span>
+<span class="n">pci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">limit</span><span class="p">;</span>
+
+<span class="n">pci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span><span class="w">  </span><span class="c1">// legal</span>
+<span class="o">*</span><span class="n">pci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span><span class="w">  </span><span class="c1">// illegal</span>
+
+<span class="cp">#!c</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">cpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span><span class="w">  </span><span class="c1">// 从右向左读：cpi 是一个常数，它的类型是指针，指向对象的类型为 int</span>
+<span class="w">                        </span><span class="c1">// cpi 的 value 必须被初始化，指向的对象必须是非常量的 int</span>
+<span class="w">                        </span><span class="c1">// cpi 的 value 初始化后就不能再修改，因为 cpi 是个 const</span>
+<span class="w">                        </span><span class="c1">// cpi 指向的对象的 value 可以被修改</span>
+
+<span class="o">*</span><span class="n">cpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">limit</span><span class="p">;</span><span class="w">  </span><span class="c1">// legal</span>
+<span class="o">*</span><span class="n">cpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">;</span><span class="w">     </span><span class="c1">// legal</span>
+
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">cpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">limit</span><span class="w">  </span><span class="c1">// Warning: limit 是 const，被非 const 的 cpi 指向后，可能会被 *cpi 非法修改</span>
+</code></pre></div></td></tr></table></div>
+
+<h2 id="c">第二章 C 的动态内存管理</h2>
+<p>内存类型：</p>
+<ul>
+<li>静态内存：栈 <code>stack</code></li>
+<li>动态内存：堆 <code>heap</code></li>
+</ul>
+<h3 id="_16">动态内存分配</h3>
+<p>具体可用的函数取决于系统，大部分系统的 stdlib.h 文件中都有如下函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>void malloc(size_t)</code></td>
+<td>从 heap 分配内存</td>
+</tr>
+<tr>
+<td><code>realloc()</code></td>
+<td>在之前分配的基础上，重新分配为更大（小）的部分</td>
+</tr>
+<tr>
+<td><code>calloc()</code></td>
+<td>从 heap 分配内存并清零， <code>calloc</code> = <code>malloc</code> + <code>memset</code></td>
+</tr>
+<tr>
+<td><code>free()</code></td>
+<td>释放空间到 heap</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>malloc 只分配空间，不初始化</li>
+<li>成功后返回首字节的地址</li>
+<li>分配内存时用 sizeof 操作符提高移植性</li>
+<li>每次申请时，堆管理器会额外分配空间来管理</li>
+<li>初始化静态 / 全局变量时不能调用 malloc 函数</li>
+<li>静态变量的解决方法：可以先声明再赋值 <code>static int *pi; pi = malloc(sizeof(int));</code></li>
+<li>全局变量无解：全局变量必须在函数和可执行代码外部声明，赋值必须出现在函数中</li>
+<li>reallocate 如果是空间变小，直接归还多余空间；如果空间变大，则重新开辟并复制旧内存</li>
+<li>C99 引入了变长数组 (VLA），数组长度可以 runtime 决定</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li>在编译器看来，初始化操作符 <code>=</code> 和赋值操作符 <code>=</code> 不一样</li>
+<li>VLA 有 runtime 开销，而且一旦函数退出，立即释放内存</li>
+<li>VLA 的长度不能改变，一旦分配就固定了，如果长度需要可变，需要使用 <code>realloc</code></li>
+</ul>
+</div>
+<p>malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把被释放的指针赋值为 NULL。两种常见的内存泄露：</p>
+<ol>
+<li>
+<p>丢失内存地址</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 变长数组 VLA</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buffer</span><span class="p">[</span><span class="n">size</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="c1">// 内存泄漏</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+<span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>忘记调用 free</p>
+</li>
+</ol>
+<h3 id="_17">迷途指针</h3>
+<p>迷途指针：内存已经释放，还在引用原始内存的指针。</p>
+<p>迷途指针造成的问题：</p>
+<ul>
+<li>如果访问内存，行为不可预期</li>
+<li>如果内存为不可访问，则是段错误</li>
+<li>潜在的安全隐患</li>
+</ul>
+<p>迷途指针的例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 1. 访问已释放的内存</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+<span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="n">free</span><span class="p">(</span><span class="n">pi</span><span class="p">);</span>
+<span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">  </span><span class="c1">// pi 迷途指针：已释放</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">p1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+<span class="o">*</span><span class="n">p1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">p2</span><span class="p">;</span>
+<span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="p">;</span>
+<span class="n">free</span><span class="p">(</span><span class="n">p1</span><span class="p">);</span>
+<span class="o">*</span><span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">  </span><span class="c1">// p2 迷途指针：空间已通过 p1 释放</span>
+
+
+<span class="c1">// 2. 访问无效的局部变量</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="p">;</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="w">  </span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">tmp</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">  </span><span class="c1">// pi 迷途指针：tmp 已失效</span>
+</code></pre></div></td></tr></table></div>
+
+<p>如何处理迷途指针：</p>
+<ul>
+<li>释放指针后设置为 NULL（无法解决多个指针的问题）</li>
+<li>写一个特殊函数代替 free</li>
+<li>第三方检测工具</li>
+<li>垃圾回收（非标准技术，不属于语言的一部分）</li>
+<li>异常处理</li>
+</ul>
+<h2 id="_18">第三章 指针和函数</h2>
+<ul>
+<li>指针指向数据，作为函数参数：把数据传递给函数，允许函数对其进行修改</li>
+<li>指针指向函数，动态控制程序执行流</li>
+</ul>
+<h3 id="_19">程序的栈和堆</h3>
+<blockquote>
+<p>程序栈是支持函数执行的内存区域，通常和堆共享。也就是说，它们共享同一块内存区域。程序栈通常占据这块区域的下部，而堆用的则是上部。</p>
+<p>程序栈存放栈帧（stack frame），栈帧有时候也称为活跃记录（activation record）或活跃帧（activation frame）。栈帧存放函数参数和局部变量。</p>
+<p>调用函数时，函数的栈帧被推到栈上，栈向上 “ 长出 ” 一个栈帧。当函数终止时，其栈帧从程序栈上弹出。栈帧所使用的内存不会被清理，但最终可能会被推到程序栈上的另一个栈帧覆盖。</p>
+<p>动态分配的内存来自堆，堆向下 “ 生长 ”。随着内存的分配和释放，堆中会布满碎片。尽管堆是向下生长的，但这只是个大体方向，实际上内存可能在堆上的任意位置分配。</p>
+</blockquote>
+<p>栈帧由以下几种元素组成：</p>
+<ul>
+<li>返回地址：函数完成后要返回的程序内部地址</li>
+<li>局部数据存储：为局部变量分配的内存</li>
+<li>参数存储：为函数参数分配的内存</li>
+<li>栈指针和基指针：运行时系统用来管理栈的指针</li>
+</ul>
+<blockquote>
+<p>栈指针通常指向栈顶部。基指针（帧指针）通常存在并指向栈帧内部的地址，比如返回地址，用来协助访问栈帧内部的元素。这两个指针都不是 C 指针，它们是运行时系统管理程序栈的地址。如果运行时系统用 C 实现，这些指针倒真是 C 指针。</p>
+<p>系统在创建栈帧时，将参数以跟声明时相反的顺序推到帧上，通常，接下来会推入函数调用的返回地址，然后是局部变量。推入它们的顺序跟其在代码中列出的顺序相反。</p>
+</blockquote>
+<p>比如</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">float</span><span class="w"> </span><span class="nf">average</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">arr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">sum</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<ul>
+<li>推入 stack frame 的顺序是：size，arr，return_address，sum，地址依次变小（因为 stack 是 “ 向上 ” 生长，栈的实际生长方向跟实现相关）</li>
+<li>for 语句块中的 i 没有被包含到 stack frame 中。C 语言把语句块当成微型函数，在合适的时机将其推入栈或弹出栈</li>
+<li>精确的地址可能会变化，不过顺序一般不变。这一点很重要，因为它可以解释参数和变量内存分配的相对顺序</li>
+<li>将栈帧推到程序栈上时，系统可能会耗尽内存，这种情况称为栈溢出，通常会导致程序非正常终止</li>
+<li>要牢记每个线程通常都会有自己的程序栈。一个或多个线程访问内存中的同一个对象可能会导致冲突</li>
+</ul>
+<h3 id="_20">通过指针传递和返回数据</h3>
+<p>好处：</p>
+<ul>
+<li>不用把对象声明为全局可访问，就可以让多个函数访问所引用的对象</li>
+<li>不需要复制对象</li>
+</ul>
+<blockquote>
+<p>要在函数中修改数据，就要用指针传递数据。</p>
+<p>传递参数（包括指针）时，传递的是它们的值。也就是说，传递给函数的是参数值的一个副本。当涉及大型数据结构时，传递参数的指针会更高效。</p>
+<p>传递对象的指针意味着不需要复制对象，但可以通过指针访问对象。</p>
+</blockquote>
+<h4 id="_21">修改实参</h4>
+<p>必须用指针的形式，不能使用值传递的方式：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">swapWithPointers</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pnum1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pnum2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span>
+<span class="w">  </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">pnum1</span><span class="p">;</span>
+<span class="w">  </span><span class="o">*</span><span class="n">pnum1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">pnum2</span><span class="p">;</span>
+<span class="w">  </span><span class="o">*</span><span class="n">pnum2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">swap</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span>
+<span class="w">  </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num1</span><span class="p">;</span>
+<span class="w">  </span><span class="n">num1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num2</span><span class="p">;</span>
+<span class="w">  </span><span class="n">num2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">n1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">n2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// num1 和 num2 是实参 n1 和 n2 的副本，在 swap() 中修改形参 num1 和 num2 不会改变 n1 和 n2 的值 </span>
+<span class="w">  </span><span class="n">swap</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span><span class="w"> </span><span class="n">n2</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// pnum1 和 pnum2 是实参 &amp;n1 和 &amp;n2 的副本，</span>
+<span class="w">  </span><span class="c1">// 在 swapWithPointers() 中操作 *pnum1 和 *pnum2 实际就是在操作 n1 和 n2，因为是同一个地址</span>
+<span class="w">  </span><span class="n">swapWithPointers</span><span class="p">(</span><span class="o">&amp;</span><span class="n">n1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">n2</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<h4 id="_22">只读实参</h4>
+<p>如果希望参数对函数是只读的，那么就可以传递指向常量的指针：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">passingAddressOfConstants</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">num2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="o">*</span><span class="n">num2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">num1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<h4 id="_23">返回指针</h4>
+<p>从函数返回指针可能的问题：</p>
+<ul>
+<li>返回未初始化的指针</li>
+<li>返回指向无效地址的指针</li>
+<li>返回局部变量的指针</li>
+<li>返回指针但是没有释放内存</li>
+</ul>
+<h4 id="_24">传递指针的指针</h4>
+<p>传递指针时，传递的是指针的 value。实际操作的是实参指针的副本，形参指针。如果想修改实参指针，就需要传递指针的指针。</p>
+<h3 id="_25">函数指针</h3>
+<h4 id="_26">声明</h4>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 最右边的括号里面是被指向函数的形参表，此例子为空</span>
+<span class="c1">// 最左边是被指向函数的返回值，此例子为 void</span>
+<span class="c1">// 中间是变量的名称，此例子为 foo</span>
+<span class="c1">// * 表示本变量是一个指针变量</span>
+<span class="c1">// 如果去掉第一对括号，就变成了函数原型的声明，这个括号让这个声明变成了一个名为 foo 的函数指针，* 表示这是个指针</span>
+<span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">foo</span><span class="p">)();</span>
+
+<span class="c1">// 一些其他例子</span>
+<span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">f1</span><span class="p">)(</span><span class="kt">double</span><span class="p">);</span><span class="w">  </span><span class="c1">// 传入 double，返回 int</span>
+<span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">f2</span><span class="p">)(</span><span class="kt">char</span><span class="o">*</span><span class="p">);</span><span class="w">  </span><span class="c1">// 传入 char 指针，返回 void</span>
+<span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">f3</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">);</span><span class="w">  </span><span class="c1">// 传入两个 int，返回 double 指针</span>
+
+<span class="c1">// 注意区分下面两个</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="nf">f4</span><span class="p">();</span><span class="w">  </span><span class="c1">// f4 是一个函数，传入 void，返回 int*</span>
+<span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">f5</span><span class="p">)();</span><span class="w">  </span><span class="c1">// f5 是一个函数指针，传入 void，返回 int</span>
+</code></pre></div></td></tr></table></div>
+
+<h4 id="_27">使用</h4>
+<ul>
+<li>函数指针的 value 是被指向函数的地址</li>
+<li>函数名和数组名类似，保存的就是该对象的起始地址，所以可以直接把函数名赋值给函数指针，就像直接把数组名赋值给数据指针一样</li>
+<li>也可以对函数名 / 数组名取地址，但是没必要，编译器会忽略取地址符号</li>
+<li>一般为了方便，会为函数指针定义一个 typedef</li>
+<li>函数指针和其他类型一样，可以作为形参，也可以作为返回值</li>
+<li>函数指针和其他类型一样，可以作为数组的类型</li>
+<li>函数指针还可以参与比较运算</li>
+<li>不同类型的函数指针之间可以转化，类似于数据指针之间的转换</li>
+<li>函数指针不能和数据指针之间转换</li>
+<li>函数指针转换时不能用 <code>void *</code>，而应该用 <code>typedef void (*fptrBase)()</code>，即一个形参和返回值都为 void 的函数</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>使用函数指针时必须小心，因为 C 不会检查参数传递是否正确。</p>
+</div>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">square</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">num</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 声明函数指针</span>
+<span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">fptr</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span>
+
+<span class="c1">// 使用函数指针</span>
+<span class="c1">// 方式 1：直接把函数名赋值给函数指针</span>
+<span class="n">fptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">square</span><span class="p">;</span>
+<span class="c1">// 方式 2：取地址符号，没必要</span>
+<span class="n">fptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">square</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d squared is %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">fptr</span><span class="p">(</span><span class="n">n</span><span class="p">));</span>
+
+<span class="cp">#！c</span>
+<span class="c1">// 定义 typedef 方便使用函数指针</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">funcptr</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span>
+
+<span class="n">funcptr</span><span class="w"> </span><span class="n">fptr2</span><span class="p">;</span>
+<span class="n">fptr2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">square</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d squared is %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">fptr2</span><span class="p">(</span><span class="n">n</span><span class="p">));</span>
+
+<span class="cp">#!c</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">num1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">num2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">substract</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">num1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">num2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">fptrOperation</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">);</span>
+
+<span class="c1">// 函数指针作为形参</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="n">fptrOperation</span><span class="w"> </span><span class="n">operation</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">operation</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="n">num2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">compute</span><span class="p">(</span><span class="n">add</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">));</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">compute</span><span class="p">(</span><span class="n">substract</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">));</span>
+
+<span class="cp">#!c</span>
+<span class="c1">// 函数指针作为返回值</span>
+<span class="n">fptrOperation</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">opcode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="p">(</span><span class="n">opcode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;+&#39;</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">add</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;-&#39;</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">substract</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">opcode</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">fptrOperation</span><span class="w"> </span><span class="n">operation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">select</span><span class="p">(</span><span class="n">opcode</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">operation</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="n">num2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">evaluate</span><span class="p">(</span><span class="sc">&#39;+&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">));</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">evaluate</span><span class="p">(</span><span class="sc">&#39;-&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">));</span>
+
+<span class="cp">#!c</span>
+<span class="c1">// 函数指针数组 :</span>
+<span class="c1">// 数组的名字为 operations，类型为 operation，数组的长度为 128，所有元素都被初始化为 NULL</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">operation</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">);</span>
+<span class="n">operation</span><span class="w"> </span><span class="n">operations</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nb">NULL</span><span class="p">};</span>
+
+<span class="c1">// 不使用 typedef 的等效声明</span>
+<span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">operations</span><span class="p">[</span><span class="mi">128</span><span class="p">])(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nb">NULL</span><span class="p">};</span>
+
+<span class="c1">// 数组长度为 128，下标和 ASCII 码的前 128 个字符对应，所以可以用下面的方式给数组的元素赋值</span>
+<span class="n">operations</span><span class="p">[</span><span class="sc">&#39;+&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">add</span><span class="p">;</span>
+<span class="n">operations</span><span class="p">[</span><span class="sc">&#39;-&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">substract</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">evaluateArray</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">opcode</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">operation</span><span class="w"> </span><span class="n">op</span><span class="p">;</span>
+<span class="w">  </span><span class="n">op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">operations</span><span class="p">[</span><span class="n">opcode</span><span class="p">];</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span><span class="w"> </span><span class="n">num2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">evaluateArray</span><span class="p">(</span><span class="sc">&#39;+&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">));</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">evaluateArray</span><span class="p">(</span><span class="sc">&#39;-&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">));</span>
+
+<span class="cp">#!c</span>
+<span class="c1">// 函数指针比较</span>
+<span class="n">fptrOperation</span><span class="w"> </span><span class="n">fptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">add</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ptr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">add</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;fptr points to add function</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;fptr does not point to add function</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cp">#!c</span>
+<span class="c1">// 函数指针的转换</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">fptrBase</span><span class="p">)();</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">fptrToSingleInt</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">fptrToTwoInts</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">);</span>
+
+<span class="n">fptrBase</span><span class="w"> </span><span class="n">basePointer</span><span class="p">;</span>
+<span class="n">fptrToSingleInt</span><span class="w"> </span><span class="n">fptrFirst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">add</span><span class="p">;</span>
+<span class="n">basePointer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">fptrBase</span><span class="p">)</span><span class="n">fptrFirst</span><span class="p">;</span>
+<span class="n">fptrFirst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">fptrToTwoInts</span><span class="p">)</span><span class="n">basePointer</span><span class="p">;</span>
+
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">fptrFirst</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">));</span>
+</code></pre></div></td></tr></table></div>
+
+<h2 id="_28">第四章 指针和数组</h2>
+<h3 id="_29">数组概述</h3>
+<blockquote>
+<p>数组是能用索引访问的同质元素连续集合。这里所说的连续是指数组的元素在内存中是相邻的，中间不存在空隙，而同质是指元素都是同一类型的。</p>
+<p>C99 标准引入了变长数组，在此之前，支持变长数组的技术是用 realloc 函数实现的。</p>
+<p>C 并没有强制规定边界，用无效的索引访问数组会造成不可预期的行为。</p>
+<p>数组名字只是引用了一块内存。</p>
+<p>对数组做 sizeof 操作会得到为该数组分配的字节数，要知道元素的数量，只需将数组长度除以元素长度</p>
+</blockquote>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">vector</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span><span class="w">  </span><span class="c1">// 5</span>
+
+<span class="c1">// 2 行 3 列</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">}};</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="_30">指针表示法和数组</h3>
+<blockquote>
+<p>数组表示法和指针表示法在某种意义上可以互换。不过，它们并不完全相同。</p>
+<p>单独使用数组名字时会返回数组地址。我们可以把地址赋给指针。</p>
+<p>数组表示法可以理解为 “ 偏移并解引用 ”，<code>vector[2]</code> 表示从 vector 开始，向右偏移 2 个位置，然后解引用这个位置获取其值，其中 vector 是指向数据开始位置的指针。</p>
+<p>几种等价的写法：<code>&amp;vector[10]</code> == <code>vecotr + 10</code> == <code>&amp;pv[10]</code> == <code>pv + 10</code>。</p>
+</blockquote>
+<p>数组和指针的差别：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">vector</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vecotr</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
+
+<ul>
+<li><code>vector[i]</code> 和 <code>*(pv + i)</code> 结果相同，但是生成的汇编代码不同，大部分情况下可忽略：<code>vector[i]</code> 的汇编是从 vector 开始移动 i 个位置，取出内容；<code>*(pv + i)</code> 的汇编是从 vector 地址开始，在地址上加 i 后取出该地址的值</li>
+<li>sizeof 对数组和指针返回的结果不同：sizeof(vector) = 20，sizeof(pv) = 4</li>
+<li>pv 是一个左值，左值可修改；vector 是个右值，不能修改<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">vector</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="p">;</span><span class="w">  </span><span class="c1">// 把 vector[0] 的地址赋值给 pv，即 pv 指向 vector 的第一个元素，而不是数组本身</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w">  </span><span class="c1">// 和上面等价</span>
+
+<span class="c1">// 注意：返回的是整个数组的指针，pv 是个指针，指向的对象是 int [5]</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vecotr</span><span class="p">;</span>
+
+<span class="o">*</span><span class="p">(</span><span class="n">pv</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">pv</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w">  </span><span class="c1">// pv[i] 即对 pv 的 value 加上 i 之后，对新地址解引用返回被指向的对象的 value</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+</ul>
+<h3 id="_31">传递一维数组</h3>
+<blockquote>
+<p>将一维数组作为参数传递给函数实际是通过值来传递数组的地址，这样信息传递就更高效，因为我们不需要传递整个数组，从而也就不需要在栈上分配内存。通常，这也意味着要传递数组长度，否则在函数看来，我们只有数组的地址而不知道其长度。</p>
+<p>除非数组内部有信息告诉我们数组的边界，否则在传递数组时也需要传递长度信息。如果数组内存储的是字符串，我们可以依赖 NUL 字符来判断何时停止处理数组。一般来说，如果不知道数组长度，就无法处理其元素。</p>
+<p>我们可以使用下面两种表示法中的一种在函数声明中声明数组：数组表示法和指针表示法。</p>
+</blockquote>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 方式一：数组表示法</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">arr</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w">  </span><span class="c1">// 等价于</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">arr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">vector</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">};</span>
+<span class="n">display</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+
+<span class="c1">// 方式二：指针表示法</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">arr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w">  </span><span class="c1">// 等价于</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="o">%</span><span class="n">d</span><span class="err">\</span><span class="n">n</span><span class="s">&quot;, *(arr + i));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="_32">指针数组</h3>
+<p>指针数组：数组元素的类型为指针，即一系列的指针形成的数组。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span><span class="w">  </span><span class="c1">// arr 是数组名，数组每个元素的类型为 int *，即 int 指针</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+<span class="w">  </span><span class="o">*</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="_33">指针和多维数组</h3>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">}};</span>
+<span class="c1">// (*pmatrix) 表示 pmatrix 是一个指针，指向的对象类型是 int [5]，因为 pmatrix 本身就是指针（和数组等价），所以 pmatrix 指向的是二维数组，数组的第二维的大小是 5</span>
+<span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">pmatrix</span><span class="p">)[</span><span class="mi">5</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matrix</span><span class="p">;</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">pmatrix</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w">  </span><span class="c1">// 6</span>
+<span class="c1">// matrix[i][j] 表示第 i 行第 j 列个元素，地址为 matrix + i*sizeof(row) + j*sizeof(element)</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span><span class="w">  </span><span class="c1">// 2</span>
+
+<span class="c1">// pmatrix 是一个数组，数组长度为 5，元素类型为 int*</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pmatrix</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="_34">传递多维数组</h3>
+<p>多维数组作为函数参数时，在声明函数时需要决定两件事情：</p>
+<ul>
+<li>使用 数组表示法 or 指针表示法</li>
+<li>如何传递数组的形态，即数组的维度和每一维度的大小</li>
+</ul>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 两种方法都需要指定列数，因为编译器要知道每行的大小。多维数组，除了第一维，其他维度都需要指定大小</span>
+<span class="c1">// 数组表示法</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">display2DArray</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">arr</span><span class="p">[][</span><span class="mi">5</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">rows</span><span class="p">);</span>
+<span class="c1">// 指针表示法</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">display2DArray</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">arr</span><span class="p">)[</span><span class="mi">5</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">rows</span><span class="p">);</span>
+<span class="c1">// 调用示例</span>
+<span class="n">display2DArray</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">// 错误：语法合法，但是和预期效果不同，表示 arr 是个一维数组，数组长度是 5，元素类型是 int*</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">display2DArray</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">arr</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">rows</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+<h2 id="_35">第五章 指针和字符串</h2>
+<h3 id="_36">字符串基础</h3>
+<blockquote>
+<p>字符串是以 ASCII 字符 NUL 结尾的字符序列。ASCII 字符 NUL 表示为 \0。字符串通常存储在数组或者从堆上分配的内存中。不过，并非所有的字符数组都是字符串，字符数组可能没有 NUL 字符。</p>
+<p>C 中有两种类型的字符串：</p>
+<ul>
+<li>单字节字符串：由 <code>char</code> 数据类型组成的序列</li>
+<li>宽字节字符串：由 <code>wchar_t</code> 数据类型组成的序列。<code>wchar_t</code> 数据类型用来表示宽字符，要么是 16 位宽，要么是 32 位宽。主要用来支持非拉丁字符集。</li>
+</ul>
+<p>字符串的长度是字符串中除了 NUL 字符之外的字符数。为字符串分配内存时，要记得为所有的字符再加上 NUL 字符分配足够的空间。</p>
+</blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code>NULL</code> 和 <code>NUL</code> 不同，<code>NULL</code> 用来表示特殊指针，通常定义为 <code>((void*)0)</code>，而 <code>NUL</code> 是一个 char，定义为 <code>\0</code>。两者不能混用。</p>
+</div>
+<blockquote>
+<p><strong>字符常量</strong>是单引号引起来的字符序列。字符常量通常由一个字符组成，也可以包含多个字符，比如转义字符。在 C 中，它们的类型是 int。char 的长度是 1，而字符字面量的长度是 4。这个看似异常的现象乃语言设计者有意为之。</p>
+</blockquote>
+<h4 id="_37">字符串声明</h4>
+<p>三种方式：</p>
+<ul>
+<li>字面量：双引号引起来的字符序列，通常用于初始化，位于字符串字面量池中</li>
+<li>字符数组：<code>char header[32]</code></li>
+<li>字符指针：<code>char *header</code></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>不要把<strong>字符串字面量</strong>和单引号引起来的字符搞混，后者是<strong>字符字面量</strong>。</p>
+</div>
+<h4 id="_38">字符串字面量池</h4>
+<blockquote>
+<p>定义字面量时通常会将其分配在字面量池中，这个内存区域保存了组成字符串的字符序列。多次用到同一个字面量时，字面量池中通常只有一份副本。这样会减少应用程序占用的内存。通常认为字面量是不可变的，因此只有一份副本不会有什么问题。不过，认定只有一份副本或者字面量不可变不是一种好做法，大部分编译器有关闭字面量池的选项，一旦关闭，字面量可能生成多个副本，每个副本拥有自己的地址。</p>
+<p>字符串字面量一般分配在只读内存中，所以是不可变的。字符串字面量在哪里使用，或者它是全局、静态或局部的都无关紧要，从这个角度讲，字符串字面量不存在作用域的概念。</p>
+</blockquote>
+<h4 id="_39">字符串初始化</h4>
+<blockquote>
+<p>初始化字符串采用的方法取决于变量是被声明为字符数组还是字符指针，字符串所用的内存要么是数组要么是指针指向的一块内存。</p>
+</blockquote>
+<ol>
+<li>
+<p>字符数组</p>
+<ul>
+<li>用字符字面量初始化</li>
+<li>用 <code>strcpy</code> 函数初始化</li>
+<li>逐字符赋值</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>不能把字符串字面量的地址赋值给数组名字，下面的例子是错误的。<code>char header2[]; header2 = "Media Player";</code></p>
+</div>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 方法 1 字符字面量：数组长度为 13，保持 12 个字符 + 结尾的 NUL</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">header</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Media Player&quot;</span><span class="p">;</span>
+<span class="c1">// 方法 2 strcpy 函数</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">header</span><span class="p">[</span><span class="mi">13</span><span class="p">];</span>
+<span class="n">strcpy</span><span class="p">(</span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Media Player&quot;</span><span class="p">);</span>
+<span class="c1">// 方法 3 逐字符赋值</span>
+<span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;M&#39;</span><span class="p">;</span>
+<span class="n">header</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;e&#39;</span><span class="p">;</span>
+<span class="n">header</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>字符指针</p>
+<ul>
+<li>用字符字面量初始化</li>
+<li>用 <code>strcpy</code> 函数初始化</li>
+<li>逐地址赋值</li>
+</ul>
+<p>例子 :</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 注意要用 strlen 而不是 sizeof，另外要算上结尾符 NUL。strlen 返回字符串的长度，sizeof 返回数组 / 指针的长度</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="s">&quot;Media Player&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="c1">// 方法 1 字符字面量</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Media Player&quot;</span><span class="p">;</span>
+<span class="c1">// 方法 2 strcpy 函数</span>
+<span class="n">strcpy</span><span class="p">(</span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Media Player&quot;</span><span class="p">);</span>
+<span class="c1">// 方法 3 逐地址赋值</span>
+<span class="o">*</span><span class="p">(</span><span class="n">header</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;M&#39;</span><span class="p">;</span>
+<span class="o">*</span><span class="p">(</span><span class="n">header</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;e&#39;</span><span class="p">;</span>
+<span class="o">*</span><span class="p">(</span><span class="n">header</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">12</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+</ol>
+<p>字符串可以在内存中的多个位置：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// “Chapter” 在字符串字面量池中</span>
+<span class="c1">// 全局内存中开辟一个指针，指向字符串字面量池中的 &quot;Chapter\0&quot; 字符串</span>
+<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">globalHeader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chapter&quot;</span><span class="p">;</span>
+<span class="c1">// 全局内存中开辟了一块独立空间，保存的内容是 &quot;Chapter\0&quot;</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">globalArrayHeader</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chapter&quot;</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">displayHeader</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 全局内存中开辟一个指针，指向字符串字面量池中的 &quot;Chapter\0&quot; 字符串</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">staticHeader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chapter&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// stack 中开辟了一个指针，指向字符串字面量池中的 &quot;Chapter\0&quot; 字符串</span>
+<span class="w">  </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">localHeader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chapter&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// 全局内存中开辟了一块独立空间，保存的内容是 &quot;Chapter\0&quot;</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">staticArrayHeader</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chapter&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// stack 中开辟了一块独立空间，保存的内容是 &quot;Chapter\0&quot;</span>
+<span class="w">  </span><span class="kt">char</span><span class="w"> </span><span class="n">localArrayHeader</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chapter&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// stack 中开辟了一个指针，指向 heap 空间的 &quot;Chapter\0&quot;</span>
+<span class="w">  </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">heapHeader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="s">&quot;Chapter&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="n">strcpy</span><span class="p">(</span><span class="n">heapHeader</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Chapter&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="_40">标准字符串操作</h3>
+<ul>
+<li>比较 <code>int strcmp(const char *s1, const char *s2);</code></li>
+<li>复制 <code>char* strcpy(char *s1, const char *s2);</code></li>
+<li>拼接<code>char* strcat(char *s1, const char *s2);</code></li>
+</ul>
+<h3 id="_41">传递字符串</h3>
+<h4 id="_42">参数声明</h4>
+<p>和字符串声明类似，声明字符串作为函数参数时也有两种选择：</p>
+<ul>
+<li>
+<p>char 数组</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">size_t</span><span class="w"> </span><span class="nf">stringLength</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">string</span><span class="p">[]);</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>char 指针</p>
+<p>在参数列表中，把参数声明为 char 指针</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 字符串参数类型用 char* 声明</span>
+<span class="kt">size_t</span><span class="w"> </span><span class="nf">stringLength</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">string</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+</ul>
+<h4 id="_43">传递参数</h4>
+<ul>
+<li>参数声明方式不影响传参方式，参数用字符数组方式声明，也可以用字符指针传参</li>
+<li>如果需要保护传入的字符串，可以用 <code>const char* string</code> 来声明</li>
+</ul>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">char</span><span class="w"> </span><span class="n">simpleArray</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;simple string&quot;</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">simplePtr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="s">&quot;simple string&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">strcpy</span><span class="p">(</span><span class="n">simplePtr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;simple string&quot;</span><span class="p">);</span>
+
+<span class="c1">// 以数组方式传递</span>
+<span class="c1">// 方式 1：传递数组名（数组名和指针等效，指向第一个元素的地址）</span>
+<span class="n">stringLength</span><span class="p">(</span><span class="n">simpleArray</span><span class="p">)</span>
+<span class="c1">// 方式 2：对数组名取地址，冗余且会有 warning</span>
+<span class="n">stringLength</span><span class="p">(</span><span class="o">&amp;</span><span class="n">simpleArray</span><span class="p">)</span>
+<span class="c1">// 方式 3：对数组第一个元素取首地址，冗余</span>
+<span class="n">stringLength</span><span class="p">(</span><span class="o">&amp;</span><span class="n">simpleArray</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span>
+
+<span class="c1">// 以指针方式调用，只需要传递指针名</span>
+<span class="n">stringLength</span><span class="p">(</span><span class="n">simplePtr</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>最典型的例子：给 main 传递参数：argc 表示参数的个数，argv 是个一维数组，数组元素类型为字符串指针，每个指针引用一个命令行参数。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;argv[%d] %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 可等价声明为</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="_44">返回字符串</h3>
+<p>函数返回字符串，实际返回的是字符串的地址，所以需要关注的问题是如何返回合法的地址。可以返回以下三种对象之一：</p>
+<ul>
+<li>字面量</li>
+<li>动态分配的内存：被调函数 malloc，调用者 free</li>
+<li>局部字符串变量：可能会被破坏，避免这种用法</li>
+</ul>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 对象 1：字面量</span>
+<span class="kt">char</span><span class="w"> </span><span class="nf">returnALiteral</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Boston Processing Center&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 对象 2：动态分配内存，blanks 动态申请，由调用者负责释放</span>
+<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="nf">blanks</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">spaces</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">spaces</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blanks</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+
+<span class="c1">// 对象 3：局部字符串变量</span>
+<span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="nf">blanks</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">spaces</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">spaces</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="_45">函数指针和字符串的例子</h3>
+<p>需求：</p>
+<ul>
+<li>写一个 sort 函数对字符串进行排序，排序算法不限</li>
+<li>sort 排序比较字符串时有两种方式，直接比较 or 忽略大小写比较</li>
+</ul>
+<p>实现：</p>
+<ul>
+<li>为每一种比较方式写一个函数，compare 和 compareIgnoreCase</li>
+<li>sort 通过函数指针选择具体的比较方式，好处是只需要一份 sort 代码就可以实现任意排序方式，不需要硬编码具体的比较函数名</li>
+<li>字符串作为参数传递给 sort 和 compare，compareIgnoreCase 等函数</li>
+</ul>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 比较方式 1：直接比较</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">s1</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">s2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span><span class="w"> </span><span class="n">s2</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// 比较方式 2：忽略大小写</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">compareIgnoreCase</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">s1</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">s2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stringToLower</span><span class="p">(</span><span class="n">s1</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">t2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stringToLower</span><span class="p">(</span><span class="n">s2</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strcmp</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">t2</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// stringToLower 中申请动态内存，调用者用完后主动释放，避免内存泄漏</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">t1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">t2</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="nf">stringToLower</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 形参为 const，所以本地为变量申请空间，需要调用者负责释放</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">string</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="o">*</span><span class="n">tmp</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="o">*</span><span class="n">string</span><span class="o">++</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="o">*</span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">start</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 申明函数指针</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="n">fptrOperation</span><span class="p">)(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="p">);</span>
+
+<span class="c1">// 基于冒泡排序的 sort 函数</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sort</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">array</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">fptrOperation</span><span class="w"> </span><span class="n">operation</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">swap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">swap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">swap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// 相邻字符串比较并排序</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="mi">-1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">operation</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">// 一旦需要交换顺序，标记 swap 重新再遍历一遍所有字符串</span>
+<span class="w">                </span><span class="n">swap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">                </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">                </span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+<span class="w">                </span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 打印结果</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">displayNames</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">names</span><span class="p">[],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s  &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 构造测试用例</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">names</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;Bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ted&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;carol&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;alice&quot;</span><span class="p">};</span>
+<span class="c1">// 测试 1</span>
+<span class="n">sort</span><span class="p">(</span><span class="n">names</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">compare</span><span class="p">);</span>
+<span class="n">displayNames</span><span class="p">(</span><span class="n">names</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+<span class="c1">// 测试 2</span>
+<span class="n">sort</span><span class="p">(</span><span class="n">names</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">compareIgnoreCase</span><span class="p">);</span>
+<span class="n">displayNames</span><span class="p">(</span><span class="n">names</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+<h2 id="_46">第六章 指针和结构体</h2>
+<h3 id="_47">声明结构体</h3>
+<p>结构体有两种声明方式：</p>
+<ul>
+<li>
+<p>简单声明</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">strcut</span><span class="w"> </span><span class="n">_person</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">firstName</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">lastName</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">title</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>使用 typedef</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_person</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">firstName</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">lastName</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">title</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">Person</span><span class="p">;</span>
+
+<span class="c1">// 直接例化</span>
+<span class="n">Person</span><span class="w"> </span><span class="n">person</span><span class="p">;</span>
+<span class="n">person</span><span class="p">.</span><span class="n">firstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="s">&quot;Emily&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="c1">// 通过指针例化</span>
+<span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">ptrPerson</span><span class="p">;</span>
+<span class="n">ptrPerson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Person</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Person</span><span class="p">));</span>
+<span class="n">pterPerson</span><span class="o">-&gt;</span><span class="n">firstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="s">&quot;Emily&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+</ul>
+<h3 id="_48">结构体对齐</h3>
+<blockquote>
+<p>为结构体分配内存时，分配的内存大小至少是各个字段的长度和。不过，实际长度通常会大于这个和，因为结构体的各字段之间可能会有填充。某些数据类型需要对齐到特定边界就会产生填充。
+这些额外内存的分配意味着几个问题：</p>
+<ul>
+<li>要谨慎使用指针算术运算</li>
+<li>结构体数组的元素之间可能存在额外的内存</li>
+</ul>
+</blockquote>
+<p>填充的气泡可能在结构体的内部，也可能在结构体的尾部。</p>
+<h3 id="_49">释放结构体</h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>C 语言中，系统不会自动为结构体内部的指针分配内存，类似的，结构体消失时，也不会自动释放结构体内部指针指向的内存。在 Person 例子中，用户必须自己初始化和释放 firstName, lastName，title。</p>
+</div>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">initializePerson</span><span class="p">(</span><span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">person</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">fn</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">ln</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">uint</span><span class="w"> </span><span class="n">age</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">person</span><span class="o">-&gt;</span><span class="n">firstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="n">strcpy</span><span class="p">(</span><span class="n">person</span><span class="o">-&gt;</span><span class="n">firstName</span><span class="p">,</span><span class="w"> </span><span class="n">fn</span><span class="p">);</span>
+<span class="w">        </span><span class="n">person</span><span class="o">-&gt;</span><span class="n">lastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="n">strcpy</span><span class="p">(</span><span class="n">person</span><span class="o">-&gt;</span><span class="n">lastName</span><span class="p">,</span><span class="w"> </span><span class="n">ln</span><span class="p">);</span>
+<span class="w">        </span><span class="n">person</span><span class="o">-&gt;</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">title</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="n">strcpy</span><span class="p">(</span><span class="n">person</span><span class="o">-&gt;</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">);</span>
+<span class="w">        </span><span class="n">person</span><span class="o">-&gt;</span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">age</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">deallocatePerson</span><span class="p">(</span><span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">person</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">person</span><span class="o">-&gt;</span><span class="n">firstName</span><span class="p">);</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">person</span><span class="o">-&gt;</span><span class="n">lastName</span><span class="p">);</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">person</span><span class="o">-&gt;</span><span class="n">title</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<h3 id="mallocfree">避免 malloc/free 开销</h3>
+<blockquote>
+<p>重复分配然后释放结构体会产生一些开销，可能导致巨大的性能瓶颈。解决这个问题的一种办法是为分配的结构体单独维护一个表。当用户不再需要某个结构体实例时，将其返回结构体池中。当我们需要某个实例时，从结构体池中获取一个对象。如果池中没有可用的元素，我们就动态分配一个实例。这种方法高效地维护一个结构体池，能按需使用和重复使用内存。</p>
+</blockquote>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#define LIST_SIZE 10</span>
+
+<span class="c1">// 用指针数组表示资源池，每个元素指向一块动态申请的内存，用来存放结构体</span>
+<span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">list</span><span class="p">[</span><span class="n">LIST_SIZE</span><span class="p">];</span>
+
+<span class="c1">// NULL 表示该位置没有被使用，可以被获取</span>
+<span class="c1">// 资源池一开始不动态申请，只有在需要才申请，一旦申请后就循环使用（get 和 return），</span>
+<span class="c1">// 循环使用时 get 和 return 不会再动态申请和释放。</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">initializeList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">LIST_SIZE</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 返回第一个 NULL，如果都被占用，就临时分配一个空间</span>
+<span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="nf">getPerson</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">LIST_SIZE</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">            </span><span class="n">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">ptr</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Person</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Person</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">person</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 将结构体返回给 list 中第一个 NULL 位置，如果资源池已满，就直接释放掉</span>
+<span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">returnPerson</span><span class="p">(</span><span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">person</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">LIST_SIZE</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">person</span><span class="p">;</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">person</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">deallocatePerson</span><span class="p">(</span><span class="n">person</span><span class="p">);</span>
+<span class="w">        </span><span class="n">free</span><span class="p">(</span><span class="n">person</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 使用示例</span>
+<span class="n">initializeList</span><span class="p">();</span>
+<span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">ptrPerson</span><span class="p">;</span>
+<span class="n">ptrPerson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getPerson</span><span class="p">();</span>
+<span class="n">initializePerson</span><span class="p">(</span><span class="n">ptrPerson</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ralph&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Fitsgerald&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Mr.&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">35</span><span class="p">);</span>
+<span class="n">displayPerson</span><span class="p">(</span><span class="o">*</span><span class="n">ptrPerson</span><span class="p">);</span>
+<span class="n">returnPerson</span><span class="p">(</span><span class="n">ptrPerson</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+<p>这种方法的问题：list 长度固定，无法灵活适配变长的需求，可能会频繁申请或浪费空间。可以用更加复杂的管理策略来管理 list 的长度。</p>
+<h3 id="_50">指针和结构体</h3>
+<blockquote>
+<p>指针可以为简单或复杂的数据结构提供更多的灵活性。这些灵活性可能来自动态内存分配，也可能来自切换指针引用的便利性。内存无需像数组那样是连续的，只要总的内存大小对就可以。</p>
+</blockquote>
+<p>几种可以用指针实现的常用数据结构：</p>
+<ul>
+<li>链表</li>
+<li>队列：一般用链表实现</li>
+<li>栈：一般用链表实现</li>
+<li>树：基于链表，每个 node 有多个 next</li>
+</ul>
+<h2 id="_51">第七章 安全问题和指针误用</h2>
+<blockquote>
+<p>因为 C 的某些特性，用 C 写安全的应用程序跟用其他语言有所不同。比如说，C 不会阻止程序员越过数组边界写入，这样会导致内存损坏，也会引发安全风险。此外，误用指针通常也是很多安全问题的根本原因。</p>
+</blockquote>
+<h3 id="_52">指针的声明和初始化问题</h3>
+<ul>
+<li>
+<p>不正确的指针声明</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// ptr1 类型是 int*, ptr2 类型是 int</span>
+<span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">ptr1</span><span class="p">,</span><span class="w"> </span><span class="n">ptr2</span><span class="p">;</span>
+<span class="c1">// 正确写法</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">ptr1</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">ptr2</span><span class="p">;</span>
+<span class="c1">// 每个变量声明独占一行更好，或者用宏定义</span>
+<span class="cp">#define PINT int*</span>
+<span class="n">PINT</span><span class="w"> </span><span class="n">ptr1</span><span class="p">,</span><span class="w"> </span><span class="n">ptr2</span><span class="p">;</span>
+<span class="c1">// 更好的方法是用 typedef</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">PINT</span><span class="p">;</span>
+<span class="n">PINT</span><span class="w"> </span><span class="n">ptr1</span><span class="p">,</span><span class="w"> </span><span class="n">ptr2</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>使用前未初始化（野指针）</p>
+<p>处理野指针的 3 种方法：</p>
+<ul>
+<li>总是用 NULL 初始化指针</li>
+<li>用 assert 函数</li>
+<li>用第三方工具</li>
+</ul>
+</li>
+</ul>
+<h3 id="_53">指针的使用问题</h3>
+<blockquote>
+<p>很多安全问题聚焦的是缓冲区溢出的概念，覆写对象边界以外的内存就会导致缓冲区溢出。下面几种情况可能导致缓冲区溢出：
++ 访问数组元素时没有检查索引值
++ 对数组指针做指针算术运算时不够小心
++ 用 gets 这样的函数从标准输入读取字符串
++ 误用 strcpy 和 strcat 这样的函数。</p>
+</blockquote>
+<ul>
+<li>
+<p>测试 NULL</p>
+<p>一定要检查 malloc 的返回值。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">vector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vector</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 分配失败</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 正常处理</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>错误使用解引用</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// 正确，pi 指向 num</span>
+<span class="c1">// 星号把 pi 声明为指针，而不是解引用</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span>
+<span class="c1">// 错误，把 num 的地址赋值给 pi 指向的内存，但是 pi 还没有被初始化</span>
+<span class="c1">// 星号对 pi 解引用</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="p">;</span>
+<span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>迷途指针：引用已释放的空间</p>
+</li>
+<li>越界访问数组</li>
+<li>
+<p>错误计算数组长度</p>
+<p>将数组传递给函数时，一定要同时传递数组长度。这个信息帮助函数避免越过数组边界。不能简单依靠 NUL，因为外部传入的数组内容可能不正确。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// strcpy 允许缓冲区溢出，所以 name 中保存的是 8 个字符 Alexande，没有结尾的 NUL</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+<span class="n">strcpy</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Alexander&quot;</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>错误使用 sizeof</p>
+<p>试图检查指针边界但方法错误，sizeof 返回的是 byte 大小。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+<span class="c1">// 错误，sizeof(buffer) 返回值为 20 * 4byte = 80</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span>
+<span class="c1">// 正确</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>一定要匹配指针类型</p>
+</li>
+<li>
+<p>有界指针（限制指针的有效区域）</p>
+<p>C 没有对有界指针提供直接支持，不过程序员可以显式地确保这个机制。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#define SIZE 32</span>
+<span class="kt">char</span><span class="w"> </span><span class="n">names</span><span class="p">[</span><span class="n">SIZE</span><span class="p">];</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">name</span><span class="o">+</span><span class="n">SIZE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 有效</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 无效，错误分支</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<p>C++ 智能指针提供了一种模仿指针同时支持边界检查的方法。</p>
+</li>
+<li>
+<p>字符串的安全问题</p>
+<ul>
+<li>如果使用 strcpy 和 strcat 这类字符串函数，稍不留神就会引发缓冲区溢出</li>
+<li>gets 函数从标准输入读取一个字符串，并把字符保存在目标缓冲区中，它可能会越过缓冲区的声明长度写入。如果字符串太长的话，就会发生缓冲区溢出</li>
+</ul>
+</li>
+<li>
+<p>指针算术运算和结构体</p>
+<p>只对数组使用指针算术运算，因为数组肯定分配在连续的内存块上。不应该将它们用在结构体内，因为结构体的字段可能分配在不连续的内存区域。</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>即使结构体内部全部对齐，虽然通常分配在一起，但也有可能分配在离散地址上。更好的做法是不要用指针算术运算，而是将指针直接指向结构体的字段，最保险的做法是根本不用指针。</p>
+</div>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_item</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">partNumber</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">quantity</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">binNumber</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">Item</span><span class="p">;</span>
+
+<span class="c1">// 危险做法，通常不会出错，但不一定</span>
+<span class="n">Item</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">12345</span><span class="p">,</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w"> </span><span class="mi">107</span><span class="p">};</span>
+<span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">part</span><span class="p">.</span><span class="n">partNumber</span><span class="p">;</span>
+<span class="n">pi</span><span class="o">++</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Quantity: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="p">);</span>
+
+<span class="c1">// 更好的方法，不用指针运算</span>
+<span class="n">pi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">part</span><span class="p">.</span><span class="n">quantity</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Quantity: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">pi</span><span class="p">);</span>
+
+<span class="c1">// 最好的做法，不用指针</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Quantity: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">part</span><span class="p">.</span><span class="n">quantity</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>函数指针的问题</p>
+<ul>
+<li>错误 1：只使用函数名，实际表示该函数的地址</li>
+<li>错误 2：函数和函数指针的签名不同，可以编译但是输出不确定</li>
+</ul>
+<p>例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+
+<span class="c1">// 错误 1：只有函数名时，表示函数地址，一般不会为 0，所以条件永远为真</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">foo</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span>
+<span class="c1">// 类似错误：省略了值的比较</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span>
+<span class="c1">// 正确</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">foo</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c1">// 错误 2：add 和 fptrCompute 签名不同，一个两个形参，一个三个形参</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">add</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">fptrCompute</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+</ul>
+<h3 id="_54">内存释放问题</h3>
+<ul>
+<li>重复释放：释放后总是将其置为 NULL</li>
+<li>清除敏感数据：用完马上覆写，因为一般 OS 不会清零内存，会直接分配给别的程序</li>
+</ul>
+<h3 id="_55">使用静态工具</h3>
+<ul>
+<li>编译器 <code>-Wall</code></li>
+<li>其他工具，提供比编译器更强的诊断功能</li>
+</ul>
+<h2 id="_56">第八章 其他重要内容</h2>
+<h3 id="_57">指针类型转化</h3>
+<blockquote>
+<p>在指针与整数之间来回转换和在指针与 void 指针之间来回转换不同。</p>
+<p>有时候容易将句柄和指针搞混。句柄是系统资源的引用，对资源的访问通过句柄实现。不过，句柄一般不提供对资源的直接访问，指针则包含了资源的地址。</p>
+</blockquote>
+<h3 id="restrict">别名、强别名和 restrict 关键字</h3>
+<h4 id="_58">别名</h4>
+<p>别名：如果两个指针引用同一内存地址，我们称一个指针是另一个指针的别名。别名可以修改指向对象的 value，所以编译器无法优化，每次引用时必须执行机器级别的 ld 和 st，频繁 ld/st 会很低效。在某些情况下，编译器还必须关心操作执行的顺序。</p>
+<h3 id="_59">强别名</h3>
+<p>强别名：不允许一种类型的指针成为另一种类型的指针的别名。需要关闭强别名的代码可能意味着差劲的内存访问实践，如果可能的话，花些时间解决这些问题，而不是关闭强别名。</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li>编译器并非总能准确地报告别名相关的警告，有时候会漏报，有时候会虚报，最终还是要靠程序员定位别名问题。</li>
+<li>编译器总是假定 char 指针是任意对象的潜在别名，所以，大部分情况下可以安全地使用。不过，把其他数据类型的指针转换成 char 指针，再把 char 指针转换成其他数据类型的指针，则会导致未定义的行为，应该避免这么做。</li>
+</ul>
+</div>
+<h4 id="restrict_1">restrict 关键字</h4>
+<blockquote>
+<p>C 编译器默认假设指针有别名，用 restrict 关键字可以在声明指针时告诉编译器这个指针没有别名，这样就允许编译器产生更高效的代码。很多情况下这是通过缓存指针实现的，不过要记住这只是个建议，编译器也可以选择不优化代码。如果用了别名，那么执行代码会导致未定义行为，编译器不会因为破坏强别名假设而提供任何警告信息。</p>
+<p>新开发的代码应该尽量对指针声明使用 restrict 关键字，这样会产生更高效的代码，而修改已有代码可能就不划算了。</p>
+</blockquote>
+<h3 id="_60">线程和指针</h3>
+<blockquote>
+<p>线程之间共享数据会引发一些问题。常见的问题是数据损坏。</p>
+<p>指针是在另一个线程中引用数据的常见方式，很多时候会用互斥锁保护数据。</p>
+<p>大家普遍认可的定义是如果一个线程的事件导致另一个线程的函数调用，就称为回调。将回调函数的指针传递给线程，而函数的某个事件会引发对回调函数的调用。</p>
+</blockquote>
+<h3 id="_61">面向对象</h3>
+<blockquote>
+<p>C 不支持面向对象编程，不过，借助不透明指针，我们也可以使用 C 封装数据以及支持某种程度的多态行为。</p>
+<p>不透明指针用来在 C 中实现数据封装。一种方法是在头文件中声明不包含任何实现细节的结构体，然后在实现文件中定义与数据结构的特定实现配合使用的函数。数据结构的用户可以看到声明和函数原型，但是实现会被隐藏（在．c/.obj 文件中）。</p>
+<p>只有使用数据结构所需的信息会对用户可见，如果太多的内部信息可见，用户可能会使用这些信息，从而产生依赖。一旦内部结构发生变化，用户的代码可能就会失效。</p>
+</blockquote>
+<h4 id="_62">不透明指针实例</h4>
+<p>需求：</p>
+<ul>
+<li>定义一个链表，实现对链表的封装</li>
+<li>链表支持 4 个操作，获取链表，删除链表，添加节点，删除头节点</li>
+</ul>
+<p>链表在头文件中声明：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">//link.h</span>
+
+<span class="c1">// Data 声明为 void*，这样允许处理任何类型的数据</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">Data</span><span class="p">;</span>
+<span class="c1">// 声明 typedef，但是结构体 _linkedList 的定义在 .c 文件中，对用户隐藏</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_linkedList</span><span class="w"> </span><span class="n">LinkedList</span><span class="p">;</span>
+
+<span class="c1">// 链表支持的 4 个操作</span>
+<span class="c1">// 1. 获取一个 LinkedList 实例</span>
+<span class="n">LinkedList</span><span class="o">*</span><span class="w"> </span><span class="nf">getLinkedListInstance</span><span class="p">();</span>
+<span class="c1">// 2. 传入实例指针，删除链表实例</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">removeLinkedListInstance</span><span class="p">(</span><span class="n">LinkedList</span><span class="o">*</span><span class="w"> </span><span class="n">list</span><span class="p">);</span>
+<span class="c1">// 3. 将 Data 插入到链表头部</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">addNode</span><span class="p">(</span><span class="n">LinkedList</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">Data</span><span class="p">);</span>
+<span class="c1">// 4. 删除链表头结点</span>
+<span class="n">Data</span><span class="w"> </span><span class="nf">removeNode</span><span class="p">(</span><span class="n">LinkedList</span><span class="o">*</span><span class="p">);</span>
+</code></pre></div></td></tr></table></div>
+
+<p>链表在源文件中实现：</p>
+<ul>
+<li>我们不允许用户看到链表内部结构以及使用链表内部结构，并且会对用户隐藏结构体的任何变化。</li>
+<li>只有四个支持函数的签名对用户是可见的，否则，用户就无法利用或修改实现细节。我们封装了链表结构及其支持函数，从而减轻了用户的负担。</li>
+</ul>
+<p>代码：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">// link.c</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;link.h&quot;</span>
+
+<span class="c1">// 定义结点</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Data</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">_node</span><span class="o">*</span><span class="w"> </span><span class="n">next</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">Node</span><span class="p">;</span>
+
+<span class="c1">// 定义链表，只需要头指针</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">_linkedList</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Node</span><span class="o">*</span><span class="w"> </span><span class="n">head</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// 4 个操作的实现</span>
+
+<span class="n">LinkedList</span><span class="o">*</span><span class="w"> </span><span class="nf">getLinkedListInstance</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">LinkedList</span><span class="o">*</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">LinkedList</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">LinkedList</span><span class="p">));</span>
+<span class="w">    </span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">list</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">removeLinkedListInstance</span><span class="p">(</span><span class="n">LinkedList</span><span class="o">*</span><span class="w"> </span><span class="n">list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">tmp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">free</span><span class="p">(</span><span class="n">tmp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span><span class="w">  </span><span class="c1">// 潜在的内存泄露，解决方法：传递一个释放数据的成员函数</span>
+<span class="w">        </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span>
+<span class="w">        </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+<span class="w">        </span><span class="n">free</span><span class="p">(</span><span class="n">current</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">addNode</span><span class="p">(</span><span class="n">LinkedList</span><span class="o">*</span><span class="w"> </span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Node</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Node</span><span class="p">));</span>
+<span class="w">    </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">;</span>
+<span class="w">        </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span>
+<span class="w">        </span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">Data</span><span class="w"> </span><span class="nf">removeNode</span><span class="p">(</span><span class="n">LinedList</span><span class="o">*</span><span class="w"> </span><span class="n">list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">;</span>
+<span class="w">        </span><span class="n">Data</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+<span class="w">        </span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list</span><span class="o">-&gt;</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+<span class="w">        </span><span class="n">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+<p>使用实例：用前面章节的 Person 结构体来创建并使用链表 :</p>
+<ul>
+<li>我们只能在 link.c 文件中创建 _linkedList 结构体的实例，这是因为如果没有完整的结构体声明就无法使用 sizeof 操作符。比如说，如果你试图在 main 函数中为这个结构体分配内存，会得到一个语法错误。</li>
+<li>类型不完整是因为编译器看不到 link.c 文件中的实际定义。它只能看到 _linkedList 结构体的类型定义，而看不到结构体的实现细节。<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;link.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">LinkedList</span><span class="o">*</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getLinkedListInstance</span><span class="p">();</span>
+<span class="w">    </span><span class="n">Person</span><span class="w"> </span><span class="o">*</span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Person</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Person</span><span class="p">));</span>
+<span class="w">    </span><span class="n">initializePerson</span><span class="p">(</span><span class="n">person</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Peter&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Underwood&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Manager&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">36</span><span class="p">);</span>
+<span class="w">    </span><span class="n">addNode</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">person</span><span class="p">);</span>
+<span class="w">    </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Person</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Person</span><span class="p">));</span>
+<span class="w">    </span><span class="n">initializePerson</span><span class="p">(</span><span class="n">person</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Sue&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Stevenson&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Developer&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="p">);</span>
+<span class="w">    </span><span class="n">addNode</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">person</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">removeNode</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
+<span class="w">    </span><span class="n">displayPerson</span><span class="p">(</span><span class="n">person</span><span class="p">);</span>
+<span class="w">    </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">removeNode</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
+<span class="w">    </span><span class="n">displayPerson</span><span class="p">(</span><span class="n">person</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">removeLinkedListInstance</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+</ul>
+<h3 id="c_1">C 中的多态</h3>
+<blockquote>
+<p>C++ 这类面向对象语言的多态是建立在基类及派生类之间继承关系的基础上的。C 不支持继承，所以我们得模拟结构体之间的继承。</p>
+<p>结构体的变量分配顺序对这种技术的工作原理影响很大。当我们创建一个派生类 / 结构体的实例时，会先分配基类 / 结构体的变量，然后分配派生类 / 结构体的变量。</p>
+</blockquote>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>理解从类实例化来的对象如何分配内存是理解面向对象语言中继承和多态工作原理的关键。我们在 C 中使用这种技术时，这一点仍然适用。</p>
+</div>
+<blockquote>
+<p>当对一个类 / 结构体执行函数时，其行为取决于它所作用的对象是什么。比如说，对 Shape 调用打印函数就会显示一个 Shape，对 Rectangle 调用打印函数就会显示 Rectangle。在面向对象编程语言中这通常是通过虚表（或者 VTable）实现的。</p>
+</blockquote>
+<ul>
+<li>strcut 和 class 等效，可以包含数据和函数指针，函数指针相当于 class 的成员函数，只是 struct 没有访问保护，都是 public</li>
+<li>从 base struct 中派生出来的 struct 通过给函数指针赋值，实现重载，进而实现多态</li>
+</ul>
+<h2 id="_63">读书感悟</h2>
+<ul>
+<li>大量使用 struct 对变量进行封装</li>
+<li>大量使用（数据 + 函数）指针提供灵活的操作，而且可以简化代码</li>
+<li>大量使用 typedef 对类型进行重命名，以简化代码</li>
+</ul>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://qian-gu.github.io/posts/risc-v/riscv-book-note.html" title="RISC-V Book 阅读笔记">
+      <i class="fa fa-angle-left"></i> Previous Post
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>You might enjoy</h4>
+    <ul class="related-posts">
+      <li><a href="https://qian-gu.github.io/posts/tools/doxygen-cpp-comment-style.html">基于 Doxygen 的 C++ 注释风格</a></li>
+      <li><a href="https://qian-gu.github.io/posts/cs/cosnt-qualifier.html">C++ const 限定符</a></li>
+      <li><a href="https://qian-gu.github.io/posts/cs/built-in-types.html">C/C++ 内置数据类型</a></li>
+    </ul>
+  </div>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="ca-pub-1821536199377100"
+         data-ad-slot="4843941849"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Gitalk -->
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="https://qian-gu.github.io/theme/gitalk/md5.min.js"></script>
+<script>
+var gitalk = new Gitalk({
+  clientID: '4b3de26a6e80be727416',
+  clientSecret: '993d79339c842fc56d9739ef268f38806dc93f50',
+  repo: 'qian-gu.github.io',
+  owner: 'qian-gu',
+  admin: ['qian-gu'],
+  id: md5(location.href),
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- End Gitalk -->
+</article>
+
+<footer>
+<p>
+  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+  <span class="footer-separator">|</span>
+  Switch to the <a href="javascript:void(0)" onclick="theme.switch(`dark`)">dark</a> | <a href="javascript:void(0)" onclick="theme.switch(`light`)">light</a> | <a href="javascript:void(0)" onclick="theme.switch(`browser`)">browser</a> theme
+  <script id="dark-theme-script"
+          src="https://qian-gu.github.io/theme/dark-theme/dark-theme.min.js"
+          data-enable-auto-detect-theme="True"
+          data-default-theme="ligtht"
+          type="text/javascript">
+  </script>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Qian's Blog ",
+  "url" : "https://qian-gu.github.io",
+  "image": "https://qian-gu.github.io/images/logo.png",
+  "description": "Qian's Thoughts and Writings"
+}
+</script><a href="https://github.com/qian-gu/qian-gu.github.io" target="_blank" class="github-corner" aria-label="View source on Github">
+    <svg width="80"
+         height="80"
+         viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+         aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor"
+              style="transform-origin: 130px 106px;"
+              class="octo-arm">
+        </path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor"
+              class="octo-body">
+        </path>
+    </svg>
+</a>
+  <script>
+    window.loadStorkIndex = function () {
+      stork.initialize("https://qian-gu.github.io/theme/stork/stork.wasm")
+      stork.register("sitesearch", "https://qian-gu.github.io/search-index.st", { showProgress: false });
+    }
+  </script>
+  <script src="https://qian-gu.github.io/theme/stork/stork.js"></script>
+
+</body>
+</html>
