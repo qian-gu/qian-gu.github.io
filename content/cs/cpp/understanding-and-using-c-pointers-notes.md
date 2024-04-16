@@ -48,11 +48,11 @@ int*pi;
 
 > 星号将变量声明为指针。这是一个重载过的符号，因为它也用在乘法和解引指针上。
 
-> 指针的实现中没有内部信息表明自己指向的是什么类型的数据或者内容是否合法
+> 指针的实现中没有内部信息表明自己指向的是什么类型的数据或者内容是否合法。
 
 > 尽管不经过初始化就可以使用指针，但只有初始化后，指针才会正常工作。
 
-任何变量都有两个熟悉：valu 和 address，指针变量的 value = 被指向对象的地址。
+任何变量都有两个熟悉：value 和 address，指针变量的 value = 被指向对象的地址。
 
 !!!Warning
     指针变量的类型是 **指针**，如 `int *` 和 `char *` 等。虽然有些系统中，`int*` 和 `int` 都是 32bit 数据，但是它们的类型不同，所以不能直接把 `int` 变量赋值给 `int *` 指针。但是可以强转后赋值，即 `int *pi = (int *)num`。
@@ -65,7 +65,7 @@ int*pi;
 **倒过来读。**
 
 ```c
-// 1. pci 是一个变量;
+// 1. pci 是一个变量
 // 2. pci 是一个指针变量
 // 3. pci 是一个指向整数的指针变量
 // 4. pci 是一个指向整数常量的指针变量
@@ -248,7 +248,7 @@ uintptr_t *pi = (uintptr_t *)&num;  // okay
 | 算术运算                | 结果                                                                                                           |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
 | l_ptr = r_ptr + integer | <p>参与指针算术运算的整数的单位是 `sizeof(ptr)`，</p>l_ptr 的 value = r_ptr 的 value + integer * sizeof(r_ptr) |
-| ptr - int               | <p>参与指针算术运算的整数的单位是 `sizeof(ptr)`，</p>l_ptr 的 value = r_ptr 的 value - integer * sizeof(r_ptr) |
+| ptr - integer           | <p>参与指针算术运算的整数的单位是 `sizeof(ptr)`，</p>l_ptr 的 value = r_ptr 的 value - integer * sizeof(r_ptr) |
 | ptr - ptr               | 它们之间相差的 “单位” 的数量，`ptrdiff_t` 是指针差值的可移植方式                                               |
 | ptr 和 ptr 比较         | 一般没有用途，特殊情况：指针和数组元素比较，判断数组元素的相对顺序，和指针差值类似，结果的正负号表示前后顺序   |
 
@@ -298,7 +298,6 @@ uintptr_t *pi = (uintptr_t *)&num;  // okay
     
     int *const cpi;  // 指针是 const
 
-    #!c
     int num = 5;
     const int limit = 500;
     int *pi;
@@ -313,7 +312,6 @@ uintptr_t *pi = (uintptr_t *)&num;  // okay
     pci = &num;  // legal
     *pci = 200;  // illegal
     
-    #!c
     int num;
     int *const cpi = &num;  // 从右向左读：cpi 是一个常数，它的类型是指针，指向对象的类型为 int
                             // cpi 的 value 必须被初始化，指向的对象必须是非常量的 int
@@ -506,6 +504,9 @@ malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把�
       return 0;
     }
 
+!!!Note
+    函数参数地址传递时，本质上还是按照值传递的方式操作实参的副本，但是因为副本和实参指向同一片地址，所以效果上是直接修改实参的值。
+
 #### 只读实参
 
 如果希望参数对函数是只读的，那么就可以传递指向常量的指针：
@@ -565,7 +566,7 @@ malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把�
 !!!Warning
     使用函数指针时必须小心，因为 C 不会检查参数传递是否正确。
 
-例子：
+例子 1：
 
     #!c
     int square(int num) {
@@ -584,13 +585,14 @@ malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把�
     int n = 5;
     printf("%d squared is %d\n", n, fptr(n));
 
-    #！c
     // 定义 typedef 方便使用函数指针
     typedef int (*funcptr)(int);
     
     funcptr fptr2;
     fptr2 = square;
     printf("%d squared is %d\n", n, fptr2(n));
+
+例子 2：
 
     #!c
     int add(int num1, int num2) {
@@ -611,7 +613,6 @@ malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把�
     printf("%d\n", compute(add, 5, 6));
     printf("%d\n", compute(substract, 5, 6));
 
-    #!c
     // 函数指针作为返回值
     fptrOperation select(char opcode) {
       switch(opcode) {
@@ -628,8 +629,10 @@ malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把�
     printf("%d\n", evaluate('+', 5, 6));
     printf("%d\n", evaluate('-', 5, 6));
 
+例子 3：
+
     #!c
-    // 函数指针数组:
+    // 函数指针数组
     // 数组的名字为 operations，类型为 operation，数组的长度为 128，所有元素都被初始化为 NULL
     typedef int (*operation)(int, int);
     operation operations[128] = {NULL};
@@ -650,6 +653,8 @@ malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把�
     printf("%d\n", evaluateArray('+', 5, 6));
     printf("%d\n", evaluateArray('-', 5, 6));
 
+例子 4：
+
     #!c
     // 函数指针比较
     fptrOperation fptr = add;
@@ -658,6 +663,8 @@ malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把�
     } else {
       printf("fptr does not point to add function\n");
     }
+
+例子 5：
 
     #!c
     // 函数指针的转换
@@ -749,7 +756,7 @@ malloc 必须和 free 对称使用，防止内存泄漏。通常的做法是把�
     void display(int *arr, int size) {
       for (int i = 0; i < size; i++) {
         printf("%d\n", arr[i]);  // 等价于
-        printf(%d\n", *(arr + i));
+        printf("%d\n", *(arr + i));
       }
     }
 
