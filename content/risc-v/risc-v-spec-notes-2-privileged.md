@@ -108,15 +108,35 @@ CSR 的编址使用独立的 12bit 空间，所以理论上最多可以编码 40
 
 ### Field Specifications
 
-| 类型     |      含义    |
-| --------| ------------ |
-| `WPRI` Reserved Write Preserve, Read Ignore | 某些保留的 RW 字段，写入其他字段时保留本字段的原值，读出时软件应该忽略返回值 |
-| `WLRL` Write/Read only Legal | 某些 RW 字段只有部分取值合法，软件不能写非法值，只有写入合法值后才能假设读回值合法 |
-| `WARL` Write Any, Read Legel | 某些 RW 字段只有部分取值合法，但是允许写入任何值，读出时返回合法值     |
+#### WPRI
 
-+ 为了保持前向兼容，不提供 WPRI 字段的实现时应该把这些字段 tie 0
-+ 给 WLRL 字段写入非法值，实现可以自行决定是否抛出非法指令异常，当写入非法值后，读出值可以是任意值，但是必须保持确定性
-+ 给 WARL 字段写入非法值，实现不应该抛出异常，但是写入非法值后，必须保持读出值的确定性
+Reserved Writes Preserve Values, Reads Ignore Values
+
+某些 R/W field 留作未来使用。对于这些 field，软件应该忽略读到的值，向这个 CSR 的其他 field 写入值时，硬件应该保持 reserved field 的原值。为了前向兼容，未实现这些 reserved field 的 implementation 应该直接 tie0。
+
+!!!note
+    为了简化软件模型，reserved field 在未来进行向后兼容的重新定义时，必须处理好使用一组非原子性 read/modify/write 指令序列来更新其他字段的场景。否则，原始的 CSR 定义必须声明该 field 只能原子性地更新，比如通过两条 set/clear 指令组成的序列。如果修改过程中的中间值不合法，则可能会有潜在的问题。
+
+#### WLRL
+
+Write/Read Only Legal Values
+
+某些 R/W filed 只能配置一些 legal value，其他值作为保留不能使用。软件只能向这些 filed 写入 legal value，而且除非该 field 本身就存储着 legal value（比如上次写入/复位等），否则软件也读不到 legal value。
+
+!!!note
+    implementation 只需要有足够的 bit 能表示所有的 legal value 即可，但是软件读取时必须返回完整的所有 bit。比如某个字段的 legal value 为 0~8，共需要 4-bit 表示，表示范围内的 9 ~ 15 为 illegal value。软件读取时，即使当前值为 7，只需要 3bit，硬件仍然要返回完整的 4bit。
+
+当写入 illegal value 时，implementation 可以（但不是强制）触发一个 illegal instruction exception。当写入 illegal value 后，软件读取的值由硬件决定，可以是任意一个值，但是必须满足确定性原理。
+
+**确定性原理：旧值和写入的新非法值确定，返回值也必须是确定性的。**
+
+#### WARL
+
+Write Any Values, Reads Legal Values
+
+某些 R/W field 只支持一组 legal value，但是允许写入任何值。当写入 illegal value 后，软件读回的一定是 legal value。假设写该 field 没有其他副作用，则可以向其中逐个写入配置值后再重新读出，通过这种方法就能知道支持的 legal value 集合。
+
+当写入 illegal value 时，implementation 不会触发 exception。写入 illegal value 后，软件会读到一个任意 legal value。同理，该 legal value 必须满足确定性原理。
 
 ## Machine-Level ISA
 
@@ -155,36 +175,57 @@ Non-Maskable Interrupts 的作用是发生硬件错误时，不管中断使能�
 
 一个完整系统中的地址空间包含了各种各样的地址段，有些是真实的 memory 域，有些是 memory-mapped 的 control register，还有些是空洞段。有些 memory 域不支持读/写/执行，有些不支持 subword/sublock 的访问，有些不支持原子性操作，有些不支持 cache 一致性协议或是 memory 模型不一样。同理，memory map 的控制寄存器在访问位宽、是否支持原子操作、以及 read/write 访问是否有副作用等方面也各不相同。在 RISC-V 系统中，这些属性有一个专门的术语 `Physical Memory Attributes (PMAs)`。
 
-**PMA 是硬件的固有属性，所以在系统运行时很少变化。**和 PMP 不同，PMA 很少会随着运行程序的上下文来改变状态。有些 memory region 的 PMA 属性在硬件设计时就已经确定了，比如片上 ROM。另外一些在 board design 时确定，比如片外总线上挂载的是什么芯片。片外总线上可以挂载一些支持冷/热拔插的设备。某些设备可以在运行时支持重配置，以支持不同用户设置不同的 PMA 属性，比如，一个片上 RAM 可以在一个应用中被配置为私有空间，也可以在另外一个应用中被配置为共享空间。
+**PMA 是硬件的固有属性，所以在系统运行时很少变化。**和 PMP 不同，PMA 很少会随着运行程序的上下文来改变状态。有些 memory region 的 PMA 属性在 chip design 时就已经确定了，比如片上 ROM。另外一些在 board design 时确定，比如片外总线上挂载的是什么芯片。片外总线上可以挂载一些支持冷/热拔插的设备。某些设备可以在运行时支持重配置，以支持不同用户设置不同的 PMA 属性，比如，一个片上 RAM 可以在一个应用中被配置为私有空间，也可以在另外一个应用中被配置为共享空间。
 
-大部分系统都要求硬件在知道物理地址之后做一些必要的 PMA 检查，比如有些物理地址不支持某些特定操作，而有些操作需要提前知道 PMA 的正确配置值。虽然某些架构是在 virtual page 中声明 PMA，然后通过 TLB 来通知 pipeline 这些信息，但是这个方法会将一些底层的平台些信息注入到上层的 virtual layer，而且一旦某个 page table 中的某个 memory region 配置不对，就会导致系统错误。此外，可变的 page size 对于 PMA 来说并不是最优选择，会导致地址空间碎片和 TLB 的低效率使用。
+大部分系统都要求硬件在知道物理地址之后做一些必要的 PMA 检查，比如有些物理地址不支持某些特定操作，而有些操作需要提前知道 PMA 当前的配置值。虽然某些架构是在 virtual page 中声明 PMA，然后通过 TLB 来通知 pipeline 这些信息，但是这个方法会将一些底层的平台些信息注入到上层的 virtual layer，而且一旦某个 page table 中的某个 memory region 配置不对，就会导致系统错误。此外，page size 对于 PMA 来说并不是最优选择，会导致地址空间碎片和 TLB 的低效率使用。
 
 RISC-V 则把 PMA 的标准独立出来，并且用一个独立的硬件 PMA checker 来检查 PMA：
 
-+ 大部分情况下，PMA 属性是在芯片设计时就已经确定了的，所以可以直接在 checker 中以硬连线的方式实现
++ 大部分情况下，很多 region 的 PMA 是在芯片设计时就已经确定了的，所以可以直接在 checker 中以硬连线的方式实现
 + 对于 runtime 可配置的 PMA，则可以通过一些 memory mapped control register 来实现（比如片上 SRAM 可以动态地划分为 cacheable/uncacheable 区域）
 
-为了帮助 debubg，协议强烈建议，只要有可能，就应该精确地捕获导致 PMA 检查失败的物理地址访问。为了正确地访问设备或者是控制其他硬件单元（比如 DMA）去访问 memory，PMA 对软件来说必须是可读的。
+包括虚实地址转化在内，任何访问 physical memory 的行为都会触发 PMA 检查。为了帮助系统 debug，规范强烈建议，尽可能精确地捕获导致 PMA 检查失败的物理地址访问。精确的 PMA 违例包括 instruction，load/store access-faultexception 等。实际中并不能一直捕获到精确异常，比如通过 bus 访问 slave device 时收到的 error response 则是非精确异常。
 
-对于 platform 支持的可配置 PMA，应该提供一个接口，传递运行在 machine mode 下的 driver 请求，实现正确配置。比如，切换某些 memory region 的 cacheability 时，会触发一些特定操作，比如 cache flush，这些操作一般都只能在 machine mode 下进行。
+为了正确地访问设备或者是控制其他硬件单元（比如 DMA）去访问 memory，PMA 对软件来说必须是可读的。因为 PMA 和硬件平台的设计紧密相关，很多 PMA 继承自平台规格，所以软件可以通过访问平台信息的方式来获取 PMA 信息。某些 device，特别是 legacy bus，不支持这种方式获取 PMA，如果对其发起一个不支持的访问，则会返回 error response 或 timeout。通常，平台相关的 machine code 会提取 PMA 信息并通过某种标准表示方式将其转发给上层的非特权软件。 
 
-PMA 大概包含下面几方面。
+对于 platform 支持的可配置 PMA，应该提供一个接口，通过该接口向运行在 machine mode 下的 driver 发送请求，实现配置。比如，切换某些 memory region 的 cacheability 时，会涉及到一些 platform 相关的操作，比如只能在 machine mode 下进行的 cache flush。
+
+*常见的 PMA 大概包含下面几方面。*
 
 #### Main memory / IO / empty
 
-对于一个地址段来说，最重要的属性就是它映射的是 main memory，还是 I/O 设备，还是空地址段。
+对于一个地址段来说，最重要的属性就是它映射的是常规 main memory，还是 I/O 设备，还是空洞。
 
-main memory 会有一些属性，而 I/O 设备的属性会更广泛一些，而空地址段会被归类为 I/O 空间，但是不支持访问。
+main memory 拥有一些后文描述的属性，而 I/O 设备的属性会更广泛一些。非 main memory 的 memory，比如 device scratchpad RAM，被归类为 I/O 段。空地址段也会被归类不支持任何访问的 I/O 空间。
 
 #### Supported Access Type
 
-另外一个属性是访问类型：访问的位宽以及每种位宽下是否支持非对齐访问。
+Access Type 描述支持从 8bit 到 long multi-word burst 之间的哪些访问位宽，以及每种访问位宽是否支持非对齐访问。
 
-main memory 永远都支持所有 device 要求的所有 width 下的 read/write/execute 操作。I/O 空间则可以在 R/W/E 和位宽之间做选择。
+!!!note
+    虽然运行在 RISC-V hart 上的软件不能直接生成对 memory 的 burst 访问，但是该软件可以对 DMA 进行编程来访问 I/O 空间，所以需要知道支持哪些位宽访问。
+
+main memory 永远都支持所有 device 要求的所有 width 下的 read/write 操作，同时可以声明是否支持 execution。
+
+!!!note
+    1. 某些平台强制要求所有 main memory 都支持 instruction fetch，而某些平台会禁止从某些地址段 instruction fetch。
+    2. 在某些 case 中，processor/device 可能支持一些其他访问位宽，但是必须兼容 main memory 支持的访问位宽。
+
+I/O 空间则可以指定每种位宽下支持的 R/W/E 组合。
+
+对于基于 page 的 virtual memory，I/O 和 memory region 可以声明支持哪些 hardware page table read/write。
+
+!!!note
+    类 unix 系统通常要求所有 cacheable main memory 都支持 page table walk。
 
 #### Atomicity
 
-PMA 还需要描述每个地址段支持哪些原子指令。main memory 必须支持所有的原子指令，I/O 域可能只支持部分原子操作。
+Atomicity PMA 描述地址段支持哪些原子指令，原子指令可以分为 LR/SC 和 AMO 两类。
+
+!!!note
+    某些平台可能强制要求 cacheable main memory 必须支持系统中所有 processor 的所有原子指令。
+
+@TODO：补充 AMO，reservability，alignment
 
 #### Memory-Ordering
 
@@ -214,31 +255,142 @@ coherenece 是针对单个物理地址而言的属性，表示某个 agent 对�
 
 ### PMP
 
-为了支持安全功能，需要通过软件的方式限制物理地址的访问属性，这个需求可以通过一个可选的 `Physical Memory Protection (PMP)` 单元实现，它可以为每个 hart 提供每个 memory region 的访问属性控制寄存器。PMP 和 PMA 是并列关系，同步进行检查。
+为了安全执行以及遏制发生 fault，需要限制 hart 上运行的软件可以访问的物理地址，这个需求可以通过一个可选的 `Physical Memory Protection (PMP)` 单元实现，它可以为每个 hart 提供每个 memory region 的访问属性控制寄存器。PMP 和 PMA 是并列关系，同步进行检查。
 
-虽然 PMP 的访问粒度是和平台相关的，而且平台中不同地址段的粒度也会不同，但是标准的 PMP 编码支持的最小段大小为 4 Byte。
+虽然 PMP 的访问粒度是和平台相关的，但是标准的 PMP 编码支持的最小 region 大小为 4 Byte。某些 region 的特权属性可以直接用 hardwire 实现，比如某些 region 只有 M-mode 下可访问。
 
-!!! tip
-    不同平台对 PMP 的需求是不同的，有些平台还会提供其他的 PMP 指令来增强/代替标准中描述的方案。
+!!!note 
+    不同平台对 PMP 的需求不同，有些平台还会额外提供其他的 PMP 指令来增强/代替本小节描述的方案。
 
-当 core 运行在 S 或者 U 模式时，PMP checker 会检查所有的访问。
+当 core 运行在 S/U-mode 时，PMP checker 会检查所有的访问，包括：
+
+- S/U-mode 下的取指
+- `mstatus.MPRV = 0` 时 S/U-mode 下的数据访存
+- `mstatus.MPRV = 1` 且 `mstatus.MPP` 包含 S/U 时任何 mode 下的数据访存
+- S-mode 下的虚拟地址翻译时对 page table 的访问
+- (可选地) M-mode 下且 locked region 的访问
+
+事实上，PMP 设置 S/U-mode 下的访问权限（默认无权限），在 M-mode 默认有所有地址的权限。
+
+PMP 违例为精确异常。
+
+!!!note
+    PMP 主要检查的是 S-mode 和 U-mode，因为这两种级别只有部分权限，所以地址访问需要做限制。而 M-mode 下 core 必须拥有全部的访问权限，所以 M-mode 不是 PMP 的主要应用场景。
 
 #### PMP CSRs
 
-RISC-V 最多支持 16 个 PMP entries，每个 entry 由一个 8bit 的配置寄存器 `pmpcfg` 和一个 MXLEN 的地址寄存器 `pmpaddr` 定义。只要实现了任何一个 PMP entry，那么就要实现所有的 PMP CSRs，这些 CSR 的属性是 WARL，所以可以在硬件上直接 tie-0，而且只能在 M-mode 层级访问。
+spec 规定最多支持 64 个 PMP region，implementation 可以选择只实现 0/16/64 个，而且必须优先实现小序号的 PMP entry。每个 region 由一个 8-bit 配置寄存器 `pmpxcfg` + 一个 MXLEN-bit 的地址寄存器 `pmpaddrx` 共同描述。所有 PMP CSR 均为 WARL，且只能在 M-mode 下访问。
 
-为了最小化上下文切换的代价，`pmpcfg` 是按照小端模式密集存储在一起的。所以可以算出来
+##### pmpcfg
 
-+ RV32 需要 4 个 csr 来存储配置信息 `pmpcfg0` ~ `pmpcfg3`
-+ RV64 需要 2 个 csr 保存配置信息 `pmpcfg0`, `pmpcfg2`
+为了最小化上下文切换的代价，`pmpxcfg` 是按照小端模式密集存储在一起的。所以可以算出来
 
-每个 pmpcfg 规定了对应 pmpaddr 中那段地址的属性：R/W/X 以及如何解释（使用） `pmpaddrx` 的内容，即如何确定该 entry 的起始地址和大小。具体来说是通过 pmpcfg.A 字段联合 pmpaddr 中的低位 bit 共同确定。原理也很简单，对于某段按照 2 的幂次对齐的地址，其实低位是冗余的，所以可以用这些低位来表示对齐基数。
++ RV32 需要 16 个 CSR (`pmpcfg0` ~ `pmpcfg15`) 来存储 `pmp0cfg` ~ `pmp63cfg`
++ RV64 需要 8 个偶数下标 CSR `pmpcfg0`, `pmpcfg2` ~ `pmpcfg14` 来存储 `pmp0cfg` ~ `pmp63cfg`，奇数下标 `pmpcfg1`, `pmpcfg3` ~ `pmpcfg15` 是非法的
 
-若地址为 `yyy...y01...1` 这种形式，且低位连续 1 的位数为 n，那么对齐基数就是 $2^{n+3}$ Byte（因为 pmpaddr 是从物理地址的 bit[2] 开始存储，所以 bit[1:0] 天然为0，这也符合 RV32 的最小访问粒度 32bit = 4Byte）。
+!!!note
+    RV64 不使用奇数下标 pmpcfg 的原因：减小支持多种 MXLEN 的代价。比如，无论是 RV32 还是 RV64，PMP entry 8~11 都在 pmpcfg2 中。
 
-#### PMP and Paging
+每个 8bit 的 `pmpxcfg` 规定了对应 region 的 L/A/X/W/R 五个属性：
 
-设计 PMP 机制的主要目的是实现基于 page 技术的 Virtual-Memory 系统。
+- 当 W/R/X 被置 1 时，表示该 region 允许 write/read/instruction execution。当无权限时，触发对应的 store/load/instruction access fault。
+- A 字段表示 `pmpaddrx` 的地址匹配模式，支持 OFF/TOR/NA4/NAPOT 共 4 种模式。
+- L 字段表示该 region 被 lock，无法向 `pmpxcfg` 和 `pmpaddrx` 写入新值。
+
+当 MXLEN 发生变化时，`pmpxcfg` 的值保留不变，但是出现在对应的 `pmpcfgy` 的对应 bit 中。比如当 MXLEN 从 64 变化到 32 时，`pmp4cfg` 从 `pmpcfg0[39:32]` 移动到 `pmpcfg1[7:0]`。
+
+!!!tip
+    implementation 可以实现 `pmpxcfg` 寄存器，然后根据 MXLEN 用多个 `pmpxcfg` 组合得到 `pmpcfgy`。
+
+##### pmpaddr
+
+PMP 地址寄存器为 CSR `pmpaddr0` ~ `pmpaddr63`：
+
+- RV32：每个 pmpaddr 保存 addr[33:2]，即 34bit 地址
+- RV64：每个 pmpaddr 保存 addr[55:2]，即 56bit 地址
+
+因为 PMP region 颗粒度可能大于 4 Byte，所以并不是 pmpaddr 的每个 bit 都会被实现，所以 pmpaddr 为 WARL。
+
+!!!note
+    因为 Sv32 page-based 虚拟地址方案支持 34bit 地址空间，所以 RV32 PMP 要支持比 XLEN 更大的地址区间。同理，Sv39 和 Sv48 page-based 虚拟地址方案支持 56bit 地址空间，所以 RV64 PMP 需要覆盖相同地址范围。
+
+虽然 PMP region 的最小粒度为 4 Byte，但是 platform 可以定义更粗的颗粒度。一般来说，PMP region 的颗粒度必须保持一致，为 $2^{G+2}$ Byte。
+
+- 当 $G \geq 1$ 时，NA4 模式不可用
+- 当 $G \geq 2$ 且 pmpcfg.A[1] = 1 时，为 NAPOT 模式，读出的 pmpaddr[G-2:0] 为全 1。
+- 当 $G \geq 1$ 且 pmpcfg.A[1] = 0 时，为 OFF/TOR 模式，读出的 pmpaddr[G-1:0] 为全 0。pmpaddr[G-1:0] 并不会影响到 TOR 下的地址匹配逻辑。（从这条规则可以推理出下面软件检测 PMP region 粒度的方法）
+
+!!!note
+    - 颗粒度 != 容量，所有 region 的颗粒度必须相同，但是大小可以不同。
+    - 最小颗粒度决定了 G，也决定了 pmpaddr[G-2:0] 的值，所以硬件可以 hardwire 实现，不需要使用寄存器。
+    - 虽然修改 pmpxcfg.A 会影响到 pmpaddrx 的读出结果，但实际上并不会改变底层 pmpaddrx 存储的 bit。特别是，当 pmpxcfg.A 从 NAPOT 改到 TOR，又从 TOR 该回 NAPOT，pmpaddrx[G-1] 都会保持原值不变。
+    - 从分类讨论描述可以推断出来，无论哪种地址匹配模式，PMP region 的容量和地址都是对齐的。
+
+软件可以通过以下方式得到 PMP region 的粒度：
+
+1. 向 pmp0cfg 写入全 0，将地址匹配设置为 OFF
+2. 向 pmpaddr0 写入全 1
+3. 读回 pmpaddr0，如果 LSB 1 为 bit[G]，则粒度为 $2^{G+2}$ Byte
+
+!!!note
+    这个方法的原理：根据前面的规则，OFF 模式下读到的 pmpaddr[G-1:0] 为全 0，pmpaddr[MXLEN-1 : G] 为全 1。所以 LSB 1 的下标就是 G，从而可以根据公式算出粒度。
+
+##### address matching
+
+pmpxcfg.A 决定了如何翻译和使用 pmpaddrx 的值：
+
+- NAPOT 模式利用 region 容量和起始地址对齐的约束，只靠 pmpadddr 一个寄存器就可以同时表示 region 容量和 region 起始地址。因为对于 2 的幂次对齐的地址，其实低位是冗余的，可以用这些低位来表示容量。
+- TOR 模式下，第 i 个 entry 的地址区间为 [$pmpaddr_{i-1}$, $pmpaddr_i$)
+
+##### locking
+
+pmpxcfg.L = 1 表示该 entry 被 lock，当 pmpxcfg.L = 1 时，会忽略对 pmpxcfg 和 pmpaddrx 的写操作。如果 pmpxcfg.L = 1 且 pmpxcfg.A = TOR，则对 $pmpaddr_{x-1}$ 的写操作也会被忽略掉。
+
+L 和 A 无关，即使 pmpxcfg.A = OFF，置位 L 也会 lock 该 entry。一旦 entry 被 lock，就只能通过复位来释放。
+
+L 字段除了 lock 功能外，还会表示是否在 M-mode 下进行 R/W/X 权限检查：
+
+- 当 L = 1，强制 M/S/U mode 都会检查权限
+- 当 L = 0，不检查 M-mode 下访问的权限（所有访问都 success），只检查 S/U mode 下的 R/W/X 权限
+
+##### priority and matching
+
+地址匹配逻辑如下图所示：
+
+```
+@startuml
+start
+:match PMP entry;
+note right: lowest number entry matching any byte of an access
+switch (match result)
+  case (full match)
+    if ((L == 0) & (prv == M)) then (yes)
+      :success;
+    else (no)
+        :check R/W/X;
+    endif
+  case (partial match)
+    :fail;
+  case (no match)
+    if (prv == M) then (yes)
+      :success;
+    else (no)
+      :fail;
+    endif
+endswitch
+stop
+@enduml
+```
+
+failed 的访问会触发对应 exception。单条指令可能会拆分出多个非原子访问序列（比如非对齐访问，访问虚地址 etc），一旦序列中某个访问 failed，即使其他访问 success 且产生了副作用，仍然会触发 exception。
+
+#### Paging
+
+PMP 机制支持基于 page 技术的 Virtual-Memory 系统。当启用 page 时，访问虚拟地址的指令可能会产生多次物理地址访问，包括隐式的查询 page table，PMP 会检查所有的这些物理地址访问。隐式查询 page table 时为 S-mode。
+
+spec 允许支持虚拟地址的 implementation 在实际物理地址访问前投机地进行地址翻译，而且允许把翻译结果缓存起来。从地址翻译到发起物理地址访问，PMP 检查可以发生在这段时间内的任何时候，所以当 PMP CSR 被修改后，M-mode 的软件必须把最新的配置同步到虚拟地址系统已经任何 PMP 翻译缓存中。具体方法：修改 PMP CSR 后使用 rs1 = x0 和 rs2 = x0 的 `SFENCE.VMA` 指令。
+
+如果不支持虚拟系统，则不需要 `SFENCE.VMA` 指令。
 
 ## Supervisor-Level ISA
 
