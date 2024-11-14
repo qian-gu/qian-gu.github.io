@@ -200,7 +200,7 @@ rel="me"           href="mailto:guqian110@163.com"
 
 
   <div class="related-posts">
-    <h4>Part <built-in method index of str object at 0x7fb399422f90> of the  series</h4>
+    <h4>Part <built-in method index of str object at 0x7fd1903a6450> of the  series</h4>
   </div>
 
   <div>
@@ -496,7 +496,7 @@ function write_back(FU)
 <li>给每个执行单元分配一个保留站 (reservation station)</li>
 <li>一个广播数据的通用数据总线 (Common Data Bus)</li>
 </ul>
-<p><img alt="tomasulo" src="https://en.wikipedia.org/wiki/File:Tomasulo_Architecture.png"></p>
+<p><img alt="tomasulo" src="https://upload.wikimedia.org/wikipedia/commons/f/f8/Tomasulo_Architecture.png"></p>
 <h3 id="common-data-bus">Common Data Bus</h3>
 <p><code>CDB</code>(Common Data Bus) 是数据总线，它把保留站和功能单元直接连起来，可以 “ 在提高并行性的同时保持了优先权 ”。
 功能单元访问数据时不再需要涉及寄存器，中间数据不必经过寄存器倒一次手，而是由 CDB 把结果直接广播到总线上，保留站监听总线，得到有效数据后就可以开始执行，避免了寄存器访问的仲裁。</p>
@@ -559,13 +559,13 @@ function write_back(FU)
 <p>显然，因为保存了操作数，而且要把所有执行单元的结果和所有已保存的的地址做比较，所以硬件开销很大，无法做得很深。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-</div>
 <p>RS 的作用和 scoreboard 的 entry 类似，都是面向 FU 的，记录该 FU 执行的指令信息，所以两者的字段很多都是相同的。不同之处：</p>
 <ul>
 <li>scoreboard 中每个 FU 只有一条 entry，tomasulo 中每个 FU 都有一个多 entry 的 RS</li>
 <li>scoreboard 的 Vⱼ 和 Vₖ 保存寄存器编号，tomasulo 中的 Vⱼ 和 Vₖ 保存 value</li>
 <li>scoreboard 的 Qⱼ 和 Qₖ 记录的是 FU，又因为每个 FU 只记录一条 entry，所以 scoreboard 无法做到重命名；而 tomasulo 的 Qⱼ 和 Qₖ 记录的是 RS 序号，实际上就是在做 rename，即用 RS 编号而不是寄存器编号标记数据来源</li>
 </ul>
+</div>
 <p>因为每个 register 可能被多个寄存器写入，经过重命名之后需要记录该 register 最终由哪条指令写入，所以每个 register 也需要增加一个字段 Qᵢ 来记录这个信息。</p>
 <table>
 <thead>
@@ -598,8 +598,8 @@ r3 |      |       |
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-</div>
 <p>该结构和 scoreboard 中的相同。</p>
+</div>
 <p>实际上还需要一张表来记录指令所处的阶段，如下所示。当一条指令完成所有阶段，就可以从表中删除。</p>
 <div class="highlight"><pre><span></span><code>                      Record Buffer
 +-------------+-------+---------+--------------+---------+
@@ -619,13 +619,13 @@ r3 |      |       |
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-</div>
 <p>该结构和 scoreboard 中的相同。</p>
+</div>
 <h3 id="tomasulo-algorithm">Tomasulo Algorithm</h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-</div>
 <p>因为 tomasulo 的 RS 直接记录了源操作数的 value，所以相比于 scoreboard 调度步骤中少了读操作数这一步。</p>
+</div>
 <p><strong>1. issue</strong></p>
 <p>在发射阶段，所有指令 in-order issue 到 RS 中，判断能否发送的唯一条件就是 RS 是否有空闲的 entry。寄存器重命名就是在这里实现，这一步可以消除 WAW 和 WAR。具体步骤：</p>
 <p>当 RS 有空闲 entry 时，从指令队列头部取出一条新指令发射到 RS 中，</p>
@@ -880,6 +880,14 @@ function write_back()
 <li>无法实现精确异常（精确异常必须 in-order commit）</li>
 </ul>
 <h2 id="rob">ROB</h2>
+<p>为了解决 tomasulo 无法实现精确异常的问题，设计人员提出了 ROB(ReOrder Buffer)，目的是让乱序执行的指令被顺序地提交，这个设计理念已经成为乱序处理器的基石，可以说没有 ROB 就没有现代的乱序处理器。</p>
+<p>ROB 的核心思想是记录下程序序，一条指令执行完成后不会马上 commit，而是先到 buffer 中等待，等前序指令都 commit 完毕，才可以 commit 本指令。想象一个 FIFO，指令在发射时入队，在 commit 时出队，通过这个 FIFO 就可以实现指令的按序 commit。</p>
+<p>ROB 对 tomasulo 的增强：</p>
+<ol>
+<li>新增了一个 ROB 模块</li>
+<li>CDB 不再直接写入 GPR，而是写入 ROB</li>
+<li>发射指令时需要从 ROB 中读取 rs1/rs2</li>
+</ol>
 <h2 id="ref">Ref</h2>
 <p><a href="https://en.wikipedia.org/wiki/Scoreboarding">Scoreboard wiki</a></p>
 <p><a href="https://book.douban.com/subject/6795919/">Computer Architecture Appendix C.7</a></p>
