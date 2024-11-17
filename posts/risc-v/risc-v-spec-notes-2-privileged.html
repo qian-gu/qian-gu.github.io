@@ -262,8 +262,8 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <p>整个 stack 的核心思想可以总结为：<strong>通过抽象的 Interface 对上层提供统一标准借口，隔离底层细节。</strong></p>
 <p>RISC-V 的硬件不仅要实现 Privileged ISA，还要包含一些其他功能才能完整支持各种执行环境（AEE、SEE、HEE）。</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>大部分的 supervisor-level ISA 在定义的时候，都没有把 SBI 从 execution environment 或者是硬件平台中分离出来，这样会导致虚拟化和开发新硬件平台时变得更复杂。</p>
 <p>目前 RISC-V 的 ABI、SBI、HBI 都还在定义中。</p>
 </div>
@@ -369,15 +369,15 @@ rel="me"           href="mailto:guqian110@163.com"
 <h4 id="wpri">WPRI</h4>
 <p>Reserved Writes Preserve Values, Reads Ignore Values</p>
 <p>某些 R/W field 留作未来使用。对于这些 field，软件应该忽略读到的值，向这个 CSR 的其他 field 写入值时，硬件应该保持 reserved field 的原值。为了前向兼容，未实现这些 reserved field 的 implementation 应该直接 tie0。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>为了简化软件模型，reserved field 在未来进行向后兼容的重新定义时，必须处理好使用一组非原子性 read/modify/write 指令序列来更新其他字段的场景。否则，原始的 CSR 定义必须声明该 field 只能原子性地更新，比如通过两条 set/clear 指令组成的序列。如果修改过程中的中间值不合法，则可能会有潜在的问题。</p>
 </div>
 <h4 id="wlrl">WLRL</h4>
 <p>Write/Read Only Legal Values</p>
 <p>某些 R/W filed 只能配置一些 legal value，其他值作为保留不能使用。软件只能向这些 filed 写入 legal value，而且除非该 field 本身就存储着 legal value（比如上次写入 / 复位等），否则软件也读不到 legal value。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>implementation 只需要有足够的 bit 能表示所有的 legal value 即可，但是软件读取时必须返回完整的所有 bit。比如某个字段的 legal value 为 0~8，共需要 4-bit 表示，表示范围内的 9 ~ 15 为 illegal value。软件读取时，即使当前值为 7，只需要 3bit，硬件仍然要返回完整的 4bit。</p>
 </div>
 <p>当写入 illegal value 时，implementation 可以（但不是强制）触发一个 illegal instruction exception。当写入 illegal value 后，软件读取的值由硬件决定，可以是任意一个值，但是必须满足确定性原理。</p>
@@ -427,68 +427,118 @@ rel="me"           href="mailto:guqian110@163.com"
 <h3 id="nmi">NMI</h3>
 <p>Non-Maskable Interrupts 的作用是发生硬件错误时，不管中断使能是否打开，直接跳转到预先定义好的 NMI vector，在 M-mode 下运行。<code>mepc</code> 保存发生 NMI 的下一条指令；<code>mcause</code> 保存导致 NMI 的原因，具体值由实现自定义，但是 0 表示 unknown，所以如果实现不关心 NMI 的原因，那么直接保存 0 即可。</p>
 <h3 id="pma">PMA</h3>
-<p>一个完整系统中的地址空间包含了各种各样的地址段，有些是真实的 memory 域，有些是 memory-mapped 的 control register，还有些是空洞段。有些 memory 域不支持读 / 写 / 执行，有些不支持 subword/sublock 的访问，有些不支持原子性操作，有些不支持 cache 一致性协议或是 memory 模型不一样。同理，memory map 的控制寄存器在访问位宽、是否支持原子操作、以及 read/write 访问是否有副作用等方面也各不相同。在 RISC-V 系统中，这些属性有一个专门的术语 <code>Physical Memory Attributes (PMAs)</code>。</p>
-<p><strong>PMA 是硬件的固有属性，所以在系统运行时很少变化。</strong>和 PMP 不同，PMA 很少会随着运行程序的上下文来改变状态。有些 memory region 的 PMA 属性在 chip design 时就已经确定了，比如片上 ROM。另外一些在 board design 时确定，比如片外总线上挂载的是什么芯片。片外总线上可以挂载一些支持冷 / 热拔插的设备。某些设备可以在运行时支持重配置，以支持不同用户设置不同的 PMA 属性，比如，一个片上 RAM 可以在一个应用中被配置为私有空间，也可以在另外一个应用中被配置为共享空间。</p>
-<p>大部分系统都要求硬件在知道物理地址之后做一些必要的 PMA 检查，比如有些物理地址不支持某些特定操作，而有些操作需要提前知道 PMA 当前的配置值。虽然某些架构是在 virtual page 中声明 PMA，然后通过 TLB 来通知 pipeline 这些信息，但是这个方法会将一些底层的平台些信息注入到上层的 virtual layer，而且一旦某个 page table 中的某个 memory region 配置不对，就会导致系统错误。此外，page size 对于 PMA 来说并不是最优选择，会导致地址空间碎片和 TLB 的低效率使用。</p>
-<p>RISC-V 则把 PMA 的标准独立出来，并且用一个独立的硬件 PMA checker 来检查 PMA：</p>
+<p>一个完整系统中的地址空间包含了各种各样的 address region，有些是 memory，有些是 memory-mapped 的 CSR，还有些是空洞 hole；有些 memory region 不支持读 / 写 / 执行，有些不支持 subword/sublock 粒度的访问；有些不支持原子性操作；有些不支持 cache coherence 或拥有不同的 memory model。同理，memory mapped 的 CSR 在访问位宽、原子操作、read/write 访问是否有副作用等方面也各不相同。在 RISC-V 系统中，物理地址 region 的这些属性有一个专门的术语 <code>Physical Memory Attributes (PMAs)</code>。</p>
+<p><strong>PMA 是硬件的固有属性，在系统运行时几乎不会变化。</strong> 和 PMP 不同，PMA 不会随着运行程序的上下文发生变化。有些 memory region 的 PMA 属性在 chip design 时就已经确定了，比如片上 ROM。另外一些在 board design 时确定，比如片外总线上挂载的是什么芯片。片外总线上可以挂载一些支持冷 / 热拔插的设备。某些设备可以在运行时支持重配置 PMA 以支持不同的用途，比如一个片上 RAM 在某个应用在中被缓存到私有 cache 中，也可以在另外一个应用中被配置为共享的 uncacheable 空间。</p>
+<p>大部分系统都要求硬件在一旦确定物理地址之后，在后续 pipeline stage 中做一些必要的 PMA 检查，因为有些特定操作并不是所有 region 都支持，或者有些操作需要获取 PMA 当前的配置值。虽然某些架构是在 virtual page 中声明 PMA，然后通过 TLB 来告诉 pipeline 这些信息，但是这个方法会将一些 platform 信息注入到 virtual layer，而且一旦某个 page table 中某个 memory region 没有被正确初始化，就会导致系统错误。另外，可用的 page size 对于设置 PMA 来说可能并不是最优选择，这会导致地址空间碎片以及浪费宝贵的 TLB entry。</p>
+<p>RISC-V 则把 PMA 分离出来，并且用一个独立的硬件 PMA checker 进行检查：</p>
 <ul>
-<li>大部分情况下，很多 region 的 PMA 是在芯片设计时就已经确定了的，所以可以直接在 checker 中以硬连线的方式实现</li>
-<li>对于 runtime 可配置的 PMA，则可以通过一些 memory mapped control register 来实现（比如片上 SRAM 可以动态地划分为 cacheable/uncacheable 区域）</li>
+<li>大部分情况下，每个 region 的 PMA 是在系统设计时就已经确定了的，所以可以直接在 PMA checker 中以硬连线的方式实现。</li>
+<li>对于 runtime 可配置的 PMA，则可以通过一些 memory mapped CSR 对每个 region 以合适的粒度进行配置（比如片上 SRAM 可以灵活地划分为 cacheable 和 uncacheable 区域）。</li>
 </ul>
-<p>包括虚实地址转化在内，任何访问 physical memory 的行为都会触发 PMA 检查。为了帮助系统 debug，规范强烈建议，尽可能精确地捕获导致 PMA 检查失败的物理地址访问。精确的 PMA 违例包括 instruction，load/store access-faultexception 等。实际中并不能一直捕获到精确异常，比如通过 bus 访问 slave device 时收到的 error response 则是非精确异常。</p>
-<p>为了正确地访问设备或者是控制其他硬件单元（比如 DMA）去访问 memory，PMA 对软件来说必须是可读的。因为 PMA 和硬件平台的设计紧密相关，很多 PMA 继承自平台规格，所以软件可以通过访问平台信息的方式来获取 PMA 信息。某些 device，特别是 legacy bus，不支持这种方式获取 PMA，如果对其发起一个不支持的访问，则会返回 error response 或 timeout。通常，平台相关的 machine code 会提取 PMA 信息并通过某种标准表示方式将其转发给上层的非特权软件。 </p>
-<p>对于 platform 支持的可配置 PMA，应该提供一个接口，通过该接口向运行在 machine mode 下的 driver 发送请求，实现配置。比如，切换某些 memory region 的 cacheability 时，会涉及到一些 platform 相关的操作，比如只能在 machine mode 下进行的 cache flush。</p>
-<p><em>常见的 PMA 大概包含下面几方面。</em></p>
+<p>包括虚实地址转化引起的隐式访问在内，任何访问物理地址的行为都会触发 PMA 检查。为了帮助系统 debug，规范强烈建议：<strong>尽可能精确地捕获导致 PMA 检查失败的物理地址访问。</strong> 精确的 PMA 违例包括 instruction/load/store access-fault exception 以及虚拟内存的 page fault。实际中并不能一直捕获到精确异常，比如探测某些以访问失败作为发现机制的一部分的 legacy bus 时，从 slave device 返回的 error response 是非精确异常。</p>
+<p>为了正确地访问设备或者是控制其他硬件单元（比如 DMA）去访问 memory，PMA 对软件来说必须是可读的。因为 PMA 和硬件平台的设计紧密相关，很多 PMA 来自平台规格，所以软件可以通过访问平台信息的方式来获取 PMA 信息。某些 device，特别是 legacy bus，不支持通过探索尝试的方式获取 PMA，如果对其发起一个不支持的访问，则会返回 error response 或 timeout。通常，平台相关的 machine code 会提取这些 PMA 信息并通过某种标准表示方式将其转发给上层特权等级更低的软件。 </p>
+<p>对于 platform 支持的可配置 PMA，应该提供一个接口，通过该接口向运行在 machine mode 的 driver 发送配置请求，由 driver 进行正确的配置。比如，切换某些 memory region 的 cacheability 可能会涉及到一些 platform 相关的操作，比如只能在 machine mode 下进行的 cache flush。</p>
+<p>常见的 PMA 大概包含下面几方面。</p>
 <h4 id="main-memory-io-empty">Main memory / IO / empty</h4>
-<p>对于一个地址段来说，最重要的属性就是它映射的是常规 main memory，还是 I/O 设备，还是空洞。</p>
-<p>main memory 拥有一些后文描述的属性，而 I/O 设备的属性会更广泛一些。非 main memory 的 memory，比如 device scratchpad RAM，被归类为 I/O 段。空地址段也会被归类不支持任何访问的 I/O 空间。</p>
+<p>对于一个 memory region 来说，最重要的属性就是它映射的是常规 main memory 还是 I/O 设备或空洞。main memory 拥有一些后文描述的属性，而 I/O 设备的属性会更广泛一些。非 main memory 的 memory，比如 device scratchpad RAM，被归类为 I/O 段。空地址段会被归类不支持任何访问的 I/O 空间。</p>
 <h4 id="supported-access-type">Supported Access Type</h4>
-<p>Access Type 描述支持从 8bit 到 long multi-word burst 之间的哪些访问位宽，以及每种访问位宽是否支持非对齐访问。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>虽然运行在 RISC-V hart 上的软件不能直接生成对 memory 的 burst 访问，但是该软件可以对 DMA 进行编程来访问 I/O 空间，所以需要知道支持哪些位宽访问。</p>
+<p>描述 region 支持从 8bit Byte 到 long multi-word burst 之间的哪些访问位宽，以及每种访问位宽是否支持非对齐访问。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>虽然运行在 RISC-V hart 上的软件不能直接生成对 memory 的 burst 访问，但是软件可以对 DMA 进行编程来访问 I/O 设备，所以需要知道支持哪些位宽访问。</p>
 </div>
-<p>main memory 永远都支持所有 device 要求的所有 width 下的 read/write 操作，同时可以声明是否支持 execution。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<p>main memory 永远都支持所有 device 要求的所有 width 下的 read/write 操作，同时可以声明是否支持 instruction fetch。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <ol>
-<li>某些平台强制要求所有 main memory 都支持 instruction fetch，而某些平台会禁止从某些地址段 instruction fetch。</li>
-<li>在某些 case 中，processor/device 可能支持一些其他访问位宽，但是必须兼容 main memory 支持的访问位宽。</li>
+<li>某些平台可能会强制要求所有 main memory 都支持 instruction fetch，而某些平台可能会禁止在某些 main memory region 进行 instruction fetch。</li>
+<li>在某些 case 中，processor/device 可能支持一些其他访问位宽，但是必须兼容 main memory 支持的访问类型。</li>
 </ol>
 </div>
-<p>I/O 空间则可以指定每种位宽下支持的 R/W/E 组合。</p>
-<p>对于基于 page 的 virtual memory，I/O 和 memory region 可以声明支持哪些 hardware page table read/write。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<p>I/O region 可以指定每种位宽支持的 R/W/X 组合。</p>
+<p>对于基于 page 的 virtual memory，I/O 和 memory region 可以指定支持哪些 hardware page table read/write 组合。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>类 unix 系统通常要求所有 cacheable main memory 都支持 page table walk。</p>
 </div>
 <h4 id="atomicity">Atomicity</h4>
-<p>Atomicity PMA 描述地址段支持哪些原子指令，原子指令可以分为 LR/SC 和 AMO 两类。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<p>Atomicity PMA 描述 region 支持哪些原子指令，原子指令可以分为 LR/SC 和 AMO 两类。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>某些平台可能强制要求 cacheable main memory 必须支持系统中所有 processor 的所有原子指令。</p>
 </div>
-<p>@TODO：补充 AMO，reservability，alignment</p>
-<h4 id="memory-ordering">Memory-Ordering</h4>
-<p>将地址空间分为 main memory 和 I/O 两种类型的目的是为了支持 FENCE/AMO 中定义的访问顺序。</p>
-<p>一个 hart 对 main memory 的访问不仅会被其他 hart 观测到，同时也会被其他可以给 main memory 发送请求的设备（比如 DMA）观测到。main memory 空间要么是 RVWMMO 模型，要么是 RVTSO 模型。</p>
-<p>一个 hart 对 I/O 空间的访问不经会被其他 hart 和总线上的 master 设备观测到，还会被目标 slave 设备观测到。</p>
+<h5 id="amo">AMO</h5>
+<p>AMO 的支持可以分为<code>AMONone</code>，<code>AMOSwap</code>，<code>AMOLogical</code>，<code>AMOArithmetic</code> 共 4 个等级，main memory 和 I/O 可能支持部分子集或完全不支持 AMO 操作。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>spec 推荐 I/O region 尽可能支持 AMOLogical。</p>
+</div>
+<h5 id="reservability-pma">Reservability PMA</h5>
+<p>对 LR/SC 访问的支持可以分为 <code>RsrvNone</code>，<code>RsrvNonEventual</code>，<code>RsrvEventual</code> 共 3 个等级。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>spec 推荐 main memory region 尽可能支持 <code>RsrvEventual</code>。大部分 I/O region 不支持 LR/SC 访问，因为这些访问最方便建构在 cache-coherence 方案之上，但是有些可能支持 <code>RsrvEventual</code> 或 <code>RsrvNonEventual</code>。</li>
+<li>当 LR/SC 访问 <code>RsrvNonEventual</code> 的 memory region 时，当软件检测到无法访问时，软件应该提供备选的 fall-back 机制。</li>
+</ul>
+</div>
+<h5 id="alignment">Alignment</h5>
+<p>支持 aligned LR/SC 和 aligned AMO 访问的 memory region 可能还支持以某些位宽访问某些地址的非对齐访问。如果非对齐的 LR/SC 或 AMO 以某种位宽访问某个地址时触发了 address-misaligned exception，那么所有以该位宽访问该地址的 load，store，LR/SC 和 AMO 访问都应该触发 address-misaligned exception。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>A 子集不支持非对齐的 LR/SC 和 AMO 访问。非对齐 AMO 访问由 <code>Zam</code> 子集提供，非对齐的 LR/SC 访问目前还没有标准化，所以非对齐的 LR/SC 访问必须触发 exception。</p>
+<p>当非对齐的 AMO 触发 address-misaligned exception 时，强制要求非对齐的 load，store 也触发 address-misaligned exception，这样就可以模拟 M-mode trap handler 中的 misaligned AMO 访问。该 handler 使用 global mutex，在 critical section 模拟该访问，以这样的方式保证原子性。当非对齐 load/store 的 handler 使用同一个 mutex 时，以该位宽访问该地址的所有访问都是 mutually atomic。</p>
+</div>
+<p>对于某些非对齐访问，implementation 可以通过触发 access-fault exception 的方式表明不应该在 trap handler 中模拟模拟该行为。当以某种位宽访问某个地址时，如果所有的非对齐 AMO 和 LR/SC 都触发了 access-fault exception，那么以该位宽访问该地址的所有常规非对齐 load/store 则不要求原子性执行。</p>
+<h4 id="memory-ording-pmas">Memory Ording PMAs</h4>
+<p>为了 FENCE 指令和原子指令 order bit 提供的 order 功能，地址空间被分为 main memory 和 I/O 两类。</p>
+<p>一个 hart 对 main memory region 的访问不仅能被其他 hart 观测到，也会被其他能对 main memory 发起访问的 device（比如 DMA）观测到。coherent main memory 的 memory model 要么是 RVWMO 要么是 RVTSO，incoherent main memory region 的 memory model 由 implementation 决定。</p>
+<p>一个 hart 对 I/O region 的访问不仅能被其他 hart 和 bus master device 观测到，也会被目标 I/O slave
+device 观测到。I/O region 的访问要么是 relax order 要么是 strong order：</p>
+<ul>
+<li>以 relax order 访问 I/O region，其他 hart 和 master device 观测到的行为和以 RVWMO 访问 main memory region 类似。</li>
+<li>以 strong order 访问 I/O region，其他 hart 和 master device 观测到的为 program order。</li>
+</ul>
 <h4 id="coherenece-and-cacheability">Coherenece and Cacheability</h4>
-<p>coherenece 是针对单个物理地址而言的属性，表示某个 agent 对该地址的访问对系统中的其他 agent 可见。注意，不要混淆 coherence 和内存一致性模型。RISC-V 中不鼓励使用 hardware incoherent region，因为它会导致软件复杂化，性能和功耗恶化。</p>
-<p>一个地址段的 cacheability 属性不会改变软件对该地址段的 view，这些 view 不包括其他 PMA 中规定的属性（比如 main memory 和 I/O 空间的划分、访问顺序、支持的访问类型、支持的原子操作、coherence 等）。</p>
-<p>一些 platform 支持某些地址段的 cacheability 可配，这种情况下，由某个 machine mode 下的 routine 对 cacheability 进行配置，并在必要时 flush cache。</p>
+<p>coherenece 是针对单个物理地址而言的属性，表示某个 agent 对该地址的 write 对系统中的其他 agent 都可见。注意，不要把 coherence 和内存一致性模型混淆，内存一致性模型规定给定某个地址的历史读写信息后，读该地址的返回值应该是什么。RISC-V 中不鼓励使用 hardware incoherent region，因为它会导致软件复杂化，性能和功耗恶化。</p>
+<p>一个地址段的 cacheability 属性不会改变软件对该地址段的 view，这些 view 不包括其他 PMA 中规定的属性（比如 main memory 和 I/O 空间的划分、访问顺序、支持的访问类型、支持的原子操作、coherence 等）。因此，cacheability 在指令集中被视为 M-mode 软件管理的 platform level setting。</p>
+<p>当一个 platform 支持对某个 memory region 配置 cacheability 时，一个和 platform 相关的 M-mode routine 负责修改配置，并在必要时 flush cache。因此，只有在 cacheability 的变换的这段时间内系统为 incoherent，这种中间的变化状态不应该对 S/U mode 可见。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>指令集将 cache 分为了：</p>
+<ul>
+<li>master private：每个 master 私有</li>
+<li>master shared：位于 master 和 slave 之间，可能有多级</li>
+<li>slave private：由 slave 私有，对 coherence 无影响</li>
+</ul>
+<p>对于不支持 cache 的 share memory region 来说，coherence 很直观，PMA 只需要表明该 region 不支持被 private 或 shared cache。</p>
+<p>对于 read-only 的 memory region 来说，coherence 也很直观，无需 coherence 机制就可以被多个 agent 安全地多次 cache。PMA 只需要表明该 region 只支持 read，不支持 write 即可。</p>
+<p>有些 read-write memory region 可能只支持一个 agent 访问，这种场景下无需 coherence 机制就可以被 master private cache。PMA 会表明该 region 可以被 cache，而且可以被 cache 在一个 shared cache 中，因为其他 agent 不会访问该 region。</p>
+<p>如果一个 agent 可以 cache 一个 read-write region，且该 region 也可以被其他 agent 访问（无论是否为 cache 或 no cache），都需要一套 cache-coherence 机制。如果没有 hardware cache coherence，则必须提供 software cohere scheme，但是通常软件实现都比较困难且存在严重的性能问题。hardware coherence scheme 通常需要更复杂的硬件，也会影响到性能，但是对软件是不可见的。</p>
+<p>对于每个支持 hardware coherence 的 region 来说，PMA 应该表明该 region 支持 coherence 且当系统中 coherence controller 有多个时，PMA 要指明该 region 使用哪个 controller。对于某些系统来说，controller 是下一级 cache，而该级 cache 的 coherence 又依赖于下下级 cache。</p>
+<p>platform 中的大部分 memory region 对软件来说都是 coherent 的，因为这些 region 的 PMA 属性都是固定的，要么 uncached，要么 read-only，要么 hardware cache-coherent，要么只能由一个 agent 访问。</p>
+</div>
+<p>如果 PMA 表明该 region 不支持 cache，则对该 memory region 的访问必须由 memory 自身来满足，不能依靠任何 cache。</p>
 <h4 id="idempotency">Idempotency</h4>
 <p>幂等性 idempotency：执行多次和一次的效果一样。</p>
-<p>许多 main memory region 都被认为是 idempotent。对 I/O region，read/write 的 idempotent 是分开的：read 具有幂等性，而 write 不具有。</p>
-<p>如果访问不具有幂等性，也就是说会产生潜在的副作用，那么 speculative 和 redundant 的访问都必须被规避掉（因为他们都可能会导致多次访问）。</p>
 <ul>
-<li>main memory 是 idempotency（执行多次和一次效果一样）；I/O 域的 read 是 idempotent 的，而 write 不是</li>
+<li>main memory region 是 idempotent。</li>
+<li>I/O region 的 read/write idempotent 是分开的：read 具有幂等性，而 write 不具有。</li>
 </ul>
+<p>如果访问不具有幂等性，也就是说会产生潜在的副作用，那么必须避免 speculative 或 redundant 访问（因为他们都可能会导致多次访问）。</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>虽然 hardware 会对 non-idempotent region 避免 speculative 或 redundant 访问，但是还是有必要确保软件或编译优化不会对 non-idempotent region 生成投机访问。</p>
+<p>non-idempotent region 可能不支持非对齐访问。非对齐访问应该触发 access-fault exception 而不是 address-misaligned exception，以此来表明软件不应该通过拆分成多次小颗粒的访问来模拟非对齐访问，因为这种行为会引起预期之外的副作用。</p>
+</div>
+<p>对于 non-idempotent region 来说，不允许 implementat 提前或投机地进行 implicit
+read/write，除非是以下特例。</p>
+<p>当进行非投机的 implicit read 时，允许 implementation 额外从包含本次 implicit read 地址的 NAPOT region 中读取任意长度的数据量。而且如果是 instruction fetcch，允许 implementat 额外从下一个 NAPOT region 中读取任意 byte 数据量。这些额外的读数据可以作为后续的提前或投机访问的结果。这些 NAPOT region 的大小由 implementation 决定，但是必须不超过支持的最小 page size。</p>
 <h3 id="pmp">PMP</h3>
-<p>为了安全执行以及遏制发生 fault，需要限制 hart 上运行的软件可以访问的物理地址，这个需求可以通过一个可选的 <code>Physical Memory Protection (PMP)</code> 单元实现，它可以为每个 hart 提供每个 memory region 的访问属性控制寄存器。PMP 和 PMA 是并列关系，同步进行检查。</p>
+<p>为了安全运行以及故障隔离，需要限制 hart 上运行的软件可以访问的物理地址，这个需求可以通过一个可选的 <code>Physical Memory Protection (PMP)</code> 单元实现，它可以为每个 hart 提供每个 memory region 的访问属性控制寄存器。PMP 和 PMA 是并列关系，同步进行检查。</p>
 <p>虽然 PMP 的访问粒度是和平台相关的，但是标准的 PMP 编码支持的最小 region 大小为 4 Byte。某些 region 的特权属性可以直接用 hardwire 实现，比如某些 region 只有 M-mode 下可访问。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>不同平台对 PMP 的需求不同，有些平台还会额外提供其他的 PMP 指令来增强 / 代替本小节描述的方案。</p>
 </div>
 <p>当 core 运行在 S/U-mode 时，PMP checker 会检查所有的访问，包括：</p>
@@ -500,10 +550,10 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>( 可选地 ) M-mode 下且 locked region 的访问</li>
 </ul>
 <p>事实上，PMP 设置 S/U-mode 下的访问权限（默认无权限），在 M-mode 默认有所有地址的权限。</p>
-<p>PMP 违例为精确异常。</p>
+<p>违反 PMP 的访问会被 core 捕获，触发精确异常。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>PMP 主要检查的是 S-mode 和 U-mode，因为这两种级别只有部分权限，所以地址访问需要做限制。而 M-mode 下 core 必须拥有全部的访问权限，所以 M-mode 不是 PMP 的主要应用场景。</p>
+<p>PMP 主要检查的是 S-mode 和 U-mode，因为用户程序运行在这两个级别中。而 M-mode 下 core 必须拥有全部的访问权限，所以 M-mode 不是 PMP 的主要应用场景。</p>
 </div>
 <h4 id="pmp-csrs">PMP CSRs</h4>
 <p>spec 规定最多支持 64 个 PMP region，implementation 可以选择只实现 0/16/64 个，而且必须优先实现小序号的 PMP entry。每个 region 由一个 8-bit 配置寄存器 <code>pmpxcfg</code> + 一个 MXLEN-bit 的地址寄存器 <code>pmpaddrx</code> 共同描述。所有 PMP CSR 均为 WARL，且只能在 M-mode 下访问。</p>
@@ -513,8 +563,8 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>RV32 需要 16 个 CSR (<code>pmpcfg0</code> ~ <code>pmpcfg15</code>) 来存储 <code>pmp0cfg</code> ~ <code>pmp63cfg</code></li>
 <li>RV64 需要 8 个偶数下标 CSR <code>pmpcfg0</code>, <code>pmpcfg2</code> ~ <code>pmpcfg14</code> 来存储 <code>pmp0cfg</code> ~ <code>pmp63cfg</code>，奇数下标 <code>pmpcfg1</code>, <code>pmpcfg3</code> ~ <code>pmpcfg15</code> 是非法的</li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>RV64 不使用奇数下标 pmpcfg 的原因：减小支持多种 MXLEN 的代价。比如，无论是 RV32 还是 RV64，PMP entry 8~11 都在 pmpcfg2 中。</p>
 </div>
 <p>每个 8bit 的 <code>pmpxcfg</code> 规定了对应 region 的 L/A/X/W/R 五个属性：</p>
@@ -524,8 +574,8 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>L 字段表示该 region 被 lock，无法向 <code>pmpxcfg</code> 和 <code>pmpaddrx</code> 写入新值。</li>
 </ul>
 <p>当 MXLEN 发生变化时，<code>pmpxcfg</code> 的值保留不变，但是出现在对应的 <code>pmpcfgy</code> 的对应 bit 中。比如当 MXLEN 从 64 变化到 32 时，<code>pmp4cfg</code> 从 <code>pmpcfg0[39:32]</code> 移动到 <code>pmpcfg1[7:0]</code>。</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>implementation 可以实现 <code>pmpxcfg</code> 寄存器，然后根据 MXLEN 用多个 <code>pmpxcfg</code> 组合得到 <code>pmpcfgy</code>。</p>
 </div>
 <h5 id="pmpaddr">pmpaddr</h5>
@@ -535,8 +585,8 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>RV64：每个 pmpaddr 保存 addr[55:2]，即 56bit 地址</li>
 </ul>
 <p>因为 PMP region 颗粒度可能大于 4 Byte，所以并不是 pmpaddr 的每个 bit 都会被实现，所以 pmpaddr 为 WARL。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>因为 Sv32 page-based 虚拟地址方案支持 34bit 地址空间，所以 RV32 PMP 要支持比 XLEN 更大的地址区间。同理，Sv39 和 Sv48 page-based 虚拟地址方案支持 56bit 地址空间，所以 RV64 PMP 需要覆盖相同地址范围。</p>
 </div>
 <p>虽然 PMP region 的最小粒度为 4 Byte，但是 platform 可以定义更粗的颗粒度。一般来说，PMP region 的颗粒度必须保持一致，为 <span class="math">\(2^{G+2}\)</span> Byte。</p>
@@ -551,7 +601,7 @@ rel="me"           href="mailto:guqian110@163.com"
 <li>颗粒度 != 容量，所有 region 的颗粒度必须相同，但是大小可以不同。</li>
 <li>最小颗粒度决定了 G，也决定了 pmpaddr[G-2:0] 的值，所以硬件可以 hardwire 实现，不需要使用寄存器。</li>
 <li>虽然修改 pmpxcfg.A 会影响到 pmpaddrx 的读出结果，但实际上并不会改变底层 pmpaddrx 存储的 bit。特别是，当 pmpxcfg.A 从 NAPOT 改到 TOR，又从 TOR 该回 NAPOT，pmpaddrx[G-1] 都会保持原值不变。</li>
-<li>从分类讨论描述可以推断出来，无论哪种地址匹配模式，PMP region 的容量和地址都是对齐的。</li>
+<li>从分类讨论描述可以推断出来，NAPOT 模式下 PMP region 地址和容量对齐；TOR 模式下地址和容量无对齐约束。</li>
 </ul>
 </div>
 <p>软件可以通过以下方式得到 PMP region 的粒度：</p>
@@ -580,30 +630,7 @@ rel="me"           href="mailto:guqian110@163.com"
 </ul>
 <h5 id="priority-and-matching">priority and matching</h5>
 <p>地址匹配逻辑如下图所示：</p>
-<div class="highlight"><pre><span></span><code><span class="p">@</span><span class="n">startuml</span>
-<span class="nl">start</span>
-<span class="p">:</span><span class="n">match</span><span class="w"> </span><span class="n">PMP</span><span class="w"> </span><span class="n">entry</span><span class="p">;</span>
-<span class="n">note</span><span class="w"> </span><span class="n">right</span><span class="o">:</span><span class="w"> </span><span class="n">lowest</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="n">matching</span><span class="w"> </span><span class="n">any</span><span class="w"> </span><span class="n">byte</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">access</span>
-<span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">match</span><span class="w"> </span><span class="n">result</span><span class="p">)</span>
-<span class="w">  </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="no">full</span><span class="w"> </span><span class="no">match</span><span class="p">)</span>
-<span class="w">    </span><span class="no">if</span><span class="w"> </span><span class="p">((</span><span class="no">L</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="no">prv</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="no">M</span><span class="p">))</span><span class="w"> </span><span class="no">then</span><span class="w"> </span><span class="p">(</span><span class="no">yes</span><span class="p">)</span>
-<span class="w">      </span><span class="p">:</span><span class="n">success</span><span class="p">;</span>
-<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">(</span><span class="n">no</span><span class="p">)</span>
-<span class="w">        </span><span class="o">:</span><span class="n">check</span><span class="w"> </span><span class="n">R</span><span class="o">/</span><span class="n">W</span><span class="o">/</span><span class="n">X</span><span class="p">;</span>
-<span class="w">    </span><span class="n">endif</span>
-<span class="w">  </span><span class="nf">case</span><span class="w"> </span><span class="p">(</span><span class="n">partial</span><span class="w"> </span><span class="n">match</span><span class="p">)</span>
-<span class="w">    </span><span class="o">:</span><span class="n">fail</span><span class="p">;</span>
-<span class="w">  </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="no">no</span><span class="w"> </span><span class="no">match</span><span class="p">)</span>
-<span class="w">    </span><span class="no">if</span><span class="w"> </span><span class="p">(</span><span class="no">prv</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="no">M</span><span class="p">)</span><span class="w"> </span><span class="no">then</span><span class="w"> </span><span class="p">(</span><span class="no">yes</span><span class="p">)</span>
-<span class="w">      </span><span class="p">:</span><span class="n">success</span><span class="p">;</span>
-<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">(</span><span class="n">no</span><span class="p">)</span>
-<span class="w">      </span><span class="o">:</span><span class="n">fail</span><span class="p">;</span>
-<span class="w">    </span><span class="n">endif</span>
-<span class="n">endswitch</span>
-<span class="n">stop</span>
-<span class="p">@</span><span class="n">enduml</span>
-</code></pre></div>
-
+<p><img src="data:image/png;base64,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" class="uml" alt="uml diagram" title="PMP &#22320;&#22336;&#21305;&#37197;&#36923;&#36753;" /></p>
 <p>failed 的访问会触发对应 exception。单条指令可能会拆分出多个非原子访问序列（比如非对齐访问，访问虚地址 etc），一旦序列中某个访问 failed，即使其他访问 success 且产生了副作用，仍然会触发 exception。</p>
 <h4 id="paging">Paging</h4>
 <p>PMP 机制支持基于 page 技术的 Virtual-Memory 系统。当启用 page 时，访问虚拟地址的指令可能会产生多次物理地址访问，包括隐式的查询 page table，PMP 会检查所有的这些物理地址访问。隐式查询 page table 时为 S-mode。</p>
