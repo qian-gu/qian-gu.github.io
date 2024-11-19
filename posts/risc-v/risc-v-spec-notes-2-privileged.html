@@ -29,13 +29,9 @@
         type="text/css"
         href="https://qian-gu.github.io/theme/stork/stork.css" />
 
-<!--
   <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/fontawesome.css">
   <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/brands.css">
   <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/solid.css">
--->
-
-  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css">
 
   <link rel="stylesheet" type="text/css" href="/static/custom.css">
 
@@ -613,12 +609,12 @@ read/write，除非是以下特例。</p>
 <p>PMP 主要检查的是 S-mode 和 U-mode，因为用户程序运行在这两个级别中。而 M-mode 下 core 必须拥有全部的访问权限，所以 M-mode 不是 PMP 的主要应用场景。</p>
 </div>
 <h4 id="pmp-csrs">PMP CSRs</h4>
-<p>spec 规定最多支持 64 个 PMP region，implementation 可以选择只实现 0/16/64 个，而且必须优先实现小序号的 PMP entry。每个 region 由一个 8-bit 配置寄存器 <code>pmpxcfg</code> + 一个 MXLEN-bit 的地址寄存器 <code>pmpaddrx</code> 共同描述。所有 PMP CSR 均为 WARL，且只能在 M-mode 下访问。</p>
+<p>spec 规定最多支持 16 个 PMP region，每个 region 由一个 8-bit 配置寄存器 <code>pmpxcfg</code> + 一个 MXLEN-bit 的地址寄存器 <code>pmpaddrx</code> 共同描述。所有 PMP CSR 均为 WARL，且只能在 M-mode 下访问。</p>
 <h5 id="pmpcfg">pmpcfg</h5>
 <p>为了最小化上下文切换的代价，<code>pmpxcfg</code> 是按照小端模式密集存储在一起的。所以可以算出来</p>
 <ul>
-<li>RV32 需要 16 个 CSR (<code>pmpcfg0</code> ~ <code>pmpcfg15</code>) 来存储 <code>pmp0cfg</code> ~ <code>pmp63cfg</code></li>
-<li>RV64 需要 8 个偶数下标 CSR <code>pmpcfg0</code>, <code>pmpcfg2</code> ~ <code>pmpcfg14</code> 来存储 <code>pmp0cfg</code> ~ <code>pmp63cfg</code>，奇数下标 <code>pmpcfg1</code>, <code>pmpcfg3</code> ~ <code>pmpcfg15</code> 是非法的</li>
+<li>RV32 需要 4 个 CSR (<code>pmpcfg0</code> ~ <code>pmpcfg3</code>) 来存储 <code>pmp0cfg</code> ~ <code>pmp15cfg</code></li>
+<li>RV64 需要 2 个偶数下标 CSR <code>pmpcfg0</code>, <code>pmpcfg2</code> 来存储 <code>pmp0cfg</code> ~ <code>pmp15cfg</code>，奇数下标 <code>pmpcfg1</code>, <code>pmpcfg3</code> 是非法的</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
