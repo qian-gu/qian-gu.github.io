@@ -41,7 +41,7 @@ USE_FOLDER_AS_CATEGORY = False
 MAIN_MENU = True
 HOME_HIDE_TAGS = False
 PYGMENTS_STYLE = 'monokai'
-USE_LESS = True
+USE_LESS = False
 DEFAULT_PAGINATION = 10
 
 MENUITEMS = (('Authors', '/authors.html'),
@@ -60,7 +60,8 @@ SOCIAL = (
 CC_LICENSE = {
     'name': 'Creative Commons Attribution-ShareAlike',
     'version': '4.0',
-    'slug': 'by-sa'
+    'slug': 'by-sa',
+    'local_icons': True
 }
 
 COPYRIGHT_YEAR = datetime.now().year
@@ -139,6 +140,9 @@ MARKDOWN = {
         'markdown.extensions.meta': {},
         'markdown.extensions.admonition': {},
         'markdown.extensions.toc': {"title": "Table of Contents"},
+        'plantuml_markdown': {
+            'server': "https://plantuml.com/plantuml",
+            }
     },
     'output_format': 'html5'
 }

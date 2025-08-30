@@ -1,3 +1,4 @@
 typogrify
 beautifulsoup4
 pelican-render-math
+plantuml-markdwon
