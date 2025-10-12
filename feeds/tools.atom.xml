@@ -1,5 +1,660 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Qian's Blog - Tools</title><link href="https://qian-gu.github.io/" rel="alternate"></link><link href="https://qian-gu.github.io/feeds/tools.atom.xml" rel="self"></link><id>https://qian-gu.github.io/</id><updated>2022-04-16T10:43:00+08:00</updated><subtitle>Read &gt;&gt; Think &gt;&gt; Write</subtitle><entry><title>开源 IC 工具/库 —— iverilog、verilator 和 gtkwave</title><link href="https://qian-gu.github.io/posts/tools/iverilog-verilator-and-gtkwave.html" rel="alternate"></link><published>2022-04-16T10:43:00+08:00</published><updated>2022-04-16T10:43:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2022-04-16:/posts/tools/iverilog-verilator-and-gtkwave.html</id><summary type="html">&lt;p&gt;总结 iverilog、verilator 和 gtkwave 的常用使用方法&lt;/p&gt;</summary><content type="html">&lt;h2 id="iverilog"&gt;Iverilog&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Qian's Blog - Tools</title><link href="https://qian-gu.github.io/" rel="alternate"></link><link href="https://qian-gu.github.io/feeds/tools.atom.xml" rel="self"></link><id>https://qian-gu.github.io/</id><updated>2025-05-29T01:17:00+08:00</updated><subtitle>Read &gt;&gt; Think &gt;&gt; Write</subtitle><entry><title>开源 IC 工具/库 —— verible</title><link href="https://qian-gu.github.io/posts/tools/verible.html" rel="alternate"></link><published>2025-05-29T01:17:00+08:00</published><updated>2025-05-29T01:17:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2025-05-29:/posts/tools/verible.html</id><summary type="html">&lt;p&gt;总结 verible 的常用使用方法&lt;/p&gt;</summary><content type="html">&lt;h2 id="verible"&gt;Verible&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://github.com/chipsalliance/verible"&gt;verible&lt;/a&gt; 是一个由 Chips Alliance 开发的 SystemVerilog 开发者工具套件，包括解析器、风格检查器、格式化工具和语言服务器。Verible 的主要任务是解析 SystemVerilog（IEEE 1800-2017），适用于多种应用场景，如开发者工具。它支持解析未经预处理的源文件，适用于单文件应用，如风格检查和格式化。此外，Verible 还可以适应解析预处理的源文件，这是真实编译器和工具链所需要的。&lt;/p&gt;
+&lt;h3 id="installation"&gt;Installation&lt;/h3&gt;
+&lt;p&gt;从源码编译要安装一大堆工具，最省事的方法是从 github 上下载最新 release 的二进制文件，下载后把路径添加到 &lt;code&gt;$PATH&lt;/code&gt; 变量即可。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;export&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/.local/verible/bin:&lt;span class="nv"&gt;$PATH&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;命令行能自动补全则说明安装成功。&lt;/p&gt;
+&lt;h3 id="formatter"&gt;Formatter&lt;/h3&gt;
+&lt;p&gt;可以通过 &lt;code&gt;--helpfull&lt;/code&gt; 选项查看 formatter 支持的选项，大部分都顾名思义，其中有个别选项含义有点模糊，记录如下。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--column_limit&lt;/code&gt; 看名字似乎是 format 自动 wrap 代码到最大列，实际上并不是。这个 flag 设置了 formatter 生效的最大列宽，当代码列宽超过这个值时就会停止 format，不再对后续 line 做 format。所以还是需要我们自己手动 wrap 或者依靠编辑器自动换行。&lt;/p&gt;
+&lt;p&gt;虽然不能自动插入换行，但是 formatter 可以自动删除冗余的换行，把多行合并成一行（所谓的换行是冗余的，就是删除多行之间的换行后合并成的一行仍然没有超过 column_limit）。如果多行合并后超出了 column_limit，则完全不进行合并。比如一个 assign 语句分成了 3 行写，每行的列宽分别为 70，5，10，且设置的 column_limit 为 80，那么因为 70+5+10 &amp;gt; 80，即使 70+5 &amp;lt; 80，也并不会合并前两行。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--line_break_penalty&lt;/code&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--over_column_limit_penalty&lt;/code&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--wrap_spaces&lt;/code&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--named_parameter_alignment&lt;/code&gt;：子模块例化时 parameter 传参括号的对齐位置。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--named_parameter_indentation&lt;/code&gt;：子模块例化时 port 括号的对齐位置。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--port_declarations_right_align_packed_dimensions&lt;/code&gt;：packed array port 向右对齐，即最低维度对齐。（很有用）&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--port_declarations_right_align_unpacked_dimensions&lt;/code&gt;：unpacked array port 向右对齐，即最低维度对齐。（很有用）&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--try_wrap_long_lines&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;和其他工具的集成：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;vs code：插件 SystemVerilog and Verilog Formatter&lt;/li&gt;
+&lt;li&gt;vim：neoformat&lt;/li&gt;
+&lt;/ul&gt;</content><category term="Tools"></category><category term="IC-tools"></category><category term="verible"></category></entry><entry><title>GNU Make Manual 笔记</title><link href="https://qian-gu.github.io/posts/tools/gnu-make-manual-note.html" rel="alternate"></link><published>2023-03-26T20:23:00+08:00</published><updated>2023-03-26T20:23:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2023-03-26:/posts/tools/gnu-make-manual-note.html</id><summary type="html">&lt;p&gt;总结 Make 知识点，为中小工程写出专业的符合 GNU Make 惯例的 Makefile。&lt;/p&gt;</summary><content type="html">&lt;div class="toc"&gt;&lt;span class="toctitle"&gt;Table of Contents&lt;/span&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#gnu-make-notes"&gt;GNU Make Notes&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#an-introduction-to-makefiles"&gt;An Introduction to Makefiles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#writing-makefiles"&gt;Writing Makefiles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#writing-rules"&gt;Writing Rules&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#write-recipe-in-rules"&gt;Write Recipe in Rules&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#how-to-use-variables"&gt;How to Use Variables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#conditional-parts-of-makefiles"&gt;Conditional Parts of Makefiles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#functions-for-transforming-text"&gt;Functions for Transforming Text&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#how-to-run-make"&gt;How to Run make&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#using-implicit-rules"&gt;Using Implicit Rules&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#makefile-conventions"&gt;Makefile Conventions&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#rules-of-makefiles"&gt;Rules of Makefiles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#makefile-tempalte"&gt;Makefile Tempalte&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#reference"&gt;Reference&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h2 id="gnu-make-notes"&gt;GNU Make Notes&lt;/h2&gt;
+&lt;p&gt;按照 GNU Make Manual 的章节顺序记录，一些基本且重要的点，可以覆盖日常使用，支撑中小项目使用，细节查 Manual。&lt;/p&gt;
+&lt;h3 id="an-introduction-to-makefiles"&gt;An Introduction to Makefiles&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;rule 的一般格式&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;target&amp;gt; : &amp;lt;prerequisites&amp;gt;
+        &amp;lt;recipe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;术语：&lt;code&gt;target&lt;/code&gt;, &lt;code&gt;prerequisites&lt;/code&gt;， &lt;code&gt;recipe&lt;/code&gt; 和 &lt;code&gt;rule&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Make 的原理是检查 prerequisites 的时间戳是否比 target 的更新，如果是则执行 recipe。所以 Make 不限于编译程序，还可以用来做其他事情。但是 make 为编程特意提供了一些 implicit rules 和 variables，方便使用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果没有指定 target 名称，默认情况下 make 以 Makefile 中第一个（不以 . 开头的）target 作为 &lt;code&gt;default goal&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="writing-makefiles"&gt;Writing Makefiles&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;一个 Makefile 中包含 5 部分：explicit rules，implicit rules，variable definitions，directives，comments&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;默认情况下按照 &lt;code&gt;GNUmakefile&lt;/code&gt;，&lt;code&gt;makefile&lt;/code&gt;，&lt;code&gt;Makefile&lt;/code&gt; 的顺序查找 makefile，推荐文件名为 &lt;code&gt;Makefile&lt;/code&gt;，因为更醒目且通用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;遇到 &lt;code&gt;include&lt;/code&gt; 时会暂停读取当前文件，转而读取被 include 的文件，在读取 incldue 文件时 make 会尝试自动 rebuild 这个被 include 的文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用 include 的场景&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;多个子程序由各自的 makefile 管理，这些 makefile 共享的规则可以单独放在一个文件里，被 include 使用（比如 systemc 的 examples）。&lt;/li&gt;
+&lt;li&gt;自动生成的依赖文件单独存放，由主 makefile 通过 include 使用，这种方式比直接写到 makefile 的方式更整洁。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;make 程序读取 makefile 的步骤分为两步：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一阶段：读取所有 makefile（包括 include），初始化变量，推导 implicit rules，所有的 target 和 prerequisites 建立一个依赖图&lt;/li&gt;
+&lt;li&gt;第二阶段：判断哪个 target 是 goal，并判断 goal 是否需要更新，如果是的话，运行 recipe&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;variable 和 function 展开有两种方式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;立即（immediate）展开：用 &lt;code&gt;:=&lt;/code&gt; 定义，展开发生在第一阶段&lt;/li&gt;
+&lt;li&gt;延后（deferred）展开：用 &lt;code&gt;=&lt;/code&gt; 定义，展开发生在第二阶段&lt;/li&gt;
+&lt;li&gt;Conditional Directives 是立即展开的&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;所有类型的 rule 都按照下面的规则展开&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nf"&gt;immediate &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;immediate&lt;/span&gt; ; &lt;span class="n"&gt;deferred&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;deferred
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;即 target 和 prerequisites 是立即展开的，recipe 是延后展开的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="writing-rules"&gt;Writing Rules&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;第一个 rule 被当作 default goal，所以一般是 build 整个程序 / 多个程序的命令。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;prerequisites 有两类，语法为 &lt;code&gt;target : normal-prerequisites | order-only-prerequisites&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;order-only prerequisites 的目标是满足一种特定场景：在 build target 前必须先 build order-only prerequisites，但是 order-only prerequisites 的更新不触发 target 的更新。典型例子：编译文件放在 build 目录下，但是 build 目录在执行 make 时并不一定存在，同时 build 目录的更新不应该触发 target 的重新 build&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;OBJDIR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;objdir
+&lt;span class="nv"&gt;OBJS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;addprefix&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;OBJDIR&lt;span class="k"&gt;)&lt;/span&gt;/,foo.o&lt;span class="w"&gt; &lt;/span&gt;bar.o&lt;span class="w"&gt; &lt;/span&gt;baz.o&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(OBJDIR)/%.o &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;%.&lt;span class="n"&gt;c&lt;/span&gt;
+&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;COMPILE.c&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;OUTPUT_OPTION&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$&amp;lt;&lt;/span&gt;
+
+&lt;span class="nf"&gt;all&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;OBJS&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(OBJS)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;OBJDIR&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(OBJDIR)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;OBJDIR&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;!!!warning
+      Manual 中的这个例子虽然可以工作，但是根据 Smith 的文章可以知道这种方式不是最优的，因为这种写法违反了规则 2：&lt;code&gt;$@&lt;/code&gt; 和 &lt;code&gt;$&amp;lt;&lt;/code&gt; 的 stem 应该完全一致。更推荐的写法是：在 build 目录下工作，并且通过 vpath 查找 src 文件的路径，此时 obj 和 src 的 stem 就可以做到相同。How?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;文件名可以用通配符 &lt;code&gt;*&lt;/code&gt; 和 &lt;code&gt;%&lt;/code&gt; ，文件名的展开时刻取决于出现的位置：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;target 和 prerequisites 中的通配符由 make 在第一阶段展开&lt;/li&gt;
+&lt;li&gt;recipe 中的通配符由 shell 展开&lt;/li&gt;
+&lt;li&gt;其他位置（variable 和 function）的通配符必须用 wildcard 函数展开&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;VPATH&lt;/code&gt; 和 &lt;code&gt;vpath&lt;/code&gt; 都是为 target 和 prerequisites 搜索设计的，如果在当前目录下找不到 target/prerequisites 文件时，会从 VPATH/vpath 指定的目录中去寻找&lt;/p&gt;
+&lt;div class="admonition warning"&gt;
+&lt;p class="admonition-title"&gt;Warning&lt;/p&gt;
+&lt;p&gt;vpath 只能对 make 的 target/prerequisites 起作用，无法传递给 makefile 中的 variables 或 functions。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;srcs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;wildcard&lt;span class="w"&gt; &lt;/span&gt;*.c&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="cp"&gt;vpath %.c src/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;只能查找当前路径下的 c 文件，无法匹配到 src/ 目录下的 c 文件。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;通过 VPATH/vpath 找到的文件是带完整路径的，因为写 recipe 时并不能确定搜索结果，所以必须使用自动变量 &lt;code&gt;$^&lt;/code&gt; 或 &lt;code&gt;$&amp;lt;&lt;/code&gt; 来表示搜索结果&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;VPATH&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;src:../headers
+
+&lt;span class="nf"&gt;foo.o &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;foo&lt;/span&gt;.&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="n"&gt;defs&lt;/span&gt;.&lt;span class="n"&gt;h&lt;/span&gt; &lt;span class="n"&gt;hack&lt;/span&gt;.&lt;span class="n"&gt;h&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;cc&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CLFAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$&amp;lt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;强制 target（没有 prerequisites 且没有 recipe 的 target）作用和伪目标相同，推荐使用伪目标的方式&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;empty target&lt;/code&gt;（target 文件确实存在，但是内容为空）是 phony target 的变种，主要目的是用 target 的时间戳记录上次执行 recipe 的时间。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一个 prerequisites 可以对应多个 target 文件（用空格分开），表示他们有相同的 prerequisites。如果想根据 prerequisites 根据 target 变化，则应该使用 static pattern rules。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一个 target 也可以出现在多个 rule 中，对应多个 prerequisites。这种情况下所有 prerequisites 会被合并到一起，但是只能有一个 rule 提供 recipe，如果有多个，则使用最后一个 recipe 且打印错误信息。&lt;/p&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;自动产生依赖时，makefile 中给出了 .d 文件的 recipe，同时生成的 .d 文件自身只给出 targt 和 prerequisites，但是没有 recipe，所以这种情况下，相当于给 .d 和 .o 文件添加了一些额外的 prerequisites，并不会引起错误。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;static pattern rule&lt;/code&gt; 可构造 prerequisites 相似，但不相同的 rules，所以比 multiple target rule 更通用（“targets 必须具有相同的 prerequisites" 这个约束放松为 "targets 和 prerequisites 具有相同的 stem"）。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;
+&lt;span class="normal"&gt;5&lt;/span&gt;
+&lt;span class="normal"&gt;6&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;foo.o&lt;span class="w"&gt; &lt;/span&gt;bar.o
+
+&lt;span class="nf"&gt;all&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;objects&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(objects)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;%.&lt;span class="n"&gt;o&lt;/span&gt;: %.&lt;span class="n"&gt;c&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CC&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$&amp;lt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;static pattern rule + filter 在大工程中很有用，可以对 target 中某一类型文件的 recipe 进行定义。比如 object 列表包含了所有目标文件，格式可能包含 .o 和 .elc，那么可以用静态模式 + filter 实现两类目标文件 recipe 的定义：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;
+&lt;span class="normal"&gt;5&lt;/span&gt;
+&lt;span class="normal"&gt;6&lt;/span&gt;
+&lt;span class="normal"&gt;7&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;objs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;foo.elc&lt;span class="w"&gt; &lt;/span&gt;bar.o&lt;span class="w"&gt; &lt;/span&gt;lose.o
+
+&lt;span class="nf"&gt;$(filter %.o, $(objs))&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;%.&lt;span class="n"&gt;d&lt;/span&gt;: %.&lt;span class="n"&gt;c&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cc&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$&amp;lt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(filter %.elc, $(objs))&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;%.&lt;span class="n"&gt;elc&lt;/span&gt;: %.&lt;span class="n"&gt;el&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;emacs&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;batch-byte-compile&lt;span class="w"&gt; &lt;/span&gt;$&amp;lt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;实现对 .elc 和 .o 文件 recipe 的定义。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;implicit rule&lt;/code&gt; 也可以实现和 static pattern rule 类似的功能，但是两者还是有区别的&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;static pattern rule 的作用范围是显式指定的，implicit rule 的作用范围是符合 rule 的所有 target&lt;/li&gt;
+&lt;li&gt;static pattern rule 更优的两种场景&lt;ul&gt;
+&lt;li&gt;想对某些文件重载默认的 implicit rule&lt;/li&gt;
+&lt;li&gt;不确定目录下是否存在某些文件满足隐含模式，从而产生不确定的影响，此时采用 static pattern rule 可以消除这种不确定性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="admonition note"&gt;
+&lt;p class="admonition-title"&gt;Note&lt;/p&gt;
+&lt;p&gt;规则模式要求 target 和 prerequisites 的 stem 同名，所以如果编译结果放到 build 目录下，那么规则模式不适用，因为 target 的 stem 为 &lt;code&gt;xxx/foo.o&lt;/code&gt; ，搜索不到对应的 prerequisite &lt;code&gt;xxx/build/foo.cpp&lt;/code&gt;（源文件为 &lt;code&gt;xxx/src/foo.cpp&lt;/code&gt;）&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;double colon rules&lt;/code&gt;（允许 target 出现在多个 rule 中，且每个 rule 有不同的 recipe）可以提供一种根据不同 prerequisite 执行不同 recipe 更新同一个 target 的机制，一般很少用到。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Manual 中给出了一种利用 include 自动 rebuild 的特性&lt;a href="https://www.gnu.org/software/make/manual/make.html#Automatic-Prerequisites"&gt;自动维护依赖关系的方法&lt;/a&gt;，但是这个方法有 3 个缺点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;效率问题：如果某个 .c 文件被修改了，因为 prerequisite(.c 文件 ) 时间戳更新且 rules 存在，所以对应的 .d 文件在 include 时每次都会 rebuild，但是 rebuild 这个 .d  文件并不是必须的，因为无论是否更新 .d 文件，.c 文件的修改都意味着 .o 文件必然要被更新&lt;/li&gt;
+&lt;li&gt;烦人的 warning：如果新增了一个文件 or 第一次 build，因为不存在对应的 .d 文件，所以会报 warning&lt;/li&gt;
+&lt;li&gt;如果重命名 / 删除了某个 prerequisite 文件（比如程序员在重命名 / 删除某个 .h 文件时忘记同步更新相关的 .c 文件），这个机制会出错。因为 .d 文件里面还记录着这个无效的依赖关系，此时只能手动删除所有相关的 .d 文件（这个错误应该是在更新 .o  文件时由 compiler 报错 , 而不是由 make 报错）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;所以需要一个&lt;a href="https://make.mad-scientist.net/papers/advanced-auto-dependency-generation/"&gt;更加健壮的自动生成 dependency 的方法&lt;/a&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;解决第一个问题：.d 文件的更新实际上是为下次 make 准备的，只需要保证下次 make 时 dependency list 是最新的即可，所以 .o 和 .d 文件可以在同一个 rule 下更新&lt;/li&gt;
+&lt;li&gt;解决第二个问题：用 wildcard 来匹配所有 .d 文件，避免不存在的文件 include 报错&lt;/li&gt;
+&lt;li&gt;解决第三个问题：利用 make 处理 &lt;code&gt;rules without recipes or prerequisite&lt;/code&gt; 的机制，修改 .d 文件的内容，把每个 prerequisite 文件都列为 target 即可&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个方法依然有问题：如果用户在没有修改任何 .c 文件的前提下不小心删除了某个 .d 文件，那么修改 .h 文件并不会触发更新 .o 文件。解决方法：把 .d 作为 .o 的 prerequisites 的一部分，并且为其提供一个 empty rule 避免 rebuild。最终版本：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nv"&gt;OBJDIR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;obj
+
+&lt;span class="nv"&gt;DEPDIR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;OBJDIR&lt;span class="k"&gt;)&lt;/span&gt;/.deps
+&lt;span class="nv"&gt;DEPFLAGS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-MT&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-MMD&lt;span class="w"&gt; &lt;/span&gt;-MP&lt;span class="w"&gt; &lt;/span&gt;-MF&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;DEPDIR&lt;span class="k"&gt;)&lt;/span&gt;/&lt;span class="nv"&gt;$*&lt;/span&gt;.d
+
+&lt;span class="nv"&gt;COMPILE.c&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CC&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;DEPFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CPPFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;TARGET_ARCH&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-c
+
+&lt;span class="nf"&gt;$(OBJDIR)/%.o &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;%.&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;DEPDIR&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;/%.&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;DEPDIR&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;COMPILE.c&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;OUTPUT_OPTION&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$&amp;lt;
+
+&lt;span class="nf"&gt;$(DEPDIR)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;; @&lt;span class="n"&gt;mkdir&lt;/span&gt; -&lt;span class="n"&gt;p&lt;/span&gt; $@
+
+&lt;span class="nv"&gt;DEPFILES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;SRCS:%.c&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;DEPDIR&lt;span class="k"&gt;)&lt;/span&gt;/%.d&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nf"&gt;$(DEPFILES)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="cp"&gt;include $(wildcard $(DEPFILES))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="write-recipe-in-rules"&gt;Write Recipe in Rules&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;recipe 用 &lt;code&gt;@&lt;/code&gt; 开头可以取消 echoing&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;recipe 的每一行都由一个新的 shell 子进程执行，同一行包含多个命令时，用分号 &lt;code&gt;;&lt;/code&gt; 隔开组成一个完整的 shell 命令；如果想把完整的 shell 命令分成多行写，在行尾加反斜杠 &lt;code&gt;\&lt;/code&gt; 进行连接。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;make 使用 &lt;code&gt;/bin/sh&lt;/code&gt; 作为默认 shell，不会继承环境变量设置的 shell，可以在 makefile 中通过变量 &lt;code&gt;SHELL&lt;/code&gt; 进行指定&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;recipe 用减号开头，忽略此命令返回的失败值，比如 &lt;code&gt;-rm *.o&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;递归调用时，用 &lt;code&gt;$(MAKE)&lt;/code&gt; 代替 &lt;code&gt;make&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;上层 makefile 可以通过 &lt;code&gt;export VARIABLE = value&lt;/code&gt; 的方式把变量传递给子 makefile&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="how-to-use-variables"&gt;How to Use Variables&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;除了 recipe 和用 &lt;code&gt;=&lt;/code&gt; 或 &lt;code&gt;define&lt;/code&gt; 定义的，其他形式的 variables 和 functions 都是在 makefile 被读取时（即第一阶段）展开的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;传统做法是 variable 大写，但是 GNU make manual 推荐 makefile 内部使用的变量小写，只有控制 implicit rule 或用户可以通过命令行重载的变量大写。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;变量引用是一个严格的字符替换过程，shell 中的变量引用可以是 &lt;code&gt;$foo&lt;/code&gt; 的形式，但是 makefile 必须是 &lt;code&gt;$(foo)&lt;/code&gt; 或者 &lt;code&gt;${foo}&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;变量赋值有两种方式&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;递归展开式变量：用 &lt;code&gt;=&lt;/code&gt; 赋值，变量只有在被引用时才会递归展开。优点是可以先使用，后定义；缺点是展开时可能存在无限循环导致错误，另外一个缺点是如果变量中包含函数（如 wildcard）会在变量每次展开时都触发函数，导致执行速度变慢&lt;/li&gt;
+&lt;li&gt;简单展开式变量：用 &lt;code&gt;:=&lt;/code&gt; 或 &lt;code&gt;::=&lt;/code&gt; 定义，变量在定义时被展开，即变量被定义后就是一个字符串，不包含其他任何变量的引用 . 优点是简化程序因为其行为和大部分编程语言中的变量类似。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;变量替换：&lt;code&gt;$(VAR:.A=.B)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;引用未定义的变量时，会被当做空字符串。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以通过命令行对变量进行重载，使用 override 关键字可以让你修改用户通过命令行传进来的变量的值。应用场景例子：不管用户是否在命令行中有无指定，在 makefile 中确保包含 &lt;code&gt;-g&lt;/code&gt; 选项 &lt;code&gt;override CFLAGS += -g&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;target specific variables&lt;/code&gt; 是只对特定 target 起作用的变量，语法 &lt;code&gt;&amp;lt;target&amp;gt;: &amp;lt;variable-assignment&amp;gt;&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;pattern specific variables&lt;/code&gt; 是只对特定 pattern 起作用的变量，语法 &lt;code&gt;&amp;lt;pattern&amp;gt;: &amp;lt;variable-assignment&amp;gt;&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="conditional-parts-of-makefiles"&gt;Conditional Parts of Makefiles&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;语法 &lt;code&gt;ifeq&lt;/code&gt;, &lt;code&gt;ifneq&lt;/code&gt;, &lt;code&gt;ifdef&lt;/code&gt;, &lt;code&gt;ifndef&lt;/code&gt;, &lt;code&gt;else&lt;/code&gt;, &lt;code&gt;endif&lt;/code&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="functions-for-transforming-text"&gt;Functions for Transforming Text&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;语法 &lt;code&gt;$(FUNCTION ARGUMENTS)&lt;/code&gt; 只能调用 make built-in 函数，用户自定义函数只能通过 &lt;code&gt;call&lt;/code&gt; 调用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;字符替换相关函数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;$(subst from, to, text)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(patsubst pattern, replacement, text)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(strip string)&lt;/code&gt; 去掉头尾空白符，合并中间空白符&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(findstring find, in)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(filter pattern..., text)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(filter-out pattern..., text)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(sort list)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(word n, text)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(wordlist s, e, text)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(words text)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(firstword names...)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(lastword names...)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;文件名相关函数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;$(dir names…)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(notdir names…)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(suffix names…)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(basename names…)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(addsuffix suffix,names…)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(addprefix prefix,names…)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(join list1,list2)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(wildcard pattern)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(realpath names…)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$(abspath names…)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="how-to-run-make"&gt;How to Run make&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;一些 GNU 的典型 PHONY target 名字：&lt;code&gt;all&lt;/code&gt;, &lt;code&gt;clean&lt;/code&gt;, &lt;code&gt;mostlyclean&lt;/code&gt;, &lt;code&gt;distclean&lt;/code&gt;, &lt;code&gt;realclean&lt;/code&gt;, &lt;code&gt;clobber&lt;/code&gt;, &lt;code&gt;install&lt;/code&gt;, &lt;code&gt;print&lt;/code&gt;, &lt;code&gt;shar&lt;/code&gt;, &lt;code&gt;dist&lt;/code&gt;, &lt;code&gt;TAGS&lt;/code&gt;, &lt;code&gt;check&lt;/code&gt;, &lt;code&gt;test&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;-n&lt;/code&gt; 参数：只打印但不执行 recipe&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;-W&lt;/code&gt; 参数配合 &lt;code&gt;-n&lt;/code&gt;，查看修改某个文件带来的影响&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;make -k&lt;/code&gt; 忽略错误，继续编译，让一次编译过程多抛出一些错误&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="using-implicit-rules"&gt;Using Implicit Rules&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;使用 &lt;code&gt;implicit rules&lt;/code&gt; 的方法：rules 不包含 recipe，或者甚至不写 rules&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个 implicit rule 包含一个 target pattern 和 prerequisite pattern&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;多个 implicit rule 可能拥有相同的 target pattern，比如 .o 文件可以由 .c 或者是 .s 编译得到&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一般来说，make 会为没有 recipe 的 target 和 double-colon rule 自动搜索 implicit rule。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;作为 prerequisite 的文件会被当做没有 recipe 的 target 来对待&lt;/p&gt;
+&lt;div class="admonition warning"&gt;
+&lt;p class="admonition-title"&gt;Warning&lt;/p&gt;
+&lt;p&gt;明确给出 prerequisite 并不会影响到 implicit rule 的搜索，比如 &lt;code&gt;foo.o: foo.p&lt;/code&gt; 如果目录下存在 &lt;code&gt;foo.c&lt;/code&gt; 那么会使用 foo.c 而非 foo.p 来编译出 foo.o，因为 .c 对应的 implicit rule 排在搜索结果的更前面。&lt;/p&gt;
+&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果不想对某个 target 使用 implicit rule，那么使用空命令（recipe 是一个分号）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;$(LD)&lt;/code&gt; 使用的 flag 有两种：&lt;code&gt;$(LDFLAGS)&lt;/code&gt; 指向 &lt;code&gt;-L&lt;/code&gt; 参数；&lt;code&gt;$(LDLIBS)&lt;/code&gt; 指向 &lt;code&gt;-l&lt;/code&gt; 参数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;pattern rule&lt;/code&gt; 和普通 rule 类似，但是 target 中包含 % 符号，用来匹配文件名模式。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;pattern rule 中 target 和 prerequisite 的 stem 必须相同，但是 prerequisite 并不是必须包含 stem，比如 &lt;code&gt;%.o: define.h&lt;/code&gt; 说明所有 .o 文件都依赖 define.h 这个头文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;pattern rule 也可以有多个 target pattern（即这些 target 的 stem 相同，文件后缀名不同），这些 targets 会被当做整体来对待，一旦某个 target 被更新，其他 target 也被当做最新（即不更新），比如 &lt;code&gt;%.o, %.x: %.c&lt;/code&gt; 用 make foo.o foo.x 执行后，只生成 foo.o 不生成 foo.x 而且提示 foo.x 已经是最新了（实际上 foo.x 不存在）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;implicit rule 就是 make 内置的 pattern rule，比如&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nf"&gt;%.o &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;%.&lt;span class="n"&gt;c&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CC&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CPPFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-c&lt;span class="w"&gt; &lt;/span&gt;$&amp;lt;&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;所以用户可以用 pattern rule 的方式自定义一个 implicit rule。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重载 implicit rule 的方法：使用 implicit rule 相同的 target 和 prerequisite，但是不同的 recipe；如果留空 recipe 就是屏蔽这个 implicit rule。&lt;/p&gt;
+&lt;p&gt;注意下面两个的区别：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;
+&lt;span class="normal"&gt;5&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;# using implicit rule by omitting recipe in common rule&lt;/span&gt;
+&lt;span class="nf"&gt;foo.o&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;foo&lt;/span&gt;.&lt;span class="n"&gt;c&lt;/span&gt;
+
+&lt;span class="c"&gt;# cancel implicit rule by omitting recipe in pattern rule&lt;/span&gt;
+&lt;span class="nf"&gt;%.o&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;%.&lt;span class="n"&gt;c&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;pattern rule 因为要对文件名进行匹配，所以 recipe 中就不能写具体的文件名，而需要一个特殊的变量来表示，也就是 automatic variables，比如 &lt;code&gt;$@&lt;/code&gt; &lt;code&gt;$^&lt;/code&gt; &lt;code&gt;$&amp;lt;&lt;/code&gt; &lt;code&gt;$?&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="makefile-conventions"&gt;Makefile Conventions&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;用 automake 可以帮助你写出符合 GNU makefile 规范的 makefile。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个 makefile 都要包含一行 &lt;code&gt;SHELL = /bin/sh&lt;/code&gt;，避免从环境变量继承来的 SHELL 为其他值（对于 GNU make 来说不存在这个问题，GNU make 中的 SHELL 不会从环境变量继承）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;明确指定你想要的 suffixs，避免不同 make 程序的 suffix 和 implicit rule 不兼容的问题&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nf"&gt;.SUFFIXES&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="nf"&gt;.SUFFIXES&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;.&lt;span class="n"&gt;c&lt;/span&gt; .&lt;span class="n"&gt;o&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;小心处理 recipe 中的路径。当需要处理指定目录的文件时，要明确给出路径，因为 &lt;code&gt;./&lt;/code&gt; 指向的是 build 目录（GNU 惯例）而非 src 或其他目录。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;configure 和 makefile 脚本中使用给定的工具。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;dist target 中可以用 gzip。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个工具尽量用它的通用选项。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;尽量不要在 recipe 中创建软连接，因为有些操作系统不支持软连接。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用内置变量调用编译器等工具，比如 &lt;code&gt;$(CC)&lt;/code&gt; 表示 cc。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果确定只是用于某种特殊 OS，那么就可以使用其他工具，上述为了通用性做的约束可以放松。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;命令应该用变量来表示，比如 &lt;code&gt;$(CC)&lt;/code&gt; ，这样可以方便用户修改相应变量就可以替换工具 / 选项。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于一般性工具，比如 ln，rm，mv 等则不需要为其定义变量，因为用户也没有替换为其他工具的需求。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;参数也应该用变量表示，变量的命名方式就是 &lt;code&gt;PROGRAM-NAME + FLAGS&lt;/code&gt;，比如 &lt;code&gt;$(CFLAGS)&lt;/code&gt;，&lt;code&gt;$(LDFLAGS)&lt;/code&gt; 等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;把 &lt;code&gt;$(CFLAGS)&lt;/code&gt; 放在命令行的最后，以确保设置的 &lt;code&gt;$(CFLAGS)&lt;/code&gt; 不会被其他变量重载。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;凡是调用 &lt;code&gt;$(CC)&lt;/code&gt; 的地方都需要加上 &lt;code&gt;$(CFLAGS)&lt;/code&gt;，包括编译和链接。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个 makefile 都要定义一个 &lt;code&gt;INSTALL&lt;/code&gt; 变量，表示安装命令。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个 makefile 要定义两个变量 &lt;code&gt;INSTALL_PROGRAM&lt;/code&gt;（默认值为 INSTALL）和 &lt;code&gt;INSTALL_DATA = $(INSTALL) -m 644&lt;/code&gt; 作为程序和数据的安装命令，比如 &lt;code&gt;$(INSTALL_PROGRAM) foo $(bindir)/foo&lt;/code&gt; 把 foo 安装到 &lt;code&gt;$(bindir)/foo&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装目录也最好用一个变量 DESTDIR 定义，方便修改安装路径。比如&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;
+&lt;span class="normal"&gt;5&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# makefile recipe&lt;/span&gt;
+&lt;span class="k"&gt;$(&lt;/span&gt;INSTALL_PROGRAM&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;foo&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;DESTDIR&lt;span class="k"&gt;)&lt;/span&gt;/&lt;span class="k"&gt;$(&lt;/span&gt;bindir&lt;span class="k"&gt;)&lt;/span&gt;/foo
+
+&lt;span class="c1"&gt;# shell command&lt;/span&gt;
+make&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;DESTDIR&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/tmp/stage&lt;span class="w"&gt; &lt;/span&gt;install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;DESTDIR&lt;/code&gt; 应该只用在 &lt;code&gt;install*&lt;/code&gt; 和 &lt;code&gt;uninstalll*&lt;/code&gt; target 中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不应该在 Makefile 中定义 &lt;code&gt;DESTDIR&lt;/code&gt;，这样就可以安装到默认目录。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;DESTDIR 在 package creation 中很常用，可以让用户指定安装目录（比如可能没有权限安装到默认目录），所以强烈推荐使用（但不强制）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GNU 为安装定义了一系列标准 variable 和标准 target。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="rules-of-makefiles"&gt;Rules of Makefiles&lt;/h2&gt;
+&lt;p&gt;GNU Make 目前的维护者 Paul Smith 的规则：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;使用 GNU make&lt;/p&gt;
+&lt;p&gt;不要为写可移植的 makefile 而苦恼，而是使用可移植的 make 程序。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个非伪目标的 recipe 必须更新和 target 完全同名的文件&lt;/p&gt;
+&lt;p&gt;也就是说每个 recipe 更新的文件是 &lt;code&gt;$@&lt;/code&gt;，而不是 &lt;code&gt;../$@&lt;/code&gt; 或 &lt;code&gt;$(notdir $@)&lt;/code&gt; 等形式。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 CWD 下 build target 是最容易的方式&lt;/p&gt;
+&lt;p&gt;VPATH 的用途是在 build 目录下定位 src 文件，而不是反过来在 src 目录下定位 object 文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;遵循 Least Repetition 原则&lt;/p&gt;
+&lt;p&gt;用 variable，pattern rules，automatic variables 和 GNU make function 等技术避免重复写文件名。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个以 tab 开头的非连续行都是 recipe 的一部分，反之亦然&lt;/p&gt;
+&lt;p&gt;每个不以 tab 开头的非连续行，都会按照 makefile 的语法解析。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;目录不应该作为 normal prerequisites 的一部分&lt;/p&gt;
+&lt;p&gt;因为 GNU make 会把目录当成普通文件一样对待，所以如果目录新增 / 删除了文件就会产生不期望的
+rebuild，正确做法是把目录作为 order-only prerequisite。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="makefile-tempalte"&gt;Makefile Tempalte&lt;/h2&gt;
+&lt;div class="admonition info"&gt;
+&lt;p class="admonition-title"&gt;Info&lt;/p&gt;
+&lt;p&gt;大项目使用 GNU autotool，本模板适用于中小项目。&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;目标：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一份通用模板，可以快速适配到不同（中小）项目中&lt;/li&gt;
+&lt;li&gt;自动提取所有源文件和依赖&lt;/li&gt;
+&lt;li&gt;自动化编译&lt;/li&gt;
+&lt;li&gt;任何源文件被修改，自动编译&lt;/li&gt;
+&lt;li&gt;任何头文件被修改，自动编译包含该头文件的源文件&lt;/li&gt;
+&lt;li&gt;自动链接更新后的目标文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c"&gt;############################### Customise #####################################&lt;/span&gt;
+&lt;span class="nv"&gt;CURDIR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;shell&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;src_dir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CURDIR&lt;span class="k"&gt;)&lt;/span&gt;/src
+&lt;span class="nv"&gt;inc_dir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CURDIR&lt;span class="k"&gt;)&lt;/span&gt;/include
+&lt;span class="nv"&gt;build_dir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CURDIR&lt;span class="k"&gt;)&lt;/span&gt;/build
+&lt;span class="nv"&gt;target&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;out
+
+&lt;span class="c"&gt;############################### Variables #####################################&lt;/span&gt;
+
+&lt;span class="nv"&gt;CXX&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;g++
+&lt;span class="nv"&gt;CXXFLAGS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-g&lt;span class="w"&gt; &lt;/span&gt;-Wall&lt;span class="w"&gt; &lt;/span&gt;-O3&lt;span class="w"&gt; &lt;/span&gt;-I&lt;span class="k"&gt;$(&lt;/span&gt;inc_dir&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;LDFLAGS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;?=&lt;/span&gt;
+&lt;span class="nv"&gt;LDLIBS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;?=&lt;/span&gt;
+
+&lt;span class="nv"&gt;depdir&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;build_dir&lt;span class="k"&gt;)&lt;/span&gt;/.deps
+&lt;span class="nv"&gt;DEPFLAGS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-MT&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-MMD&lt;span class="w"&gt; &lt;/span&gt;-MP&lt;span class="w"&gt; &lt;/span&gt;-MF&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;depdir&lt;span class="k"&gt;)&lt;/span&gt;/&lt;span class="nv"&gt;$*&lt;/span&gt;.d
+
+&lt;span class="nv"&gt;COMPILE.c&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CXX&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;DEPFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CXXFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CPPFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;TARGET_ARCH&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-c
+
+&lt;span class="nv"&gt;srcs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;foreach&lt;span class="w"&gt; &lt;/span&gt;dir,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;src_dir&lt;span class="k"&gt;)&lt;/span&gt;,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;wildcard&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;dir&lt;span class="k"&gt;)&lt;/span&gt;/*.cpp&lt;span class="k"&gt;))&lt;/span&gt;
+&lt;span class="nv"&gt;objs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;addprefix&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;build_dir&lt;span class="k"&gt;)&lt;/span&gt;/,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;addsuffix&lt;span class="w"&gt; &lt;/span&gt;.o,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;notdir&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;basename&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;srcs&lt;span class="k"&gt;)))))&lt;/span&gt;
+
+&lt;span class="cp"&gt;vpath %.cpp $(src_dir)&lt;/span&gt;
+&lt;span class="cp"&gt;vpath %.h $(inc_dir)&lt;/span&gt;
+
+&lt;span class="c"&gt;############################### Rules #########################################&lt;/span&gt;
+
+&lt;span class="nf"&gt;.PHONY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;rebuild&lt;/span&gt; &lt;span class="n"&gt;clean&lt;/span&gt;
+
+&lt;span class="nf"&gt;all&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;build_dir&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;/&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;target&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nf"&gt;rebuild&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;clean&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(build_dir)/$(target)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;objs&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CXX&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;CXXFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;LDFLAGS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;LDLIBS&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$^&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(build_dir)/%.o&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;%.&lt;span class="n"&gt;cpp&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;depdir&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;/%.&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;depdir&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;COMPILE.c&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;OUTPUT_OPTION&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;$&amp;lt;
+
+&lt;span class="nf"&gt;$(depdir)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;; @&lt;span class="n"&gt;mkdir&lt;/span&gt; -&lt;span class="n"&gt;p&lt;/span&gt; $@
+
+&lt;span class="nv"&gt;DEPFILES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;addprefix&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;depdir&lt;span class="k"&gt;)&lt;/span&gt;/,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;addsuffix&lt;span class="w"&gt; &lt;/span&gt;.d,&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;notdir&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;basename&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;srcs&lt;span class="k"&gt;)))))&lt;/span&gt;
+&lt;span class="nf"&gt;$(DEPFILES)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="cp"&gt;include $(wildcard $(DEPFILES))&lt;/span&gt;
+
+&lt;span class="nf"&gt;clean&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;rm&lt;span class="w"&gt; &lt;/span&gt;-rf&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;build_dir&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;模板说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用小写定义简单展开式变量，指定项目的路径（根目录，src 目录列表，include 目录列表）&lt;/li&gt;
+&lt;li&gt;使用 vpath 指定头文件和源文件的搜索目录&lt;/li&gt;
+&lt;li&gt;使用 order-only prerequisite 自动创建 build 目录，保持项目目录整洁&lt;/li&gt;
+&lt;li&gt;因为 .o 和 .cpp 分别在 build 和 src 子目录下，无法使用 implicit rule（要求两者的 stem 必须一样），所以明确写 pattern rule&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;最重要的、最全面的、最权威的自然是&lt;a href="https://www.gnu.org/software/make/manual/html_node/index.html"&gt;官方手册&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;GNU Make 当前维护者 Paul Smith 的&lt;a href="https://make.mad-scientist.net/papers/"&gt;文章&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;陈浩大神写的教程&lt;a href="https://seisman.github.io/how-to-write-makefile/"&gt;跟我学 Makefile&lt;/a&gt;，大概就是 manual 的中文简化版&lt;/li&gt;
+&lt;li&gt;一份比较全面的 &lt;a href="https://clarkgrubb.com/makefile-style-guide"&gt;Makefile Coding Style Guide&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Tools"></category><category term="Makefile"></category><category term="GNU Make"></category></entry><entry><title>开源 IC 工具/库 —— iverilog、verilator 和 gtkwave</title><link href="https://qian-gu.github.io/posts/tools/iverilog-verilator-and-gtkwave.html" rel="alternate"></link><published>2022-04-16T10:43:00+08:00</published><updated>2022-04-16T10:43:00+08:00</updated><author><name>Qian Gu</name></author><id>tag:qian-gu.github.io,2022-04-16:/posts/tools/iverilog-verilator-and-gtkwave.html</id><summary type="html">&lt;p&gt;总结 iverilog、verilator 和 gtkwave 的常用使用方法&lt;/p&gt;</summary><content type="html">&lt;h2 id="iverilog"&gt;Iverilog&lt;/h2&gt;
 &lt;p&gt;&lt;a href="https://github.com/steveicarus/iverilog"&gt;iverilog&lt;/a&gt; 是 vcs 的平替，可以做一些基本的仿真，优点：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;安装包非常小巧&lt;/li&gt;

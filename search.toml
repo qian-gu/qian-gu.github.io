@@ -9,6 +9,11 @@ url = "/pages/about-me.html"
 title = "About Me"
 
 [[input.files]]
+path = "posts/tools/verible.html"
+url = "/posts/tools/verible.html"
+title = "开源 IC 工具/库 —— verible"
+
+[[input.files]]
 path = "posts/cs/understanding-and-using-c-pointers-notes.html"
 url = "/posts/cs/understanding-and-using-c-pointers-notes.html"
 title = "深入理解 C 指针读书笔记"
@@ -17,6 +22,11 @@ title = "深入理解 C 指针读书笔记"
 path = "posts/risc-v/riscv-book-note.html"
 url = "/posts/risc-v/riscv-book-note.html"
 title = "RISC-V Book 阅读笔记"
+
+[[input.files]]
+path = "posts/tools/gnu-make-manual-note.html"
+url = "/posts/tools/gnu-make-manual-note.html"
+title = "GNU Make Manual 笔记"
 
 [[input.files]]
 path = "posts/tools/iverilog-verilator-and-gtkwave.html"

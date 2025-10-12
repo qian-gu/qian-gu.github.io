@@ -1,0 +1,936 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/stylesheet/style.min.css">
+
+    <link id="dark-theme-style" rel="stylesheet" type="text/css"
+          media="(prefers-color-scheme: dark)"
+    href="https://qian-gu.github.io/theme/stylesheet/dark-theme.min.css">
+
+    <link id="pygments-dark-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: dark)"
+          href="https://qian-gu.github.io/theme/pygments/monokai.min.css">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+              media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+          href="https://qian-gu.github.io/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="https://qian-gu.github.io/theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://qian-gu.github.io/theme/font-awesome/css/solid.css">
+
+  <link rel="stylesheet" type="text/css" href="/static/custom.css">
+
+  <link rel="shortcut icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+  <link rel="icon" href="https://qian-gu.github.io/images/favicon_64x64.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+  <link href="https://qian-gu.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Qian's Blog Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48826831-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+ 
+
+<meta name="author" content="Qian Gu" />
+<meta name="description" content="总结 Make 知识点，为中小工程写出专业的符合 GNU Make 惯例的 Makefile。" />
+<meta name="keywords" content="Makefile, GNU Make">
+
+
+  <meta property="og:site_name" content="Qian's Blog"/>
+  <meta property="og:title" content="GNU Make Manual 笔记"/>
+  <meta property="og:description" content="总结 Make 知识点，为中小工程写出专业的符合 GNU Make 惯例的 Makefile。"/>
+  <meta property="og:locale" content="en"/>
+  <meta property="og:url" content="https://qian-gu.github.io/posts/tools/gnu-make-manual-note.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2023-03-26 20:23:00+08:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="https://qian-gu.github.io/author/qian-gu.html">
+  <meta property="article:section" content="Tools"/>
+  <meta property="article:tag" content="Makefile"/>
+  <meta property="article:tag" content="GNU Make"/>
+  <meta property="og:image" content="https://qian-gu.github.io/images/logo.png">
+
+  <title>Qian's Blog &ndash; GNU Make Manual 笔记</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-1821536199377100",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body >
+
+<aside>
+  <div>
+    <a href="https://qian-gu.github.io/">
+      <img src="https://qian-gu.github.io/images/logo.png" alt="Qian Gu" title="Qian Gu">
+    </a>
+
+    <h1>
+      <a href="https://qian-gu.github.io/">Qian Gu</a>
+    </h1>
+
+    <p>Read >> Think >> Write</p>
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search..." onclick="loadStorkIndex()"/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_blank"
+                 href="https://qian-gu.github.io/pages/about-me.html#about-me">
+                About Me
+              </a>
+            </li>
+
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-envelope"
+rel="me"           href="mailto:guqian110@163.com"
+           target="_blank">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/qian-gu"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-twitter"
+           href="https://twitter.com/qian_gu"
+           target="_blank">
+          <i class="fa-brands fa-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-rss"
+           href="/feeds/all.atom.xml"
+           target="_blank">
+          <i class="fa-solid fa-rss"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="https://qian-gu.github.io/">Home</a>
+
+  <a href="/authors.html">Authors</a>
+  <a href="/archives.html">Archives</a>
+  <a href="/categories.html">Categories</a>
+  <a href="/tags.html">Tags</a>
+
+  <a href="https://qian-gu.github.io/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+<article class="single">
+  <header>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.1.0/css/all.css" rel="stylesheet">
+      
+    <h1 id="gnu-make-manual-note">GNU Make Manual 笔记</h1>
+    <p>
+      Posted on 2023-03-26 20:23 in <a href="https://qian-gu.github.io/category/tools.html">Tools</a>
+
+    </p>
+    <div class="tag-cloud">
+      <p>
+        <a href="https://qian-gu.github.io/tag/makefile.html">Makefile</a>
+        <a href="https://qian-gu.github.io/tag/gnu-make.html">GNU Make</a>
+      </p>
+    </div>
+  </header>
+
+
+
+  <div>
+    <div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#gnu-make-notes">GNU Make Notes</a><ul>
+<li><a href="#an-introduction-to-makefiles">An Introduction to Makefiles</a></li>
+<li><a href="#writing-makefiles">Writing Makefiles</a></li>
+<li><a href="#writing-rules">Writing Rules</a></li>
+<li><a href="#write-recipe-in-rules">Write Recipe in Rules</a></li>
+<li><a href="#how-to-use-variables">How to Use Variables</a></li>
+<li><a href="#conditional-parts-of-makefiles">Conditional Parts of Makefiles</a></li>
+<li><a href="#functions-for-transforming-text">Functions for Transforming Text</a></li>
+<li><a href="#how-to-run-make">How to Run make</a></li>
+<li><a href="#using-implicit-rules">Using Implicit Rules</a></li>
+<li><a href="#makefile-conventions">Makefile Conventions</a></li>
+</ul>
+</li>
+<li><a href="#rules-of-makefiles">Rules of Makefiles</a></li>
+<li><a href="#makefile-tempalte">Makefile Tempalte</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+<h2 id="gnu-make-notes">GNU Make Notes</h2>
+<p>按照 GNU Make Manual 的章节顺序记录，一些基本且重要的点，可以覆盖日常使用，支撑中小项目使用，细节查 Manual。</p>
+<h3 id="an-introduction-to-makefiles">An Introduction to Makefiles</h3>
+<ol>
+<li>
+<p>rule 的一般格式</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>&lt;target&gt; : &lt;prerequisites&gt;
+        &lt;recipe&gt;
+</code></pre></div></td></tr></table></div>
+
+<p>术语：<code>target</code>, <code>prerequisites</code>， <code>recipe</code> 和 <code>rule</code>。</p>
+</li>
+<li>
+<p>Make 的原理是检查 prerequisites 的时间戳是否比 target 的更新，如果是则执行 recipe。所以 Make 不限于编译程序，还可以用来做其他事情。但是 make 为编程特意提供了一些 implicit rules 和 variables，方便使用。</p>
+</li>
+<li>
+<p>如果没有指定 target 名称，默认情况下 make 以 Makefile 中第一个（不以 . 开头的）target 作为 <code>default goal</code>。</p>
+</li>
+</ol>
+<h3 id="writing-makefiles">Writing Makefiles</h3>
+<ol>
+<li>
+<p>一个 Makefile 中包含 5 部分：explicit rules，implicit rules，variable definitions，directives，comments</p>
+</li>
+<li>
+<p>默认情况下按照 <code>GNUmakefile</code>，<code>makefile</code>，<code>Makefile</code> 的顺序查找 makefile，推荐文件名为 <code>Makefile</code>，因为更醒目且通用。</p>
+</li>
+<li>
+<p>遇到 <code>include</code> 时会暂停读取当前文件，转而读取被 include 的文件，在读取 incldue 文件时 make 会尝试自动 rebuild 这个被 include 的文件。</p>
+</li>
+<li>
+<p>使用 include 的场景</p>
+<ul>
+<li>多个子程序由各自的 makefile 管理，这些 makefile 共享的规则可以单独放在一个文件里，被 include 使用（比如 systemc 的 examples）。</li>
+<li>自动生成的依赖文件单独存放，由主 makefile 通过 include 使用，这种方式比直接写到 makefile 的方式更整洁。</li>
+</ul>
+</li>
+<li>
+<p>make 程序读取 makefile 的步骤分为两步：</p>
+<ul>
+<li>第一阶段：读取所有 makefile（包括 include），初始化变量，推导 implicit rules，所有的 target 和 prerequisites 建立一个依赖图</li>
+<li>第二阶段：判断哪个 target 是 goal，并判断 goal 是否需要更新，如果是的话，运行 recipe</li>
+</ul>
+</li>
+<li>
+<p>variable 和 function 展开有两种方式：</p>
+<ul>
+<li>立即（immediate）展开：用 <code>:=</code> 定义，展开发生在第一阶段</li>
+<li>延后（deferred）展开：用 <code>=</code> 定义，展开发生在第二阶段</li>
+<li>Conditional Directives 是立即展开的</li>
+<li>
+<p>所有类型的 rule 都按照下面的规则展开</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nf">immediate </span><span class="o">:</span><span class="w"> </span><span class="n">immediate</span> ; <span class="n">deferred</span>
+<span class="w">    </span>deferred
+</code></pre></div></td></tr></table></div>
+
+<p>即 target 和 prerequisites 是立即展开的，recipe 是延后展开的。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="writing-rules">Writing Rules</h3>
+<ol>
+<li>
+<p>第一个 rule 被当作 default goal，所以一般是 build 整个程序 / 多个程序的命令。</p>
+</li>
+<li>
+<p>prerequisites 有两类，语法为 <code>target : normal-prerequisites | order-only-prerequisites</code></p>
+<p>order-only prerequisites 的目标是满足一种特定场景：在 build target 前必须先 build order-only prerequisites，但是 order-only prerequisites 的更新不触发 target 的更新。典型例子：编译文件放在 build 目录下，但是 build 目录在执行 make 时并不一定存在，同时 build 目录的更新不应该触发 target 的重新 build</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">OBJDIR</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span>objdir
+<span class="nv">OBJS</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>addprefix<span class="w"> </span><span class="k">$(</span>OBJDIR<span class="k">)</span>/,foo.o<span class="w"> </span>bar.o<span class="w"> </span>baz.o<span class="k">)</span>
+
+<span class="nf">$(OBJDIR)/%.o </span><span class="o">:</span><span class="w"> </span>%.<span class="n">c</span>
+<span class="k">$(</span><span class="nv">COMPILE.c</span><span class="k">)</span><span class="w"> </span><span class="k">$(</span><span class="nv">OUTPUT_OPTION</span><span class="k">)</span><span class="w"> </span><span class="k">$&lt;</span>
+
+<span class="nf">all</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">OBJS</span><span class="k">)</span>
+
+<span class="nf">$(OBJS)</span><span class="o">:</span><span class="w"> </span><span class="p">|</span> <span class="k">$(</span><span class="nv">OBJDIR</span><span class="k">)</span>
+
+<span class="nf">$(OBJDIR)</span><span class="o">:</span>
+<span class="w">    </span>mkdir<span class="w"> </span><span class="k">$(</span>OBJDIR<span class="k">)</span>
+</code></pre></div></td></tr></table></div>
+
+<p>!!!warning
+      Manual 中的这个例子虽然可以工作，但是根据 Smith 的文章可以知道这种方式不是最优的，因为这种写法违反了规则 2：<code>$@</code> 和 <code>$&lt;</code> 的 stem 应该完全一致。更推荐的写法是：在 build 目录下工作，并且通过 vpath 查找 src 文件的路径，此时 obj 和 src 的 stem 就可以做到相同。How?</p>
+</li>
+<li>
+<p>文件名可以用通配符 <code>*</code> 和 <code>%</code> ，文件名的展开时刻取决于出现的位置：</p>
+<ul>
+<li>target 和 prerequisites 中的通配符由 make 在第一阶段展开</li>
+<li>recipe 中的通配符由 shell 展开</li>
+<li>其他位置（variable 和 function）的通配符必须用 wildcard 函数展开</li>
+</ul>
+</li>
+<li>
+<p><code>VPATH</code> 和 <code>vpath</code> 都是为 target 和 prerequisites 搜索设计的，如果在当前目录下找不到 target/prerequisites 文件时，会从 VPATH/vpath 指定的目录中去寻找</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>vpath 只能对 make 的 target/prerequisites 起作用，无法传递给 makefile 中的 variables 或 functions。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">srcs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>wildcard<span class="w"> </span>*.c<span class="k">)</span>
+<span class="cp">vpath %.c src/</span>
+</code></pre></div></td></tr></table></div>
+
+<p>只能查找当前路径下的 c 文件，无法匹配到 src/ 目录下的 c 文件。</p>
+</div>
+</li>
+<li>
+<p>通过 VPATH/vpath 找到的文件是带完整路径的，因为写 recipe 时并不能确定搜索结果，所以必须使用自动变量 <code>$^</code> 或 <code>$&lt;</code> 来表示搜索结果</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">VPATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>src:../headers
+
+<span class="nf">foo.o </span><span class="o">:</span><span class="w"> </span><span class="n">foo</span>.<span class="n">c</span> <span class="n">defs</span>.<span class="n">h</span> <span class="n">hack</span>.<span class="n">h</span>
+<span class="w">    </span>cc<span class="w"> </span>-c<span class="w"> </span><span class="k">$(</span>CLFAGS<span class="k">)</span><span class="w"> </span>$&lt;<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>强制 target（没有 prerequisites 且没有 recipe 的 target）作用和伪目标相同，推荐使用伪目标的方式</p>
+</li>
+<li>
+<p><code>empty target</code>（target 文件确实存在，但是内容为空）是 phony target 的变种，主要目的是用 target 的时间戳记录上次执行 recipe 的时间。</p>
+</li>
+<li>
+<p>一个 prerequisites 可以对应多个 target 文件（用空格分开），表示他们有相同的 prerequisites。如果想根据 prerequisites 根据 target 变化，则应该使用 static pattern rules。</p>
+</li>
+<li>
+<p>一个 target 也可以出现在多个 rule 中，对应多个 prerequisites。这种情况下所有 prerequisites 会被合并到一起，但是只能有一个 rule 提供 recipe，如果有多个，则使用最后一个 recipe 且打印错误信息。</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>自动产生依赖时，makefile 中给出了 .d 文件的 recipe，同时生成的 .d 文件自身只给出 targt 和 prerequisites，但是没有 recipe，所以这种情况下，相当于给 .d 和 .o 文件添加了一些额外的 prerequisites，并不会引起错误。</p>
+</div>
+</li>
+<li>
+<p><code>static pattern rule</code> 可构造 prerequisites 相似，但不相同的 rules，所以比 multiple target rule 更通用（“targets 必须具有相同的 prerequisites" 这个约束放松为 "targets 和 prerequisites 具有相同的 stem"）。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">objects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>foo.o<span class="w"> </span>bar.o
+
+<span class="nf">all</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">objects</span><span class="k">)</span>
+
+<span class="nf">$(objects)</span><span class="o">:</span><span class="w"> </span>%.<span class="n">o</span>: %.<span class="n">c</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span>-c<span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span>$&lt;<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+</code></pre></div></td></tr></table></div>
+
+<p>static pattern rule + filter 在大工程中很有用，可以对 target 中某一类型文件的 recipe 进行定义。比如 object 列表包含了所有目标文件，格式可能包含 .o 和 .elc，那么可以用静态模式 + filter 实现两类目标文件 recipe 的定义：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">objs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>foo.elc<span class="w"> </span>bar.o<span class="w"> </span>lose.o
+
+<span class="nf">$(filter %.o, $(objs))</span><span class="o">:</span><span class="w"> </span>%.<span class="n">d</span>: %.<span class="n">c</span>
+<span class="w">    </span><span class="k">$(</span>cc<span class="k">)</span><span class="w"> </span>-c<span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span>$&lt;<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+
+<span class="nf">$(filter %.elc, $(objs))</span><span class="o">:</span><span class="w"> </span>%.<span class="n">elc</span>: %.<span class="n">el</span>
+<span class="w">    </span>emacs<span class="w"> </span>-f<span class="w"> </span>batch-byte-compile<span class="w"> </span>$&lt;
+</code></pre></div></td></tr></table></div>
+
+<p>实现对 .elc 和 .o 文件 recipe 的定义。</p>
+</li>
+<li>
+<p><code>implicit rule</code> 也可以实现和 static pattern rule 类似的功能，但是两者还是有区别的</p>
+<ul>
+<li>static pattern rule 的作用范围是显式指定的，implicit rule 的作用范围是符合 rule 的所有 target</li>
+<li>static pattern rule 更优的两种场景<ul>
+<li>想对某些文件重载默认的 implicit rule</li>
+<li>不确定目录下是否存在某些文件满足隐含模式，从而产生不确定的影响，此时采用 static pattern rule 可以消除这种不确定性</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>规则模式要求 target 和 prerequisites 的 stem 同名，所以如果编译结果放到 build 目录下，那么规则模式不适用，因为 target 的 stem 为 <code>xxx/foo.o</code> ，搜索不到对应的 prerequisite <code>xxx/build/foo.cpp</code>（源文件为 <code>xxx/src/foo.cpp</code>）</p>
+</div>
+</li>
+<li>
+<p><code>double colon rules</code>（允许 target 出现在多个 rule 中，且每个 rule 有不同的 recipe）可以提供一种根据不同 prerequisite 执行不同 recipe 更新同一个 target 的机制，一般很少用到。</p>
+</li>
+<li>
+<p>Manual 中给出了一种利用 include 自动 rebuild 的特性<a href="https://www.gnu.org/software/make/manual/make.html#Automatic-Prerequisites">自动维护依赖关系的方法</a>，但是这个方法有 3 个缺点：</p>
+<ul>
+<li>效率问题：如果某个 .c 文件被修改了，因为 prerequisite(.c 文件 ) 时间戳更新且 rules 存在，所以对应的 .d 文件在 include 时每次都会 rebuild，但是 rebuild 这个 .d  文件并不是必须的，因为无论是否更新 .d 文件，.c 文件的修改都意味着 .o 文件必然要被更新</li>
+<li>烦人的 warning：如果新增了一个文件 or 第一次 build，因为不存在对应的 .d 文件，所以会报 warning</li>
+<li>如果重命名 / 删除了某个 prerequisite 文件（比如程序员在重命名 / 删除某个 .h 文件时忘记同步更新相关的 .c 文件），这个机制会出错。因为 .d 文件里面还记录着这个无效的依赖关系，此时只能手动删除所有相关的 .d 文件（这个错误应该是在更新 .o  文件时由 compiler 报错 , 而不是由 make 报错）</li>
+</ul>
+<p>所以需要一个<a href="https://make.mad-scientist.net/papers/advanced-auto-dependency-generation/">更加健壮的自动生成 dependency 的方法</a>：</p>
+<ul>
+<li>解决第一个问题：.d 文件的更新实际上是为下次 make 准备的，只需要保证下次 make 时 dependency list 是最新的即可，所以 .o 和 .d 文件可以在同一个 rule 下更新</li>
+<li>解决第二个问题：用 wildcard 来匹配所有 .d 文件，避免不存在的文件 include 报错</li>
+<li>解决第三个问题：利用 make 处理 <code>rules without recipes or prerequisite</code> 的机制，修改 .d 文件的内容，把每个 prerequisite 文件都列为 target 即可</li>
+</ul>
+<p>这个方法依然有问题：如果用户在没有修改任何 .c 文件的前提下不小心删除了某个 .d 文件，那么修改 .h 文件并不会触发更新 .o 文件。解决方法：把 .d 作为 .o 的 prerequisites 的一部分，并且为其提供一个 empty rule 避免 rebuild。最终版本：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">OBJDIR</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span>obj
+
+<span class="nv">DEPDIR</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>OBJDIR<span class="k">)</span>/.deps
+<span class="nv">DEPFLAGS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>-MT<span class="w"> </span><span class="nv">$@</span><span class="w"> </span>-MMD<span class="w"> </span>-MP<span class="w"> </span>-MF<span class="w"> </span><span class="k">$(</span>DEPDIR<span class="k">)</span>/<span class="nv">$*</span>.d
+
+<span class="nv">COMPILE.c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>DEPFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CPPFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>TARGET_ARCH<span class="k">)</span><span class="w"> </span>-c
+
+<span class="nf">$(OBJDIR)/%.o </span><span class="o">:</span><span class="w"> </span>%.<span class="n">c</span> <span class="k">$(</span><span class="nv">DEPDIR</span><span class="k">)</span>/%.<span class="n">d</span> <span class="p">|</span> <span class="k">$(</span><span class="nv">DEPDIR</span><span class="k">)</span>
+<span class="w">        </span><span class="k">$(</span>COMPILE.c<span class="k">)</span><span class="w"> </span><span class="k">$(</span>OUTPUT_OPTION<span class="k">)</span><span class="w"> </span>$&lt;
+
+<span class="nf">$(DEPDIR)</span><span class="o">:</span><span class="w"> </span>; @<span class="n">mkdir</span> -<span class="n">p</span> $@
+
+<span class="nv">DEPFILES</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>SRCS:%.c<span class="o">=</span><span class="k">$(</span>DEPDIR<span class="k">)</span>/%.d<span class="k">)</span>
+<span class="nf">$(DEPFILES)</span><span class="o">:</span>
+<span class="cp">include $(wildcard $(DEPFILES))</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+</ol>
+<h3 id="write-recipe-in-rules">Write Recipe in Rules</h3>
+<ol>
+<li>
+<p>recipe 用 <code>@</code> 开头可以取消 echoing</p>
+</li>
+<li>
+<p>recipe 的每一行都由一个新的 shell 子进程执行，同一行包含多个命令时，用分号 <code>;</code> 隔开组成一个完整的 shell 命令；如果想把完整的 shell 命令分成多行写，在行尾加反斜杠 <code>\</code> 进行连接。</p>
+</li>
+<li>
+<p>make 使用 <code>/bin/sh</code> 作为默认 shell，不会继承环境变量设置的 shell，可以在 makefile 中通过变量 <code>SHELL</code> 进行指定</p>
+</li>
+<li>
+<p>recipe 用减号开头，忽略此命令返回的失败值，比如 <code>-rm *.o</code></p>
+</li>
+<li>
+<p>递归调用时，用 <code>$(MAKE)</code> 代替 <code>make</code></p>
+</li>
+<li>
+<p>上层 makefile 可以通过 <code>export VARIABLE = value</code> 的方式把变量传递给子 makefile</p>
+</li>
+</ol>
+<h3 id="how-to-use-variables">How to Use Variables</h3>
+<ol>
+<li>
+<p>除了 recipe 和用 <code>=</code> 或 <code>define</code> 定义的，其他形式的 variables 和 functions 都是在 makefile 被读取时（即第一阶段）展开的。</p>
+</li>
+<li>
+<p>传统做法是 variable 大写，但是 GNU make manual 推荐 makefile 内部使用的变量小写，只有控制 implicit rule 或用户可以通过命令行重载的变量大写。</p>
+</li>
+<li>
+<p>变量引用是一个严格的字符替换过程，shell 中的变量引用可以是 <code>$foo</code> 的形式，但是 makefile 必须是 <code>$(foo)</code> 或者 <code>${foo}</code></p>
+</li>
+<li>
+<p>变量赋值有两种方式</p>
+<ul>
+<li>递归展开式变量：用 <code>=</code> 赋值，变量只有在被引用时才会递归展开。优点是可以先使用，后定义；缺点是展开时可能存在无限循环导致错误，另外一个缺点是如果变量中包含函数（如 wildcard）会在变量每次展开时都触发函数，导致执行速度变慢</li>
+<li>简单展开式变量：用 <code>:=</code> 或 <code>::=</code> 定义，变量在定义时被展开，即变量被定义后就是一个字符串，不包含其他任何变量的引用 . 优点是简化程序因为其行为和大部分编程语言中的变量类似。</li>
+</ul>
+</li>
+<li>
+<p>变量替换：<code>$(VAR:.A=.B)</code></p>
+</li>
+<li>
+<p>引用未定义的变量时，会被当做空字符串。</p>
+</li>
+<li>
+<p>可以通过命令行对变量进行重载，使用 override 关键字可以让你修改用户通过命令行传进来的变量的值。应用场景例子：不管用户是否在命令行中有无指定，在 makefile 中确保包含 <code>-g</code> 选项 <code>override CFLAGS += -g</code>。</p>
+</li>
+<li>
+<p><code>target specific variables</code> 是只对特定 target 起作用的变量，语法 <code>&lt;target&gt;: &lt;variable-assignment&gt;</code>。</p>
+</li>
+<li>
+<p><code>pattern specific variables</code> 是只对特定 pattern 起作用的变量，语法 <code>&lt;pattern&gt;: &lt;variable-assignment&gt;</code>。</p>
+</li>
+</ol>
+<h3 id="conditional-parts-of-makefiles">Conditional Parts of Makefiles</h3>
+<ol>
+<li>语法 <code>ifeq</code>, <code>ifneq</code>, <code>ifdef</code>, <code>ifndef</code>, <code>else</code>, <code>endif</code>。</li>
+</ol>
+<h3 id="functions-for-transforming-text">Functions for Transforming Text</h3>
+<ol>
+<li>
+<p>语法 <code>$(FUNCTION ARGUMENTS)</code> 只能调用 make built-in 函数，用户自定义函数只能通过 <code>call</code> 调用。</p>
+</li>
+<li>
+<p>字符替换相关函数</p>
+<ul>
+<li><code>$(subst from, to, text)</code></li>
+<li><code>$(patsubst pattern, replacement, text)</code></li>
+<li><code>$(strip string)</code> 去掉头尾空白符，合并中间空白符</li>
+<li><code>$(findstring find, in)</code></li>
+<li><code>$(filter pattern..., text)</code></li>
+<li><code>$(filter-out pattern..., text)</code></li>
+<li><code>$(sort list)</code></li>
+<li><code>$(word n, text)</code></li>
+<li><code>$(wordlist s, e, text)</code></li>
+<li><code>$(words text)</code></li>
+<li><code>$(firstword names...)</code></li>
+<li><code>$(lastword names...)</code></li>
+</ul>
+</li>
+<li>
+<p>文件名相关函数</p>
+<ul>
+<li><code>$(dir names…)</code></li>
+<li><code>$(notdir names…)</code></li>
+<li><code>$(suffix names…)</code></li>
+<li><code>$(basename names…)</code></li>
+<li><code>$(addsuffix suffix,names…)</code></li>
+<li><code>$(addprefix prefix,names…)</code></li>
+<li><code>$(join list1,list2)</code></li>
+<li><code>$(wildcard pattern)</code></li>
+<li><code>$(realpath names…)</code></li>
+<li><code>$(abspath names…)</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="how-to-run-make">How to Run make</h3>
+<ol>
+<li>
+<p>一些 GNU 的典型 PHONY target 名字：<code>all</code>, <code>clean</code>, <code>mostlyclean</code>, <code>distclean</code>, <code>realclean</code>, <code>clobber</code>, <code>install</code>, <code>print</code>, <code>shar</code>, <code>dist</code>, <code>TAGS</code>, <code>check</code>, <code>test</code>。</p>
+</li>
+<li>
+<p><code>-n</code> 参数：只打印但不执行 recipe</p>
+</li>
+<li>
+<p><code>-W</code> 参数配合 <code>-n</code>，查看修改某个文件带来的影响</p>
+</li>
+<li>
+<p><code>make -k</code> 忽略错误，继续编译，让一次编译过程多抛出一些错误</p>
+</li>
+</ol>
+<h3 id="using-implicit-rules">Using Implicit Rules</h3>
+<ol>
+<li>
+<p>使用 <code>implicit rules</code> 的方法：rules 不包含 recipe，或者甚至不写 rules</p>
+</li>
+<li>
+<p>每个 implicit rule 包含一个 target pattern 和 prerequisite pattern</p>
+</li>
+<li>
+<p>多个 implicit rule 可能拥有相同的 target pattern，比如 .o 文件可以由 .c 或者是 .s 编译得到</p>
+</li>
+<li>
+<p>一般来说，make 会为没有 recipe 的 target 和 double-colon rule 自动搜索 implicit rule。</p>
+</li>
+<li>
+<p>作为 prerequisite 的文件会被当做没有 recipe 的 target 来对待</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>明确给出 prerequisite 并不会影响到 implicit rule 的搜索，比如 <code>foo.o: foo.p</code> 如果目录下存在 <code>foo.c</code> 那么会使用 foo.c 而非 foo.p 来编译出 foo.o，因为 .c 对应的 implicit rule 排在搜索结果的更前面。</p>
+</div>
+</li>
+<li>
+<p>如果不想对某个 target 使用 implicit rule，那么使用空命令（recipe 是一个分号）</p>
+</li>
+<li>
+<p><code>$(LD)</code> 使用的 flag 有两种：<code>$(LDFLAGS)</code> 指向 <code>-L</code> 参数；<code>$(LDLIBS)</code> 指向 <code>-l</code> 参数。</p>
+</li>
+<li>
+<p><code>pattern rule</code> 和普通 rule 类似，但是 target 中包含 % 符号，用来匹配文件名模式。</p>
+</li>
+<li>
+<p>pattern rule 中 target 和 prerequisite 的 stem 必须相同，但是 prerequisite 并不是必须包含 stem，比如 <code>%.o: define.h</code> 说明所有 .o 文件都依赖 define.h 这个头文件。</p>
+</li>
+<li>
+<p>pattern rule 也可以有多个 target pattern（即这些 target 的 stem 相同，文件后缀名不同），这些 targets 会被当做整体来对待，一旦某个 target 被更新，其他 target 也被当做最新（即不更新），比如 <code>%.o, %.x: %.c</code> 用 make foo.o foo.x 执行后，只生成 foo.o 不生成 foo.x 而且提示 foo.x 已经是最新了（实际上 foo.x 不存在）。</p>
+</li>
+<li>
+<p>implicit rule 就是 make 内置的 pattern rule，比如</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nf">%.o </span><span class="o">:</span><span class="w"> </span>%.<span class="n">c</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CPPFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span>-c<span class="w"> </span>$&lt;<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+</code></pre></div></td></tr></table></div>
+
+<p>所以用户可以用 pattern rule 的方式自定义一个 implicit rule。</p>
+</li>
+<li>
+<p>重载 implicit rule 的方法：使用 implicit rule 相同的 target 和 prerequisite，但是不同的 recipe；如果留空 recipe 就是屏蔽这个 implicit rule。</p>
+<p>注意下面两个的区别：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c"># using implicit rule by omitting recipe in common rule</span>
+<span class="nf">foo.o</span><span class="o">:</span><span class="w"> </span><span class="n">foo</span>.<span class="n">c</span>
+
+<span class="c"># cancel implicit rule by omitting recipe in pattern rule</span>
+<span class="nf">%.o</span><span class="o">:</span><span class="w"> </span>%.<span class="n">c</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>pattern rule 因为要对文件名进行匹配，所以 recipe 中就不能写具体的文件名，而需要一个特殊的变量来表示，也就是 automatic variables，比如 <code>$@</code> <code>$^</code> <code>$&lt;</code> <code>$?</code>。</p>
+</li>
+</ol>
+<h3 id="makefile-conventions">Makefile Conventions</h3>
+<ol>
+<li>
+<p>用 automake 可以帮助你写出符合 GNU makefile 规范的 makefile。</p>
+</li>
+<li>
+<p>每个 makefile 都要包含一行 <code>SHELL = /bin/sh</code>，避免从环境变量继承来的 SHELL 为其他值（对于 GNU make 来说不存在这个问题，GNU make 中的 SHELL 不会从环境变量继承）。</p>
+</li>
+<li>
+<p>明确指定你想要的 suffixs，避免不同 make 程序的 suffix 和 implicit rule 不兼容的问题</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nf">.SUFFIXES</span><span class="o">:</span>
+<span class="nf">.SUFFIXES</span><span class="o">:</span><span class="w"> </span>.<span class="n">c</span> .<span class="n">o</span>
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p>小心处理 recipe 中的路径。当需要处理指定目录的文件时，要明确给出路径，因为 <code>./</code> 指向的是 build 目录（GNU 惯例）而非 src 或其他目录。</p>
+</li>
+<li>
+<p>configure 和 makefile 脚本中使用给定的工具。</p>
+</li>
+<li>
+<p>dist target 中可以用 gzip。</p>
+</li>
+<li>
+<p>每个工具尽量用它的通用选项。</p>
+</li>
+<li>
+<p>尽量不要在 recipe 中创建软连接，因为有些操作系统不支持软连接。</p>
+</li>
+<li>
+<p>用内置变量调用编译器等工具，比如 <code>$(CC)</code> 表示 cc。</p>
+</li>
+<li>
+<p>如果确定只是用于某种特殊 OS，那么就可以使用其他工具，上述为了通用性做的约束可以放松。</p>
+</li>
+<li>
+<p>命令应该用变量来表示，比如 <code>$(CC)</code> ，这样可以方便用户修改相应变量就可以替换工具 / 选项。</p>
+</li>
+<li>
+<p>对于一般性工具，比如 ln，rm，mv 等则不需要为其定义变量，因为用户也没有替换为其他工具的需求。</p>
+</li>
+<li>
+<p>参数也应该用变量表示，变量的命名方式就是 <code>PROGRAM-NAME + FLAGS</code>，比如 <code>$(CFLAGS)</code>，<code>$(LDFLAGS)</code> 等。</p>
+</li>
+<li>
+<p>把 <code>$(CFLAGS)</code> 放在命令行的最后，以确保设置的 <code>$(CFLAGS)</code> 不会被其他变量重载。</p>
+</li>
+<li>
+<p>凡是调用 <code>$(CC)</code> 的地方都需要加上 <code>$(CFLAGS)</code>，包括编译和链接。</p>
+</li>
+<li>
+<p>每个 makefile 都要定义一个 <code>INSTALL</code> 变量，表示安装命令。</p>
+</li>
+<li>
+<p>每个 makefile 要定义两个变量 <code>INSTALL_PROGRAM</code>（默认值为 INSTALL）和 <code>INSTALL_DATA = $(INSTALL) -m 644</code> 作为程序和数据的安装命令，比如 <code>$(INSTALL_PROGRAM) foo $(bindir)/foo</code> 把 foo 安装到 <code>$(bindir)/foo</code>。</p>
+</li>
+<li>
+<p>安装目录也最好用一个变量 DESTDIR 定义，方便修改安装路径。比如</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># makefile recipe</span>
+<span class="k">$(</span>INSTALL_PROGRAM<span class="k">)</span><span class="w"> </span>foo<span class="w"> </span><span class="k">$(</span>DESTDIR<span class="k">)</span>/<span class="k">$(</span>bindir<span class="k">)</span>/foo
+
+<span class="c1"># shell command</span>
+make<span class="w"> </span><span class="nv">DESTDIR</span><span class="o">=</span>/tmp/stage<span class="w"> </span>install
+</code></pre></div></td></tr></table></div>
+
+</li>
+<li>
+<p><code>DESTDIR</code> 应该只用在 <code>install*</code> 和 <code>uninstalll*</code> target 中。</p>
+</li>
+<li>
+<p>不应该在 Makefile 中定义 <code>DESTDIR</code>，这样就可以安装到默认目录。</p>
+</li>
+<li>
+<p>DESTDIR 在 package creation 中很常用，可以让用户指定安装目录（比如可能没有权限安装到默认目录），所以强烈推荐使用（但不强制）。</p>
+</li>
+<li>
+<p>GNU 为安装定义了一系列标准 variable 和标准 target。</p>
+</li>
+</ol>
+<h2 id="rules-of-makefiles">Rules of Makefiles</h2>
+<p>GNU Make 目前的维护者 Paul Smith 的规则：</p>
+<ol>
+<li>
+<p>使用 GNU make</p>
+<p>不要为写可移植的 makefile 而苦恼，而是使用可移植的 make 程序。</p>
+</li>
+<li>
+<p>每个非伪目标的 recipe 必须更新和 target 完全同名的文件</p>
+<p>也就是说每个 recipe 更新的文件是 <code>$@</code>，而不是 <code>../$@</code> 或 <code>$(notdir $@)</code> 等形式。</p>
+</li>
+<li>
+<p>在 CWD 下 build target 是最容易的方式</p>
+<p>VPATH 的用途是在 build 目录下定位 src 文件，而不是反过来在 src 目录下定位 object 文件。</p>
+</li>
+<li>
+<p>遵循 Least Repetition 原则</p>
+<p>用 variable，pattern rules，automatic variables 和 GNU make function 等技术避免重复写文件名。</p>
+</li>
+<li>
+<p>每个以 tab 开头的非连续行都是 recipe 的一部分，反之亦然</p>
+<p>每个不以 tab 开头的非连续行，都会按照 makefile 的语法解析。</p>
+</li>
+<li>
+<p>目录不应该作为 normal prerequisites 的一部分</p>
+<p>因为 GNU make 会把目录当成普通文件一样对待，所以如果目录新增 / 删除了文件就会产生不期望的
+rebuild，正确做法是把目录作为 order-only prerequisite。</p>
+</li>
+</ol>
+<h2 id="makefile-tempalte">Makefile Tempalte</h2>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>大项目使用 GNU autotool，本模板适用于中小项目。</p>
+</div>
+<p>目标：</p>
+<ul>
+<li>一份通用模板，可以快速适配到不同（中小）项目中</li>
+<li>自动提取所有源文件和依赖</li>
+<li>自动化编译</li>
+<li>任何源文件被修改，自动编译</li>
+<li>任何头文件被修改，自动编译包含该头文件的源文件</li>
+<li>自动链接更新后的目标文件</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c">############################### Customise #####################################</span>
+<span class="nv">CURDIR</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>shell<span class="w"> </span><span class="nb">pwd</span><span class="k">)</span>
+<span class="nv">src_dir</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>CURDIR<span class="k">)</span>/src
+<span class="nv">inc_dir</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>CURDIR<span class="k">)</span>/include
+<span class="nv">build_dir</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>CURDIR<span class="k">)</span>/build
+<span class="nv">target</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span>out
+
+<span class="c">############################### Variables #####################################</span>
+
+<span class="nv">CXX</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span>g++
+<span class="nv">CXXFLAGS</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span>-g<span class="w"> </span>-Wall<span class="w"> </span>-O3<span class="w"> </span>-I<span class="k">$(</span>inc_dir<span class="k">)</span>
+<span class="nv">LDFLAGS</span><span class="w"> </span><span class="o">?=</span>
+<span class="nv">LDLIBS</span><span class="w"> </span><span class="o">?=</span>
+
+<span class="nv">depdir</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>build_dir<span class="k">)</span>/.deps
+<span class="nv">DEPFLAGS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>-MT<span class="w"> </span><span class="nv">$@</span><span class="w"> </span>-MMD<span class="w"> </span>-MP<span class="w"> </span>-MF<span class="w"> </span><span class="k">$(</span>depdir<span class="k">)</span>/<span class="nv">$*</span>.d
+
+<span class="nv">COMPILE.c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>CXX<span class="k">)</span><span class="w"> </span><span class="k">$(</span>DEPFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CXXFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CPPFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>TARGET_ARCH<span class="k">)</span><span class="w"> </span>-c
+
+<span class="nv">srcs</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>foreach<span class="w"> </span>dir,<span class="w"> </span><span class="k">$(</span>src_dir<span class="k">)</span>,<span class="w"> </span><span class="k">$(</span>wildcard<span class="w"> </span><span class="k">$(</span>dir<span class="k">)</span>/*.cpp<span class="k">))</span>
+<span class="nv">objs</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>addprefix<span class="w"> </span><span class="k">$(</span>build_dir<span class="k">)</span>/,<span class="w"> </span><span class="k">$(</span>addsuffix<span class="w"> </span>.o,<span class="w"> </span><span class="k">$(</span>notdir<span class="w"> </span><span class="k">$(</span>basename<span class="w"> </span><span class="k">$(</span>srcs<span class="k">)))))</span>
+
+<span class="cp">vpath %.cpp $(src_dir)</span>
+<span class="cp">vpath %.h $(inc_dir)</span>
+
+<span class="c">############################### Rules #########################################</span>
+
+<span class="nf">.PHONY</span><span class="o">:</span><span class="w"> </span><span class="n">all</span> <span class="n">rebuild</span> <span class="n">clean</span>
+
+<span class="nf">all</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">build_dir</span><span class="k">)</span>/<span class="k">$(</span><span class="nv">target</span><span class="k">)</span>
+
+<span class="nf">rebuild</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">all</span>
+
+<span class="nf">$(build_dir)/$(target)</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">objs</span><span class="k">)</span>
+<span class="w">    </span><span class="k">$(</span>CXX<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CXXFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>LDFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>LDLIBS<span class="k">)</span><span class="w"> </span>$^<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+
+<span class="nf">$(build_dir)/%.o</span><span class="o">:</span><span class="w"> </span>%.<span class="n">cpp</span> <span class="k">$(</span><span class="nv">depdir</span><span class="k">)</span>/%.<span class="n">d</span> <span class="p">|</span> <span class="k">$(</span><span class="nv">depdir</span><span class="k">)</span>
+<span class="w">    </span><span class="k">$(</span>COMPILE.c<span class="k">)</span><span class="w"> </span><span class="k">$(</span>OUTPUT_OPTION<span class="k">)</span><span class="w"> </span>$&lt;
+
+<span class="nf">$(depdir)</span><span class="o">:</span><span class="w"> </span>; @<span class="n">mkdir</span> -<span class="n">p</span> $@
+
+<span class="nv">DEPFILES</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>addprefix<span class="w"> </span><span class="k">$(</span>depdir<span class="k">)</span>/,<span class="w"> </span><span class="k">$(</span>addsuffix<span class="w"> </span>.d,<span class="w"> </span><span class="k">$(</span>notdir<span class="w"> </span><span class="k">$(</span>basename<span class="w"> </span><span class="k">$(</span>srcs<span class="k">)))))</span>
+<span class="nf">$(DEPFILES)</span><span class="o">:</span>
+<span class="cp">include $(wildcard $(DEPFILES))</span>
+
+<span class="nf">clean</span><span class="o">:</span>
+<span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="k">$(</span>build_dir<span class="k">)</span>
+</code></pre></div>
+
+<p>模板说明：</p>
+<ul>
+<li>使用小写定义简单展开式变量，指定项目的路径（根目录，src 目录列表，include 目录列表）</li>
+<li>使用 vpath 指定头文件和源文件的搜索目录</li>
+<li>使用 order-only prerequisite 自动创建 build 目录，保持项目目录整洁</li>
+<li>因为 .o 和 .cpp 分别在 build 和 src 子目录下，无法使用 implicit rule（要求两者的 stem 必须一样），所以明确写 pattern rule</li>
+</ul>
+<h2 id="reference">Reference</h2>
+<ol>
+<li>最重要的、最全面的、最权威的自然是<a href="https://www.gnu.org/software/make/manual/html_node/index.html">官方手册</a></li>
+<li>GNU Make 当前维护者 Paul Smith 的<a href="https://make.mad-scientist.net/papers/">文章</a></li>
+<li>陈浩大神写的教程<a href="https://seisman.github.io/how-to-write-makefile/">跟我学 Makefile</a>，大概就是 manual 的中文简化版</li>
+<li>一份比较全面的 <a href="https://clarkgrubb.com/makefile-style-guide">Makefile Coding Style Guide</a></li>
+</ol>
+  </div>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://qian-gu.github.io/posts/tools/iverilog-verilator-and-gtkwave.html" title="开源 IC 工具/库 —— iverilog、verilator 和 gtkwave">
+      <i class="fa fa-angle-left"></i> Previous Post
+    </a>
+    <a class="btn float-right" href="https://qian-gu.github.io/posts/risc-v/riscv-book-note.html" title="RISC-V Book 阅读笔记">
+      Next Post <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="ca-pub-1821536199377100"
+         data-ad-slot="4843941849"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Gitalk -->
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="https://qian-gu.github.io/theme/gitalk/md5.min.js"></script>
+<script>
+var gitalk = new Gitalk({
+  clientID: '4b3de26a6e80be727416',
+  clientSecret: '993d79339c842fc56d9739ef268f38806dc93f50',
+  repo: 'qian-gu.github.io',
+  owner: 'qian-gu',
+  admin: ['qian-gu'],
+  id: md5(location.href),
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- End Gitalk -->
+</article>
+
+<footer>
+<p>
+  &copy; 2025  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+  <span class="footer-separator">|</span>
+  Switch to the <a href="javascript:void(0)" onclick="theme.switch(`dark`)">dark</a> | <a href="javascript:void(0)" onclick="theme.switch(`light`)">light</a> | <a href="javascript:void(0)" onclick="theme.switch(`browser`)">browser</a> theme
+  <script id="dark-theme-script"
+          src="https://qian-gu.github.io/theme/dark-theme/dark-theme.min.js"
+          data-enable-auto-detect-theme="True"
+          data-default-theme="ligtht"
+          type="text/javascript">
+  </script>
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://qian-gu.github.io/theme/img/cc/by-sa.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Qian's Blog ",
+  "url" : "https://qian-gu.github.io",
+  "image": "https://qian-gu.github.io/images/logo.png",
+  "description": "Qian's Thoughts and Writings"
+}
+</script><a href="https://github.com/qian-gu/qian-gu.github.io" target="_blank" class="github-corner" aria-label="View source on Github">
+    <svg width="80"
+         height="80"
+         viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
+         aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor"
+              style="transform-origin: 130px 106px;"
+              class="octo-arm">
+        </path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor"
+              class="octo-body">
+        </path>
+    </svg>
+</a>
+  <script>
+    window.loadStorkIndex = function () {
+      stork.initialize("https://qian-gu.github.io/theme/stork/stork.wasm")
+      stork.register("sitesearch", "https://qian-gu.github.io/search-index.st", { showProgress: false });
+    }
+  </script>
+  <script src="https://qian-gu.github.io/theme/stork/stork.js"></script>
+
+</body>
+</html>
