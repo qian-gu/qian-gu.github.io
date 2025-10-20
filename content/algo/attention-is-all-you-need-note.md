@@ -2,6 +2,7 @@ Title: 《Attention Is All You Need》 笔记
 Date: 2025-10-11 23:30
 Category: Algorithm
 Tags: Transformer, Attention
+Slug: attention-is-all-you-need-note
 Author: Qian Gu
 Summary: Transformer 论文笔记。
 
