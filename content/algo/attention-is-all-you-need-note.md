@@ -1,6 +1,8 @@
 Title: 《Attention Is All You Need》 笔记
 Date: 2025-10-11 23:30
-Tags: Method, Transformer, Attention
+Category: Algorithm
+Tags: Transformer, Attention
+Author: Qian Gu
 Summary: Transformer 论文笔记。
 
 [TOC]
