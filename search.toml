@@ -9,6 +9,11 @@ url = "/pages/about-me.html"
 title = "About Me"
 
 [[input.files]]
+path = "posts/misc/attention-is-all-you-need-bi-ji.html"
+url = "/posts/misc/attention-is-all-you-need-bi-ji.html"
+title = "《Attention Is All You Need》 笔记"
+
+[[input.files]]
 path = "posts/tools/verible.html"
 url = "/posts/tools/verible.html"
 title = "开源 IC 工具/库 —— verible"
