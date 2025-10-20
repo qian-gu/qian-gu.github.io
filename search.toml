@@ -9,8 +9,8 @@ url = "/pages/about-me.html"
 title = "About Me"
 
 [[input.files]]
-path = "posts/algorithm/attention-is-all-you-need-bi-ji.html"
-url = "/posts/algorithm/attention-is-all-you-need-bi-ji.html"
+path = "posts/algorithm/attention-is-all-you-need-note.html"
+url = "/posts/algorithm/attention-is-all-you-need-note.html"
 title = "《Attention Is All You Need》 笔记"
 
 [[input.files]]
