@@ -180,11 +180,11 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
     - $B \in \mathbb{R}^{N \times D}$，每个 embedding 维度的 SSM 相互独立，而每个 SSM 的 B 维度本身为 $B \in \mathbb{R}^{N \times 1}$；
     - $C \in \mathbb{R}^{N \times D}$ 同理。
 
-![s4-algo](/images/s4-algo.png)
+![s4-algo](/images/mamba-note/s4-algo.png)
 
 ## S6 (Mamba v1)
 
-![mamba](/images/mamba-note/mamba_v1.gif)
+![mamba v1](/images/mamba-note/mamba-v1.gif)
 
 !!!Important
     S4 最大的问题在于无论输入什么序列，每个 timestep 的 token 使用相同的 A，B，C，即不是 context-aware，所以在某些任务（如需要对 token 区别对待）上算法效果很差。
