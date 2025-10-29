@@ -12,8 +12,6 @@ Transformer 自从提出来就统治了 LLM 领域，现在几乎所有模型都
 
 Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(Mamba v1) -> Mamba v2 的顺序记录。
 
-![mamba](/images/mamba-note/mamba_1920x1080.webp)
-
 ## Transformer 的问题
 
 - Transformer 把输入看作是一个 token sequence。
@@ -35,7 +33,7 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 - 在计算当前 output 时，RNN 只需要看前一步的 hidden state 和当前输入即可，不需要像 Transformer 一样每次都重新计算所有 token 间的 attention。
 - $h_t = tanh(Wh_{t-1} + Ux_t)$
 
-![rnn](/images/mamba-note/rnn.webp)
+![rnn](/images/mamba-note/rnn.png)
 
 - 也就是说，RNN 的算法复杂度随着序列长度线性增长。
 - 理论上 RNN 有着无限长的 context length，每个 hidden state 都是所有历史 hidden state 聚合产生，而且通常都是 compressed view。
@@ -96,18 +94,18 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 - SSM 离散化方法如下：
 
     - 首先，通过 ZOHT 将输入的离散 token 转化为一个 SSM 可以处理的 continuous input；
-    - ![ZOHT](/images/mamba-note/zoht.webp)
+    - ![ZOHT](/images/mamba-note/zoht.gif)
     - 其次，SSM 根据输入的连续信号预测出 continuous ouptut；
     - 最后，根据 ZOHT 的步长对 continuous output 采样，就能得到 discreted output；
-    - ![sample](/images/mamba-note/sample.webp)
+    - ![sample](/images/mamba-note/sample.gif)
 
 - 数学上，ZOHT 可以用如下的公式表示： 
 
-![zoht-equation](/images/mamba-note/zoht-equation.webp)
+![zoht-equation](/images/mamba-note/zoht-equation.png)
 
 - 将 $\bar A$ 和 $\bar B$ 代入方程，就能得到 discrete SSM，它的输入是离散序列 $x_k$，输出是离散序列 $y_k$。
 
-![discrete-ssm](/images/mamba-note/discrete-ssm.webp)
+![discrete-ssm](/images/mamba-note/discrete-ssm.png)
 
 !!!note
     存储时仍然是连续形式的矩阵 A，只是在过程中将其离散化。如同 S6 中用 $\Delta$ 给 A 扩维一样。
@@ -118,11 +116,11 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
 - 从离散 SSM 的公式可以看出来，SSM 是一个循环递归的过程，所以可以转化成 RNN 表示方式。
 
-![recurrent](/images/mamba-note/recurrent.webp)
+![recurrent](/images/mamba-note/recurrent.png)
 
 - 如果将 SSM 的输出公式逐个展开，则输出公式可以改写成下面的 convolution 表示方式。
 
-![convolution](/images/mamba-note/convolution.webp)
+![convolution](/images/mamba-note/convolution.png)
 
 !!!note
     - 训练时一次性可以看到所有 input，而且 $K$ 则可以并行提前算好，所以 convolution 表示直接用 input 并行计算 output，跳过了 $h_k$ 的计算和迭代，因此可以加速训练过程。
@@ -151,17 +149,17 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 - **如何创建 A 就决定了模型是只记住 a few previous tokens 还是 every tokens so far。**
 - 那么如何创建一个 A 来压缩很长的 context 呢？答案是高阶多项式投影算子 `HiPPO` （High-order Polynomial Projection Operators）。
 
-![hippo](/images/mamba-note/hippo.webp)
+![hippo](/images/mamba-note/hippo.png)
 
 - Hippo 试图将迄今为止看到的所有 input 压缩成一个 coefficient vector，它用矩阵 A 构建了一个 state representation，该表示可以很好地捕获最近的 token 而衰减较旧的 token。
 
-![hippo-matrix](/images/mamba-note/hippo-matrix.webp)
+![hippo-matrix](/images/mamba-note/hippo-matrix.png)
 
 - 用 Hippo 构建的 A 要比随机初始化的 A 效果要好得多。
 - Hippo 背后的思想是它产生了一个可以记住历史的 hidden state，在数学上，它是通过记录 Legender 多项式的系数来实现这个效果的。
 - 应用 Hippo 的 SSM 称为 Structured State Space for Sequence Model (S4)，S4 主要包含 3 部分：
 
-![s4](/images/mamba-note/s4.webp)
+![s4](/images/mamba-note/s4.png)
 
 - 之所以叫 Structured，是因为矩阵 A 有特定格式，如 S4 用的对角线矩阵。
 - 在实践中，为了提高可行性，S4D 的 A 为对角线矩阵，它继承了 S4 的优点，但同时更简单。
@@ -186,6 +184,8 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
 ## S6 (Mamba v1)
 
+![mamba](/images/mamba-note/mamba_v1.gif)
+
 !!!Important
     S4 最大的问题在于无论输入什么序列，每个 timestep 的 token 使用相同的 A，B，C，即不是 context-aware，所以在某些任务（如需要对 token 区别对待）上算法效果很差。
 
@@ -196,7 +196,7 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
 - **S6 = s4 + Selective Scan Algorithm**
 
-![s6](/images/mamba-note/s6.webp)
+![s6](/images/mamba-note/s6.png)
 
 - 虽然 s6 解决了选择性问题，但是代价是无法利用 convolution 表示并行计算来加速训练了。
 
@@ -214,11 +214,11 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
     - input $x_k$ 的维度为 (B, L, D)；
     - output $y_k$ 的维度为 (B, L, D)；
-    - ![x y dimension](/images/mamba-note/xy-dimension.webp)
+    - ![x y dimension](/images/mamba-note/xy-dimension.png)
     - 在 S4 中 A，B，C 是静态的，所有 token 共享，所以他们的维度都是 (D, N)；
-    - ![s4-abc-dimension](/images/mamba-note/s4-abc-dimension.webp)
+    - ![s4-abc-dimension](/images/mamba-note/s4-abc-dimension.png)
     - 在 S6 中 B，C 是动态的，每个 token 都有自己的参数版本，所以他们的维度扩展了 L 和 B 两个维度；
-    - ![s6-abc-dimension](/images/mamba-note/s6-abc-dimension.webp)
+    - ![s6-abc-dimension](/images/mamba-note/s6-abc-dimension.png)
 
 ![s6-algo](/images/mamba-note/s6-algo.png)
 
@@ -247,7 +247,7 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
     - 定义一个新算子 $ (A_t, B_tx_t) \oplus (A_{t+1}, B_{t+1}x_{t+1}) = (A_tA_{t+1}, A_{t+1}B_tx_t + B_{t+1}x_{t+1})$。
     - 上面的公式可以简化为 $(a, b) \oplus (c, d) = (ac, cb+d)$，只需要保留第二项结果，即 $(a, b) \oplus (c, d) = (cb+d)$。
 
-![parallel scan](/images/mamba-note/parallel-scan.webp)
+![parallel scan](/images/mamba-note/parallel-scan.png)
 
 !!!note
     **Scan**
@@ -271,7 +271,7 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 - Selective Scan Algorithm, state $h$ 保存在 SRAM 中；
 - 用 C 乘以 h 也发生在 SRAM 中；
 
-![kernel fusion](/images/mamba-note/kernel-fusion.webp)
+![kernel fusion](/images/mamba-note/kernel-fusion.gif)
 
 ### Calculation and Memory Size
 
@@ -293,7 +293,7 @@ TODO：总结论文中的分析
     - 然后，残差连接；
     - 最后，用 projection 降维；
 
-![mamba block](/images/mamba-note/mamba-block.webp)
+![mamba block](/images/mamba-note/mamba-v1-block.png)
 
 ## Mamba v2
 
