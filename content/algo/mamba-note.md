@@ -8,13 +8,14 @@ Summary: Mamba 论文笔记。
 
 [TOC]
 
+![mamba v1](/images/mamba-note/mamba-v1.gif)
+
 Transformer 自从提出来就统治了 LLM 领域，现在几乎所有模型都是基于 Transformer 的。为了进一步提高 LLM，业界还在不断推出有望超过 Transformer 的新架构，Mamba 就是其中之一。
 
 Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(Mamba v1) -> Mamba v2 的顺序记录。
 
 ## Transformer 的问题
 
-- Transformer 把输入看作是一个 token sequence。
 - 当输入一个新的 token 时，Transformer 可以计算之前已经输入的任意一个 token 和当前输入之间的 attention。
 - self-attention 是 Transformer 效果之所以那么好的原因，它使得 model 可以以无损的方式看到所有历史输入 token，而且训练速度还很快。
 
@@ -25,7 +26,10 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
     - 因为 Transformer 的 decoder 存在自回归性，所有历史输出都要当成输入重新送入 model。
     - 比如推理第 $i$ 个 output token 时，要重新计算第 0 到 $i-1$ 个 token 之间的 attention，其实在输出第 $i-1$ 个 token 时，已经计算过第 0 到第 $i-2$ 之间的 attention 了。
-    - **所以算法复杂度随着序列长度平方性地增长：生成长度为 $L$ 的 sequence，大约需要 $L^2$ 次计算，当 $L$ 增大时，代价就很大了。这是 Transformer 架构的一个主要瓶颈。**
+    - **所以算法复杂度随着序列长度平方性地增长：生成长度为 $L$ 的 sequence，大约需要 $L^2$ 次计算，当 $L$ 增大时，代价就很大了。这是 Transformer 架构的主要瓶颈。**
+
+!!!note
+    业界有很多工作来解决 Transformer attention 的二次方计算复杂度问题，如 linear attention 等，但是这些方法通常在解决二次方的同时也降低了算法效果。
 
 ## RNN
 
@@ -42,6 +46,10 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
     - 第一个问题：如下面的例子所示，随着新的 input token，RNN 会逐渐忘掉历史输入，所以**算法效果不如 Transformer。**
     - ![rnn expample](/images/mamba-note/rnn-example.png)
     - 第二个问题：RNN 递归的本质导致无法展开并行计算，因为存在一个 tanh，所以也没办法像 SSM 展开成 convolution 的形式来加速。
+
+!!!note
+    虽然 RNN 理论上支持无限长的
+    context，但是实际中不可行，因为会遇到梯度爆炸或梯度消失的问题，所以采用了简单粗暴直接丢弃旧 token 的方式。
 
 ## SSM
 
@@ -77,7 +85,7 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
 ![output equation](/images/mamba-note/output-equation.png)
 
-- 将这两个方程组合在一起，图形化表示如下。其中 D 矩阵的作用相当于 1 个 skip connection，所以一般 SSM 会忽略这个连接。
+- 将这两个方程组合在一起，图形化表示如下。其中 D 矩阵和 $h$ 完全无关，它的作用相当于 1 个 skip connection，所以一般 SSM 会忽略这个连接。
 
 ![ssm illustrated](/images/mamba-note/ssm-illustrated.png)
 
@@ -88,7 +96,7 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
 - SSM 的目标就是求解方程，得到状态表示 $h(t)$，这样我们就能把 input sequence 转化为 output sequence。
 - 从前面的公式能看出来，SSM 的输入是连续信号 $x(t)$，输出是连续信号 $y(t)$。
-- 基于连续信号求解 $h(t)$ 比较难，而且我们的 input sequence 实际上也是离散的，所以需要找到一种方法把模型离散化。
+- 因为连续信号求解 $h(t)$ 比较难，而且我们的 input sequence 实际上也是离散的，所以需要找到一种方法把模型离散化。
 - 模型离散化的方法叫做 0 阶保持 ZOHT(Zero Orde Holding Technique)。
 - ZOHT 保持多久是一个可以学习到的参数，叫做 step size $\Delta$，表示 input 的分辨率。
 - SSM 离散化方法如下：
@@ -107,10 +115,32 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
 ![discrete-ssm](/images/mamba-note/discrete-ssm.png)
 
-!!!note
-    存储时仍然是连续形式的矩阵 A，只是在过程中将其离散化。如同 S6 中用 $\Delta$ 给 A 扩维一样。
+Q：为什么 C 不需要离散化？
 
-- SSM 的维度分析。TODO
+A：难的是求解连续域的 h(t)，它只和 A，B 有关，和 C 无关，所以 C 不需要离散化。
+
+!!!note
+    存储时仍然是连续域的矩阵 A，只是在过程中将其离散化。如同 S6 中用 $\Delta$ 给 A 扩维一样。
+
+!!!note
+    **单个 SSM 的维度分析**
+
+    | 参数                     | 维度                      | 数据量 |
+    | ------------------------ | ------------------------- | ------ |
+    | $A$                      | $\mathbb{R}^{N \times N}$ | $N$    |
+    | $B$                      | $\mathbb{R}^{N \times 1}$ | $N$    |
+    | $C$                      | $\mathbb{R}^{1 \times N}$ | $N$    |
+    | $\Delta$                 | $\mathbb{R}^{1 \times 1}$ | $1$    |
+    | $\bar A = exp(\Delta A)$ | $\mathbb{R}^{N \times N}$ | $N$    |
+    | $\bar B$                 | $\mathbb{R}^{N \times 1}$ | $N$    |
+    | $h$                      | $\mathbb{R}^{N \times 1}$ | $N$    |
+    | $x$                      | $\mathbb{R}^{1 \times 1}$ | $1$    |
+    | $y$                      | $\mathbb{R}^{1 \times 1}$ | $1$    |
+
+    - B 的维度为 $N \times 1$，输入 x 的维度为 $1 \times 1$，所以 $Bx$ 的维度为 $N \times 1$；
+    - A 的维度为 $N \times N$，h 的维度为 $N \times 1$，所以 $Ah$ 的维度为 $N \times 1$；
+    - $h^{\prime} = Ah + Bx$ 的维度为 $N \times 1$；
+    - C 的维度为 $1 \times N$，h 的维度为 $N \times 1$，所以 $y = Ch$ 的维度为 $1 \times 1$，输入和输出维度相同；
 
 ### The Recurrent and Convolution Representation
 
@@ -123,8 +153,19 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 ![convolution](/images/mamba-note/convolution.png)
 
 !!!note
-    - 训练时一次性可以看到所有 input，而且 $K$ 则可以并行提前算好，所以 convolution 表示直接用 input 并行计算 output，跳过了 $h_k$ 的计算和迭代，因此可以加速训练过程。
-    - 每个 $y_k$ 用到的 $K$ 和 $x$ 向量长度都不相等，如何转成 Convolution 表示？可能的做法：$x$ 序列加前缀 padding 对齐到最大长度即可。
+    为什么 convolution 表示可以加速训练？
+
+    训练时一次性可以看到所有 input，而且 $\bar K$ 是静态的可以提前算好，所以
+
+    - 从 convolution 的滑动特性可以知道两个 output 之间没有任何依赖关系，所以可以并行计算。
+    - convolution 表示直接用 input 并行计算 output，跳过了 $h_k$ 的计算和迭代，因此可以加速训练过程。
+
+    每个 $y_k$ 用到的 $\bar K$ 和 $x$ 向量长度都不相等，如何转成 Convolution 表示？
+
+    可能的做法：$x$ 序列加前缀 padding 对齐到最大长度即可。
+
+!!!Warning
+    构建 $\bar K$ 虽然从 computation 角度看计算量不大，但是从 memory 角度看依然很 expensive。
 
 - RNN 表示采用递归的方式，计算量小，产生 output 的方式和 decoder 自回归天然匹配，所以很适合 inference。
 - CNN 表示跳过了 $h$ 的迭代，而且支持并行计算，所以很适合 training。
@@ -133,6 +174,42 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 | -------------- | ------------ | ------------------- | --------- |
 | Recurrent      | 计算量小     | output 之间无法并行 | inference |
 | Convolution    | 可以并行计算 | 有限的 context      | training  |
+
+!!!note
+    **SSM 和 RNN 的相似性**
+
+    1. SSM 是 embedding 每个维度 1 个 RNN 的 SISO 模型，传统 RNN 是 MIMO 模型。
+
+        对于 hidden state 的每个维度而言，
+
+        - A (Nx1) 控制 h，类似于 N 维 forget gate
+        - B (1x1) 控制 x，类似于input gate
+        - C (1x1) 控制 y，类似于output gate
+
+    2. RNN 是 SSM 离散化的 1 个特例。
+
+        当
+
+        - $A = -1$
+        - $B = 1$
+        - $S_{\Delta} = Linear(x)$
+        - $\tau_\Delta = softplus$
+
+        则
+
+        - $g_t = \sigma(Linear(x))$
+        - $h_t = (1 - g_t)h_{t-1} + g_tx_t$
+
+    **SSM 和 RNN 的本质区别**
+
+    第一个区别：压缩历史的方式。如果用有限长的 hidden state 去表征无限长的 context 信息，必然会有装不下的问题。面对这个矛盾，RNN 和 SSM 有不同的解决方法：
+
+    - RNN 的方法比较简单粗暴，采用溢出和遗忘的方式，也就是随着新 input 会忘掉旧 input，所以算法效果不好。
+    - SSM 采用 HiPPO 把无限长的 context 压缩到有限长的 hidden state 中，虽然对较旧 token 重建比较差，但是总好过直接忘掉。
+
+    第二个区别：能否展开加速训练。
+
+    RNN 因为有个 tanh 算子，所以不能像 SSM 一样展开后用 convolution 形式加速训练。
 
 ### SSM Architecture
 
@@ -159,6 +236,9 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 - Hippo 背后的思想是它产生了一个可以记住历史的 hidden state，在数学上，它是通过记录 Legender 多项式的系数来实现这个效果的。
 - 应用 Hippo 的 SSM 称为 Structured State Space for Sequence Model (S4)，S4 主要包含 3 部分：
 
+!!!note
+    Hippo 的原理类似于 FFT，一个时域连续信号可以分解成基底的加权求和，只需要记录各项的加权系数即可重建信号。Hippo 的不同之处是选择的基底不是正弦波，而是勒让德多项式。
+
 ![s4](/images/mamba-note/s4.png)
 
 - 之所以叫 Structured，是因为矩阵 A 有特定格式，如 S4 用的对角线矩阵。
@@ -166,58 +246,51 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 
 ![s4d](/images/mamba-note/s4d.png)
 
-!!!note
-    **SSM 和 RNN 解决无限长 context 的区别**
-
-    如果用有限长的 hidden state 去表征无限长的 context 信息，必然会有装不下的问题。面对这个矛盾，RNN 和 SSM 有不同的解决方法：
-
-    - RNN 采用的是溢出和遗忘的方式，也就是随着新 input 会忘掉旧 input，所以算法效果不好。
-    - SSM 采用 HiPPO 把无限长的 context 压缩到有限长的 hidden state 中，虽然对较旧 token 重建比较差，但是总好过直接忘掉。
-
-- S4 算法和维度说明
-    
-    - $A \in \mathbb{R}^{N \times N}$，但是因为 A 是对角矩阵，所以只需要 N 个数据就能表示；
-    - $B \in \mathbb{R}^{N \times D}$，每个 embedding 维度的 SSM 相互独立，而每个 SSM 的 B 维度本身为 $B \in \mathbb{R}^{N \times 1}$；
-    - $C \in \mathbb{R}^{N \times D}$ 同理。
-
 ![s4-algo](/images/mamba-note/s4-algo.png)
+
+S4 算法和维度说明：
+
+- $D$ 维度每个 channel 1 个 SSM，所以一共有 D 个 SSM，即 SISO 架构。
+- $A$ 的实际维度为 $\mathbb{R}^{D \times N \times N}$，但是因为 A 是对角矩阵，所以每个 SSM 只需要 N 个数据的向量就能表示 $N \times N$ 的矩阵；
+- $B \in \mathbb{R}^{N \times D}$，每个 embedding 维度的 SSM 相互独立，而每个 SSM 的 B 维度本身为 $B \in \mathbb{R}^{N \times 1}$；
+- $C \in \mathbb{R}^{N \times D}$，每个 embedding 维度的 SSM 相互独立，而每个 SSM 的 C 维度本身为 $B \in \mathbb{R}^{1 \times N}$；
+- 参数为 static，输入 x 的维度为 (B, L, D)，在 (B, L) 维度上共享参数 $A$，$B$，$C$，$\Delta$。
+
+!!!note
+    D 维度每个 channel 1 个 SSM 类似于 Transformer 中的 multi-head，每个 channel 学习不同的 pattern。
 
 ## S6 (Mamba v1)
 
-![mamba v1](/images/mamba-note/mamba-v1.gif)
-
 !!!Important
-    S4 最大的问题在于无论输入什么序列，每个 timestep 的 token 使用相同的 A，B，C，即不是 context-aware，所以在某些任务（如需要对 token 区别对待）上算法效果很差。
+    对于 S4 无论输入什么序列，每个 timestep 的 token 使用相同的 A，B，C，这个性质叫做 LTI (Linear Time Invariance)。这也是 S4 最大的问题所在，LTI 不是 context-aware，所以在某些任务（如需要对 token 区别对待）上算法效果很差。
 
-- S6 主要有以下两点改进：
+S6 的改进主要有 3 方面：
 
-    - Selective Scan Algorithm：可以过滤（不）相关信息
-    - Hardware-aware Algorithm：通过 parallel scan，kernel fusion 和 recomputation 实现高效存储（中间）结果
+1. Selective Mechanism
+2. Hardware-aware Algorithm
 
-- **S6 = s4 + Selective Scan Algorithm**
+    - Parallel Scan
+    - Kernel Fusion
+    - Recomputation
+
+3. Simpler Architecture
 
 ![s6](/images/mamba-note/s6.png)
 
-- 虽然 s6 解决了选择性问题，但是代价是无法利用 convolution 表示并行计算来加速训练了。
+### Selective Mechanism
 
-    - s4 能用 Convolution 表示的原因是 A，B，C 都是静态的，$K$ 可以提前算好存起来；
-    - s6 中 A，B，C 是动态的，所以无法提前把 $K$ 提前算好，也就无法用 convolution 表示来加速训练（因为 convolution 的定义就是用一个固定 Kernel 在 input 上滑动，即要求 Kernel 固定）；
-
-### Selective Scan Algorithm
-
-- **Selective Scan Algorithm = dynamic B/C + parallel scan**
 - 从模型压缩的角度而言，RNN 和 Transformer 位于两个极端，要么压缩所有 history 要么完全不压缩，S6 尝试集两者所长：state 和 RNN 一样比较小，同时还拥有和 Transformer 类似的算法效果。 
 - 实现这个目标的方法就是：有选择性地将 input 压缩到 state 中。
 - 为了实现选择性，必须让参数依赖 input。
 - 参数依赖 input 意味着不同 input 有不同的参数，即参数的维度会膨胀。
 - 下面分析维度变化：
 
-    - input $x_k$ 的维度为 (B, L, D)；
-    - output $y_k$ 的维度为 (B, L, D)；
+    - input $x_k$ 的维度为 (B, L, D)，保持不变；
+    - output $y_k$ 的维度为 (B, L, D)，保持不变；
     - ![x y dimension](/images/mamba-note/xy-dimension.png)
-    - 在 S4 中 A，B，C 是静态的，所有 token 共享，所以他们的维度都是 (D, N)；
+    - 在 S4 中 A，B，C 是静态的，所有 token 共享，所以他们的维度都是 (D, N)，和 (B, L) 无关；
     - ![s4-abc-dimension](/images/mamba-note/s4-abc-dimension.png)
-    - 在 S6 中 B，C 是动态的，每个 token 都有自己的参数版本，所以他们的维度扩展了 L 和 B 两个维度；
+    - 在 S6 中 B，C 是动态的，每个 token 都有自己的参数版本，所以他们的维度扩展了 (B, L) 两个维度；
     - ![s6-abc-dimension](/images/mamba-note/s6-abc-dimension.png)
 
 ![s6-algo](/images/mamba-note/s6-algo.png)
@@ -235,67 +308,172 @@ Mamba 的本质是一种 SSM (State Space Model)，所以按照 SSM -> S4 -> S6(
 !!!note
     运算时 A，B，C 的维度都必须是 (B, L, D, N)，但是实际上存储时它们都不包含 D 维度，在离散化过程中通过和 $\Delta$ 做运算扩展维度实现。
 
-!!!note
-    总结论文中的公式，步骤，分析维度变化。
+#### Parameter Efficiency Data Dependent
 
-#### Parallel Scan
+TODO: check this section
 
-- 因为 s6 中参数依赖于 input，所以不能再用 convolution 形式来加速训练了，因为 convolution kernel 在 sequence 上滑动时必须保持固定不变。
-- 所以必须重新找一种方法实现并行化，粗看 SSM 方程为迭代方式，每一步都依赖于前一步的迭代结果，但是实际上仍然有并行化的机会：这种方法就是 `Belloc Scan`。
-- 因为 SSM 方程可以改写成 scan 的形式，所以可以用这种加速方法：
+B，C，$\Delta$ 直接变为 data dependent。
 
-    - 定义一个新算子 $ (A_t, B_tx_t) \oplus (A_{t+1}, B_{t+1}x_{t+1}) = (A_tA_{t+1}, A_{t+1}B_tx_t + B_{t+1}x_{t+1})$。
-    - 上面的公式可以简化为 $(a, b) \oplus (c, d) = (ac, cb+d)$，只需要保留第二项结果，即 $(a, b) \oplus (c, d) = (cb+d)$。
+- $B = s_B(x) = Linear_N(x)$，x 的维度是 (B, L, D)，而 B 的维度是 (B, L, N)，也就是将 x 的 D 映射为 N，需要读入 $N*D$ 的 linear 参数；
+- $C = s_C(x) = Linear_N(x)$，x 的维度是 (B, L, D)，而 C 的维度是 (B, L, N)，也就是将 x 的 D 映射为 N，需要读入 $N*D$ 的 linear 参数；
+- $\Delta = \tau_\Delta(Broadcast_D(Linear_1(x)))$，需要读入 $D$ 的 linear 参数；
 
-![parallel scan](/images/mamba-note/parallel-scan.png)
+A 是 data independent 的，没有直接由 x 计算得到，但是在离散化过程中引入的 $\Delta$ 会使得 $\bar A$ 也实现 data dependent 效果。
 
-!!!note
-    **Scan**
-
-    scan 操作的定义：
+这种不直接让 A，B，C 的维度膨胀，通过 $\Delta$ 和 A，B，C 分别做乘法恢复完整维度的做法可以降低 parameter 量，效率更高。
 
 !!!note
-    **Belloc Scan** 是一种 Scan 并行加速算法。
+    Q：$\Delta$ 的维度为 (B, L, D)，而 B，C 的维度为 (B, L, N)，两者维度不相同怎么做乘法进行离散化？
+
+    - $\bar A = exp(\Delta A)$
+    - $\bar B = (\Delta A)^{-1}exp(\Delta A) - I)\Delta B$
+
+    A：广播乘。
 
 ### Hardware-aware Algorithm
 
-- **Hardware-aware Algorithm =  kernel fusion + recompute**
-- GPU 的 IO 瓶颈：SRAM 带宽大但是容量小，所有中间结果必须写回 DRAM，但是 DRAM 带宽有限，限制了整体性能。
-- S6 和 self-attention 类似，尝试通过限制 DRAM 和 SRAM 之间的读写次数来规避 GPU IO 瓶颈。
+**Hardware-aware Algorithm = parallel scan + kernel fusion + recomputation**
 
-#### kernel fusion
+#### Parallel Scan
 
-即只有最终结果写回 DRAM，中间结果只写入 SRAM。kernel fusion 包含：
+虽然 s6 解决了选择性问题，但是代价是无法利用 convolution 表示并行计算来加速训练了。
+
+- s4 能用 Convolution 表示的原因是 A，B，C 都是静态的，$K$ 可以提前算好存起来；
+- s6 中 A，B，C 是动态的，所以无法提前把 $K$ 提前算好，也就无法用 convolution 表示来加速训练（因为 convolution 的定义就是用一个固定 Kernel 在 input 上滑动，即要求 Kernel 固定）；
+
+所以必须重新找一种方法实现并行化，粗看 SSM 方程为迭代方式，每一步都依赖于前一步的迭代结果，但是实际上仍然有并行化的机会。
+
+!!!note
+    **Scan 的定义**
+
+!!!note
+    **scan 的并行加速**
+
+    GPU 中一个非常常见的问题，有多种加速方法：
+
+s6 论文中使用的是 `Blelloch Scan`：
+
+- 定义一个新算子 $ (A_t, B_tx_t) \oplus (A_{t+1}, B_{t+1}x_{t+1}) = (A_tA_{t+1}, A_{t+1}B_tx_t + B_{t+1}x_{t+1})$。
+- 上面的公式可以简化为 $(a, b) \oplus (c, d) = (ac, cb+d)$，只需要保留第二项结果，即 $(a, b) \oplus (c, d) = (cb+d)$。
+
+![parallel scan](/images/mamba-note/parallel-scan.png)
+
+#### Kernel Fusion
+
+GPU 的 IO 瓶颈问题：虽然 GPU 有海量的算力，但在冯诺依曼架构下这些算力的发挥还依赖于 memory 提供足够的带宽或算子的计算密度足够高。GPU SRAM 带宽大但是容量小，所有中间结果必须写回 DRAM，但是 DRAM 带宽有限，限制了整体性能。
+
+S6 算法的主体是 elementwise 操作，计算密度很低，所以对 memory 带宽需求很高。S6 的解决方法是：通过 kernel fusion 降低 DRAM 的访问，只有最终结果写回 DRAM，中间结果只写入 SRAM。
+
+!!!note
+    实际上除了 matmul，其他大部分算子，包括 scan 都是 memory bound。
+
+具体做法如下：
 
 - continuous A，B，C 存储在 DRAM，读入到 SRAM 后，用 $\Delta$ 离散化，进行维度扩展；
-- Selective Scan Algorithm, state $h$ 保存在 SRAM 中；
+- state $h$ 保存在 SRAM 中；
 - 用 C 乘以 h 也发生在 SRAM 中；
 
 ![kernel fusion](/images/mamba-note/kernel-fusion.gif)
 
-### Calculation and Memory Size
+!!!note
+    **读写数据量分析**
 
-TODO：总结论文中的分析
+    普通做法：
 
-#### recomputation
+    1. 先开 1 个 kernel：
+        - 计算出维度为(B, L, D, N) 的 $\bar A$, $\bar B$，写入 HBM 中；
+        - 从 HBM 中读出 $\bar A$， $\bar B$ 到 SRAM 中，利用 $\bar A$ 和 $\bar B$ 计算出维度为 (B, L, D, N) 的 $h_t$，写入 HBM 中；
+    4. 再开 1 个 kernel：从 HBM 中读出 $h_t$ 和维度为 (B, L, N) 的 $C$，计算出维度为 (B, L, D) 的 $y_t$，写入 HBM；
 
-- 在 forward pass 中计算出的 immediate state 在 backward pass 中也会用到，但是作者并没有把它们存在 DRAM 中，而是在 backward pass 中重新计算了一遍。 
-- 乍看这样做的效率很低，但是重复计算的代价相比于从 DRAM 读回数据要小得多。
+    总数据量为 $O(BLDN)$。
 
-### Mamba Block
+    kernel fusion 做法：
 
-- 和 attention block 类似，Mamba block 也能组成 Mamba 网络。
-- Mamba block 的组成：
+    1. 把 $A$, $B$, $C$，$\Delta$ 从 HBM 读入 SRAM，总数据量为 $O(BLN + BLD)$；
+    2. 在 SRAM 中离散化，得到 (B, L, D, N) 的 $\bar A$，$\bar B$；
+    3. 在 SRAM 中做 scan，得到 (B, L, D, N) 的 $h$；
+    4. 在 SRAM 中计算输出方程，得到 (B, L, D) 的 $y$，写入 HBM；
 
-    - 首先，和 Transformer 类似，projection 到更高的维度，做 embedding；
-    - 其次，用 Convolution + SiLU 提取 feature，避免 token 独立计算；
-    - 然后，用核心模块 SSM 处理；
-    - 然后，残差连接；
-    - 最后，用 projection 降维；
+    总数据量为 $O(BLD)$，比普通做法少了 $O(N)$。
 
-![mamba block](/images/mamba-note/mamba-v1-block.png)
+#### Recomputation
+
+s6 用和 flash attention 类似的方法：在 forward pass 中计算出的 immediate state 在 backward pass 中也会用到，但是作者并没有把它们存在 DRAM 中，而是在 backward pass 中重新计算了一遍。 
+
+乍看这样做的效率很低，但是重复计算的代价相比于从 DRAM 读回数据要小得多，所以总体上还是正收益。
+
+### Simpler Architecture
+
+**mamba block = H3 block + gated MLP**
+
+**mamba architecture = mamba block + norm + residual connection**
+
+![mamba v1 block](/images/mamba-note/mamba-v1-block.png)
+
+和 attention block 类似，Mamba block 也能组成 Mamba 网络。需要注意的是 mamba block 之间还有 norm + residual connection，而 norm + residual connection 包含在 transformer block 中。
+
+符号表：
+
+| 符号        | 含义                                                 |
+| ----------- | ---------------------------------------------------- |
+| $B$         | Batch size                                           |
+| $L$         | Sequence Length                                      |
+| $d_{model}$ | mamba block input x embedding dimension              |
+| $E$         | expansion factor                                     |
+| $D$         | input projection output dimension，$D = E*d_{model}$ |
+| $N$         | hidden state size，$N \ll L$                         |
+| $k$         | convolution kernel size，                            |
+
+!!!note
+    **mamba block 的参数量和计算量**
+
+    | Operation                                    | input1                         | input2(params)                 | output                         | OPs                 |
+    | -------------------------------------------- | ------------------------------ | ------------------------------ | ------------------------------ | ------------------- |
+    | $x_1 = Linear_D(x)$                          | $B \times L \times d_{model}$  | $d_{model} \times D$           | $B \times L \times D$          | $2*B*L*d_{model}*D$ |
+    | $x_2 = Linear_D(x)$                          | $B \times L \times d_{model}$  | $d_{model} \times D$           | $B \times L \times D$          | $2*B*L*d_{model}*D$ |
+    | $dwconv1d(x_1)$                              | $B \times L \times D$          | $D \times k$                   | $B \times L \times D$          | $2*B*L*D*k$         |
+    | $silu_1 = SiLU(dwconv)$                      | $B \times L \times D$          | N/A                            | $B \times L \times D$          | $B*L*D$             |
+    | $A$                                          | N/A                            | $D \times N$                   | $D \times N$                   | N/A                 |
+    | $B = Linear_N(silu_1)$                       | $B \times L \times D$          | $D \times N$                   | $B \times L \times N$          | $2*B*L*D*N$         |
+    | $C = Linear_N(silu)_1$                       | $B \times L \times D$          | $D \times N$                   | $B \times L \times N$          | $2*B*L*D*N$         |
+    | $S_{\Delta} = Broadcast_D(Linear_1(silu_1))$ | $B \times L \times D$          | $D \times 1$                   | $B \times L \times D$          | $2*B*L*D$           |
+    | $\Delta = sofplus(S_{\Delta})$               | $B \times L \times D$          | N/A                            | $B \times L \times D$          | $B*L*D$             |
+    | $\Delta A$                                   | $B \times L \times D$          | $D \times N$                   | $B \times L \times D \times N$ | $B*L*D*N$           |
+    | $\bar A = exp(\Delta A)$                     | $B \times L \times D \times N$ | N/A                            | $B \times L \times D \times N$ | $B*L*D*N$           |
+    | $\bar B = \Delta B$                          | $B \times L \times D$          | $B \times L \times N$          | $B \times L \times D \times N$ | $B*L*D*N$           |
+    | $h = \bar A h + Bx$                          | $B \times L \times D \times N$ | N/A                            | $B \times L \times D \times N$ | $3*B*L*D*N$         |
+    | $y = Ch$                                     | $B \times L \times N$          | $B \times L \times D \times N$ | $B \times L \times D$          | $2*B*L*D*N$         |
+    | $silu_2 = SiLU(x_2)$                         | $B \times L \times D$          | N/A                            | $B \times L \times D$          | $B*L*D$             |
+    | $gate = eltmul(y, silu_2)$                   | $B \times L \times D$          | $B \times L \times D$          | $B \times L \times D$          | $B*L*D$             |
+    | $block = Linear_{d_{model}}(gate)$           | $B \times L \times D$          | $D \times d_{model}$           | $B \times L \times d_{model}$  | $2*B*L*d_{model}*D$ |
+    | $residual = block + x1$                      | $B \times L \times d_{model}$  | $B \times L \times d_{model}$  | $B \times L \times d_{model}$  | $B*L*d_{model}$     |
+    | $output = LN(residual)$                      | $B \times L \times d_{model}$  | N/A                            | $B \times L \times d_{model}$  | $B*L*d_{model}$     |
+
+    - 总参数量为 $3*E*d_{model}^2 + (k+3*N+1)*E*d_{model}$，代入 $E = 2$ 又 $d_{model} \gg N$，所以近似为 $6*d_{model}^2$，**大约为 transformer block 的 1 半**。
+    - tensor 计算量 $OPs = 2*B*L*D*(3*d_{model} + 4*N + k +1)$
+    - vector 计算量 $OPs = 6*B*L*D*N + B*L*(D + d_{model})$
+    - SFU    计算量 $OPs = B*L*D*(2+3*N) + B*L*d_{model}$
+
+### Hardware Acceleration
+
+S6 虽然可以利用 blelloch scan 进行加速，但是因为这种方法只能用 CUDA core，无法利用起 GPU tensor core 的海量计算资源，所以实用性并不强，面临着和 depthwise convolution 类似的困境。
+
+如果逆天改命，修改 tensor core 的硬件设计支持 mamba v1，结果如何呢？
+
+硬件适配方案：
+
+- 修改 tensor core 的设计，增加数据端口，将状态方程和输出方程固化到 tensor core 上；
+- 在 B，D 维度并行（在 L 维度的并行则只能硬化 blelloch scan，对 tensor core 的硬件设计影响非常大）；
+- A，B，C 从 SRAM 中读出送到 tensor core；
+- h 保存在 tensor core 内部，不读写 SRAM；
+
+结果：
+
+虽然有很多维度都可并行，但是因为 eltment-wise 操作的计算密度很低（1 或 2），而一般 tensor core 的算力远超片上 SRAM 能提供的带宽，所以整体性能会受限于 SRAM 的带宽，导致 tensor core 算力无法充分利用，也就是 roofline 的斜坡区域。
 
 ## Mamba v2
+
+### Why Mamba v2
 
 虽然 S4 开发了 parallel scan 和 kernel fusion 等方法，但是因为它无法在 tensor core 上跑，不能利用大量的计算资源，所以作者后续又提出了 mamba v2 来改进这一点。
 

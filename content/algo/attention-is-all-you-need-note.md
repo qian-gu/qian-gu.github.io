@@ -115,7 +115,11 @@ Summary: Transformer 论文笔记。
 大部分序列转换 model 都基于 encoder-decoder 架构：
 
 - encoder 把输入序列 $(x_1, x_2, \dots, x_n)$ 转化为一个连续的向量表示 $z = (z_1, z_2, \dots, z_n)$；
-- 给定 $z$，decoder 以一次生成 1 个字符的方式生成输出序列 $(y_1, y_2, \dots, y_n)$，每一步都是自回归的，即每次都会将之前的输出也作为输入的一部分；
+- 给定 $z$，decoder 以一次生成 1 个字符的方式生成输出序列 $(y_1, y_2, \dots, y_m)$，每一步都是自回归的，即每次都会将之前的输出也作为输入的一部分；
+
+!!!note
+    - 序列 x 是原始输入，在 NLP 中自然就是单词，序列 z 是 x 对应的向量，每个单词 1 个向量，所以 x 和 z 的长度相同，都是 n；
+    - 序列 y 是输出，在 NLP 中自然也是单词，但是 y 的长度和 x/z 的长度可以不相等。
 
 transformer 也遵循这样的结构，encoder 和 decoder 都基于堆叠的 self-attention 和 point-wise fc 层。
 
@@ -216,9 +220,17 @@ A：当 $d_k$ 很大时，点积的幅值会很大，导致 softmax 的梯度非
 !!!note
     比如 q 和 k 都是均值为 0，方差为 1 的向量，则它们的点积的均值为 0，方差为 $d_k$，为了抵消这种影响，需要将点积缩放 $\frac{1}{\sqrt d_k}$ 倍。
 
+!!!note
+    算法框图中有个 Mask(opt.)，主要用于训练时保证因果性。因为对于 t 时刻而言，只能看到 t-1 之前的内容。
+
 #### Multi-Head Attention
 
 相比于维度为 $d_{model}$ 的单头 attention，multi-head 能更有效地捕捉信息，因为 multi-head 能同时关注到不同位置的多种特征信息，相比之下只有一个 head 则平均化了这些信息，从而限制了模型的表达能力。
+
+!!!note
+    multi-head 背后的思想类似于 CNN 的 OFM channel，每个 channel 可以学到不同的 pattern，所以 Attention 也可以用类似的思想，每个 head 学到一个 pattern。
+
+    因为对于单个 head 来说，能学到的参数只有 $W^Q$，$W^K$，$W^V$，1 组参数无法很好地学到多个 pattern，所以 mult-head 给了 h 次机会，让每个 head 学习不同的 pattern。
 
 multi-head attention 算法过程：
 
@@ -277,15 +289,74 @@ transformer 以 3 种方式应用 multi-head attention：
 
     其次，softmax 将每个 score 转化为概率，然后选择概率最大的字输出。
 
-### Point-wise Feed-Forward Networks
+### Position-wise Feed-Forward Networks
 
 每个 encoder layer 和 decoder layer 中除了 attention sub-layer 之外，还包含一个 FFN。该网络结构为两个线性变换中间插入了一个 ReLU。
 
 $FFN(x) = max(0, xW_1 + b_1)W_2 + b_2$
 
-虽然所有位置都使用相同的线性变换公式，但是每层不同位置的 weight 都不同，所以这个线性变换也可以当成是 k=1 的 convolution。
+虽然每个 position(token) 都使用相同的线性变换公式，但是每层不同位置的 weight 都不同，所以这个线性变换也可以当成是 k=1 的 convolution。
+
+Q：为什么是 position-wise？
+
+A：
+
+因为 x 是一个维度为 ($n$, $d_{model}$) 的矩阵，$W$ 是一个维度为 ($d_{model}$, $d_{ff}$) 的矩阵，所以实际上就是一个 FC 层，公式中 $xW_1$ 即 FC 的计算过程。
+
+把 $xW_1$ 的计算过程展开可以发现输出矩阵的每 1 行表示对应 token $x_i$，该行结果只和输入 $x_i$ 相关，与其他 $x_i$ 没关系，所以是 position-wise。 
+
+Q：为什么 position-wise 就足够了？
+
+A：因为 Attention block 输出的每个 position 实际上是所有输入 token 的加权求和，已经包含了全局信息，所以 FFN 就只需要做 position-wise 就足够了。
+
+!!!note
+    - 多个 FC 级联实际上就是一个 MLP，MLP 的隐藏层数量为 FC 层数减 1，所以这里的 FFN 是一个单隐藏层的 MLP。
+    - FC 级联必须中间插入非线性函数 active，否则多个层实际上相当于 1 个层。
 
 输入、输出的 $d_{model} = 512$，中间层的维度为 $d_{ff} = 2048$。
+
+符号表：
+
+| 符号        | 含义                                        |
+| ----------- | ------------------------------------------- |
+| $n$         | sequence length                             |
+| $d_{model}$ | embedding dimension                         |
+| $h$         | head number                                 |
+| $d$         | dimension of each head, $d = d_{model} / h$ |
+| $d_{ff}$    | dimension of 1st FFN linear output          |
+
+!!!note
+    **transformer block 的参数量和计算量**
+
+    | Operation                | input1                     | input2 (params)                | output               | OPs                    | executor |
+    | ------------------------ | -------------------------- | ------------------------------ | -------------------- | ---------------------- | -------- |
+    | $Q = X W^Q$              | $n \times d_{model}$       | $d_{model} \times d$           | $n \times d$         | $2*n*d_{model}^2$      | tensor   |
+    | $K = X W^K$              | $n \times d_{model}$       | $d_{model} \times d$           | $n \times d$         | $2*n*d_{model}^2$      | tensor   |
+    | $V = X W^V$              | $n \times d_{model}$       | $d_{model} \times d$           | $n \times d$         | $2*n*d_{model}^2$      | tensor   |
+    | $QK^T$                   | $n \times d$               | $d \times n$                   | $n \times n$         | $2*n^2*d_{model}$      | tensor   |
+    | $scale = QK^T/\sqrt{d}$  | $n \times n$               | $1 \times 1$                   | $n \times n$         | $h*n^2$                | vector   |
+    | $score = softmax(scale)$ | $n \times n$               | N/A                            | $n \times n$         | $h*n^2$                | SFU      |
+    | $attention = score*V$    | $n \times n$               | $n \times d$                   | $n \times d$         | $2*n^2*d_{model}$      | tensor   |
+    | $linear = attention*W^O$ | $n \times d_{model}$       | $d_{model} \times d_{model}$   | $n \times d_{model}$ | $2*n*d_{model}^2$      | tensor   |
+    | residual                 | $n \times d_{model}$       | $n \times d_{model}$           | $n \times d_{model}$ | $n*d_{model}$          | vector   |
+    | LN                       | $n \times d_{model}$       | N/A                            | $n \times d_{model}$ | $n*d_{model}$          | SFU      |
+    | 1st linear               | $n \times d_{model}$       | $d_{model} \times d_{ff}$      | $n \times d_{ff}$    | $2*n*d_{model}*d_{ff}$ | tensor   |
+    | active                   | $n \times d_{ff}$          | N/A                            | $n \times d_{ff}$    | $n*d_{ff}$             | SFU      |
+    | 2nd linear               | $n \times d_{ff}$          | $d_{ff} \times d_{model}$      | $n \times d_{model}$ | $2*n*d_{model}*d_{ff}$ | tensor   |
+    | residual                 | $n \times d_{model}$       | $n \times d_{model}$           | $n \times d_{model}$ | $n*d_{model}$          | vector   |
+    | LN                       | $n \times d_{model}$       | N/A                            | $n \times d_{model}$ | $n*d_{model}$          | SFU      |
+
+    - 总参数量为 $4*d_{model}^2 + 2*d_{model}*d_{ff}$，当 $d_{ff} = 4*d_{model}$ 时，总参数量为 $12*d_{model}^2$
+    - tensor 计算量 $OPs = 8*n*d_{model}^2 + 4*n^2*d_{model} + 4*n*d_{model}*d_{ff}$
+    - vector 计算量 $OPs = h*n^2 + 2*n*d_{model}$
+    - SFU    计算量 $OPs = h*n^2 + 2*n*d_{model} + n*d_{ff}$
+    - total  计算量 $OPs = 8*n*d_{model}^2 + (4*d_{model}+2*h)*n^2 + (4*d_{ff}+4)*n*d_{model} + n*d_{ff}$
+
+    - 当 $n \gg d_{model}$ 时：算法复杂度为 $O(n^2)$，主要计算量在 tensor 计算 MSA 的 $QK^T$ 和 $QK^TV$；
+    - 当 $n \ll d_{model}$ 时：算法复杂度为 $O(d_{model}^2)$，主要计算量在 tensor 计算 MSA 的 $Q$, $K$, $V$；
+
+!!!Warning
+    主要计算量在 tensor 不代表 tensor 就占大头时间，因为时间还需要考虑算力和利用率因素，如果 tensor 和 vector/SFU 算力配比过于悬殊，则瓶颈可能在于后者。
 
 ### Embedding and Softmax
 
@@ -361,7 +432,8 @@ self-attention 的另外一个好处是模型更加可解释，不仅每个 head
 
 ## Ref
 
+[Attention Is All You Need](https://arxiv.org/pdf/1706.03762)
+
 [Encoder-Decoder 和 Seq2Seq](https://easyai.tech/ai-definition/encoder-decoder-seq2seq/)
 
 [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
-
